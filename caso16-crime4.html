@@ -29,6 +29,7 @@
                 <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">4. Métodos de Validación</button></li>
                 <li><button onclick="switchTab('tab5')" id="btn-tab5" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent text-amber-400">5. Glosario de Examen</button></li>
                 <li><button onclick="switchTab('tab6')" id="btn-tab6" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent text-indigo-400">6. Galería Multimedia</button></li>
+                <li><button onclick="switchTab('tab7')" id="btn-tab7" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent text-indigo-400">7. Análisis de Explotación</button></li>
             </ul>
         </nav>
     </aside>
@@ -362,6 +363,37 @@
                     <p class="mt-4 text-slate-600 text-sm text-center">Resolución y aplicación de contramedidas.</p>
                 </div>
 
+            </div>
+        </section>
+
+        <section id="tab7" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">7. Consola de Explotación: CRIME vs BREACH</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-slate-900 p-6 rounded-xl shadow-lg border-t-4 border-red-600">
+                    <h3 class="text-red-400 font-bold mb-4 font-mono">>> LOG: CRIME EXPLOIT</h3>
+                    <div class="space-y-2 text-green-400 font-mono text-sm">
+                        <p>[10:01:02] Injecting: session=A... | Size: 1025B</p>
+                        <p class="text-yellow-400">[10:01:05] Injecting: session=X... | Size: 1024B (MATCH!)</p>
+                        <p>[10:01:08] Deducing: X is the first char.</p>
+                        <div class="border-t border-slate-700 pt-2 mt-2 italic text-slate-500">Target: TLS Session Headers</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-xl shadow-lg border-t-4 border-blue-500">
+                    <h3 class="text-blue-400 font-bold mb-4 font-mono">>> LOG: BREACH EXPLOIT</h3>
+                    <div class="space-y-2 text-green-400 font-mono text-sm">
+                        <p>[10:02:10] Injecting: search=csrf=A... | Size: 450B</p>
+                        <p class="text-yellow-400">[10:02:15] Injecting: search=csrf=9... | Size: 445B (MATCH!)</p>
+                        <p>[10:02:20] Deducing: 9 is the first char.</p>
+                        <div class="border-t border-slate-700 pt-2 mt-2 italic text-slate-500">Target: HTTP Body (HTML/Gzip)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-white p-6 rounded-xl shadow border border-slate-200">
+                <h4 class="font-bold text-slate-800 mb-2">Clave para el examen:</h4>
+                <p class="text-slate-600">Fíjate cómo en ambos logs, el atacante <strong>no ve el secreto</strong>, solo ve la reducción de tamaño (bytes). Eso confirma que ambos ataques son <strong>Oráculos de Longitud</strong>. La diferencia es que CRIME ataca la capa de transporte (TLS) y BREACH ataca el contenido (HTML).</p>
             </div>
         </section>
 
