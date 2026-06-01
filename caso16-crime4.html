@@ -183,6 +183,14 @@
             <h2 class="text-3xl font-bold text-slate-800 mb-6">5. Glosario de Batalla con Ejemplos Sencillos</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-600">
+                    <h3 class="font-bold text-xl text-red-800 mb-2">CRIME (Ataque)</h3>
+                    <p class="text-sm text-slate-700 mb-3">Ataca la compresión a nivel de protocolo TLS. Fuerza al navegador a enviar peticiones repetidas.</p>
+                    <div class="bg-slate-900 text-green-400 p-3 rounded font-mono text-xs mb-3">
+                        > Atacando TLS... <br>> Env: "session=A" -> Size: 1025B<br>> Env: "session=B" -> Size: 1024B (¡Match!)
+                    </div>
+                    <p class="text-xs text-slate-500"><strong>Relación:</strong> Rompe la confidencialidad de la sesión sin tocar el algoritmo de cifrado.</p>
+                </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
                     <h3 class="font-bold text-xl text-blue-800 mb-2">SPDY (Protocolo)</h3>
                     <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Protocolo precursor de HTTP/2 que comprimía las cabeceras HTTP por defecto para reducir latencia.</p>
@@ -218,6 +226,29 @@
                     <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Variante de CRIME. Ataca la compresión del cuerpo HTTP (HTML) en lugar de las cabeceras (TLS).</p>
                     <p class="text-slate-800 text-sm mb-3 bg-slate-100 p-2 rounded"><strong>Ejemplo sencillo:</strong> En lugar de atacar el sobre de la carta (cabeceras), el hacker intenta adivinar un número secreto que está escrito en el folio de dentro (el HTML), aprovechando que tú vas a comprimir ese folio.</p>
                 </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-400">
+                    <h3 class="font-bold text-xl text-red-800 mb-2">BREACH (Ataque)</h3>
+                    <p class="text-sm text-slate-700 mb-3">Evolución de CRIME. Ataca la compresión del cuerpo HTTP (HTML) usando gzip/brotli.</p>
+                    <div class="bg-slate-900 text-green-400 p-3 rounded font-mono text-xs mb-3">
+                        > Analizando HTML... <br>> Token CSRF inyectado... <br>> Flujo de tamaño detectado.
+                    </div>
+                    <p class="text-xs text-slate-500"><strong>Relación:</strong> Difícil de mitigar porque gzip es esencial para el rendimiento web.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">HPACK</h3>
+                    <p class="text-sm text-slate-700 mb-3">Mecanismo de compresión de cabeceras diseñado para HTTP/2.</p>
+                    <p class="text-slate-800 text-sm bg-blue-50 p-2 rounded mb-2"><strong>Ejemplo:</strong> En lugar de enviar "User-Agent: Mozilla..." 100 veces, envía el índice #45.</p>
+                    <p class="text-xs text-slate-500"><strong>Práctica:</strong> Si las cookies se comprimen aquí sin cuidado, se crea un nuevo oráculo de longitud.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500">
+                    <h3 class="font-bold text-xl text-indigo-800 mb-2">QPACK</h3>
+                    <p class="text-sm text-slate-700 mb-3">Evolución de HPACK para HTTP/3 (QUIC), optimizado para conexiones fuera de orden.</p>
+                    <p class="text-slate-800 text-sm bg-indigo-50 p-2 rounded mb-2"><strong>Ejemplo:</strong> Maneja las cabeceras como flujos independientes, complicando la sincronización para el atacante.</p>
+                    <p class="text-xs text-slate-500"><strong>Práctica:</strong> Es más seguro que HPACK, pero el riesgo de co-compresión persiste si no separamos los contextos.</p>
+                </div>
+                
 
             </div>
         </section>
