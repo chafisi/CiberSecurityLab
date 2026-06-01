@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio Completo: Unidad 8 - CRIME/BREACH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-emerald-400">Auditoría CRIME/BREACH</h1>
+            <p class="text-xs text-slate-500 mt-1">Unidad 8: Codificación de la Fuente</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('tab0')" id="btn-tab0" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-emerald-500 text-white">0. Teoría CRIME/BREACH</button></li>
+                <li><button onclick="switchTab('tab1')" id="btn-tab1" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">1. Requisitos de Mitigación</button></li>
+                <li><button onclick="switchTab('tab2')" id="btn-tab2" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">2. Simulador y Oráculo</button></li>
+                <li><button onclick="switchTab('tab3')" id="btn-tab3" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">3. Caso de Uso Interactivo</button></li>
+                <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">4. Métodos de Validación</button></li>
+                <li><button onclick="switchTab('tab5')" id="btn-tab5" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent text-amber-400">5. Glosario de Examen</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative p-8">
+
+        <section id="tab0" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">0. Teoría: La Paradoja de la Compresión</h2>
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 text-lg leading-relaxed space-y-4">
+                <p>La máxima de la Unidad 8 es clara: <strong>"Comprimir elimina redundancia, cifrar la oculta. El orden importa."</strong></p>
+                <p>El ataque CRIME (y su variante BREACH para el cuerpo HTTP) explota la interacción letal entre la <span class="font-bold text-emerald-600">co-compresión</span> y el cifrado. Si un servidor web comprime en un mismo contexto un <em>secreto de alta entropía</em> (como un token de sesión) y una <em>entrada controlada por el atacante</em>, se genera un canal lateral.</p>
+                <div class="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-500 mt-6">
+                    <h3 class="font-bold text-amber-800">El Oráculo de Longitud</h3>
+                    <p class="text-amber-900 mt-2 text-base">Al inyectar texto y observar el tamaño del paquete cifrado final, el atacante puede saber si su inyección coincide con el secreto. Si acierta una letra, el algoritmo encuentra un patrón, lo comprime, y el paquete pesa menos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab1" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1. Requisitos para evitar filtraciones</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500">
+                    <h3 class="font-bold text-xl text-blue-700 mb-3">Funcionales</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        <li>Desactivar compresión a nivel TLS (evita CRIME).</li>
+                        <li>Prohibir la co-compresión de secretos con entradas de usuario (evita BREACH).</li>
+                        <li>Implementar padding aleatorio para ofuscar tamaño.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-purple-500">
+                    <h3 class="font-bold text-xl text-purple-700 mb-3">No Funcionales</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        <li>Mantener latencia baja y optimización de ancho de banda.</li>
+                        <li>Transparencia total para el usuario final.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-slate-700">
+                    <h3 class="font-bold text-xl text-slate-700 mb-3">Técnicos</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        <li>Uso obligatorio de TLS 1.3 con cifrados AEAD.</li>
+                        <li>Separación estricta de contextos HPACK/QPACK.</li>
+                        <li>Implementar Rate Limiting estricto.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab2" class="tab-content hidden fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-3xl font-bold text-slate-800">2. Oráculo por Co-compresión</h2>
+                <button onclick="generateNewTarget()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold transition">Rotar Secreto</button>
+            </div>
+            
+            <div id="successBanner" class="hidden bg-emerald-500 text-white p-4 rounded-xl shadow-md mb-6 font-bold text-center text-lg animate-pulse">
+                ¡Vulnerabilidad Explotada! Token deducido por canal lateral.
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-lg text-slate-700 mb-4">Inyección de Payload</h3>
+                    <div class="bg-slate-50 p-4 rounded-lg mb-4 text-sm font-mono text-slate-500 border border-slate-200">
+                        Cookie-Secreta: <span id="secretSpan" class="text-pink-600 font-bold">????</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="attackerInput" maxlength="5" placeholder="Inyecta (Ej: A, A1...)" class="flex-1 px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none uppercase font-mono text-lg">
+                        <button onclick="sendRequest()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg shadow transition">Atacar</button>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                    <h3 class="font-bold text-lg text-slate-700 mb-2">Monitorización de Tamaño</h3>
+                    <div class="flex-1 w-full min-h-[200px] relative">
+                        <canvas id="sizeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-slate-100 p-4 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700">Registro Forense</h3>
+                    <button onclick="resetSim()" class="text-sm bg-slate-300 hover:bg-slate-400 px-3 py-1 rounded">Limpiar</button>
+                </div>
+                <table class="w-full text-sm text-left text-slate-600" id="historyTable">
+                    <thead class="text-xs text-slate-500 uppercase bg-white border-b">
+                        <tr><th class="px-6 py-3">Req ID</th><th class="px-6 py-3">Inyección</th><th class="px-6 py-3 text-center">Ciphertext</th><th class="px-6 py-3">Análisis</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">3. Caso de Uso: Aislamiento de Secretos</h2>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <div class="flex items-center justify-between mb-8 relative">
+                    <div class="absolute left-0 top-1/2 w-full h-1 bg-slate-200 -z-10 -translate-y-1/2"></div>
+                    <div id="progressLine" class="absolute left-0 top-1/2 h-1 bg-emerald-500 -z-10 -translate-y-1/2 transition-all duration-300" style="width: 0%;"></div>
+                    <div class="flex justify-between w-full" id="stepIndicators"></div>
+                </div>
+                
+                <div id="stepContent" class="min-h-[200px] flex flex-col justify-center text-center px-4">
+                    <h3 id="stepTitle" class="text-2xl font-bold text-blue-800 mb-4">...</h3>
+                    <p id="stepDesc" class="text-lg text-slate-600 mb-6">...</p>
+                    <div id="stepCode" class="bg-slate-900 text-green-400 p-4 rounded-lg font-mono text-left text-sm mx-auto w-full max-w-2xl shadow-inner hidden"></div>
+                </div>
+
+                <div id="summaryView" class="hidden min-h-[200px] flex flex-col justify-center px-4 fade-in">
+                    <h3 class="text-2xl font-bold text-emerald-600 mb-4 text-center">Resumen del Flujo (Chuleta Examen)</h3>
+                    <ul class="list-decimal pl-6 space-y-3 text-slate-700 font-medium mb-6 text-lg">
+                        <li><strong>Petición Inicial:</strong> El cliente envía la solicitud con su Cookie.</li>
+                        <li><strong>Procesamiento:</strong> El servidor prepara el cuerpo (HTML) y las cabeceras.</li>
+                        <li><strong>Separación de Contextos:</strong> Se comprime el cuerpo (gzip) pero se EXCLUYEN las cabeceras.</li>
+                        <li><strong>Ofuscación (Padding):</strong> Se inyectan bytes aleatorios para ocultar el tamaño real.</li>
+                        <li><strong>Cifrado y Transmisión:</strong> Se cifra todo con TLS 1.3 blindando el canal lateral.</li>
+                    </ul>
+                    <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 text-sm text-red-800 shadow-inner">
+                        <h4 class="font-bold mb-2">Excepciones Críticas a Mencionar:</h4>
+                        <p>1. Si falla la negociación TLS 1.3 ➔ <strong>Bloquear conexión</strong> (evita downgrade attack).</p>
+                        <p>2. Si se detectan múltiples peticiones iterativas ➔ <strong>Aplicar Rate Limiting / WAF</strong>.</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-slate-100">
+                    <button onclick="prevStep()" id="btnPrev" class="px-6 py-2 bg-slate-200 hover:bg-slate-300 rounded font-bold transition disabled:opacity-50">Anterior</button>
+                    <span id="stepCounter" class="py-2 text-slate-500 font-medium text-center">Paso 1 de 5</span>
+                    <button onclick="nextStep()" id="btnNext" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded font-bold transition">Siguiente</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">4. Métodos de Validación</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200">
+                    <div class="flex items-center gap-4 mb-4"><div class="bg-blue-100 p-3 rounded-full text-blue-600 text-2xl">⚙️</div><h3 class="text-xl font-bold text-slate-800">Auditoría de Configuración</h3></div>
+                    <p class="text-slate-600 mb-4">Revisar archivos de configuración de infraestructura web.</p>
+                    <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700"><strong>Objetivo:</strong> Constatar que compresión SSL/TLS y SPDY están deshabilitados.</div>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200">
+                    <div class="flex items-center gap-4 mb-4"><div class="bg-red-100 p-3 rounded-full text-red-600 text-2xl">🕵️‍♂️</div><h3 class="text-xl font-bold text-slate-800">Pruebas de Canal Lateral</h3></div>
+                    <p class="text-slate-600 mb-4">Simulaciones inyectando payloads monitorizando con Wireshark.</p>
+                    <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700"><strong>Objetivo:</strong> Confirmar que el tamaño del ciphertext no varía de forma predecible.</div>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200 lg:col-span-2">
+                    <div class="flex items-center gap-4 mb-4"><div class="bg-purple-100 p-3 rounded-full text-purple-600 text-2xl">📊</div><h3 class="text-xl font-bold text-slate-800">Análisis de Padding</h3></div>
+                    <p class="text-slate-600 mb-4">Análisis estadístico de longitud de respuestas cifradas.</p>
+                    <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700"><strong>Criterio:</strong> Tamaños agrupados en bloques estandarizados (Buckets).</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab5" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">5. Glosario de Batalla (Términos Clave)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">SPDY (Protocolo)</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Protocolo de red creado por Google (precursor de HTTP/2) para reducir la latencia web. Comprimía las cabeceras HTTP por defecto.</p>
+                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Enviar todas las cartas de una oficina en un solo paquete muy apretado en lugar de una a una.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> CRIME se demostró por primera vez atacando la compresión de cabeceras de SPDY para robar cookies.</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
+                    <h3 class="font-bold text-xl text-red-800 mb-2">Co-compresión</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> El error de diseño de comprimir conjuntamente datos secretos y datos introducidos por el usuario dentro del mismo paquete.</p>
+                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Meter en la misma caja el código de la caja fuerte (secreto) y los papeles que trae el ladrón de la calle (atacante).</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Es la vulnerabilidad raíz que permite el ataque CRIME y BREACH. Si separas los contextos, el ataque muere.</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-amber-500">
+                    <h3 class="font-bold text-xl text-amber-800 mb-2">Oráculo de Longitud</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Un sistema que filtra información de forma indirecta a través de variaciones milimétricas en el tamaño final del paquete de respuesta.</p>
+                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Adivinar lo que hay dentro de un regalo sin abrirlo, simplemente pesándolo en una báscula milimétrica.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> En nuestro simulador, la gráfica actúa como oráculo chivándonos cuándo hemos acertado una letra.</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Padding (Relleno)</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Inyección de bytes aleatorios o desechables a un mensaje original para estandarizar u ocultar su longitud real antes de cifrarlo.</p>
+                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Mandar un anillo de compromiso dentro de una caja de zapatos llena de periódicos para que no adivinen qué es por el tamaño.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Es la contramedida principal (requisito funcional) para cegar a los oráculos de longitud.</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                    <h3 class="font-bold text-xl text-purple-800 mb-2">Entropía (Teoría de Shannon)</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Medida de incertidumbre o nivel de aleatoriedad de la información. A mayor entropía, menos redundancia y menor capacidad de compresión.</p>
+                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> La contraseña "x8$K1p" tiene alta entropía (impredecible). La palabra "Ciberseguridad" tiene baja entropía.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Los secretos (cookies) tienen alta entropía. Solo se comprimen bien si el atacante inyecta exactamente la misma cadena (hace "match").</div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-slate-700">
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">BREACH (Ataque)</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Evolución de CRIME. En lugar de atacar la compresión TLS, ataca la compresión del cuerpo HTTP (como `gzip` o `brotli`) para robar secretos reflejados en el HTML.</p>
+                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Robar el token anti-CSRF que está oculto dentro del código fuente comprimido de una página bancaria.</p>
+                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Como desactivar gzip arruinaría el rendimiento web, BREACH se mitiga separando los secretos de las entradas del usuario y aplicando padding.</div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-emerald-500', 'text-white', 'text-amber-400');
+                if(btn.id !== 'btn-tab5') btn.classList.add('border-transparent', 'text-slate-300');
+                if(btn.id === 'btn-tab5') btn.classList.add('border-transparent', 'text-amber-400'); // Mantener color del glosario
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-300', 'text-amber-400');
+            activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
+            
+            if(tabId === 'tab2' && window.chartInstance) window.chartInstance.resize();
+        }
+
+        // --- LÓGICA DEL SIMULADOR ---
+        let currentSecret = "";
+        const BASE_SIZE = 1500;
+        let historyData = [];
+        window.chartInstance = null;
+
+        function initChart() {
+            try {
+                const ctx = document.getElementById('sizeChart').getContext('2d');
+                window.chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: [], datasets: [{ label: 'Bytes', data: [], borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.2, pointRadius: 4 }] },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { suggestedMin: 1498, suggestedMax: 1510 } }, plugins: { legend: { display: false } } }
+                });
+            } catch(e) { console.warn("Chart.js no cargado"); }
+        }
+
+        function updateUI() {
+            if(window.chartInstance) {
+                window.chartInstance.data.labels = historyData.map(d => `#${d.id}`);
+                window.chartInstance.data.datasets[0].data = historyData.map(d => d.size);
+                window.chartInstance.update();
+            }
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            [...historyData].reverse().forEach(row => {
+                const bgClass = row.isHighlight ? 'bg-red-50 border-l-4 border-red-500 font-bold' : 'border-b';
+                tbody.insertAdjacentHTML('beforeend', `<tr class="${bgClass} hover:bg-slate-50"><td class="px-6 py-3">#${row.id}</td><td class="px-6 py-3 font-mono text-pink-600">${row.payload}</td><td class="px-6 py-3 text-center font-bold">${row.size} B</td><td class="px-6 py-3">${row.insight}</td></tr>`);
+            });
+        }
+
+        function resetSim() {
+            historyData = [];
+            document.getElementById('successBanner').classList.add('hidden');
+            updateUI();
+        }
+
+        function generateNewTarget() {
+            const chars = "ABCDEF123456";
+            currentSecret = "";
+            for (let i = 0; i < 4; i++) currentSecret += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById('secretSpan').textContent = currentSecret;
+            resetSim();
+        }
+
+        function sendRequest() {
+            const inputField = document.getElementById('attackerInput');
+            if (!inputField || !inputField.value) return;
+            const payload = inputField.value.toUpperCase();
+
+            let matchLength = 0;
+            for (let i = 0; i < payload.length; i++) {
+                if (payload[i] === currentSecret[i]) matchLength++; else break;
+            }
+
+            const simulatedSize = BASE_SIZE + payload.length - matchLength;
+            let insight = `<span class="text-slate-500">Sin coincidencia.</span>`;
+            let isHighlight = false;
+
+            if (historyData.length > 0 && simulatedSize < (BASE_SIZE + payload.length)) {
+                insight = `<span class="text-red-600">⚠️ Coincidencia (Caída de Tamaño)</span>`;
+                isHighlight = true;
+            }
+
+            historyData.push({ id: historyData.length + 1, payload: payload, size: simulatedSize, insight: insight, isHighlight: isHighlight });
+            updateUI();
+            
+            if (payload === currentSecret) document.getElementById('successBanner').classList.remove('hidden');
+            inputField.value = ''; inputField.focus();
+        }
+
+        // --- LÓGICA DEL CASO DE USO ---
+        const ucSteps = [
+            { title: "Paso 1: Petición Inicial", desc: "El usuario realiza una petición HTTPS a un endpoint protegido, enviando su cookie de sesión.", code: "GET /search?q=atk HTTP/1.1\nCookie: session=ABC12" },
+            { title: "Paso 2: Procesamiento", desc: "El servidor procesa la petición y prepara el cuerpo del documento y las cabeceras.", code: "// Backend\nconst response = { html: 'Resultados...', headers: {...} };" },
+            { title: "Paso 3: Separación de Contextos", desc: "El sistema comprime el cuerpo para optimizar, pero EXCLUYE las cabeceras con secretos.", code: "gzip(cuerpoHTTP); // OK\n// Las Cookies NO se comprimen juntas" },
+            { title: "Paso 4: Ofuscación (Padding)", desc: "Se inyectan bytes aleatorios en el cuerpo para alterar la longitud final.", code: "body += generateRandomPadding(10 a 50 bytes);" },
+            { title: "Paso 5: Cifrado y Transmisión", desc: "El paquete se cifra mediante TLS 1.3. El Oráculo de tamaño queda ciego.", code: "AES-GCM-Encrypt(paqueteFinal);\n-> Enviar cliente" }
+        ];
+        
+        let currentStep = 0;
+
+        function initUseCase() {
+            const indicators = document.getElementById('stepIndicators');
+            indicators.innerHTML = '';
+            ucSteps.forEach((_, i) => {
+                indicators.innerHTML += `<div id="indicator-${i}" class="w-8 h-8 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center font-bold text-slate-400 text-sm z-10">${i+1}</div>`;
+            });
+            renderStep();
+        }
+
+        function renderStep() {
+            const contentDiv = document.getElementById('stepContent');
+            const summaryDiv = document.getElementById('summaryView');
+            const btnNext = document.getElementById('btnNext');
+
+            // Si estamos en los pasos normales (0 a 4)
+            if(currentStep < ucSteps.length) {
+                contentDiv.classList.remove('hidden');
+                summaryDiv.classList.add('hidden');
+
+                const step = ucSteps[currentStep];
+                document.getElementById('stepTitle').textContent = step.title;
+                document.getElementById('stepDesc').textContent = step.desc;
+                document.getElementById('stepCode').textContent = step.code;
+                document.getElementById('stepCode').classList.remove('hidden');
+                
+                document.getElementById('stepCounter').textContent = `Paso ${currentStep + 1} de ${ucSteps.length}`;
+                document.getElementById('btnPrev').disabled = currentStep === 0;
+                
+                if(currentStep === ucSteps.length - 1) {
+                    btnNext.textContent = "Ver Resumen Final";
+                    btnNext.classList.replace('bg-emerald-500', 'bg-blue-600');
+                } else {
+                    btnNext.textContent = "Siguiente";
+                    btnNext.classList.replace('bg-blue-600', 'bg-emerald-500');
+                }
+
+                ucSteps.forEach((_, i) => {
+                    const ind = document.getElementById(`indicator-${i}`);
+                    if(i < currentStep) ind.className = "w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm z-10";
+                    else if(i === currentStep) ind.className = "w-8 h-8 rounded-full border-4 border-emerald-500 bg-white text-emerald-600 flex items-center justify-center font-bold text-sm z-10 ring-4 ring-emerald-100";
+                    else ind.className = "w-8 h-8 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center font-bold text-slate-400 text-sm z-10";
+                });
+
+                document.getElementById('progressLine').style.width = `${(currentStep / (ucSteps.length - 1)) * 100}%`;
+            } 
+            // Si estamos en la vista resumen (Paso 6 virtual)
+            else {
+                contentDiv.classList.add('hidden');
+                summaryDiv.classList.remove('hidden');
+                document.getElementById('stepCounter').textContent = "Resumen de Examen";
+                btnNext.textContent = "Ir a Validación";
+                btnNext.classList.replace('bg-blue-600', 'bg-amber-500');
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < ucSteps.length) { 
+                currentStep++; 
+                renderStep(); 
+            } else { 
+                switchTab('tab4'); 
+            }
+        }
+        function prevStep() { 
+            if (currentStep > 0) { 
+                currentStep--; 
+                renderStep(); 
+                // Asegurar que el botón recupere color original si volvemos atrás
+                const btnNext = document.getElementById('btnNext');
+                btnNext.classList.remove('bg-amber-500');
+                if(currentStep < ucSteps.length - 1) btnNext.classList.add('bg-emerald-500');
+            } 
+        }
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            generateNewTarget();
+            initUseCase();
+            
+            const attInput = document.getElementById("attackerInput");
+            if(attInput) {
+                attInput.addEventListener("keypress", e => { if (e.key === "Enter") { e.preventDefault(); sendRequest(); } });
+            }
+        });
+    </script>
+</body>
+</html>
