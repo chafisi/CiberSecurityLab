@@ -307,4 +307,71 @@
             const indicators = document.getElementById('stepIndicators');
             indicators.innerHTML = '';
             ucSteps.forEach((_, i) => {
-                indicators.innerHTML += `<div id="indicator-${i}" class="w-8 h-8 rounded
+                indicators.innerHTML += `<div id="indicator-${i}" class="w-8 h-8 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center font-bold text-slate-400 text-sm transition-colors duration-300 z-10">${i+1}</div>`;
+            });
+            renderStep();
+        }
+
+        function renderStep() {
+            const step = ucSteps[currentStep];
+            document.getElementById('stepTitle').textContent = step.title;
+            document.getElementById('stepDesc').textContent = step.desc;
+            
+            const codeBlock = document.getElementById('stepCode');
+            codeBlock.textContent = step.code;
+            codeBlock.classList.remove('hidden');
+
+            document.getElementById('stepCounter').textContent = `Paso ${currentStep + 1} de ${ucSteps.length}`;
+            document.getElementById('btnPrev').disabled = currentStep === 0;
+            
+            const btnNext = document.getElementById('btnNext');
+            if(currentStep === ucSteps.length - 1) {
+                btnNext.textContent = "Finalizar";
+                btnNext.classList.replace('bg-emerald-500', 'bg-blue-600');
+            } else {
+                btnNext.textContent = "Siguiente";
+                btnNext.classList.replace('bg-blue-600', 'bg-emerald-500');
+            }
+
+            // Actualizar indicadores visuales
+            ucSteps.forEach((_, i) => {
+                const ind = document.getElementById(`indicator-${i}`);
+                if(i < currentStep) {
+                    ind.className = "w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm transition-colors duration-300 z-10";
+                } else if(i === currentStep) {
+                    ind.className = "w-8 h-8 rounded-full border-4 border-emerald-500 bg-white text-emerald-600 flex items-center justify-center font-bold text-sm transition-colors duration-300 z-10 ring-4 ring-emerald-100";
+                } else {
+                    ind.className = "w-8 h-8 rounded-full border-2 border-slate-300 bg-white flex items-center justify-center font-bold text-slate-400 text-sm transition-colors duration-300 z-10";
+                }
+            });
+
+            // Actualizar barra de progreso
+            const progress = (currentStep / (ucSteps.length - 1)) * 100;
+            document.getElementById('progressLine').style.width = `${progress}%`;
+        }
+
+        function nextStep() {
+            if (currentStep < ucSteps.length - 1) {
+                currentStep++;
+                renderStep();
+            } else {
+                alert("Flujo de seguridad validado exitosamente.");
+                switchTab('tab4'); // Saltar al último tab al terminar
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep();
+            }
+        }
+
+        // --- ARRANQUE GLOBAL ---
+        initChart();
+        generateNewTarget();
+        initUseCase();
+        // Empezamos en la pestaña 0 (Teoría)
+    </script>
+</body>
+</html>
