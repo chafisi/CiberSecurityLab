@@ -36,8 +36,17 @@
     <main class="flex-1 overflow-y-auto bg-slate-50 relative p-8">
 
         <section id="tab0" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">0. Teoría: La Paradoja de la Compresión</h2>
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 text-lg leading-relaxed space-y-4">
+                <p>La máxima de la Unidad 8 es clara: <strong>"Comprimir elimina redundancia, cifrar la oculta. El orden importa."</strong></p>
+                <p>El ataque CRIME (y su variante BREACH para el cuerpo HTTP) explota la interacción letal entre la <span class="font-bold text-emerald-600">co-compresión</span> y el cifrado. Si un servidor web comprime en un mismo contexto un <em>secreto de alta entropía</em> (como un token de sesión) y una <em>entrada controlada por el atacante</em>, se genera un canal lateral.</p>
+                <div class="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-500 mt-6">
+                    <h3 class="font-bold text-amber-800">El Oráculo de Longitud</h3>
+                    <p class="text-amber-900 mt-2 text-base">Al inyectar texto y observar el tamaño del paquete cifrado final, el atacante puede saber si su inyección coincide con el secreto. Si acierta una letra, el algoritmo encuentra un patrón, lo comprime, y el paquete pesa menos.</p>
+                </div>
+            </div>
             <h2 class="text-3xl font-bold text-slate-800 mb-6">0. Teoría: Flujos de Ataque y Logs</h2>
-            
+    
             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
                 <h3 class="text-lg font-bold text-slate-800 mb-4">A. Flujo de Ataque CRIME (Capa TLS)</h3>
                 <div class="flex items-center justify-between text-center font-mono text-xs mb-4">
