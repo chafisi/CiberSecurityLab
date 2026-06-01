@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio CRIME/BREACH - Preparación Examen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Cabecera -->
+        <header class="bg-slate-900 text-white p-6 rounded-xl shadow-lg mb-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-emerald-400">Laboratorio: Oráculo por Co-compresión</h1>
+                <p class="text-slate-300 mt-2">Simulación de ataques CRIME / BREACH para análisis de canales laterales.</p>
+            </div>
+            <div class="hidden md:block text-right text-sm text-slate-400">
+                <p>Módulo: Codificación de la Fuente</p>
+                <p>Objetivo: Explotar Metadatos (Tamaño)</p>
+            </div>
+        </header>
+
+        <!-- Banner de Éxito -->
+        <div id="successBanner" class="hidden bg-emerald-500 text-white p-4 rounded-xl shadow-md mb-6 font-bold text-center text-lg animate-pulse">
+            ¡Vulnerabilidad Explotada! Has deducido el token completo interceptando el metadato del tamaño.
+        </div>
+
+        <!-- Layout Principal: 3 Columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- COLUMNA 1: Teoría y Explicación -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col gap-4">
+                <h2 class="text-xl font-bold text-slate-700 border-b pb-2">Fundamentos Teóricos</h2>
+                
+                <div class="bg-blue-50 p-4 rounded-lg text-sm">
+                    <h3 class="font-bold text-blue-800 mb-1">1. Compresión y Codificación</h3>
+                    <p class="text-blue-900">La compresión (ej. LZ77/Huffman) elimina redundancia. Si enviamos texto repetido, el algoritmo lo sustituye por un puntero corto. El cifrado (TLS) oculta el texto, pero <strong>no oculta el tamaño resultante</strong>.</p>
+                </div>
+
+                <div class="bg-amber-50 p-4 rounded-lg text-sm">
+                    <h3 class="font-bold text-amber-800 mb-1">2. El Ataque (Co-compresión)</h3>
+                    <p class="text-amber-900">Si un servidor comprime un dato del atacante junto a un secreto (ej. una Cookie), el atacante puede inyectar texto para intentar hacer "match". Si acierta, la compresión es mayor y el tamaño cifrado baja.</p>
+                </div>
+
+                <div class="bg-slate-100 p-4 rounded-lg text-sm">
+                    <h3 class="font-bold text-slate-800 mb-1">3. Impacto en Logs (SIEM)</h3>
+                    <p class="text-slate-700">A nivel forense, el contenido viaja cifrado. El analista solo verá peticiones repetitivas variando parámetros y fluctuaciones milimétricas en los bytes de respuesta.</p>
+                </div>
+            </div>
+
+            <!-- COLUMNA 2: Consola de Ataque -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col gap-6">
+                <h2 class="text-xl font-bold text-slate-700 border-b pb-2">Vector de Ataque</h2>
+
+                <!-- Mensaje Original -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Mensaje Real (Contexto Servidor)</span>
+                        <button onclick="generateNewTarget()" class="text-xs bg-slate-200 hover:bg-slate-300 px-2 py-1 rounded transition">Rotar Token</button>
+                    </div>
+                    <code class="text-sm text-pink-600 font-mono break-all" id="originalMessageDisplay">
+                        HTTP/1.1 200 OK<br>
+                        Set-Cookie: session=<span id="secretSpan">????</span>
+                    </code>
+                </div>
+
+                <!-- Input del Atacante -->
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Inyectar Payload (Atacante):</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="attackerInput" maxlength="5" placeholder="Ej: A, A1, B..." class="flex-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none uppercase font-mono">
+                        <button onclick="sendRequest()" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow transition">Lanzar</button>
+                    </div>
+                </div>
+
+                <!-- Mensaje Modificado (Co-comprimido) -->
+                <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                    <span class="text-xs font-bold text-red-500 uppercase mb-2 block">Mensaje Co-comprimido (Simulación)</span>
+                    <code class="text-sm text-slate-800 font-mono break-all">
+                        ?q=<span id="injectedDisplay" class="font-bold text-red-600">_</span><br>
+                        Set-Cookie: session=***
+                    </code>
+                </div>
+            </div>
+
+            <!-- COLUMNA 3: Oráculo y Forense -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 flex flex-col gap-4 lg:col-span-1">
+                <h2 class="text-xl font-bold text-slate-700 border-b pb-2">El Oráculo (Tamaño)</h2>
+                <div class="h-48 w-full">
+                    <canvas id="sizeChart"></canvas>
+                </div>
+                <div class="flex justify-end">
+                    <button onclick="resetSim()" class="text-sm bg-slate-600 hover:bg-slate-700 text-white py-1 px-3 rounded shadow transition">Limpiar Logs</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TABLA DE LOGS -->
+        <div class="mt-6 bg-white p-6 rounded-xl shadow-md border border-slate-200">
+            <h2 class="text-xl font-bold text-slate-700 border-b pb-4 mb-4">Registro Forense (Trazabilidad)</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-600" id="historyTable">
+                    <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b">
+                        <tr>
+                            <th class="px-4 py-3">Req ID</th>
+                            <th class="px-4 py-3">Inyección (Metadato)</th>
+                            <th class="px-4 py-3 text-center">Tamaño Ciphertext</th>
+                            <th class="px-4 py-3">Análisis (Filtro Indirecto)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // LÓGICA CORE
+        let currentSecret = "";
+        const BASE_SIZE = 1500;
+        let historyData = [];
+        let chartInstance = null;
+
+        // Generar un token aleatorio de 4 caracteres
+        function generateNewTarget() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            currentSecret = "";
+            for (let i = 0; i < 4; i++) {
+                currentSecret += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('secretSpan').textContent = currentSecret; // En un entorno real esto estaría oculto
+            resetSim();
+        }
+
+        // Inicializar gráfica
+        function initChart() {
+            const ctx = document.getElementById('sizeChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets: [{ label: 'Bytes', data: [], borderColor: '#ef4444', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: true, tension: 0.2, pointRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { suggestedMin: 1498, suggestedMax: 1510 } }, plugins: { legend: { display: false } } }
+            });
+        }
+
+        function sendRequest() {
+            const inputField = document.getElementById('attackerInput');
+            const payload = inputField.value.toUpperCase();
+            if (!payload) return;
+
+            document.getElementById('injectedDisplay').textContent = payload;
+
+            // Simulación Compresión Lempel-Ziv
+            let matchLength = 0;
+            for (let i = 0; i < payload.length; i++) {
+                if (payload[i] === currentSecret[i]) matchLength++;
+                else break;
+            }
+
+            // Tamaño cifrado = Base + lo que añado - lo que Lempel-Ziv comprime
+            const simulatedSize = BASE_SIZE + payload.length - matchLength;
+
+            // Insight Logic
+            let insight = `<span class="text-slate-500">Ruido normal. Sin coincidencias.</span>`;
+            let isHighlight = false;
+
+            if (historyData.length > 0) {
+                if (simulatedSize < (BASE_SIZE + payload.length)) {
+                    insight = `<span class="text-red-600 font-bold">⚠️ Caída de tamaño: Coincidencia detectada.</span>`;
+                    isHighlight = true;
+                }
+            }
+
+            historyData.push({ id: historyData.length + 1, payload: payload, size: simulatedSize, insight: insight, isHighlight: isHighlight });
+            
+            updateUI();
+
+            if (payload === currentSecret) {
+                document.getElementById('successBanner').classList.remove('hidden');
+            }
+            
+            inputField.value = '';
+            inputField.focus();
+        }
+
+        function updateUI() {
+            // Actualizar Gráfica
+            chartInstance.data.labels = historyData.map(d => `#${d.id}`);
+            chartInstance.data.datasets[0].data = historyData.map(d => d.size);
+            chartInstance.update();
+
+            // Actualizar Tabla
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            [...historyData].reverse().forEach(row => {
+                const bgClass = row.isHighlight ? 'bg-red-50 border-l-4 border-red-500' : 'border-b';
+                const tr = `<tr class="${bgClass} hover:bg-slate-100">
+                    <td class="px-4 py-3 font-bold">#${row.id}</td>
+                    <td class="px-4 py-3 font-mono text-pink-600">${row.payload}</td>
+                    <td class="px-4 py-3 text-center font-bold text-slate-800">${row.size} B</td>
+                    <td class="px-4 py-3">${row.insight}</td>
+                </tr>`;
+                tbody.insertAdjacentHTML('beforeend', tr);
+            });
+        }
+
+        function resetSim() {
+            historyData = [];
+            document.getElementById('injectedDisplay').textContent = "_";
+            document.getElementById('successBanner').classList.add('hidden');
+            updateUI();
+        }
+
+        // Arrancar
+        generateNewTarget();
+        initChart();
+
+        // Permitir usar "Enter" en el input
+        document.getElementById("attackerInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendRequest();
+            }
+        });
+    </script>
+</body>
+</html>
