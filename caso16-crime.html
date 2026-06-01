@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador: Oráculo de Longitud (CRIME/BREACH)</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .panel { background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .control-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"] { padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; flex-grow: 1; }
+        button { padding: 10px 20px; font-size: 16px; border: none; border-radius: 4px; cursor: pointer; color: white; font-weight: bold;}
+        .btn-send { background-color: #e74c3c; }
+        .btn-send:hover { background-color: #c0392b; }
+        .btn-reset { background-color: #95a5a6; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #ddd; }
+        th { background-color: #ecf0f1; }
+        .success-banner { background-color: #27ae60; color: white; padding: 15px; border-radius: 4px; text-align: center; display: none; font-weight: bold; margin-bottom: 20px;}
+        .highlight-row { background-color: #ffeaa7; } /* Resalta caídas de tamaño */
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>Taller Práctico 16: Ataque de Co-compresión (CRIME/BREACH)</h2>
+        <p><strong>Objetivo:</strong> Adivina el token secreto de 4 caracteres. Si adivinas la letra correcta en la posición correcta, el algoritmo de compresión lo sustituirá y el tamaño total del paquete (Ciphertext) bajará.</p>
+    </div>
+
+    <div id="successBanner" class="success-banner">
+        ¡Token robado con éxito! Vulnerabilidad de oráculo de longitud confirmada.
+    </div>
+
+    <div class="panel">
+        <div class="control-group">
+            <input type="text" id="attackerInput" maxlength="4" placeholder="Inyecta texto (ej: A, A1, B...)" autocomplete="off">
+            <button class="btn-send" onclick="sendRequest()">Enviar Petición HTTPS</button>
+            <button class="btn-reset" onclick="resetSim()">Reiniciar</button>
+        </div>
+        
+        <canvas id="sizeChart" height="100"></canvas>
+    </div>
+
+    <div class="panel">
+        <h3>Registro Forense de Tráfico (Logs)</h3>
+        <table id="historyTable">
+            <thead>
+                <tr>
+                    <th>Intento</th>
+                    <th>Payload Inyectado</th>
+                    <th>Tamaño Ciphertext (Bytes)</th>
+                    <th>Análisis de Compresión</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN DEL SISTEMA VULNERABLE ---
+        const SECRET_TOKEN = "A1B2"; // El secreto que el atacante no conoce
+        const BASE_SIZE = 1024;      // Tamaño base de las cabeceras/cuerpo sin payload
+        
+        let historyData = [];
+        let labels = [];
+        let sizes = [];
+        let chartInstance = null;
+
+        // Inicializar Gráfica
+        const ctx = document.getElementById('sizeChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { labels: labels, datasets: [{ label: 'Tamaño del Ciphertext (Bytes)', data: sizes, borderColor: '#3498db', backgroundColor: 'rgba(52, 152, 219, 0.2)', tension: 0.1, fill: true, pointRadius: 5 }] },
+            options: { scales: { y: { beginAtZero: false, suggestedMin: 1020, suggestedMax: 1030 } } }
+        });
+
+        function sendRequest() {
+            const inputField = document.getElementById('attackerInput');
+            const payload = inputField.value.toUpperCase(); // Forzamos mayúsculas para simplificar
+            
+            if (!payload) return;
+
+            // --- LÓGICA DEL ORÁCULO DE COMPRESIÓN (Lempel-Ziv simplificado) ---
+            let matchLength = 0;
+            // Calculamos cuántos caracteres coinciden en prefijo exacto con el secreto
+            for (let i = 0; i < payload.length; i++) {
+                if (payload[i] === SECRET_TOKEN[i]) {
+                    matchLength++;
+                } else {
+                    break; 
+                }
+            }
+
+            // Si hay coincidencia, la compresión es más eficiente, restamos el matchLength
+            // Tamaño = Base + (longitud inyectada) - (caracteres que la compresión logró reducir)
+            const simulatedSize = BASE_SIZE + payload.length - matchLength;
+
+            // --- ACTUALIZAR DATOS ---
+            const attemptNum = historyData.length + 1;
+            let insight = "Normal";
+            let isHighlight = false;
+
+            if (historyData.length > 0) {
+                const prevSize = historyData[historyData.length - 1].size;
+                if (simulatedSize < (BASE_SIZE + payload.length)) {
+                    insight = "⚠️ Tamaño reducido (¡Posible coincidencia!)";
+                    isHighlight = true;
+                }
+            }
+
+            historyData.push({ attempt: attemptNum, payload: payload, size: simulatedSize, insight: insight, isHighlight: isHighlight });
+            labels.push(`Req #${attemptNum}`);
+            sizes.push(simulatedSize);
+
+            // Actualizar UI
+            chartInstance.update();
+            updateTable();
+
+            // Condición de victoria
+            if (payload === SECRET_TOKEN) {
+                document.getElementById('successBanner').style.display = 'block';
+            }
+            
+            inputField.value = '';
+            inputField.focus();
+        }
+
+        function updateTable() {
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            
+            // Mostrar de más nuevo a más viejo
+            [...historyData].reverse().forEach(row => {
+                const tr = document.createElement('tr');
+                if (row.isHighlight) tr.className = 'highlight-row';
+                tr.innerHTML = `<td>${row.attempt}</td><td><code>${row.payload}</code></td><td><strong>${row.size} B</strong></td><td>${row.insight}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function resetSim() {
+            historyData = []; labels.length = 0; sizes.length = 0;
+            chartInstance.update();
+            document.querySelector('#historyTable tbody').innerHTML = '';
+            document.getElementById('successBanner').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
