@@ -216,9 +216,9 @@
             updateUI();
         }
 
-        // Arrancar
-        generateNewTarget();
-        initChart();
+       // Arrancar
+        initChart();           // <-- PRIMERO inicializamos la gráfica
+        generateNewTarget();   // <-- LUEGO generamos el secreto
 
         // Permitir usar "Enter" en el input
         document.getElementById("attackerInput").addEventListener("keypress", function(event) {
