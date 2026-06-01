@@ -28,6 +28,7 @@
                 <li><button onclick="switchTab('tab3')" id="btn-tab3" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">3. Caso de Uso Interactivo</button></li>
                 <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent">4. Métodos de Validación</button></li>
                 <li><button onclick="switchTab('tab5')" id="btn-tab5" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent text-amber-400">5. Glosario de Examen</button></li>
+                <li><button onclick="switchTab('tab6')" id="btn-tab6" class="w-full text-left px-6 py-3 hover:bg-slate-800 hover:text-white transition font-medium border-l-4 border-transparent text-indigo-400">6. Galería Multimedia</button></li>
             </ul>
         </nav>
     </aside>
@@ -144,7 +145,7 @@
                     </ul>
                     <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 text-sm text-red-800 shadow-inner">
                         <h4 class="font-bold mb-2">Excepciones Críticas a Mencionar:</h4>
-                        <p>1. Si falla la negociación TLS 1.3 ➔ <strong>Bloquear conexión</strong> (evita downgrade attack).</p>
+                        <p>1. Si falla la negociación TLS 1.3 ➔ <strong>Bloquear conexión</strong>.</p>
                         <p>2. Si se detectan múltiples peticiones iterativas ➔ <strong>Aplicar Rate Limiting / WAF</strong>.</p>
                     </div>
                 </div>
@@ -179,49 +180,74 @@
         </section>
 
         <section id="tab5" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">5. Glosario de Batalla (Términos Clave)</h2>
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">5. Glosario de Batalla con Ejemplos Sencillos</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
                     <h3 class="font-bold text-xl text-blue-800 mb-2">SPDY (Protocolo)</h3>
-                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Protocolo de red creado por Google (precursor de HTTP/2) para reducir la latencia web. Comprimía las cabeceras HTTP por defecto.</p>
-                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Enviar todas las cartas de una oficina en un solo paquete muy apretado en lugar de una a una.</p>
-                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> CRIME se demostró por primera vez atacando la compresión de cabeceras de SPDY para robar cookies.</div>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Protocolo precursor de HTTP/2 que comprimía las cabeceras HTTP por defecto para reducir latencia.</p>
+                    <p class="text-slate-800 text-sm mb-3 bg-blue-50 p-2 rounded"><strong>Ejemplo sencillo:</strong> En lugar de enviar 100 cartas con el mismo membrete de tu empresa, comprimes el membrete y pones una sola etiqueta para todas.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500">
                     <h3 class="font-bold text-xl text-red-800 mb-2">Co-compresión</h3>
-                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> El error de diseño de comprimir conjuntamente datos secretos y datos introducidos por el usuario dentro del mismo paquete.</p>
-                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Meter en la misma caja el código de la caja fuerte (secreto) y los papeles que trae el ladrón de la calle (atacante).</p>
-                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Es la vulnerabilidad raíz que permite el ataque CRIME y BREACH. Si separas los contextos, el ataque muere.</div>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Comprimir conjuntamente datos secretos y datos introducidos por el usuario en el mismo paquete.</p>
+                    <p class="text-slate-800 text-sm mb-3 bg-red-50 p-2 rounded"><strong>Ejemplo sencillo:</strong> Meter en un mismo archivo ZIP tu documento de contraseñas y un texto que ha escrito un hacker desconocido. Si el hacker acierta tu clave en su texto, el ZIP pesará menos.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-amber-500">
                     <h3 class="font-bold text-xl text-amber-800 mb-2">Oráculo de Longitud</h3>
-                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Un sistema que filtra información de forma indirecta a través de variaciones milimétricas en el tamaño final del paquete de respuesta.</p>
-                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Adivinar lo que hay dentro de un regalo sin abrirlo, simplemente pesándolo en una báscula milimétrica.</p>
-                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> En nuestro simulador, la gráfica actúa como oráculo chivándonos cuándo hemos acertado una letra.</div>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Filtrado de información indirecta a través de variaciones en el tamaño final del paquete de respuesta.</p>
+                    <p class="text-slate-800 text-sm mb-3 bg-amber-50 p-2 rounded"><strong>Ejemplo sencillo:</strong> Adivinar si tu amigo lleva en la mochila ropa o libros sin necesidad de abrir la mochila, simplemente pesándola en una báscula.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
                     <h3 class="font-bold text-xl text-emerald-800 mb-2">Padding (Relleno)</h3>
-                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Inyección de bytes aleatorios o desechables a un mensaje original para estandarizar u ocultar su longitud real antes de cifrarlo.</p>
-                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Mandar un anillo de compromiso dentro de una caja de zapatos llena de periódicos para que no adivinen qué es por el tamaño.</p>
-                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Es la contramedida principal (requisito funcional) para cegar a los oráculos de longitud.</div>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Inyección de bytes aleatorios a un mensaje para estandarizar su longitud real antes de cifrarlo.</p>
+                    <p class="text-slate-800 text-sm mb-3 bg-emerald-50 p-2 rounded"><strong>Ejemplo sencillo:</strong> Si vas a enviar por correo un anillo (poco peso) o un portátil (mucho peso), metes piedras en ambas cajas para que las dos pesen exactamente 5 Kg. Así, el transportista no sabe qué caja lleva la joya.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
-                    <h3 class="font-bold text-xl text-purple-800 mb-2">Entropía (Teoría de Shannon)</h3>
-                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Medida de incertidumbre o nivel de aleatoriedad de la información. A mayor entropía, menos redundancia y menor capacidad de compresión.</p>
-                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> La contraseña "x8$K1p" tiene alta entropía (impredecible). La palabra "Ciberseguridad" tiene baja entropía.</p>
-                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Los secretos (cookies) tienen alta entropía. Solo se comprimen bien si el atacante inyecta exactamente la misma cadena (hace "match").</div>
+                    <h3 class="font-bold text-xl text-purple-800 mb-2">Entropía</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Nivel de aleatoriedad de la información. A mayor entropía, menor capacidad de compresión (Shannon).</p>
+                    <p class="text-slate-800 text-sm mb-3 bg-purple-50 p-2 rounded"><strong>Ejemplo sencillo:</strong> Una foto de una pared totalmente blanca tiene entropía 0 (se comprime muchísimo, pesa 1 KB). Una foto de "ruido de televisor sin señal" es aleatoria, tiene entropía máxima, no se puede comprimir.</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-slate-700">
-                    <h3 class="font-bold text-xl text-slate-800 mb-2">BREACH (Ataque)</h3>
-                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Evolución de CRIME. En lugar de atacar la compresión TLS, ataca la compresión del cuerpo HTTP (como `gzip` o `brotli`) para robar secretos reflejados en el HTML.</p>
-                    <p class="text-slate-600 text-sm mb-3"><strong>Ejemplo coloquial:</strong> Robar el token anti-CSRF que está oculto dentro del código fuente comprimido de una página bancaria.</p>
-                    <div class="bg-slate-50 p-3 rounded text-xs text-slate-600"><strong>En la práctica:</strong> Como desactivar gzip arruinaría el rendimiento web, BREACH se mitiga separando los secretos de las entradas del usuario y aplicando padding.</div>
+                    <h3 class="font-bold text-xl text-slate-800 mb-2">BREACH</h3>
+                    <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Variante de CRIME. Ataca la compresión del cuerpo HTTP (HTML) en lugar de las cabeceras (TLS).</p>
+                    <p class="text-slate-800 text-sm mb-3 bg-slate-100 p-2 rounded"><strong>Ejemplo sencillo:</strong> En lugar de atacar el sobre de la carta (cabeceras), el hacker intenta adivinar un número secreto que está escrito en el folio de dentro (el HTML), aprovechando que tú vas a comprimir ese folio.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="tab6" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">6. Galería Multimedia (Casos Prácticos)</h2>
+            <p class="text-slate-600 mb-6 text-lg">Evidencia gráfica de la resolución del caso de oráculo de longitud en infraestructura de red.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl text-slate-800 mb-4 text-center">Explotación: Paso 1</h3>
+                    <div class="bg-slate-100 rounded-lg border flex items-center justify-center overflow-hidden h-64 relative group cursor-pointer" onclick="window.open('./[SEG] - Caso practico 16 - Paso 1.jpg', '_blank')">
+                        <img src="./[SEG] - Caso practico 16 - Paso 1.jpg" alt="Caso práctico 16 - Paso 1" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Sube+la+imagen%5Cn%5C[SEG]+-+Caso+practico+16+-+Paso+1.jpg%5Cnal+repositorio'">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                            <span class="text-white font-bold opacity-0 group-hover:opacity-100">Ampliar 🔍</span>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-slate-600 text-sm text-center">Visualización inicial del entorno de ataque y planteamiento de la co-compresión.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl text-slate-800 mb-4 text-center">Explotación: Paso 2</h3>
+                    <div class="bg-slate-100 rounded-lg border flex items-center justify-center overflow-hidden h-64 relative group cursor-pointer" onclick="window.open('./[SEG] - Caso practico 16 - Paso 2.jpg', '_blank')">
+                        <img src="./[SEG] - Caso practico 16 - Paso 2.jpg" alt="Caso práctico 16 - Paso 2" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" onerror="this.src='https://placehold.co/600x400/e2e8f0/475569?text=Sube+la+imagen%5Cn%5C[SEG]+-+Caso+practico+16+-+Paso+2.jpg%5Cnal+repositorio'">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+                            <span class="text-white font-bold opacity-0 group-hover:opacity-100">Ampliar 🔍</span>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-slate-600 text-sm text-center">Resolución y aplicación de contramedidas.</p>
                 </div>
 
             </div>
@@ -234,13 +260,14 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('aside nav button').forEach(btn => {
-                btn.classList.remove('bg-slate-800', 'border-emerald-500', 'text-white', 'text-amber-400');
-                if(btn.id !== 'btn-tab5') btn.classList.add('border-transparent', 'text-slate-300');
-                if(btn.id === 'btn-tab5') btn.classList.add('border-transparent', 'text-amber-400'); // Mantener color del glosario
+                btn.classList.remove('bg-slate-800', 'border-emerald-500', 'text-white', 'text-amber-400', 'text-indigo-400');
+                if(btn.id !== 'btn-tab5' && btn.id !== 'btn-tab6') btn.classList.add('border-transparent', 'text-slate-300');
+                if(btn.id === 'btn-tab5') btn.classList.add('border-transparent', 'text-amber-400'); 
+                if(btn.id === 'btn-tab6') btn.classList.add('border-transparent', 'text-indigo-400'); 
             });
             document.getElementById(tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('border-transparent', 'text-slate-300', 'text-amber-400');
+            activeBtn.classList.remove('border-transparent', 'text-slate-300', 'text-amber-400', 'text-indigo-400');
             activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
             
             if(tabId === 'tab2' && window.chartInstance) window.chartInstance.resize();
@@ -342,7 +369,6 @@
             const summaryDiv = document.getElementById('summaryView');
             const btnNext = document.getElementById('btnNext');
 
-            // Si estamos en los pasos normales (0 a 4)
             if(currentStep < ucSteps.length) {
                 contentDiv.classList.remove('hidden');
                 summaryDiv.classList.add('hidden');
@@ -372,9 +398,7 @@
                 });
 
                 document.getElementById('progressLine').style.width = `${(currentStep / (ucSteps.length - 1)) * 100}%`;
-            } 
-            // Si estamos en la vista resumen (Paso 6 virtual)
-            else {
+            } else {
                 contentDiv.classList.add('hidden');
                 summaryDiv.classList.remove('hidden');
                 document.getElementById('stepCounter').textContent = "Resumen de Examen";
@@ -384,18 +408,12 @@
         }
 
         function nextStep() {
-            if (currentStep < ucSteps.length) { 
-                currentStep++; 
-                renderStep(); 
-            } else { 
-                switchTab('tab4'); 
-            }
+            if (currentStep < ucSteps.length) { currentStep++; renderStep(); } 
+            else { switchTab('tab4'); }
         }
         function prevStep() { 
             if (currentStep > 0) { 
-                currentStep--; 
-                renderStep(); 
-                // Asegurar que el botón recupere color original si volvemos atrás
+                currentStep--; renderStep(); 
                 const btnNext = document.getElementById('btnNext');
                 btnNext.classList.remove('bg-amber-500');
                 if(currentStep < ucSteps.length - 1) btnNext.classList.add('bg-emerald-500');
