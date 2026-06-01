@@ -191,6 +191,19 @@
                     </div>
                     <p class="text-xs text-slate-500"><strong>Relación:</strong> Rompe la confidencialidad de la sesión sin tocar el algoritmo de cifrado.</p>
                 </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 mt-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">1. Flujo TLS y Ataque CRIME</h3>
+                    <div class="flex items-center justify-between text-center font-mono text-xs">
+                        <div class="bg-slate-100 p-3 rounded border">Origen (Cliente)</div>
+                        <div class="text-slate-400">➔ [Input Atacante + Cookie] ➔</div>
+                        <div class="bg-emerald-100 p-3 rounded border border-emerald-300">Compresión TLS</div>
+                        <div class="text-slate-400">➔ [Ataque CRIME ocurre aquí] ➔</div>
+                        <div class="bg-red-100 p-3 rounded border border-red-300">Cifrado (AES)</div>
+                        <div class="text-slate-400">➔ [Payload cifrado] ➔</div>
+                        <div class="bg-slate-100 p-3 rounded border">Destino (Servidor)</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 italic text-center">Nota: CRIME analiza la longitud del paquete cifrado para deducir el secreto antes de que el servidor lo procese.</p>
+                </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
                     <h3 class="font-bold text-xl text-blue-800 mb-2">SPDY (Protocolo)</h3>
                     <p class="text-slate-700 text-sm mb-3"><strong>Definición:</strong> Protocolo precursor de HTTP/2 que comprimía las cabeceras HTTP por defecto para reducir latencia.</p>
@@ -234,7 +247,19 @@
                     </div>
                     <p class="text-xs text-slate-500"><strong>Relación:</strong> Difícil de mitigar porque gzip es esencial para el rendimiento web.</p>
                 </div>
-
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 mt-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">2. Flujo HTTP y Ataque BREACH</h3>
+                    <div class="flex items-center justify-between text-center font-mono text-xs">
+                        <div class="bg-slate-100 p-3 rounded border">Origen (Servidor)</div>
+                        <div class="text-slate-400">➔ [HTML + Token Secreto] ➔</div>
+                        <div class="bg-blue-100 p-3 rounded border border-blue-300">Compresión Gzip</div>
+                        <div class="text-slate-400">➔ [Ataque BREACH aquí] ➔</div>
+                        <div class="bg-red-100 p-3 rounded border border-red-300">Cifrado (TLS)</div>
+                        <div class="text-slate-400">➔ [Respuesta cifrada] ➔</div>
+                        <div class="bg-slate-100 p-3 rounded border">Destino (Cliente)</div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 italic text-center">Nota: BREACH ataca el cuerpo de la respuesta. La mitigación requiere aislar el secreto del HTML inyectable.</p>
+                </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
                     <h3 class="font-bold text-xl text-blue-800 mb-2">HPACK</h3>
                     <p class="text-sm text-slate-700 mb-3">Mecanismo de compresión de cabeceras diseñado para HTTP/2.</p>
