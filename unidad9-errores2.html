@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio U9: Codificación de Canal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .bit-box { transition: all 0.2s; cursor: pointer; }
+        .bit-box:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-blue-400">Auditoría U9</h1>
+            <p class="text-xs text-slate-500 mt-1">Codificación de Canal y Ruido</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('tab1')" id="btn-tab1" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-blue-500 text-white">1. Fundamentos (9.1 - 9.7)</button></li>
+                <li><button onclick="switchTab('tab2')" id="btn-tab2" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-emerald-400">2. Taller: Paridad</button></li>
+                <li><button onclick="switchTab('tab3')" id="btn-tab3" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-emerald-400">3. Taller: Checksum / CRC</button></li>
+                <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-purple-400">4. Taller: FEC (Hamming)</button></li>
+                <li><button onclick="switchTab('tab5')" id="btn-tab5" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-red-400">5. Análisis Vulnerabilidades</button></li>
+                <li><button onclick="switchTab('tab6')" id="btn-tab6" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-amber-400">6. Chuleta de Examen</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative p-8">
+
+        <section id="tab1" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1. Fundamentos de Transmisión (Unidad 9)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-800 mb-2">9.1 & 9.2: Canal, Ruido e Interferencia</h3>
+                    <ul class="text-sm space-y-3 text-slate-700">
+                        <li><strong>Codificación de Canal:</strong> Añadir redundancia matemática para sobrevivir al ruido. <em>(Ej: Meter un objeto frágil en una caja con plástico de burbujas).</em></li>
+                        <li><strong>Canal Binario Simétrico (BSC):</strong> Modelo donde un bit tiene probabilidad 'p' de invertirse. <em>(Ej: Un cable viejo donde el 1% de los datos cambia de 0 a 1).</em></li>
+                        <li><strong>Ruido AWGN:</strong> Interferencia térmica de fondo constante. <em>(Ej: La "nieve" de las teles antiguas o estática de radio).</em></li>
+                        <li><strong>Capacidad (Shannon):</strong> La tasa máxima de datos fiables que soporta un canal.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                    <h3 class="font-bold text-lg text-emerald-800 mb-2">9.3 & 9.4: Detección y Corrección</h3>
+                    <ul class="text-sm space-y-3 text-slate-700">
+                        <li><strong>ARQ (Detección):</strong> Detectar error y pedir reenvío. <em>(Ej: "No te he escuchado por el ruido, ¿puedes repetirlo?").</em></li>
+                        <li><strong>FEC (Corrección - Forward Error Correction):</strong> Autocorregir el error al vuelo usando redundancia avanzada. <em>(Ej: Deducir una letra borrosa por el contexto de la palabra).</em></li>
+                        <li><strong>Reed-Solomon:</strong> FEC para bloques, corrige ráfagas. <em>(Ej: Permite leer un CD aunque tenga un arañazo físico).</em></li>
+                        <li><strong>LDPC / Turbo Codes:</strong> Códigos modernos hiper-eficientes. <em>(Ej: Usados en 5G y Wi-Fi para máxima velocidad).</em></li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500 md:col-span-2">
+                    <h3 class="font-bold text-lg text-purple-800 mb-2">9.5 a 9.7: Seguridad, Eficiencia y Limitaciones</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-700">
+                        <div>
+                            <strong>9.5 Seguridad:</strong> Detectar errores (FEC/ARQ) alerta sobre ataques físicos (Jamming). Los errores forzados sirven como "sensores de intrusión física". <em>(Ej: Si la tasa de error sube de golpe, nos están atacando con un inhibidor).</em>
+                        </div>
+                        <div>
+                            <strong>9.6 Eficiencia:</strong> A más redundancia, más robustez pero menor *Throughput* (datos útiles). <em>(Ej: Enviar cada archivo 3 veces es seguro pero satura la red).</em>
+                        </div>
+                        <div>
+                            <strong>9.7 Limitaciones:</strong> Los algoritmos FEC avanzados (LDPC) consumen muchísima batería y CPU, afectando a la latencia. <em>(Ej: Un sensor IoT se apaga rápido si tiene que procesar corrección pesada).</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab2" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">2. Taller Detección: Bit de Paridad</h2>
+            <p class="text-slate-600 mb-6">Método ARQ simple. <strong>Paridad Par</strong> (el total de '1's debe ser par). Haz clic en los bits azules para inyectar ruido (ataque).</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-slate-200">
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-2">Emisor (Enviado)</h3>
+                    <div class="flex gap-2" id="parity-sender"></div>
+                </div>
+                <hr class="mb-6">
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-2">Receptor (Llegada) - ¡Inyecta ruido haciendo clic!</h3>
+                    <div class="flex gap-2 mb-4" id="parity-receiver"></div>
+                    <button onclick="evalParity()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded font-bold">Validar Integridad</button>
+                    <button onclick="initParity()" class="bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded font-bold ml-2">Reiniciar</button>
+                </div>
+                <div id="parity-result" class="hidden p-4 rounded-lg font-bold border-l-4"></div>
+            </div>
+        </section>
+
+        <section id="tab3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">3. Taller Detección: Checksum / Simulación CRC</h2>
+            <p class="text-slate-600 mb-6">Un Checksum suma bloques de datos. Si el atacante altera los datos <strong>y también recalcula el checksum</strong>, el error pasa inadvertido (Vulnerabilidad).</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto border border-slate-200">
+                <div class="grid grid-cols-2 gap-8 text-center font-mono">
+                    <div class="bg-slate-100 p-4 rounded border">
+                        <h4 class="font-bold text-slate-700 mb-2">Paquete Original</h4>
+                        Dato A: <span class="text-blue-600">10</span><br>
+                        Dato B: <span class="text-blue-600">15</span><br>
+                        Checksum (Suma): <span class="font-bold text-purple-600 bg-purple-100 px-2 rounded">25</span>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded border border-red-200 relative">
+                        <h4 class="font-bold text-red-700 mb-2">Paquete Atacado (Spoofing)</h4>
+                        Dato A: <input type="number" id="crcA" value="10" class="w-16 border rounded text-center text-red-600" onchange="checkCRC()"><br>
+                        Dato B: <input type="number" id="crcB" value="15" class="w-16 border rounded text-center text-red-600" onchange="checkCRC()"><br>
+                        Checksum Falsificado: <input type="number" id="crcSum" value="25" class="w-16 border rounded text-center text-red-600 font-bold bg-red-100" onchange="checkCRC()">
+                    </div>
+                </div>
+                <div class="mt-6 text-center">
+                    <div id="crc-result" class="p-4 rounded-lg font-bold bg-green-100 text-green-800 border-l-4 border-green-500">
+                        ✅ Sistema Seguro: El checksum coincide con los datos.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">4. Taller FEC: Código Hamming (7,4)</h2>
+            <p class="text-slate-600 mb-6">FEC (Forward Error Correction). 4 bits de datos + 3 bits de paridad superpuesta. <strong>Capaz de autocorregir 1 bit erróneo.</strong> Haz clic en UN bit azul para ver la magia.</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg max-w-5xl mx-auto border border-slate-200">
+                <div class="mb-4">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-2">Trama Original (4 Datos + 3 Paridad)</h3>
+                    <div class="flex gap-2 font-mono text-lg" id="hamming-sender"></div>
+                </div>
+                <hr class="mb-4">
+                <div class="mb-4">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-2">Receptor (Haz clic en 1 bit para dañarlo)</h3>
+                    <div class="flex gap-2 font-mono text-lg" id="hamming-receiver"></div>
+                </div>
+                <div class="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm shadow-inner min-h-[100px]" id="hamming-log">
+                    > Esperando recepción del canal...
+                </div>
+                <button onclick="initHamming()" class="mt-4 bg-slate-200 hover:bg-slate-300 px-4 py-2 rounded font-bold text-slate-700">Reiniciar Transmisión</button>
+            </div>
+        </section>
+
+        <section id="tab5" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">5. Análisis de Vulnerabilidades</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500">
+                    <h3 class="font-bold text-blue-800 mb-2">Fallo en Paridad (Ráfagas)</h3>
+                    <p class="text-sm text-slate-700">La paridad simple sufre de <strong>falsos negativos</strong> ante un número par de errores (ráfagas). Si el ruido voltea 2 o 4 bits, la paridad se compensa matemáticamente y el sistema acepta datos corruptos sin alertar.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-red-500">
+                    <h3 class="font-bold text-red-800 mb-2">Manipulación de CRC/Checksum</h3>
+                    <p class="text-sm text-slate-700">CRC (usado en Ethernet/WiFi) detecta ruido físico perfectamente, pero <strong>no es un hash criptográfico</strong>. Un atacante (Man-in-the-Middle) puede modificar el mensaje y recalcular el CRC sin necesitar claves, evadiendo la detección.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-purple-500">
+                    <h3 class="font-bold text-purple-800 mb-2">Límites del FEC (Hamming)</h3>
+                    <p class="text-sm text-slate-700">El Código de Hamming (7,4) solo puede corregir <strong>1 bit de error</strong>. Si un atacante inyecta 2 errores en el mismo bloque, la matriz de síndromes colapsa y corrige un bit equivocado, corrompiendo aún más la trama.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab6" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">6. Chuleta de Examen (Idea Clave & Trade-offs)</h2>
+            
+            <div class="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 mb-6 shadow-sm">
+                <h3 class="font-bold text-amber-900 text-xl mb-2">Glosario Directo a Vena</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm text-amber-900">
+                    <p><strong>BER (Bit Error Rate):</strong> % de bits recibidos corruptos.</p>
+                    <p><strong>Throughput:</strong> Ancho de banda de datos útiles (sin contar las cabeceras ni la redundancia).</p>
+                    <p><strong>Latencia:</strong> Tiempo de transmisión. ARQ (pedir reenvíos) la aumenta críticamente.</p>
+                    <p><strong>Entropía Condicional:</strong> Incertidumbre en el receptor. A más ruido, más entropía.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 p-6 rounded-xl text-slate-300 shadow-lg">
+                <h3 class="font-bold text-emerald-400 text-xl mb-4">Los 4 Trade-offs (Dilemas Clave de Ignacio)</h3>
+                <ul class="space-y-4">
+                    <li class="border-b border-slate-700 pb-2">
+                        <strong class="text-white text-lg">1. Fiabilidad vs. Seguridad:</strong> 
+                        Un canal sin ruido (fiable) transmite rápido, pero si no está cifrado (seguro), cualquiera lo lee. La fiabilidad NO implica seguridad.
+                    </li>
+                    <li class="border-b border-slate-700 pb-2">
+                        <strong class="text-white text-lg">2. Detección (ARQ) vs. Corrección (FEC):</strong> 
+                        Detección requiere red bidireccional (reenvíos) y gasta latencia. Corrección es unidireccional (satélites), pero inyecta tanta redundancia que devora el ancho de banda.
+                    </li>
+                    <li class="border-b border-slate-700 pb-2">
+                        <strong class="text-white text-lg">3. Compresión vs. Codificación (El balance):</strong> 
+                        La Unidad 8 (Compresión) quita redundancia para ahorrar espacio. La Unidad 9 (Codificación) añade redundancia matemática para evitar errores. Ambas pelean por el ancho de banda.
+                    </li>
+                    <li>
+                        <strong class="text-white text-lg">4. Ruido natural vs. Manipulación:</strong> 
+                        Los algoritmos de canal no saben si el error lo causó una tormenta solar (ruido) o un hacker. Por eso la criptografía (MAC/Firmas) debe ir en la capa superior.
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- NAVEGACIÓN ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'text-white', 'text-emerald-400', 'text-purple-400', 'text-red-400', 'text-amber-400');
+                if(btn.id !== 'btn-tab1') btn.classList.add('border-transparent', 'text-slate-400');
+                
+                // Restaurar colores del menú
+                if(btn.id === 'btn-tab2' || btn.id === 'btn-tab3') btn.classList.add('text-emerald-400');
+                if(btn.id === 'btn-tab4') btn.classList.add('text-purple-400');
+                if(btn.id === 'btn-tab5') btn.classList.add('text-red-400');
+                if(btn.id === 'btn-tab6') btn.classList.add('text-amber-400');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
+        }
+
+        // --- TALLER 1: PARIDAD ---
+        let pOrig = [], pParity = 0, pRecv = [], pRecvParity = 0;
+        function initParity() {
+            pOrig = Array.from({length: 8}, () => Math.random()>0.5?1:0);
+            pParity = pOrig.filter(b=>b===1).length % 2 === 0 ? 0 : 1;
+            pRecv = [...pOrig]; pRecvParity = pParity;
+            renderParity();
+            document.getElementById('parity-result').classList.add('hidden');
+        }
+        function flipParity(idx) {
+            if(idx === 8) pRecvParity = 1 - pRecvParity;
+            else pRecv[idx] = 1 - pRecv[idx];
+            renderParity(); document.getElementById('parity-result').classList.add('hidden');
+        }
+        function renderParity() {
+            const sendHTML = pOrig.map(b => `<div class="w-10 h-10 flex items-center justify-center bg-slate-200 font-bold rounded">${b}</div>`).join('') + `<div class="w-10 h-10 flex items-center justify-center bg-purple-200 text-purple-800 font-bold rounded border-2 border-purple-400">${pParity}</div>`;
+            document.getElementById('parity-sender').innerHTML = sendHTML;
+
+            const recvHTML = pRecv.map((b,i) => `<div onclick="flipParity(${i})" class="bit-box w-12 h-12 flex items-center justify-center font-bold rounded border-2 text-lg ${b!==pOrig[i]?'bg-red-500 text-white border-red-700':'bg-blue-100 text-blue-800 border-blue-300'}">${b}</div>`).join('') + `<div onclick="flipParity(8)" class="bit-box w-12 h-12 flex items-center justify-center font-bold rounded border-2 text-lg border-dashed ${pRecvParity!==pParity?'bg-red-500 text-white border-red-700':'bg-purple-100 text-purple-800 border-purple-300'}">${pRecvParity}</div>`;
+            document.getElementById('parity-receiver').innerHTML = recvHTML;
+        }
+        function evalParity() {
+            const totalOnes = pRecv.filter(b=>b===1).length + pRecvParity;
+            let realErrors = pRecv.filter((b,i)=>b!==pOrig[i]).length + (pRecvParity!==pParity?1:0);
+            const res = document.getElementById('parity-result');
+            res.className = 'p-4 rounded-lg font-bold border-l-4 mt-4 block ';
+            
+            if (totalOnes % 2 !== 0) res.className += 'bg-green-100 text-green-800 border-green-500', res.innerHTML = `✅ Detección Exitosa: Total de unos es impar (${totalOnes}). Paquete descartado.`;
+            else if (realErrors > 0) res.className += 'bg-red-100 text-red-800 border-red-500', res.innerHTML = `❌ FALSO NEGATIVO: Inyectaste ${realErrors} errores, pero los unos suman par (${totalOnes}). El sistema acepta datos falsos.`;
+            else res.className += 'bg-slate-100 text-slate-800 border-slate-500', res.innerHTML = `ℹ️ Trama Válida. Todo correcto.`;
+        }
+
+        // --- TALLER 2: CHECKSUM/CRC ---
+        function checkCRC() {
+            const A = parseInt(document.getElementById('crcA').value) || 0;
+            const B = parseInt(document.getElementById('crcB').value) || 0;
+            const Sum = parseInt(document.getElementById('crcSum').value) || 0;
+            const res = document.getElementById('crc-result');
+            
+            if (A + B === Sum && (A !== 10 || B !== 15)) {
+                res.className = 'p-4 rounded-lg font-bold border-l-4 mt-4 block bg-red-100 text-red-800 border-red-500';
+                res.innerHTML = `❌ VULNERABILIDAD: Has falsificado los datos y el Checksum. El sistema acepta el paquete malicioso sin alertar. Por esto CRC no sirve para Criptografía.`;
+            } else if (A + B !== Sum) {
+                res.className = 'p-4 rounded-lg font-bold border-l-4 mt-4 block bg-amber-100 text-amber-800 border-amber-500';
+                res.innerHTML = `⚠️ Error de Red: Checksum no coincide. (Detección de ruido funcional).`;
+            } else {
+                res.className = 'p-4 rounded-lg font-bold border-l-4 mt-4 block bg-green-100 text-green-800 border-green-500';
+                res.innerHTML = `✅ Sistema Seguro: El checksum coincide con los datos originales.`;
+            }
+        }
+
+        // --- TALLER 3: HAMMING (7,4) ---
+        let hData = [1,0,1,1]; // 4 data bits
+        let hParity = [0,1,0]; // 3 parity bits calculates for [1,0,1,1]
+        let hSent = [hParity[0], hParity[1], hData[0], hParity[2], hData[1], hData[2], hData[3]]; // Interleaved
+        let hRecv = [];
+        let hErrorCount = 0;
+
+        function initHamming() {
+            // Recalculate parity for dynamic [1,0,1,1]
+            let d1=hData[0], d2=hData[1], d3=hData[2], d4=hData[3];
+            let p1 = (d1+d2+d4)%2; let p2 = (d1+d3+d4)%2; let p3 = (d2+d3+d4)%2;
+            hSent = [p1, p2, d1, p3, d2, d3, d4];
+            hRecv = [...hSent];
+            hErrorCount = 0;
+            renderHamming();
+            logHamming("> Transmisión iniciada. Esperando posibles errores...", 'green');
+        }
+
+        function renderHamming() {
+            const labels = ["P1","P2","D1","P3","D2","D3","D4"];
+            document.getElementById('hamming-sender').innerHTML = hSent.map((b,i) => `<div class="w-10 h-10 flex flex-col items-center justify-center ${labels[i].startsWith('P')?'bg-purple-200 text-purple-800':'bg-blue-200 text-blue-800'} rounded text-sm relative"><span class="text-[10px] absolute top-0">${labels[i]}</span><span class="mt-2 font-bold">${b}</span></div>`).join('');
+            
+            document.getElementById('hamming-receiver').innerHTML = hRecv.map((b,i) => `<div onclick="flipHamming(${i})" class="bit-box w-12 h-12 flex flex-col items-center justify-center ${b!==hSent[i]?'bg-red-500 text-white':'bg-slate-200'} rounded text-sm relative border-2 ${b!==hSent[i]?'border-red-700':'border-slate-300'}"><span class="text-[10px] absolute top-0">${labels[i]}</span><span class="mt-2 font-bold text-lg">${b}</span></div>`).join('');
+        }
+
+        function flipHamming(idx) {
+            if(hErrorCount >= 1 && hRecv[idx] === hSent[idx]) {
+                logHamming("> [ERROR] Para este simulador básico, altera solo 1 bit para ver la auto-corrección.", 'yellow');
+                return;
+            }
+            hRecv[idx] = 1 - hRecv[idx];
+            hErrorCount = hRecv.filter((b,i)=>b!==hSent[i]).length;
+            renderHamming();
+            
+            if(hErrorCount === 1) {
+                logHamming(`> ¡Ruido inyectado en posición ${idx+1}! Corriendo FEC (Corrección Forward)...`, 'red');
+                setTimeout(() => correctHamming(), 1000);
+            }
+        }
+
+        function correctHamming() {
+            let r = hRecv;
+            // Syndrome calculation
+            let s1 = (r[0]+r[2]+r[4]+r[6])%2;
+            let s2 = (r[1]+r[2]+r[5]+r[6])%2;
+            let s3 = (r[3]+r[4]+r[5]+r[6])%2;
+            let syndrome = s1*1 + s2*2 + s3*4;
+
+            if(syndrome !== 0) {
+                logHamming(`> Síndrome calculado: ${syndrome}. ¡El error está en el bit ${syndrome}!`, 'yellow');
+                setTimeout(() => {
+                    hRecv[syndrome-1] = 1 - hRecv[syndrome-1]; // Auto-correct
+                    hErrorCount = 0;
+                    renderHamming();
+                    logHamming(`> ⚡ BIT ${syndrome} AUTOCORREGIDO mediante matriz Hamming. Fiabilidad restaurada sin retransmitir.`, 'green');
+                }, 1500);
+            }
+        }
+
+        function logHamming(msg, color) {
+            const logDiv = document.getElementById('hamming-log');
+            const colorClass = color==='red'?'text-red-400':(color==='yellow'?'text-yellow-400':'text-green-400');
+            logDiv.innerHTML += `<br><span class="${colorClass}">${msg}</span>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        // Init all
+        initParity();
+        initHamming();
+    </script>
+</body>
+</html>
