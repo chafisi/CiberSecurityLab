@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 9: Fiabilidad y Errores</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .bit-box { transition: all 0.2s; }
+        .bit-box:hover { transform: scale(1.1); cursor: pointer; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-blue-400">U9: Codificación de Canal</h1>
+            <p class="text-xs text-slate-500 mt-1">Errores, Ruido y Fiabilidad</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('tab1')" id="btn-tab1" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-blue-500 text-white">1. Fundamentos (Teoría)</button></li>
+                <li><button onclick="switchTab('tab2')" id="btn-tab2" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent">2. Taller: Bit de Paridad</button></li>
+                <li><button onclick="switchTab('tab3')" id="btn-tab3" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent">3. Análisis de Vulnerabilidades</button></li>
+                <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-amber-400">4. Chuleta de Examen</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 relative">
+
+        <section id="tab1" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1. Fundamentos: El Canal y el Ruido</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow border-l-4 border-slate-700">
+                    <h3 class="font-bold text-xl mb-2">El Problema de la Transmisión</h3>
+                    <p class="text-slate-600 mb-4">A diferencia de la Unidad 8 (que eliminaba redundancia para comprimir), la codificación de canal <strong>añade redundancia</strong> de forma matemática para sobrevivir al medio físico.</p>
+                    <ul class="list-disc pl-5 text-sm space-y-2 text-slate-700">
+                        <li><strong>Ruido:</strong> Alteración aleatoria (ej. electromagnetismo).</li>
+                        <li><strong>Interferencia:</strong> Perturbación que altera la señal.</li>
+                        <li><strong>Error:</strong> Cuando un 0 se lee como 1 (o viceversa) en destino.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow border-l-4 border-emerald-500">
+                    <h3 class="font-bold text-xl mb-2">Detección vs. Corrección</h3>
+                    <p class="text-slate-600 mb-4">Dos enfoques para lidiar con el canal:</p>
+                    <ul class="list-disc pl-5 text-sm space-y-2 text-slate-700">
+                        <li><strong>Detección (ARQ):</strong> Identifica el error y pide retransmisión. Ej: Paridad, CRC, Checksum. Es barato pero requiere comunicación bidireccional.</li>
+                        <li><strong>Corrección (FEC):</strong> Identifica y repara el error al vuelo usando mucha redundancia. Ej: Hamming, Reed-Solomon. Caro en ancho de banda, pero vital si no se puede retransmitir (ej. satélites).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab2" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">2. Laboratorio: Engañando al Bit de Paridad</h2>
+            <p class="text-slate-600 mb-6">El sistema usa <strong>Paridad Par</strong> (el total de unos enviados siempre debe ser par). Haz clic en los bits azules recibidos para inyectar ruido (voltearlos) y evalúa si el sistema detecta el ataque.</p>
+            
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 max-w-4xl mx-auto">
+                
+                <div class="mb-8">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-3">1. Emisor (Datos Originales a Enviar)</h3>
+                    <div class="flex gap-2 mb-2" id="sender-bits">
+                        </div>
+                    <div class="text-sm text-slate-600">Total de '1's: <span id="sender-count" class="font-bold text-blue-600"></span>. Bit de Paridad añadido: <span id="sender-parity" class="font-bold text-purple-600"></span></div>
+                </div>
+
+                <hr class="border-slate-200 mb-8">
+
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase mb-3">2. Canal y Receptor (Datos Recibidos) <span class="text-xs text-red-500 normal-case ml-2">← ¡Haz clic en los bits para inyectar errores!</span></h3>
+                    <div class="flex gap-2 mb-4" id="receiver-bits">
+                        </div>
+                    <div class="flex items-center gap-4">
+                        <button onclick="evaluateParity()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition">Validar Integridad (Receptor)</button>
+                        <button onclick="resetLab()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 px-6 rounded shadow transition">Reiniciar Trama</button>
+                    </div>
+                </div>
+
+                <div id="validation-result" class="hidden p-4 rounded-lg font-bold text-lg mt-4 border-l-4">
+                    </div>
+
+            </div>
+        </section>
+
+        <section id="tab3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">3. Análisis de Vulnerabilidades (El Fallo Silencioso)</h2>
+            <div class="bg-white p-8 rounded-xl shadow border border-slate-200 text-lg text-slate-700 leading-relaxed">
+                <p class="mb-4">Si jugaste con el simulador, habrás notado el talón de Aquiles de la detección simple:</p>
+                
+                <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500 mb-6">
+                    <h3 class="font-bold text-red-800 mb-2">Vulnerabilidad de Ráfaga (Número Par de Errores)</h3>
+                    <p class="text-red-900 text-base">Si el ruido o un atacante altera <strong>1 bit</strong>, la paridad cambia de par a impar, y el receptor detecta la anomalía lanzando un error. Pero si se alteran <strong>2 bits (o 4, o 6)</strong>, el balance de unos y ceros se compensa matemáticamente. El sistema cuenta los unos, ve que siguen siendo pares, y <strong>acepta datos corruptos como válidos</strong> (Falso Negativo).</p>
+                </div>
+
+                <h3 class="font-bold text-slate-800 mt-6 mb-2">Evolución hacia la Seguridad</h3>
+                <p class="mb-4">Por eso la paridad no sirve para seguridad real. Para detectar manipulación intencionada, necesitamos funciones hash criptográficas (como SHA-256) o MACs (Códigos de Autenticación de Mensaje), donde alterar un solo bit cambia por completo la firma resultante debido al <em>efecto avalancha</em>.</p>
+            </div>
+        </section>
+
+        <section id="tab4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">4. Chuleta para Examen (Ideas Clave)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-900 text-white p-6 rounded-xl shadow">
+                    <h3 class="text-emerald-400 font-bold text-xl mb-4">Los Dilemas (Trade-Offs)</h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li><strong class="text-white">Fiabilidad vs Seguridad:</strong> Un canal fiable asegura que el mensaje llega exacto (sin ruido), pero no asegura que no haya sido interceptado o forjado (seguridad).</li>
+                        <li><strong class="text-white">Detección vs Corrección:</strong> Corregir (FEC) no requiere retransmisión, pero gasta mucho ancho de banda en redundancia (códigos de bloque). Detectar (ARQ) es eficiente, pero requiere retransmitir, aumentando la latencia si hay mucho ruido.</li>
+                        <li><strong class="text-white">Ruido vs Manipulación:</strong> Los sistemas técnicos no distinguen si un bit cambió por una tormenta solar (ruido) o por un atacante en la red (manipulación).</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow border border-slate-200">
+                    <h3 class="text-blue-600 font-bold text-xl mb-4">Glosario Directo</h3>
+                    <ul class="space-y-3 text-sm text-slate-700">
+                        <li><strong>Tasa de Error:</strong> % de datos corruptos frente al total.</li>
+                        <li><strong>Código Hamming:</strong> Técnica FEC clásica que permite detectar 2 errores simultáneos y corregir 1.</li>
+                        <li><strong>CRC:</strong> (Comprobación de Redundancia Cíclica). Detecta errores mediante división de polinomios matemáticos. Es el estándar en redes Ethernet y WiFi.</li>
+                        <li><strong>Throughput:</strong> La cantidad de información <em>útil</em> que llega a destino, descontando cabeceras y bits de redundancia.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // 1. Navegación
+        window.switchTab = function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'text-white');
+                if(btn.id !== 'btn-tab4') btn.classList.add('border-transparent', 'text-slate-300');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-300');
+            activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
+        };
+
+        // 2. Laboratorio: Bit de Paridad
+        let originalBits = [];
+        let parityBit = 0;
+        let receivedBits = [];
+        let receivedParity = 0;
+
+        function initLab() {
+            // Generar 8 bits aleatorios
+            originalBits = Array.from({length: 8}, () => Math.random() > 0.5 ? 1 : 0);
+            
+            // Calcular paridad par (si hay impar de 1s, añadimos 1 para que sea par)
+            const onesCount = originalBits.filter(b => b === 1).length;
+            parityBit = onesCount % 2 === 0 ? 0 : 1;
+            
+            // Copiar al receptor
+            receivedBits = [...originalBits];
+            receivedParity = parityBit;
+
+            renderBits();
+            document.getElementById('validation-result').classList.add('hidden');
+        }
+
+        function renderBits() {
+            const senderDiv = document.getElementById('sender-bits');
+            const receiverDiv = document.getElementById('receiver-bits');
+            
+            senderDiv.innerHTML = '';
+            receiverDiv.innerHTML = '';
+
+            // Renderizar Emisor (Estático)
+            originalBits.forEach(b => {
+                senderDiv.innerHTML += `<div class="w-10 h-10 flex items-center justify-center bg-slate-200 font-bold rounded">${b}</div>`;
+            });
+            senderDiv.innerHTML += `<div class="w-10 h-10 flex items-center justify-center bg-purple-200 text-purple-800 font-bold rounded border-2 border-purple-400">${parityBit}</div>`;
+            
+            const onesCount = originalBits.filter(b => b === 1).length;
+            document.getElementById('sender-count').textContent = onesCount;
+            document.getElementById('sender-parity').textContent = parityBit;
+
+            // Renderizar Receptor (Interactivo)
+            receivedBits.forEach((b, index) => {
+                const isFlipped = b !== originalBits[index];
+                const bgClass = isFlipped ? 'bg-red-500 text-white border-red-700' : 'bg-blue-100 text-blue-800 border-blue-300';
+                receiverDiv.innerHTML += `<div onclick="flipBit(${index}, false)" class="bit-box w-12 h-12 flex items-center justify-center font-bold rounded border-2 ${bgClass} text-lg">${b}</div>`;
+            });
+            
+            // Bit de paridad receptor
+            const isParityFlipped = receivedParity !== parityBit;
+            const parBgClass = isParityFlipped ? 'bg-red-500 text-white border-red-700' : 'bg-purple-100 text-purple-800 border-purple-300';
+            receiverDiv.innerHTML += `<div onclick="flipBit(0, true)" class="bit-box w-12 h-12 flex items-center justify-center font-bold rounded border-2 ${parBgClass} text-lg border-dashed">${receivedParity}</div>`;
+        }
+
+        function flipBit(index, isParity) {
+            if(isParity) {
+                receivedParity = receivedParity === 1 ? 0 : 1;
+            } else {
+                receivedBits[index] = receivedBits[index] === 1 ? 0 : 1;
+            }
+            renderBits();
+            document.getElementById('validation-result').classList.add('hidden'); // Ocultar resultado anterior si tocan un bit
+        }
+
+        function evaluateParity() {
+            const totalOnes = receivedBits.filter(b => b === 1).length + receivedParity;
+            const resDiv = document.getElementById('validation-result');
+            resDiv.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'border-green-500', 'bg-red-100', 'text-red-800', 'border-red-500', 'bg-amber-100', 'text-amber-800', 'border-amber-500');
+
+            // Contar errores reales cometidos
+            let realErrors = 0;
+            for(let i=0; i<8; i++) { if(receivedBits[i] !== originalBits[i]) realErrors++; }
+            if(receivedParity !== parityBit) realErrors++;
+
+            if (totalOnes % 2 !== 0) {
+                // Hay un número impar de 1s -> Error detectado
+                resDiv.classList.add('bg-green-100', 'text-green-800', 'border-green-500');
+                resDiv.innerHTML = `✅ <strong>Ataque/Ruido Detectado:</strong> El receptor sumó ${totalOnes} 'unos' (impar). Sabe que el paquete está corrupto y lo descarta. El sistema de paridad funcionó.`;
+            } else {
+                // Hay un número par de 1s
+                if (realErrors > 0) {
+                    // Falso negativo
+                    resDiv.classList.add('bg-red-100', 'text-red-800', 'border-red-500');
+                    resDiv.innerHTML = `❌ <strong>¡FALSO NEGATIVO (VULNERABILIDAD)!</strong> Alteraste ${realErrors} bits. El receptor sumó ${totalOnes} 'unos' (par). El sistema asume que la trama es válida y acepta datos falsificados/corruptos.`;
+                } else {
+                    // Todo bien de verdad
+                    resDiv.classList.add('bg-slate-100', 'text-slate-800', 'border-slate-500');
+                    resDiv.innerHTML = `ℹ️ <strong>Trama Válida:</strong> No hay alteraciones. El total de unos es ${totalOnes} (par). Paquete aceptado.`;
+                }
+            }
+        }
+
+        function resetLab() {
+            initLab();
+        }
+
+        // Arrancar
+        document.addEventListener('DOMContentLoaded', initLab);
+    </script>
+</body>
+</html>
