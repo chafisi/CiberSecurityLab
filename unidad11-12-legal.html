@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U11 y U12: Legislación y Perspectiva Global</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .term-card { transition: all 0.2s; }
+        .term-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-blue-400">Auditoría Legal</h1>
+            <p class="text-xs text-slate-500 mt-1">U11 y U12: Normativa y Global</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('tab1')" id="btn-tab1" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-blue-500 text-white">1. El Debate & Conclusión</button></li>
+                <li><button onclick="switchTab('tab2')" id="btn-tab2" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-emerald-400">2. Tema 11: Andorra & Delito</button></li>
+                <li><button onclick="switchTab('tab3')" id="btn-tab3" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-purple-400">3. Tema 12: Global & RGPD</button></li>
+                <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-amber-400">4. Lab: Trazabilidad</button></li>
+                <li><button onclick="switchTab('tab5')" id="btn-tab5" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-amber-400">5. Lab: Privacy by Design</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative p-8">
+
+        <!-- TAB 1: DEBATE Y CONCLUSIÓN -->
+        <section id="tab1" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">El Debate Final (Slide 428 y 429)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-800 mb-4">¿Dónde falla la seguridad hoy?</h3>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-slate-100 rounded">
+                            <strong class="text-slate-700">🖥️ Tecnología:</strong> "Falla si no se parchea o se configura mal."
+                        </div>
+                        <div class="p-3 bg-slate-100 rounded">
+                            <strong class="text-slate-700">🧑 Personas:</strong> "Fallan por falta de concienciación o fatiga."
+                        </div>
+                        <div class="p-3 bg-blue-100 border border-blue-300 rounded shadow-inner">
+                            <strong class="text-blue-800">⚙️ Gestión (La respuesta correcta):</strong> "Es la causa raíz. La gestión es quien decide si se compra tecnología y si se forma a las personas. Si la seguridad falla, es un fallo de gobernanza."
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-xl shadow-sm border-t-4 border-emerald-500 text-slate-300">
+                    <h3 class="font-bold text-lg text-emerald-400 mb-4">Mensaje Final del Curso</h3>
+                    <ul class="space-y-4 list-disc pl-5">
+                        <li>La seguridad <strong>no es una herramienta, es una forma de pensar</strong>.</li>
+                        <li><strong>No existe la seguridad absoluta:</strong> Todo consiste en gestionar riesgos.</li>
+                        <li>Las <strong>decisiones importan:</strong> Una mala configuración técnica hoy, es una sanción legal mañana.</li>
+                        <li>La seguridad no es opcional desde el punto de vista legal. Las decisiones técnicas tienen consecuencias jurídicas directas.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: TEMA 11 (ANDORRA Y DELITO) -->
+        <section id="tab2" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Tema 11: Legislación Andorra y Ciberdelito</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">APDA</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Agencia Andorrana de Protección de Datos. Organismo que supervisa el cumplimiento normativo en Andorra.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Si una clínica en Escaldes sufre un ransomware y pierde historias clínicas, debe notificarlo a la APDA en 72 horas.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Ciberdelito & Código Penal</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Actividad ilícita mediante sistemas digitales (Ciberdelito), sancionada por el conjunto de normas sancionadoras (Código Penal).</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Un ataque de denegación de servicio (DDoS) a un banco, tipificado como sabotaje informático en el código penal.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Convenio de Budapest</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> El primer tratado internacional que busca armonizar las leyes nacionales contra la ciberdelincuencia.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Permite que la policía española pida ayuda rápida a la policía francesa para rastrear un servidor malicioso alojado en París.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Infraestructura Crítica</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Sistemas físicos o virtuales tan esenciales que su interrupción tendría un impacto devastador en la salud, seguridad o economía.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: La red de distribución eléctrica o los servidores de control aéreo de un aeropuerto.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Privacidad & Protección de Datos</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> El derecho del usuario a controlar su información (Privacidad) y las medidas técnicas/legales para garantizarlo (Protección).</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Requerir cifrado de base de datos AES-256 para guardar números de teléfono de clientes.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Responsable del Tratamiento</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> La entidad (empresa) que decide el "por qué" y el "cómo" se utilizan los datos personales.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: En una auditoría de ciberseguridad a Patito S.A., la empresa Patito S.A. es la responsable legal si la base de datos de sus empleados se filtra por una mala segmentación de red.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Transferencia Internacional</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Envío de datos personales a un país fuera del marco legal equivalente (ej. fuera de la UE/Andorra).</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Alojar los datos de clientes europeos en un servidor de Amazon Web Services situado físicamente en EE.UU.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Trazabilidad Jurídica</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Capacidad de demostrar acciones técnica y legalmente (No repudio) mediante logs inmutables.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Mantener un registro de acceso a la red bloqueado criptográficamente para presentarlo como prueba ante un juez. (Ver Laboratorio).</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: TEMA 12 (GLOBAL) -->
+        <section id="tab3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Tema 12: Comparativa y RGPD Global</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-purple-700 mb-2 border-b pb-1">RGPD & LOPDGDD</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Reglamento Europeo de Protección de Datos (RGPD) y su adaptación en España con garantías de Derechos Digitales (LOPDGDD).</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: La obligación de poner un "banner de cookies" explícito antes de cargar Google Analytics en una web española.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-purple-700 mb-2 border-b pb-1">Directiva NIS / NIS2</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Marco europeo para elevar el nivel común de ciberseguridad, enfocándose en proveedores de servicios esenciales.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Obligar a los hospitales y empresas de telecomunicaciones a someterse a auditorías estrictas y reportar incidentes en 24h.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-purple-700 mb-2 border-b pb-1">Minimización de Datos</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Principio que obliga a recoger única y exclusivamente los datos estrictamente necesarios para la finalidad declarada.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Si vendes un e-book online, no debes pedir la dirección postal ni el estado civil del comprador. (Ver Laboratorio).</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-purple-700 mb-2 border-b pb-1">Privacidad desde el Diseño</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Incorporar la seguridad y privacidad en la arquitectura del software desde la primera línea de código, no como un parche final.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Al desarrollar la aplicación Edushield (Learning Analytics con blockchain), asegurar desde la arquitectura inicial que los datos de los estudiantes se anonimizan antes de grabarse en la cadena de bloques.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-purple-700 mb-2 border-b pb-1">Transparencia & Derechos Digitales</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Obligación legal de informar al usuario de forma clara, y garantizar derechos como el acceso, rectificación y derecho al olvido.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Añadir un botón automático en el perfil de usuario que permita descargar un ZIP con todos sus datos recopilados.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-purple-700 mb-2 border-b pb-1">CNIL & Armonización</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> La CNIL es la autoridad francesa equivalente a la AEPD. La armonización es el esfuerzo por igualar normativas en el EEE.</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Asegurar que una multa impuesta por la CNIL a una multinacional tecnológica sirva de jurisprudencia armonizada en España y Alemania.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 4: LAB TRAZABILIDAD -->
+        <section id="tab4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Laboratorio: Trazabilidad Jurídica</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <p class="mb-4 text-slate-600">Un ex-empleado ha borrado la base de datos financiera. Tienes 3 sistemas de Logs. Para presentarlos en un juicio, <strong>¿Cuál de estos registros tiene "Trazabilidad Jurídica" (garantiza el No Repudio y la Integridad)?</strong> Selecciona el correcto:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div onclick="evalLog('txt')" class="p-4 border rounded hover:bg-slate-100 cursor-pointer transition">
+                        <h4 class="font-bold text-slate-700">1. Servidor de Logs Local (.txt)</h4>
+                        <p class="text-sm text-slate-500 mt-2 font-mono bg-slate-200 p-2 rounded">02:00 DROP DATABASE admin;</p>
+                        <p class="text-xs text-slate-400 mt-2">Guardado en el mismo servidor web que fue atacado.</p>
+                    </div>
+                    
+                    <div onclick="evalLog('siem')" class="p-4 border rounded hover:bg-slate-100 cursor-pointer transition">
+                        <h4 class="font-bold text-slate-700">2. SIEM Centralizado + Hash</h4>
+                        <p class="text-sm text-slate-500 mt-2 font-mono bg-slate-200 p-2 rounded">Event ID: 4720, User: Admin_01<br>Hash: 9f86d081...</p>
+                        <p class="text-xs text-slate-400 mt-2">Logs enviados en tiempo real a un servidor WORM aislado y sellado criptográficamente.</p>
+                    </div>
+
+                    <div onclick="evalLog('pdf')" class="p-4 border rounded hover:bg-slate-100 cursor-pointer transition">
+                        <h4 class="font-bold text-slate-700">3. Informe del Sysadmin (.pdf)</h4>
+                        <p class="text-sm text-slate-500 mt-2 font-mono bg-slate-200 p-2 rounded">"Vi al usuario Admin_01 borrar los datos a las 02:00"</p>
+                        <p class="text-xs text-slate-400 mt-2">Exportado en PDF por el equipo de IT tras el incidente.</p>
+                    </div>
+                </div>
+
+                <div id="log-result" class="hidden mt-6 p-4 rounded border-l-4 font-bold"></div>
+            </div>
+        </section>
+
+        <!-- TAB 5: LAB PRIVACY BY DESIGN -->
+        <section id="tab5" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Laboratorio: Minimización y Privacidad por Diseño</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <p class="mb-4 text-slate-600">Estás diseñando la base de datos para una <strong>App de suscripción a un boletín de noticias (Newsletter) técnico</strong>. Selecciona <strong>SÓLO</strong> los datos que cumplen el principio RGPD de "Minimización de Datos".</p>
+
+                <div class="max-w-md bg-slate-50 p-6 border rounded mx-auto">
+                    <h3 class="font-bold text-lg mb-4 text-slate-700 border-b pb-2">Tabla SQL: Users_Newsletter</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="chk-email" class="form-checkbox h-5 w-5 text-blue-600"><span class="text-slate-700">Email (VARCHAR)</span></label>
+                        <label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="chk-name" class="form-checkbox h-5 w-5 text-blue-600"><span class="text-slate-700">Nombre (VARCHAR)</span></label>
+                        <label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="chk-dni" class="form-checkbox h-5 w-5 text-blue-600"><span class="text-slate-700">DNI / Pasaporte (VARCHAR)</span></label>
+                        <label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="chk-phone" class="form-checkbox h-5 w-5 text-blue-600"><span class="text-slate-700">Teléfono Móvil (INT)</span></label>
+                        <label class="flex items-center space-x-3 cursor-pointer"><input type="checkbox" id="chk-consent" class="form-checkbox h-5 w-5 text-blue-600"><span class="text-slate-700">Timestamp Consentimiento (DATETIME)</span></label>
+                    </div>
+                    <button onclick="evalPrivacy()" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition">Validar Diseño Jurídico</button>
+                </div>
+                <div id="privacy-result" class="hidden mt-6 p-4 rounded border-l-4 font-bold max-w-md mx-auto"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPT DE LÓGICA -->
+    <script>
+        // Navegación
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'text-white');
+                if(!btn.classList.contains('text-emerald-400') && !btn.classList.contains('text-purple-400') && !btn.classList.contains('text-amber-400')) {
+                    btn.classList.add('text-slate-300');
+                }
+                btn.classList.add('border-transparent');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-300', 'text-emerald-400', 'text-purple-400', 'text-amber-400');
+            activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
+        }
+
+        // Lab Trazabilidad
+        function evalLog(type) {
+            const res = document.getElementById('log-result');
+            res.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'border-red-500', 'bg-green-100', 'text-green-800', 'border-green-500');
+            
+            if(type === 'txt') {
+                res.classList.add('bg-red-100', 'text-red-800', 'border-red-500');
+                res.innerHTML = "❌ <strong>No Válido:</strong> Un archivo .txt local puede ser alterado fácilmente por el mismo atacante (ha borrado la DB, también puede borrar el log). No tiene integridad judicial.";
+            } else if (type === 'pdf') {
+                res.classList.add('bg-red-100', 'text-red-800', 'border-red-500');
+                res.innerHTML = "❌ <strong>No Válido:</strong> Un PDF generado a posteriori carece de cadena de custodia. Un juez considerará que puede estar manipulado por la propia empresa.";
+            } else {
+                res.classList.add('bg-green-100', 'text-green-800', 'border-green-500');
+                res.innerHTML = "✅ <strong>¡Correcto! Trazabilidad Jurídica:</strong> Al estar centralizado, aislado y firmado con un Hash criptográfico, el juez aceptará la prueba porque matemáticamente se garantiza el <em>No Repudio</em> y la <em>Integridad</em>.";
+            }
+        }
+
+        // Lab Minimización
+        function evalPrivacy() {
+            const email = document.getElementById('chk-email').checked;
+            const name = document.getElementById('chk-name').checked;
+            const dni = document.getElementById('chk-dni').checked;
+            const phone = document.getElementById('chk-phone').checked;
+            const consent = document.getElementById('chk-consent').checked;
+            
+            const res = document.getElementById('privacy-result');
+            res.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'border-red-500', 'bg-green-100', 'text-green-800', 'border-green-500', 'bg-amber-100', 'text-amber-800', 'border-amber-500');
+
+            if (dni || phone) {
+                res.classList.add('bg-red-100', 'text-red-800', 'border-red-500');
+                res.innerHTML = "❌ <strong>Multa de la APDA/AEPD:</strong> Has vulnerado la 'Minimización de Datos'. No necesitas un DNI ni un Teléfono para enviar una Newsletter. Si te hackean, expones datos críticos innecesariamente.";
+            } else if (!email || !consent) {
+                res.classList.add('bg-amber-100', 'text-amber-800', 'border-amber-500');
+                res.innerHTML = "⚠️ <strong>Fallo Operativo / Legal:</strong> Necesitas el Email para poder enviar la Newsletter, y el Timestamp del consentimiento para demostrar legalmente que te autorizaron (Responsabilidad proactiva).";
+            } else {
+                res.classList.add('bg-green-100', 'text-green-800', 'border-green-500');
+                res.innerHTML = "✅ <strong>¡Diseño Legal Perfecto!</strong> Recoges el Email (funcionalidad base), el Nombre (opcional para marketing amigable) y el Timestamp (Trazabilidad legal del consentimiento). Nada más.";
+            }
+        }
+    </script>
+</body>
+</html>
