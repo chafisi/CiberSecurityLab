@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U9 y U10: Canal y Gestión de Riesgos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .term-card { transition: all 0.2s; }
+        .term-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .risk-box { cursor: pointer; transition: transform 0.1s; }
+        .risk-box:active { transform: scale(0.95); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-blue-400">Auditoría U9-U10</h1>
+            <p class="text-xs text-slate-500 mt-1">Canal y Gestión de Seguridad</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('tab1')" id="btn-tab1" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-blue-500 text-white">1. Tema 9: Canal y Errores</button></li>
+                <li><button onclick="switchTab('tab2')" id="btn-tab2" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-emerald-400">2. Tema 10: Gestión y Riesgo</button></li>
+                <li><button onclick="switchTab('tab3')" id="btn-tab3" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-amber-400">3. Lab U9: Compresión vs FEC</button></li>
+                <li><button onclick="switchTab('tab4')" id="btn-tab4" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-red-400">4. Lab U10: Matriz de Riesgo</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative p-8">
+
+        <!-- TAB 1: TEMA 9 (CANAL Y ERRORES) -->
+        <section id="tab1" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Tema 9: Codificación y Fiabilidad[cite: 2]</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-blue-700 mb-2 border-b pb-1">Compresión de Datos[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Proceso para reducir el tamaño de los datos eliminando su redundancia para ganar eficiencia[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Comprimir el código fuente de una aplicación en un archivo ZIP antes de enviarlo, reduciendo el Throughput necesario.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-blue-700 mb-2 border-b pb-1">Codificación de Canal[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Proceso de añadir redundancia matemática para proteger la información y mejorar la fiabilidad frente al ruido[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Añadir bits de control mediante código de Hamming para transmitir hashes de Edushield a través de una red WiFi con mucha interferencia.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-blue-700 mb-2 border-b pb-1">Detección vs Corrección[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> La detección (ej. CRC, Paridad) identifica alteraciones; la corrección (ej. Reed-Solomon) reconstruye los datos sin pedir retransmisión[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Un Checksum detecta un error en un paquete de red (y pide reenvío), mientras que ECC en RAM corrige el bit volteado al vuelo.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-blue-700 mb-2 border-b pb-1">Ataques BREACH / CRIME[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Ataques de canal lateral que explotan la compresión HTTP/SSL midiendo el tamaño de las respuestas para inferir datos[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Robar cookies de sesión encriptadas forzando compresiones sin necesidad de romper la criptografía subyacente[cite: 2].</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-blue-700 mb-2 border-b pb-1">Ruido e Interferencia[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Alteraciones aleatorias o perturbaciones electromagnéticas que afectan e introducen incertidumbre en la señal transmitida[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Un microondas encendido que causa pérdida de paquetes en una conexión WiFi de 2.4 GHz cercana.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card border-l-4 border-l-blue-500">
+                    <h4 class="font-bold text-blue-800 mb-2 border-b pb-1">Idea Clave de Seguridad[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> La fiabilidad asegura que el mensaje llega exacto, pero no sustituye a la seguridad. No protege la confidencialidad ni contra ataques activos[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Un CRC perfecto solo significa que no hubo ruido, no garantiza que un atacante no haya interceptado o leído la trama.</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 2: TEMA 10 (GESTIÓN Y RIESGO) -->
+        <section id="tab2" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Tema 10: Gestión de la Seguridad[cite: 2]</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">El Concepto de Riesgo[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Es la combinación de la probabilidad de que una amenaza aproveche una vulnerabilidad y el impacto que esto generaría[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Vulnerabilidad en el firewall de Patito S.A. + amenaza de ransomware = Alto Riesgo de paralizar la facturación.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Decisiones sobre Riesgo[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Ante un riesgo podemos: Mitigar (aplicar controles), Transferir (seguro), Evitar (cerrar el servicio) o Aceptar (asumirlo)[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Transferir el riesgo contratando una póliza de ciberseguro tras documentar los controles del IRP.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Normas vs Marcos[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Las normas como ISO 27001 son estándares certificables; marcos como NIST o CIS son guías y recomendaciones[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Auditar una organización para certificarla en ISO 27001, asegurando que existe un SGSI formal.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Falso Sentimiento de Seguridad[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Asumir que cumplir la normativa (checklist) equivale a estar seguro frente a amenazas reales dirigidas[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Empresa certificada en ISO 27001 comprometida por ransomware porque los controles estaban definidos en papel, pero no se aplicaban los parches[cite: 2].</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card">
+                    <h4 class="font-bold text-emerald-700 mb-2 border-b pb-1">Ciclo PDCA[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Ciclo continuo de Planificar (Plan), Ejecutar (Do), Verificar (Check) y Mejorar (Act) la seguridad[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Revisar anualmente el mapa de calor de riesgos para ajustar las políticas de segmentación de red según las nuevas amenazas.</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 term-card border-l-4 border-l-emerald-500">
+                    <h4 class="font-bold text-emerald-800 mb-2 border-b pb-1">Métricas de Respuesta[cite: 2]</h4>
+                    <p class="text-sm text-slate-600 mb-2"><strong>Definición:</strong> Medidas para evaluar rendimiento, como el MTTD (Tiempo medio de detección) y el MTTR (Tiempo medio de respuesta)[cite: 2].</p>
+                    <p class="text-xs text-slate-500 italic">Ejemplo: Una empresa que detecta en 2 horas y responde en 6 es más resiliente que una que tarda días, aunque reciba más ataques[cite: 2].</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: LAB U9 -->
+        <section id="tab3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Laboratorio U9: Tensión Compresión vs Codificación[cite: 2]</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200 max-w-4xl">
+                <p class="mb-4 text-slate-600">Debes transmitir una trama de 10 bloques a través de un canal que tiene picos de ruido electromagnético. Ajusta la estrategia. Si comprimes al máximo, cualquier error destruye la trama. Si añades mucha codificación de canal (FEC), la trama sobrevive pero consume mucho ancho de banda[cite: 2].</p>
+
+                <div class="flex flex-col gap-6 mt-8">
+                    <div class="flex items-center gap-4">
+                        <span class="font-bold text-blue-600 w-32">Estrategia:</span>
+                        <input type="range" id="slider-tension" min="1" max="3" value="2" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" oninput="updateLab9()">
+                    </div>
+                    <div class="flex justify-between text-sm text-slate-500 font-bold px-32">
+                        <span>1. Máxima Compresión</span>
+                        <span>2. Balance (Paridad)</span>
+                        <span>3. Máxima Codificación (Hamming)</span>
+                    </div>
+
+                    <div class="bg-slate-100 p-6 rounded-lg mt-4 border h-48 flex items-center justify-center flex-col">
+                        <div id="u9-visual" class="flex gap-1 mb-4">
+                            <!-- Inyectado por JS -->
+                        </div>
+                        <p id="u9-result" class="text-center font-bold text-lg text-slate-700"></p>
+                        <p id="u9-throughput" class="text-center text-sm text-slate-500 mt-2"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: LAB U10 -->
+        <section id="tab4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Laboratorio U10: Matriz de Evaluación de Riesgos[cite: 2]</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <p class="mb-4 text-slate-600">Como consultor en la auditoría de <strong>Patito S.A.</strong>, debes evaluar el riesgo de una vulnerabilidad descubierta en un servidor web sin parchear[cite: 2]. Selecciona la Probabilidad y el Impacto en la matriz para determinar la acción[cite: 2].</p>
+
+                <div class="flex flex-col md:flex-row gap-12 items-center mt-8">
+                    <!-- Matriz Visual -->
+                    <div class="relative w-72 h-72">
+                        <!-- Etiquetas Ejes -->
+                        <div class="absolute -left-12 top-1/2 -translate-y-1/2 -rotate-90 font-bold text-slate-700 tracking-widest text-sm">PROBABILIDAD</div>
+                        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 font-bold text-slate-700 tracking-widest text-sm">IMPACTO</div>
+                        
+                        <div class="grid grid-cols-3 grid-rows-3 w-full h-full gap-1 border-2 border-slate-800 p-1 bg-slate-800">
+                            <!-- Fila ALTA Probabilidad -->
+                            <div onclick="evalRisk('Alto', 'Alto')" class="risk-box bg-red-500 flex items-center justify-center font-bold text-white text-xs">ALTO</div>
+                            <div onclick="evalRisk('Alto', 'Alto')" class="risk-box bg-red-500 flex items-center justify-center font-bold text-white text-xs">ALTO</div>
+                            <div onclick="evalRisk('Medio', 'Medio')" class="risk-box bg-amber-400 flex items-center justify-center font-bold text-slate-900 text-xs">MEDIO</div>
+                            
+                            <!-- Fila MEDIA Probabilidad -->
+                            <div onclick="evalRisk('Alto', 'Alto')" class="risk-box bg-red-500 flex items-center justify-center font-bold text-white text-xs">ALTO</div>
+                            <div onclick="evalRisk('Medio', 'Medio')" class="risk-box bg-amber-400 flex items-center justify-center font-bold text-slate-900 text-xs">MEDIO</div>
+                            <div onclick="evalRisk('Bajo', 'Bajo')" class="risk-box bg-green-500 flex items-center justify-center font-bold text-white text-xs">BAJO</div>
+                            
+                            <!-- Fila BAJA Probabilidad -->
+                            <div onclick="evalRisk('Medio', 'Medio')" class="risk-box bg-amber-400 flex items-center justify-center font-bold text-slate-900 text-xs">MEDIO</div>
+                            <div onclick="evalRisk('Bajo', 'Bajo')" class="risk-box bg-green-500 flex items-center justify-center font-bold text-white text-xs">BAJO</div>
+                            <div onclick="evalRisk('Bajo', 'Bajo')" class="risk-box bg-green-500 flex items-center justify-center font-bold text-white text-xs">BAJO</div>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Decisión -->
+                    <div id="risk-panel" class="flex-1 border-l-4 border-slate-300 bg-slate-50 p-6 rounded-r-xl min-h-[200px]">
+                        <h3 class="font-bold text-slate-400 uppercase text-sm mb-2">Decisión de Gestión (Patito S.A.)</h3>
+                        <p class="text-slate-600 italic">Haz clic en un cuadrante de la matriz para evaluar el riesgo y obtener la recomendación de tratamiento.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SCRIPT DE LÓGICA -->
+    <script>
+        // Navegación
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'text-white');
+                if(!btn.classList.contains('text-emerald-400') && !btn.classList.contains('text-amber-400') && !btn.classList.contains('text-red-400')) {
+                    btn.classList.add('text-slate-300');
+                }
+                btn.classList.add('border-transparent');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-300', 'text-emerald-400', 'text-amber-400', 'text-red-400');
+            activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
+            
+            if(tabId === 'tab3') updateLab9();
+        }
+
+        // Lab U9 Lógica
+        function updateLab9() {
+            const val = parseInt(document.getElementById('slider-tension').value);
+            const visual = document.getElementById('u9-visual');
+            const res = document.getElementById('u9-result');
+            const thr = document.getElementById('u9-throughput');
+            
+            let html = '';
+            if (val === 1) {
+                // Compresión (5 bloques)
+                for(let i=0; i<5; i++) html += `<div class="w-8 h-8 bg-blue-500 rounded border border-blue-700"></div>`;
+                html += `<div class="w-8 h-8 bg-red-500 rounded border border-red-700 animate-pulse flex items-center justify-center text-white text-xs">⚡</div>`; // Ruido
+                res.innerHTML = "❌ Fallo Crítico. Ruido detectado.";
+                res.className = "text-center font-bold text-lg text-red-600";
+                thr.innerHTML = "La trama comprimida es pequeña (alta eficiencia), pero carece de redundancia. Un solo bit de ruido corrompe todo el archivo ZIP. Requiere retransmisión total.";
+            } else if (val === 2) {
+                // Balance (8 bloques datos + 1 paridad)
+                for(let i=0; i<8; i++) html += `<div class="w-8 h-8 bg-blue-400 rounded border border-blue-600"></div>`;
+                html += `<div class="w-8 h-8 bg-red-500 rounded border border-red-700 animate-pulse flex items-center justify-center text-white text-xs">⚡</div>`; // Ruido
+                html += `<div class="w-8 h-8 bg-purple-400 rounded border border-purple-600 flex items-center justify-center text-white text-xs">P</div>`;
+                res.innerHTML = "⚠️ Error Detectado (ARQ).";
+                res.className = "text-center font-bold text-lg text-amber-600";
+                thr.innerHTML = "Eficiencia media. El bit de paridad detecta el error en el canal, pero no puede repararlo. Se debe solicitar al emisor que reenvíe el paquete.";
+            } else {
+                // Codificación Hamming (4 datos + 3 FEC por bloque)
+                for(let i=0; i<12; i++) {
+                    if(i===4) {
+                        html += `<div class="w-8 h-8 bg-red-500 rounded border border-red-700 flex items-center justify-center text-white text-xs">⚡</div>`; // Ruido corregido
+                    } else {
+                        html += `<div class="w-8 h-8 ${i%3===0?'bg-purple-500':'bg-blue-300'} rounded border ${i%3===0?'border-purple-700':'border-blue-500'}"></div>`;
+                    }
+                }
+                res.innerHTML = "✅ Trama Autocorregida (FEC).";
+                res.className = "text-center font-bold text-lg text-green-600";
+                thr.innerHTML = "El algoritmo Forward Error Correction (ej. Hamming) añade tanta redundancia que devora el ancho de banda, pero es capaz de reparar el daño sin pedir retransmisión. Ideal para entornos hostiles.";
+            }
+            visual.innerHTML = html;
+        }
+
+        // Lab U10 Lógica
+        function evalRisk(level, colorType) {
+            const panel = document.getElementById('risk-panel');
+            panel.classList.remove('border-red-500', 'border-amber-400', 'border-green-500');
+            
+            if (level === 'Alto') {
+                panel.classList.add('border-red-500');
+                panel.innerHTML = `
+                    <h3 class="font-bold text-red-600 uppercase text-lg mb-2">Riesgo INACEPTABLE (Alto)</h3>
+                    <p class="text-slate-700 mb-2 font-bold">Decisión: MITIGAR INMEDIATAMENTE</p>
+                    <p class="text-sm text-slate-600">La probabilidad de que exploten este servidor web es alta y el impacto paralizaría la facturación de Patito S.A. Se debe destinar presupuesto de urgencia para aplicar controles técnicos (parcheo) o aislar la máquina de la red.</p>
+                `;
+            } else if (level === 'Medio') {
+                panel.classList.add('border-amber-400');
+                panel.innerHTML = `
+                    <h3 class="font-bold text-amber-600 uppercase text-lg mb-2">Riesgo MODERADO (Medio)</h3>
+                    <p class="text-slate-700 mb-2 font-bold">Decisión: TRANSFERIR O PLANIFICAR MITIGACIÓN</p>
+                    <p class="text-sm text-slate-600">Es una amenaza conocida pero el activo no es crítico. La dirección debe decidir si asume el coste de implementar controles a medio plazo o transfiere el riesgo mediante la contratación de una póliza de ciberseguro corporativo.</p>
+                `;
+            } else {
+                panel.classList.add('border-green-500');
+                panel.innerHTML = `
+                    <h3 class="font-bold text-green-600 uppercase text-lg mb-2">Riesgo TOLERABLE (Bajo)</h3>
+                    <p class="text-slate-700 mb-2 font-bold">Decisión: ACEPTAR EL RIESGO</p>
+                    <p class="text-sm text-slate-600">El coste de implementar un control técnico supera con creces el valor de la información protegida. Se documenta la decisión formalmente en el SGSI asumiendo el riesgo residual sin aplicar medidas adicionales.</p>
+                `;
+            }
+        }
+        
+        // Init
+        updateLab9();
+    </script>
+</body>
+</html>
