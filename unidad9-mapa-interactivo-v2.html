@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 9: Compresión y Codificación (V2 - Fichas y CID)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .ficha-table td { padding: 0.5rem; vertical-align: top; }
+        .ficha-table tr { border-bottom: 1px solid #e2e8f0; }
+        .ficha-table tr:last-child { border-bottom: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="w-80 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-emerald-400">Auditoría U9</h1>
+            <p class="text-xs text-slate-500 mt-1">Estructura de Fichas (Triada CID)</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('sec1')" id="btn-sec1" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-emerald-500 text-white">1. El Enfoque CID</button></li>
+                <li><button onclick="switchTab('sec2')" id="btn-sec2" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-blue-400">2. Detección (Fichas)</button></li>
+                <li><button onclick="switchTab('sec3')" id="btn-sec3" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-purple-400">3. Corrección (Fichas)</button></li>
+                <li><button onclick="switchTab('sec4')" id="btn-sec4" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-amber-400">4. Lab: El Pipeline</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative p-8">
+
+        <!-- SECCIÓN 1: EL ENFOQUE CID -->
+        <section id="sec1" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Perspectiva Global: La Triada CID en la Unidad 9</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-800 mb-2">🔒 Confidencialidad</h3>
+                    <p class="text-sm text-slate-600">La compresión y codificación de canal <strong>NO</strong> proporcionan confidencialidad. De hecho, comprimir de forma insegura junto con el cifrado permite ataques de canal lateral (CRIME, BREACH). La regla de oro es: <strong>Compresión siempre ANTES del cifrado</strong>.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-emerald-500">
+                    <h3 class="font-bold text-lg text-emerald-800 mb-2">🛡️ Integridad</h3>
+                    <p class="text-sm text-slate-600">Es el objetivo principal de las <strong>técnicas de detección</strong> (CRC, Checksum, Paridad). Aseguran que el mensaje no ha sufrido alteraciones accidentales por ruido durante el tránsito, garantizando la exactitud del dato.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-amber-500">
+                    <h3 class="font-bold text-lg text-amber-800 mb-2">⏱️ Disponibilidad</h3>
+                    <p class="text-sm text-slate-600">Es el objetivo de las <strong>técnicas de corrección</strong> (FEC, LDPC, Hamming). Al reparar el error en destino sin pedir retransmisión (ARQ), mantienen el canal disponible y mitigan ataques de denegación de servicio por interferencias deliberadas (Jamming).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: FICHAS DE DETECCIÓN -->
+        <section id="sec2" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Nodos Verdes: Técnicas de Detección de Errores</h2>
+            
+            <div class="space-y-6">
+                <!-- Ficha CRC -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-blue-500 overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b">
+                        <h3 class="font-bold text-lg text-slate-800">CRC (Cyclic Redundancy Check)</h3>
+                    </div>
+                    <table class="w-full text-sm text-left text-slate-600 ficha-table">
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Tipo de Código</td><td>Algoritmo de detección basado en división polinómica.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Aplicaciones</td><td>Tramas Ethernet, almacenamiento en discos duros, IoT.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Objetivo (CID)</td><td><strong>Integridad:</strong> Detectar alteraciones accidentales (ruido) en ráfagas de bits.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Ventajas</td><td>Altamente eficiente en hardware; excelente detectando errores en ráfaga (múltiples bits seguidos).</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Limitaciones</td><td>No corrige errores. Inseguro criptográficamente (un atacante puede alterar el mensaje y recalcular el CRC fácilmente).</td></tr>
+                    </table>
+                </div>
+
+                <!-- Ficha Paridad -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-blue-500 overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b">
+                        <h3 class="font-bold text-lg text-slate-800">Bits de Paridad</h3>
+                    </div>
+                    <table class="w-full text-sm text-left text-slate-600 ficha-table">
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Tipo de Código</td><td>Detección simple de bloque.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Aplicaciones</td><td>Memoria ECC RAM, comunicaciones serie básicas (UART).</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Objetivo (CID)</td><td><strong>Integridad y Disponibilidad:</strong> Evitar la corrupción del sistema por volteo de bits aleatorios (ej. radiación cósmica en RAM).</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Ventajas</td><td>Consumo de recursos casi nulo; extremadamente rápido.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Limitaciones</td><td>Solo detecta errores impares (si cambian 2 bits a la vez, el error pasa desapercibido).</td></tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: FICHAS DE CORRECCIÓN -->
+        <section id="sec3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Nodos Verdes: Técnicas de Corrección (FEC)</h2>
+            
+            <div class="space-y-6">
+                <!-- Ficha LDPC -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-purple-500 overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b">
+                        <h3 class="font-bold text-lg text-slate-800">LDPC (Low-Density Parity-Check)</h3>
+                    </div>
+                    <table class="w-full text-sm text-left text-slate-600 ficha-table">
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Tipo de Código</td><td>Código de bloque (generación avanzada iterativa).</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Aplicaciones</td><td>Wi-Fi 6, 5G NR, DVB-S2 y sistemas de almacenamiento masivo.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Objetivo (CID)</td><td><strong>Disponibilidad:</strong> Incrementar la resiliencia del enlace frente a interferencias deliberadas (jamming) y ruido intenso.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Ventajas</td><td>Utiliza matrices de paridad dispersas (funciona como una malla predictiva); permite operar muy cerca del límite de Shannon con bajo SNR.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Limitaciones</td><td>Elevada demanda computacional; la decodificación iterativa requiere múltiples ciclos de cálculo, incrementando latencia y consumo energético.</td></tr>
+                    </table>
+                </div>
+
+                <!-- Ficha Reed-Solomon -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-purple-500 overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b">
+                        <h3 class="font-bold text-lg text-slate-800">Reed-Solomon</h3>
+                    </div>
+                    <table class="w-full text-sm text-left text-slate-600 ficha-table">
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Tipo de Código</td><td>Código de bloque (no binario, trabaja con símbolos).</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Aplicaciones</td><td>Discos ópticos (CD/DVD), códigos QR, sistemas RAID, transmisiones espaciales.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Objetivo (CID)</td><td><strong>Integridad y Disponibilidad:</strong> Recuperar información destruida físicamente o corrompida por bloqueos largos en la señal.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Ventajas</td><td>Especializado en corregir "errores de ráfaga" (ej. un arañazo físico en un CD que destruye miles de bits consecutivos).</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Limitaciones</td><td>Complejidad matemática alta en la decodificación (requiere polinomios finitos).</td></tr>
+                    </table>
+                </div>
+
+                <!-- Ficha Hamming -->
+                <div class="bg-white rounded-xl shadow-sm border-l-4 border-purple-500 overflow-hidden">
+                    <div class="bg-slate-50 p-4 border-b">
+                        <h3 class="font-bold text-lg text-slate-800">Códigos de Hamming</h3>
+                    </div>
+                    <table class="w-full text-sm text-left text-slate-600 ficha-table">
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Tipo de Código</td><td>Código de bloque lineal.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Aplicaciones</td><td>Memoria caché de CPUs, buses de datos internos.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Objetivo (CID)</td><td><strong>Integridad y Disponibilidad:</strong> Reparación instantánea de micro-errores para evitar kernel panics o caídas del sistema.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Ventajas</td><td>Cálculo increíblemente rápido y sencillo mediante operaciones XOR.</td></tr>
+                        <tr><td class="font-bold w-1/4 text-slate-700 bg-slate-50">Limitaciones</td><td>Capacidad muy limitada: Detecta errores de 2 bits, pero <strong>solo puede corregir errores de 1 bit</strong> por bloque.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: LABORATORIO PIPELINE -->
+        <section id="sec4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Laboratorio: El Pipeline de la Triada</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                <p class="mb-4 text-slate-600">Simula el diseño de un canal seguro. Debes aplicar las capas en el orden correcto para proteger la Confidencialidad, Integridad y Disponibilidad sin generar vulnerabilidades de canal lateral.</p>
+                
+                <div class="flex flex-col space-y-4 mb-6">
+                    <button onclick="addStep('compresion', 'Compresión de Fuente', 'Elimina redundancia (Eficiencia)')" class="bg-blue-100 hover:bg-blue-200 border-blue-300 border p-3 rounded text-left font-bold text-blue-800 transition">+ Añadir Capa: Compresión</button>
+                    <button onclick="addStep('cifrado', 'Cifrado', 'Aporta Confidencialidad')" class="bg-slate-800 hover:bg-slate-700 text-white p-3 rounded text-left font-bold transition">+ Añadir Capa: Cifrado</button>
+                    <button onclick="addStep('fec', 'Codificación LDPC', 'Aporta Disponibilidad / Integridad frente a ruido')" class="bg-purple-100 hover:bg-purple-200 border-purple-300 border p-3 rounded text-left font-bold text-purple-800 transition">+ Añadir Capa: Codificación de Canal</button>
+                </div>
+
+                <div class="bg-slate-50 p-4 border rounded min-h-[150px]">
+                    <h4 class="font-bold text-slate-500 mb-2 text-sm uppercase">Arquitectura del Transmisor:</h4>
+                    <div id="pipeline-visual" class="flex items-center gap-2 flex-wrap">
+                        <!-- Pasos inyectados aquí -->
+                    </div>
+                </div>
+
+                <button onclick="evaluatePipeline()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded transition">Evaluar Diseño</button>
+                <div id="pipeline-eval" class="mt-4 p-4 rounded hidden font-bold"></div>
+                <button onclick="resetPipeline()" class="mt-2 text-sm text-slate-500 underline hidden" id="btn-reset">Reiniciar</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        let pipelineSteps = [];
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'text-white', 'border-emerald-500', 'border-purple-500', 'border-amber-500');
+                btn.classList.add('text-slate-300', 'border-transparent');
+            });
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-300');
+            
+            if(tabId === 'sec1') activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
+            if(tabId === 'sec2') activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
+            if(tabId === 'sec3') activeBtn.classList.add('bg-slate-800', 'border-purple-500', 'text-white');
+            if(tabId === 'sec4') activeBtn.classList.add('bg-slate-800', 'border-amber-500', 'text-white');
+        }
+
+        function addStep(id, title, desc) {
+            if(pipelineSteps.length >= 3) return;
+            pipelineSteps.push(id);
+            
+            const visual = document.getElementById('pipeline-visual');
+            const arrow = pipelineSteps.length > 1 ? '<span class="text-slate-400 font-bold">➔</span>' : '';
+            
+            let colorClass = id === 'compresion' ? 'bg-blue-100 border-blue-400 text-blue-800' : 
+                             id === 'cifrado' ? 'bg-slate-800 text-white' : 
+                             'bg-purple-100 border-purple-400 text-purple-800';
+
+            visual.innerHTML += `
+                ${arrow}
+                <div class="p-3 border rounded shadow-sm ${colorClass}">
+                    <div class="font-bold text-sm">${title}</div>
+                    <div class="text-xs opacity-80">${desc}</div>
+                </div>
+            `;
+        }
+
+        function evaluatePipeline() {
+            const evalBox = document.getElementById('pipeline-eval');
+            evalBox.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800', 'bg-amber-100', 'text-amber-800');
+            document.getElementById('btn-reset').classList.remove('hidden');
+
+            if (pipelineSteps.length < 3) {
+                evalBox.classList.add('bg-amber-100', 'text-amber-800');
+                evalBox.innerHTML = "⚠️ Pipeline incompleto. Añade las tres capas para evaluar.";
+                return;
+            }
+
+            const sequence = pipelineSteps.join('-');
+            
+            if (sequence === 'compresion-cifrado-fec') {
+                evalBox.classList.add('bg-green-100', 'text-green-800');
+                evalBox.innerHTML = "✅ ¡Diseño Perfecto!<br><span class='text-sm font-normal'>Comprimes primero para quitar redundancia. Cifras después para aportar Confidencialidad (un texto cifrado no se puede comprimir). Finalmente añades LDPC para garantizar Disponibilidad frente al canal ruidoso.</span>";
+            } else if (pipelineSteps.indexOf('cifrado') < pipelineSteps.indexOf('compresion')) {
+                evalBox.classList.add('bg-red-100', 'text-red-800');
+                evalBox.innerHTML = "❌ Fallo Crítico de Diseño.<br><span class='text-sm font-normal'>Si intentas comprimir un texto cifrado, no ganarás espacio (el cifrado elimina patrones). Además, abres la puerta a vulnerabilidades como CRIME o BREACH.</span>";
+            } else if (pipelineSteps.indexOf('fec') < pipelineSteps.indexOf('cifrado')) {
+                 evalBox.classList.add('bg-red-100', 'text-red-800');
+                evalBox.innerHTML = "❌ Fallo de Canal.<br><span class='text-sm font-normal'>Si añades redundancia LDPC y luego cifras todo, el receptor no podrá usar el LDPC para corregir errores físicos antes de descifrar. El FEC siempre va al final, en la capa física/enlace.</span>";
+            } else {
+                evalBox.classList.add('bg-red-100', 'text-red-800');
+                evalBox.innerHTML = "❌ Orden incorrecto. Revisa los principios de la Triada.";
+            }
+        }
+
+        function resetPipeline() {
+            pipelineSteps = [];
+            document.getElementById('pipeline-visual').innerHTML = '';
+            document.getElementById('pipeline-eval').classList.add('hidden');
+            document.getElementById('btn-reset').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
