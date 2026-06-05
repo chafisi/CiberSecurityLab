@@ -5,22 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plantilla Maestra - Unidad 9: Compresión y Codificación</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         .fade-in { animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .visual-block { font-family: monospace; letter-spacing: 0.05em; }
-        /* Efecto Flip para las Fichas Rápidas */
-        .flip-card { perspective: 1000px; height: 200px; cursor: pointer; }
+        .flip-card { perspective: 1000px; height: 220px; cursor: pointer; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
         .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
         .flip-card-front { background-color: white; }
         .flip-card-back { background-color: #1e293b; color: white; transform: rotateY(180deg); }
+        .ficha-table td { padding: 0.5rem; vertical-align: top; border-bottom: 1px solid #e2e8f0; }
+        .ficha-table tr:last-child td { border-bottom: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
 
+    <!-- MENÚ LATERAL -->
     <aside class="w-80 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
         <div class="p-6 bg-slate-950 border-b border-slate-800">
             <h1 class="text-xl font-bold text-blue-400">Master Template</h1>
@@ -28,6 +32,7 @@
         </div>
         <nav class="flex-1 overflow-y-auto no-scrollbar py-2">
             <ul class="space-y-1 text-sm">
+                <!-- 1. APARTADO TEÓRICO -->
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-2">1. Apartado Teórico (Mapa)</li>
                 <li><button onclick="switchTab('sec1-1')" id="btn-sec1-1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-blue-500 bg-slate-800 text-white">1.1 Compresión de datos</button></li>
                 <li><button onclick="switchTab('sec1-2')" id="btn-sec1-2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent">1.2 Codificación del canal</button></li>
@@ -37,238 +42,473 @@
                 <li><button onclick="switchTab('sec1-6')" id="btn-sec1-6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent">1.6 Aplicaciones de seguridad</button></li>
                 <li><button onclick="switchTab('sec1-7')" id="btn-sec1-7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent">1.7 Limitaciones y desafíos</button></li>
                 
+                <!-- 2. MÉTODOS Y LABS -->
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">2. Métodos y Labs</li>
-                <li><button onclick="switchTab('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-emerald-400">Fichas V3 + Laboratorios</button></li>
+                <li><button onclick="switchTab('sec2-det')" id="btn-sec2-det" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-emerald-400">Fichas: Detección</button></li>
+                <li><button onclick="switchTab('sec2-cor')" id="btn-sec2-cor" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-emerald-400">Fichas: Corrección + Labs</button></li>
 
+                <!-- 3. TRIADA CID -->
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">3. Perspectiva Auditoría</li>
                 <li><button onclick="switchTab('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-purple-400">Triada CID Desarrollada</button></li>
 
+                <!-- 4. FICHAS RÁPIDAS -->
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">4. Repaso Flash</li>
-                <li><button onclick="switchTab('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-amber-400">Fichas de Memorización</button></li>
+                <li><button onclick="switchTab('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-amber-400">Tarjetas de Memorización</button></li>
             </ul>
         </nav>
     </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-1 overflow-y-auto bg-slate-100 relative p-8">
 
+        <!-- ==========================================
+             1. APARTADO TEÓRICO (MAPA MENTAL EXPANDIDO)
+             ========================================== -->
         <section id="sec1-1" class="tab-content fade-in">
             <h2 class="text-3xl font-bold text-slate-800 mb-6">1.1 Compresión de datos</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600 mb-4">Eliminación de redundancia en la fuente para optimizar el ancho de banda. Fundamental aplicar ANTES del cifrado.</p>
-                
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-slate-700 mb-4 font-medium">El objetivo principal de la compresión es reducir la redundancia en la fuente para utilizar la menor cantidad de bits posible, optimizando el ancho de banda y el almacenamiento[cite: 3].</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                        <h3 class="font-bold text-blue-800 mb-2">Sin pérdida (Lossless)</h3>
+                        <p class="text-sm text-slate-600 mb-2">Permite reconstruir exactamente los datos originales bit a bit[cite: 3]. Es crítica en ciberseguridad y textos donde la integridad es absoluta.</p>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 font-mono">
+                            <li>Algoritmo Huffman[cite: 3]</li>
+                            <li>Lempel-Ziv[cite: 3]</li>
+                            <li>Formatos: ZIP, PNG[cite: 3]</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-amber-50 border-l-4 border-amber-500 rounded">
+                        <h3 class="font-bold text-amber-800 mb-2">Con pérdida (Lossy)</h3>
+                        <p class="text-sm text-slate-600 mb-2">Sacrifica cierta cantidad de información no perceptible para alcanzar mayores tasas de reducción[cite: 3].</p>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 font-mono">
+                            <li>JPEG (Imágenes)[cite: 3]</li>
+                            <li>MP3 (Audio)[cite: 3]</li>
+                            <li>MPEG (Vídeo)[cite: 3]</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </section>
+
         <section id="sec1-2" class="tab-content hidden fade-in">
             <h2 class="text-3xl font-bold text-slate-800 mb-6">1.2 Codificación del canal</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600">Añadir redundancia matemática estructural (bits de control) para que el receptor pueda validar la integridad del mensaje a pesar del canal ruidoso.</p>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                <p class="text-slate-700 font-medium">A diferencia de la compresión, la codificación añade redundancia controlada para detectar y corregir errores, garantizando la confiabilidad frente a ruidos e interferencias del medio físico[cite: 3].</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border p-4 rounded bg-slate-50">
+                        <h3 class="font-bold text-slate-800">Modelo de Shannon</h3>
+                        <p class="text-sm text-slate-600 mt-1">Describe un canal ruidoso como una función probabilística entre símbolos. El objetivo es maximizar la decodificación correcta sin superar la capacidad teórica del canal[cite: 3].</p>
+                    </div>
+                    <div class="border p-4 rounded bg-slate-50">
+                        <h3 class="font-bold text-slate-800">Garantizar confiabilidad</h3>
+                        <p class="text-sm text-slate-600 mt-1">Busca detectar alteraciones o reconstruir mensajes sin requerir retransmisiones constantes, equilibrando eficiencia y robustez[cite: 3].</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-3 border-b pb-2">Fases del Proceso[cite: 3]</h3>
+                    <div class="flex flex-col space-y-2 text-sm text-slate-700">
+                        <div class="flex items-center gap-3"><span class="bg-blue-600 text-white px-2 py-1 rounded font-bold">1</span> <strong>Codificación (Emisor):</strong> Transforma datos añadiendo redundancia estructurada[cite: 3].</div>
+                        <div class="flex items-center gap-3"><span class="bg-slate-600 text-white px-2 py-1 rounded font-bold">2</span> <strong>Transmisión (Canal):</strong> Envío a través del canal expuesto a atenuación y ruido[cite: 3].</div>
+                        <div class="flex items-center gap-3"><span class="bg-emerald-600 text-white px-2 py-1 rounded font-bold">3</span> <strong>Decodificación (Receptor):</strong> Analiza, detecta y corrige errores o solicita retransmisión[cite: 3].</div>
+                    </div>
+                </div>
             </div>
         </section>
+
         <section id="sec1-3" class="tab-content hidden fade-in">
             <h2 class="text-3xl font-bold text-slate-800 mb-6">1.3 Ruido e interferencia</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600">Alteraciones físicas (AWGN, Fading, Jamming electromagnético) que limitan la capacidad teórica del canal (Límite de Shannon).</p>
-            </div>
-        </section>
-        <section id="sec1-4" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.4 Detección de errores</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600">Mecanismos (Paridad, Checksum, CRC) que identifican alteraciones, solicitando retransmisión (ARQ) al emisor.</p>
-            </div>
-        </section>
-        <section id="sec1-5" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.5 Corrección de errores</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600">Mecanismos FEC (Forward Error Correction como LDPC, Reed-Solomon) que reconstruyen matemáticamente la trama sin necesidad de retransmisión.</p>
-            </div>
-        </section>
-        <section id="sec1-6" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.6 Aplicaciones de seguridad</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600">Mitigación de ataques de denegación de servicio físicos (Jamming), resiliencia de infraestructuras críticas (hospitales, redes 5G).</p>
-            </div>
-        </section>
-        <section id="sec1-7" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.7 Limitaciones y desafíos</h2>
-            <div class="bg-white p-6 rounded shadow-sm">
-                <p class="text-slate-600">Overhead de procesamiento (CPU/Batería), aumento de latencia y la amenaza inminente de la computación cuántica sobre la capa criptográfica.</p>
-            </div>
-        </section>
-
-        <section id="sec2" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">2. Fichas de Métodos y Laboratorios</h2>
-            
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
-                    <div class="bg-purple-700 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-xl">LDPC (Low-Density Parity-Check)</h3>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <p class="text-sm text-slate-600 mb-4">Código de bloque predictivo iterativo usado en 5G/Wi-Fi 6.</p>
-                        
-                        
-                        <div class="bg-red-50 border-l-4 border-red-500 p-4 mt-4 mb-4">
-                            <h4 class="font-bold text-red-700 text-sm">⚠️ Vulnerabilidad: Energy Exhaustion (DoS)</h4>
-                            <p class="text-xs text-red-900 mt-1">El ruido artificial fuerza decodificaciones infinitas, drenando la batería del sensor IoT.</p>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Modelos de Canal[cite: 3]</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="p-3 border rounded bg-slate-50">
+                            <h4 class="font-bold text-blue-700">Binario simétrico (BSC)</h4>
+                            <p class="text-xs text-slate-600 mt-1">Cada bit puede invertirse con una probabilidad $p$. Cambios anómalos en $p$ pueden indicar interferencia deliberada[cite: 3].</p>
                         </div>
+                        <div class="p-3 border rounded bg-slate-50">
+                            <h4 class="font-bold text-blue-700">Gaussiano aditivo (AWGN)</h4>
+                            <p class="text-xs text-slate-600 mt-1">Ruido térmico con distribución normal. Típico en redes inalámbricas[cite: 3].</p>
+                        </div>
+                        <div class="p-3 border rounded bg-slate-50">
+                            <h4 class="font-bold text-blue-700">Discretos con memoria</h4>
+                            <p class="text-xs text-slate-600 mt-1">Incorporan efectos de eco, multitrayecto o dispersión temporal. Común en fibra óptica[cite: 3].</p>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Efectos del Ruido[cite: 3]</h3>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-1">
+                            <li><strong>BER (Bit Error Rate):</strong> Fracción de bits incorrectos. Un pico repentino indica posible DoS físico[cite: 3].</li>
+                            <li><strong>Pérdida de sincronización:</strong> Desalineación temporal de tramas críticas[cite: 3].</li>
+                            <li><strong>SNR (Signal-to-Noise Ratio):</strong> Métrica clave para la fiabilidad[cite: 3].</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded border border-blue-200">
+                        <h3 class="font-bold text-lg text-blue-800 mb-2">Capacidad de canal (Límite teórico)</h3>
+                        <p class="text-sm text-slate-700 mb-2">Tasa máxima de información fiable medida por el Teorema de Shannon[cite: 3]:</p>
+                        <div class="text-center font-bold text-lg py-2 bg-white rounded border">
+                            $C = B \log_2(1 + \frac{S}{N})$
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec1-4" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.4 Técnicas de detección de errores</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-slate-700 mb-4">Mecanismos básicos para identificar si un mensaje ha sido alterado, fundamentales para evitar comandos corruptos o manipulación intencionada[cite: 3].</p>
+                <div class="space-y-4">
+                    <div class="p-4 border-l-4 border-slate-400 bg-slate-50">
+                        <h4 class="font-bold text-slate-800">Bits de paridad (ECC RAM)</h4>
+                        <p class="text-sm text-slate-600">Añade un bit para que el total de '1's sea par/impar. Detecta errores simples (número impar de errores). Muy usado en memoria de servidores[cite: 3].</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-slate-400 bg-slate-50">
+                        <h4 class="font-bold text-slate-800">Suma de comprobación (Checksums)</h4>
+                        <p class="text-sm text-slate-600">Suma valores numéricos de bloques. Extendido en IP, TCP, UDP y sistemas de archivos[cite: 3].</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-blue-500 bg-blue-50">
+                        <h4 class="font-bold text-blue-800">CRC (Cyclic Redundancy Check)</h4>
+                        <p class="text-sm text-slate-700">Trata datos como un polinomio binario y calcula el resto de su división. Altamente eficaz para "ráfagas de errores". Usado en Ethernet, IoT, LTE y 5G[cite: 3].</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec1-5" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.5 Técnicas de corrección de errores (FEC)</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <p class="text-slate-700 mb-4">Permiten reconstruir la información original sin retransmisión (Forward Error Correction). Crítico en satélites y control industrial para asegurar la disponibilidad[cite: 3].</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="border rounded p-4 bg-slate-50">
+                        <h4 class="font-bold text-purple-700 border-b pb-2 mb-2">Códigos de bloque</h4>
+                        <ul class="text-sm text-slate-700 space-y-2">
+                            <li><strong>Hamming:</strong> Corrige 1 bit, detecta 2. Usa posiciones en potencias de dos. Ideal para memoria caché[cite: 3].</li>
+                            <li><strong>Reed-Solomon:</strong> Basado en cuerpos de Galois. Excelente para corregir ráfagas de errores consecutivos en CD, DVD, Blu-ray y RAID[cite: 3].</li>
+                        </ul>
+                    </div>
+                    <div class="border rounded p-4 bg-slate-50">
+                        <h4 class="font-bold text-purple-700 border-b pb-2 mb-2">Códigos convolucionales</h4>
+                        <ul class="text-sm text-slate-700 space-y-2">
+                            <li>Procesan de forma continua, donde un bit depende de los anteriores (memoria).</li>
+                            <li><strong>Viterbi / GPS:</strong> Busca la secuencia más probable. Útil ante interferencias severas móviles[cite: 3].</li>
+                        </ul>
+                    </div>
+                    <div class="border rounded p-4 bg-slate-50">
+                        <h4 class="font-bold text-purple-700 border-b pb-2 mb-2">Códigos avanzados</h4>
+                        <ul class="text-sm text-slate-700 space-y-2">
+                            <li>Se acercan al límite de Shannon mediante procesos iterativos[cite: 3].</li>
+                            <li><strong>LDPC:</strong> Matrices dispersas usadas en Wi-Fi 6, DVB-S2 y 5G[cite: 3].</li>
+                            <li><strong>Turbo Codes:</strong> Dos codificadores paralelos, estándar en LTE[cite: 3].</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec1-6" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.6 Aplicaciones en seguridad</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex gap-4 items-start">
+                    <div class="text-2xl">🛡️</div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Garantía de integridad y disponibilidad</h4>
+                        <p class="text-sm text-slate-600">Asegura que protocolos como TCP/IP y enlaces de misión crítica mantengan el flujo de datos ante defectos mecánicos o condiciones atmosféricas[cite: 3].</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <div class="text-2xl">⚡</div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">Protección ante interferencias deliberadas</h4>
+                        <p class="text-sm text-slate-600">Tolerancia ante tácticas de <em>jamming</em>, inyección de ruido o desincronización, detectando patrones anómalos como indicadores de ataque[cite: 3].</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start p-4 bg-slate-800 text-white rounded">
+                    <div class="text-2xl">🔒</div>
+                    <div>
+                        <h4 class="font-bold text-blue-300">Relación Estricta con el Cifrado[cite: 3]</h4>
+                        <p class="text-sm text-slate-300 mb-2">El orden de aplicación es un requisito crítico en ciberseguridad para evitar vulnerabilidades:</p>
+                        <ol class="list-decimal pl-5 text-sm font-bold text-emerald-400 space-y-1">
+                            <li>Compresión de fuente (Elimina redundancia)</li>
+                            <li>Cifrado (Aporta confidencialidad)</li>
+                            <li>Codificación de canal (Añade redundancia física)</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec1-7" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">1.7 Limitaciones y Desafíos</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-red-700 mb-2">Sobrecarga de procesamiento e impacto[cite: 3]</h4>
+                    <p class="text-sm text-slate-600 mb-2">Algoritmos como LDPC exigen iteraciones intensivas. Esto eleva el consumo energético y la latencia, abriendo vectores a <strong>ataques de denegación de servicio (DoS) físico</strong> (agotar batería de sensores IoT mediante inyección de ruido)[cite: 3].</p>
+                    <p class="text-sm text-slate-600">Exige escalabilidad mediante hardware dedicado (ASIC/FPGA) en redes de alta velocidad[cite: 3].</p>
+                </div>
+                <div class="bg-slate-900 p-6 rounded-xl shadow-sm border border-slate-700">
+                    <h4 class="font-bold text-emerald-400 mb-2">Amenazas cuánticas[cite: 3]</h4>
+                    <ul class="text-sm text-slate-300 space-y-2 list-disc pl-5">
+                        <li><strong>Ruptura de algoritmos clásicos:</strong> Compromiso del cifrado asimétrico en la capa superior[cite: 3].</li>
+                        <li><strong>Interferencia cuántica controlada:</strong> Manipulación de estados entrelazados o superposiciones[cite: 3].</li>
+                        <li><strong>Códigos post-cuánticos:</strong> Necesidad de transicionar a matemáticas resistentes (QECC)[cite: 3].</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             2. MÉTODOS Y LABS: FICHAS EXHAUSTIVAS
+             ========================================== -->
+        <!-- FICHAS DETECCIÓN -->
+        <section id="sec2-det" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Fichas Técnicas: Detección de Errores[cite: 3]</h2>
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <!-- Paridad -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-blue-600 p-3 text-white font-bold text-lg">Bits de Paridad</div>
+                    <table class="w-full text-sm text-left text-slate-700 ficha-table">
+                        <tr><td class="font-bold w-1/3 bg-slate-50">Mecanismo</td><td>Calcula si el total de '1's es par o impar[cite: 3].</td></tr>
+                        <tr><td class="font-bold bg-slate-50">Aplicación</td><td>Memoria RAM (ECC)[cite: 3].</td></tr>
+                        <tr><td class="font-bold bg-slate-50">Ventaja</td><td>Simplicidad máxima y rapidez extrema[cite: 3].</td></tr>
+                        <tr><td class="font-bold text-red-600 bg-slate-50">Limitación</td><td>Solo detecta un número impar de errores (falla si 2 bits cambian)[cite: 3].</td></tr>
+                    </table>
+                </div>
+                <!-- Checksum -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-blue-600 p-3 text-white font-bold text-lg">Suma de Comprobación (Checksum)</div>
+                    <table class="w-full text-sm text-left text-slate-700 ficha-table">
+                        <tr><td class="font-bold w-1/3 bg-slate-50">Mecanismo</td><td>Suma aritmética de bloques de datos transmitidos[cite: 3].</td></tr>
+                        <tr><td class="font-bold bg-slate-50">Aplicación</td><td>Protocolos IP, TCP, UDP[cite: 3].</td></tr>
+                        <tr><td class="font-bold bg-slate-50">Ventaja</td><td>Bajo coste computacional, nativo en redes[cite: 3].</td></tr>
+                        <tr><td class="font-bold text-red-600 bg-slate-50">Limitación</td><td>No resiste ataques; un adversario puede recalcularlo fácilmente[cite: 3].</td></tr>
+                    </table>
+                </div>
+                <!-- CRC -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden md:col-span-2 xl:col-span-2">
+                    <div class="bg-blue-700 p-3 text-white font-bold text-lg">CRC (Cyclic Redundancy Check)</div>
+                    <table class="w-full text-sm text-left text-slate-700 ficha-table">
+                        <tr><td class="font-bold w-1/4 bg-slate-50">Mecanismo</td><td>División polinómica binaria, genera un "resto" firmado[cite: 3].</td></tr>
+                        <tr><td class="font-bold bg-slate-50">Aplicación</td><td>Ethernet, IoT, 5G (Capa física/enlace)[cite: 3].</td></tr>
+                        <tr><td class="font-bold bg-slate-50">Ventaja</td><td>Extraordinaria capacidad para detectar "ráfagas de errores"[cite: 3].</td></tr>
+                        <tr><td class="font-bold text-red-600 bg-slate-50">Vulnerabilidad de Seguridad</td><td>Carece de protección criptográfica. Un Man-in-the-Middle altera el dato y recalcula el CRC válido. Requiere combinarse con firmas MAC/HMAC[cite: 3].</td></tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- FICHAS CORRECCIÓN + LABS -->
+        <section id="sec2-cor" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Fichas Técnicas: Corrección (FEC) y Laboratorios[cite: 3]</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Hamming -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-purple-700 p-3 text-white font-bold text-lg">Códigos de Hamming</div>
+                    <div class="p-4 text-sm text-slate-700 space-y-2">
+                        <p><strong>Tipo:</strong> Código de bloque. Usa bits de paridad en potencias de 2[cite: 3].</p>
+                        <p><strong>Capacidad:</strong> Detecta errores de 2 bits, corrige errores de 1 bit[cite: 3].</p>
+                        <p><strong>Riesgo:</strong> <em>Fault Injection.</em> Si cambian 2 bits, el algoritmo se confunde y corrompe un tercer bit "sano".</p>
+                    </div>
+                </div>
+
+                <!-- Convolucional / Interleaving LAB -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-purple-700 p-3 text-white font-bold text-lg">Convolucionales + Interleaving</div>
+                    <div class="p-4 text-sm text-slate-700">
+                        <p class="mb-2"><strong>Mecanismo:</strong> Viterbi procesa flujos continuos[cite: 3]. El <strong>Interleaving (Entrelazado)</strong> reordena los bits para dispersar errores en ráfaga (clave en test)[cite: 3].</p>
+                        <div class="bg-slate-100 p-3 rounded text-center border border-slate-300">
+                            <h4 class="font-bold text-xs mb-1">Visual: Efecto Interleaving contra Ráfaga</h4>
+                            <div class="text-xs font-mono mb-1">Original: A1 A2 A3 B1 B2 B3</div>
+                            <div class="text-xs font-mono text-blue-700">Transmitido: A1 B1 A2 B2 A3 B3</div>
+                            <div class="text-xs font-mono text-red-600 bg-red-100 mt-1">Interferencia destruye "B1 A2" (Ráfaga)</div>
+                            <div class="text-xs font-mono text-emerald-700 mt-1">Al reordenar: A pierde 1 bit (A2), B pierde 1 bit (B1). Ambas son corregibles por FEC simple.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reed Solomon LAB -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-purple-800 p-3 text-white font-bold text-lg flex justify-between">
+                        <span>Reed-Solomon (Caso 17)</span> <span>Discos Ópticos / RAID</span>
+                    </div>
+                    <div class="p-4 flex flex-col h-full">
+                        <p class="text-sm text-slate-600 mb-2">Trabaja con bloques enteros (símbolos). Matemáticas de Galois. Rey absoluto frente a destrucción física contigua[cite: 3].</p>
                         <div class="bg-slate-100 p-4 rounded mt-auto border border-slate-300">
-                            <h4 class="font-bold text-slate-700 text-sm mb-2">🧪 Lab: Simulación de Ataque DoS</h4>
-                            <div class="flex items-center gap-4">
-                                <button onclick="simulateDoS()" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm">Inyectar Ruido Constante</button>
-                                <div class="flex-1 bg-slate-300 h-4 rounded overflow-hidden">
+                            <h4 class="font-bold text-slate-700 text-sm mb-2">🧪 Lab: Límite Matemático de Reed-Solomon</h4>
+                            <div class="flex gap-1 mb-2" id="rs-blocks">
+                                <div class="bg-blue-300 px-2 py-1 rounded text-xs">D1</div>
+                                <div class="bg-blue-300 px-2 py-1 rounded text-xs">D2</div>
+                                <div class="bg-blue-300 px-2 py-1 rounded text-xs">D3</div>
+                                <div class="bg-purple-300 px-2 py-1 rounded border border-purple-500 text-xs">F1</div>
+                                <div class="bg-purple-300 px-2 py-1 rounded border border-purple-500 text-xs">F2</div>
+                            </div>
+                            <button onclick="destroyBlock()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs w-full mb-1">Destruir Símbolo</button>
+                            <p id="rs-result" class="text-xs font-bold text-green-600">Estado: Íntegro</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LDPC LAB -->
+                <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-purple-800 p-3 text-white font-bold text-lg flex justify-between">
+                        <span>LDPC (Caso 18)</span> <span>Wi-Fi 6 / 5G</span>
+                    </div>
+                    <div class="p-4 flex flex-col h-full">
+                        <p class="text-sm text-slate-600 mb-2">Matrices dispersas, decodificación iterativa rozando el límite de Shannon. Turbo Codes opera similar en LTE[cite: 3].</p>
+                        <div class="bg-slate-100 p-4 rounded mt-auto border border-slate-300">
+                            <h4 class="font-bold text-slate-700 text-sm mb-2 text-red-700">⚠️ Lab: DoS Físico (Agotamiento Batería)[cite: 3]</h4>
+                            <div class="flex items-center gap-2">
+                                <button onclick="simulateDoS()" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-xs">Inyectar Jamming</button>
+                                <div class="flex-1 bg-slate-300 h-3 rounded overflow-hidden">
                                     <div id="battery-bar" class="bg-green-500 h-full w-full transition-all duration-500"></div>
                                 </div>
-                                <span id="battery-text" class="text-xs font-bold">100%</span>
+                                <span id="battery-text" class="text-xs font-bold w-8 text-right">100%</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
-                    <div class="bg-blue-600 p-4 text-white flex justify-between items-center">
-                        <h3 class="font-bold text-xl">Reed-Solomon</h3>
-                    </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <p class="text-sm text-slate-600 mb-4">Opera agrupando bits en "símbolos". Rey en corregir "ráfagas de errores" contiguos.</p>
-                        
-                        <div class="bg-red-50 border-l-4 border-red-500 p-4 mt-4 mb-4">
-                            <h4 class="font-bold text-red-700 text-sm">⚠️ Vulnerabilidad: Límite Matemático Estricto</h4>
-                            <p class="text-xs text-red-900 mt-1">Si la destrucción supera el umbral de símbolos FEC (ej. 2), todo el bloque se pierde.</p>
-                        </div>
-
-                        <div class="bg-slate-100 p-4 rounded mt-auto border border-slate-300">
-                            <h4 class="font-bold text-slate-700 text-sm mb-2">🧪 Lab: Destrucción de Símbolos</h4>
-                            <div class="flex gap-2 mb-2" id="rs-blocks">
-                                <div class="bg-blue-300 px-3 py-1 rounded">D1</div>
-                                <div class="bg-blue-300 px-3 py-1 rounded">D2</div>
-                                <div class="bg-blue-300 px-3 py-1 rounded">D3</div>
-                                <div class="bg-purple-300 px-3 py-1 rounded border border-purple-500">F1</div>
-                                <div class="bg-purple-300 px-3 py-1 rounded border border-purple-500">F2</div>
-                            </div>
-                            <button onclick="destroyBlock()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm w-full">Destruir 1 Símbolo al azar</button>
-                            <p id="rs-result" class="text-xs mt-2 font-bold text-green-600">Estado: Íntegro (Corrección posible)</p>
+                            <p class="text-[10px] text-slate-500 mt-1 leading-tight">El ruido fuerza cálculos iterativos masivos, drenando la energía del sensor.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- ==========================================
+             3. TRIADA CID (PERSPECTIVA AUDITORÍA)
+             ========================================== -->
         <section id="sec3" class="tab-content hidden fade-in">
             <h2 class="text-3xl font-bold text-slate-800 mb-6">3. Perspectiva de Auditoría: La Triada CID</h2>
             
             <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-8 space-y-8">
-                
+                <!-- Confidencialidad -->
                 <div>
                     <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-blue-200 pb-2 mb-4">
                         <span class="bg-blue-600 text-white p-2 rounded-lg">C</span> Confidencialidad
                     </h3>
                     <div class="pl-4 border-l-4 border-blue-200">
-                        <p class="text-slate-700 font-medium mb-2">Concepto Teórico:</p>
-                        <p class="text-sm text-slate-600 mb-4">Las técnicas de canal (compresión, codificación) operan en texto claro o manipulan la forma de la onda, pero <strong>no ocultan la semántica del dato</strong>. La confidencialidad solo se logra mediante cifrado (AES, ChaCha20).</p>
-                        <p class="text-slate-700 font-medium mb-2">El Peligro de Implementación (Caso Práctico):</p>
+                        <p class="text-slate-700 font-medium mb-2">Integración Teórica[cite: 3]:</p>
+                        <p class="text-sm text-slate-600 mb-4">Las técnicas de canal (compresión, codificación) operan en texto claro o manipulan la forma de la onda, pero <strong>no ocultan la semántica</strong>. La confidencialidad requiere criptografía estricta (AES, ChaCha20)[cite: 3].</p>
                         <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
-                            <strong>Ataques CRIME / BREACH:</strong> Si una aplicación web comprime los datos (para eficiencia) y luego los cifra (para confidencialidad), un atacante puede inyectar texto. Como la compresión reduce el tamaño de patrones repetidos, el atacante observa el tamaño del paquete cifrado final. Si el paquete se reduce, sabe que adivinó un trozo de la cookie de sesión cifrada. 
-                            <br><span class="text-blue-600 font-bold mt-2 inline-block">Conclusión de Auditoría:</span> La eficiencia (compresión) compromete la confidencialidad si no se aísla el contexto criptográfico.
+                            <strong>Ataques CRIME / BREACH y el Orden de Capas:</strong> Aplicar compresión a datos ya cifrados es inútil (el cifrado elimina patrones). Hacerlo al revés (comprimir web, luego cifrar SSL) expone al ataque CRIME midiendo tamaños de respuesta para inferir cookies[cite: 3].
                         </div>
                     </div>
                 </div>
 
+                <!-- Integridad -->
                 <div>
                     <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-emerald-200 pb-2 mb-4">
                         <span class="bg-emerald-600 text-white p-2 rounded-lg">I</span> Integridad
                     </h3>
                     <div class="pl-4 border-l-4 border-emerald-200">
-                        <p class="text-slate-700 font-medium mb-2">Concepto Teórico:</p>
-                        <p class="text-sm text-slate-600 mb-4">Asegurar que el mensaje recibido es matemáticamente idéntico al emitido. En la Unidad 9, esto se logra con CRC, Checksums y Paridad. Sin embargo, protegen contra el <strong>ruido ambiental, no contra adversarios activos</strong>.</p>
-                        <p class="text-slate-700 font-medium mb-2">El Peligro de Implementación (Caso Práctico):</p>
+                        <p class="text-slate-700 font-medium mb-2">Integración Teórica[cite: 3]:</p>
+                        <p class="text-sm text-slate-600 mb-4">La detección (CRC, Paridad) asegura exactitud frente a ruidos aleatorios en el tránsito[cite: 3]. Protegen contra atenuaciones naturales, <strong>no contra adversarios activos</strong>.</p>
                         <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
-                            <strong>Man-in-the-Middle (Modificación de Payload):</strong> Un sistema SCADA industrial usa CRC32 para enviar comandos a una válvula. Un atacante en la red intercepta el paquete "Abrir 10%", lo cambia a "Abrir 100%" y recalcula el CRC32. El receptor recibe la trama, el CRC es matemáticamente válido, y ejecuta el comando destructivo.
-                            <br><span class="text-emerald-600 font-bold mt-2 inline-block">Conclusión de Auditoría:</span> La detección de errores de canal no es Integridad Criptográfica. Se requiere HMAC o Firmas Digitales (Unidad 10) para evitar manipulaciones maliciosas.
+                            <strong>El Falso Sentimiento del CRC:</strong> Un atacante puede alterar un payload industrial ("Abrir 10%" a "Abrir 100%") y recalcular fácilmente el polinomio CRC[cite: 3]. En auditoría, la integridad de canal físico debe sellarse siempre con integridad lógica (Firmas HMAC)[cite: 3].
                         </div>
                     </div>
                 </div>
 
+                <!-- Disponibilidad -->
                 <div>
                     <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-amber-200 pb-2 mb-4">
                         <span class="bg-amber-500 text-white p-2 rounded-lg">D</span> Disponibilidad
                     </h3>
                     <div class="pl-4 border-l-4 border-amber-200">
-                        <p class="text-slate-700 font-medium mb-2">Concepto Teórico:</p>
-                        <p class="text-sm text-slate-600 mb-4">Garantizar que el canal de comunicación sea usable a pesar de interferencias severas. Aquí brillan las técnicas FEC (Forward Error Correction) como Reed-Solomon o LDPC, que reparan daños "al vuelo" sin latencia de retransmisión.</p>
-                        <p class="text-slate-700 font-medium mb-2">El Peligro de Implementación (Caso Práctico):</p>
+                        <p class="text-slate-700 font-medium mb-2">Integración Teórica[cite: 3]:</p>
+                        <p class="text-sm text-slate-600 mb-4">Es la justificación principal de las técnicas FEC (LDPC, Turbo, Reed-Solomon)[cite: 3]. Reparar daños "al vuelo" mantiene el canal operativo sin colapsar la red con retransmisiones continuas (ARQ)[cite: 3].</p>
                         <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
-                            <strong>Ataques de Jamming (Interferencia RF):</strong> En una red 5G de comunicaciones de emergencia, un atacante emite ruido blanco electromagnético (AWGN artificial). Sin FEC, la tasa de error (BER) obligaría a retransmitir todo, causando una caída total de la red (DoS). Gracias a códigos avanzados (LDPC), el sistema extrae el mensaje original del "mar de ruido", manteniendo el servicio activo.
-                            <br><span class="text-amber-600 font-bold mt-2 inline-block">Conclusión de Auditoría:</span> En entornos hostiles físicos, la redundancia de datos no es un desperdicio de ancho de banda, es un control crítico de Disponibilidad.
+                            <strong>Resiliencia en Entornos Hostiles (Jamming):</strong> Sin FEC, un atacante con un emisor de ruido RF podría provocar un DoS en infraestructuras 5G/Militares. La redundancia del LDPC permite decodificar mensajes vitales incluso bajo severas interferencias intencionadas[cite: 3].
                         </div>
                     </div>
                 </div>
-
             </div>
         </section>
 
+        <!-- ==========================================
+             4. FICHAS RÁPIDAS (MEMORIZACIÓN FLASH)
+             ========================================== -->
         <section id="sec4" class="tab-content hidden fade-in">
-            <h2 class="text-3xl font-bold text-slate-800 mb-6">4. Fichas de Repaso Flash</h2>
-            <p class="text-slate-500 mb-6">Haz clic en cada tarjeta para girarla. Ideal para repasar conceptos clave antes del examen.</p>
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">4. Fichas de Repaso Flash ⚡</h2>
+            <p class="text-slate-500 mb-6">Haz clic en cada tarjeta para girarla. Asegura los conceptos clave del test.</p>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 md:grid-cols-4 gap-6">
-                
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Tarjetas -->
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Límite de Shannon</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Tasa máxima de datos libre de errores que puede transmitirse sobre un canal con un nivel de ruido específico.</p></div>
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">📈 Límite de Shannon</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Límite teórico de eficiencia en un canal[cite: 3]. $C = B \log_2(1 + S/N)$[cite: 3].</p></div>
                     </div>
                 </div>
-
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Ataque CRIME</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Ataque que compromete la confidencialidad explotando la fuga de información que produce la <strong>compresión</strong> HTTP/TLS.</p></div>
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">🔒 Orden del Cifrado</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">1. Compresión (fuente) <br>2. Cifrado <br>3. Codificación (canal)[cite: 3].</p></div>
                     </div>
                 </div>
-
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Reed-Solomon</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Código de corrección (FEC) especializado en "ráfagas de errores". Usado en CDs, QR y sistemas RAID.</p></div>
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">♻️ ARQ</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Automatic Repeat Request. Protocolo que solicita retransmisiones al detectar errores[cite: 3].</p></div>
                     </div>
                 </div>
-
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">CRC vs HMAC</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">El CRC detecta errores por ruido (Integridad física). El HMAC detecta manipulación maliciosa (Integridad criptográfica).</p></div>
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">🛡️ FEC</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Forward Error Correction. Corrige errores en destino <strong>sin</strong> retransmitir, añadiendo redundancia[cite: 3].</p></div>
                     </div>
                 </div>
-
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">LDPC</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Low-Density Parity-Check. Código iterativo de alto rendimiento usado en 5G y Wi-Fi 6. Vulnerable a DoS por consumo de batería.</p></div>
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">💿 Reed-Solomon</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Código de bloque (símbolos). Excelente para ráfagas de errores en discos ópticos y RAID[cite: 3].</p></div>
                     </div>
                 </div>
-
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
-                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">FEC (Forward Error Correction)</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Añadir redundancia para <strong>corregir</strong> el error en destino sin necesidad de pedir retransmisión. Aporta Disponibilidad.</p></div>
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">🧮 CRC</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">División polinómica para <strong>detectar</strong> errores[cite: 3]. No cifra, no corrige[cite: 3].</p></div>
                     </div>
                 </div>
-
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">🔀 Interleaving</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Reordenar bits para dispersar errores en ráfagas[cite: 3]. Combina con FEC[cite: 3].</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">📡 LDPC</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Matrices dispersas iterativas[cite: 3]. Muy eficiente, usado en Wi-Fi 6 y 5G[cite: 3].</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">〰️ Convolucional (Viterbi)</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Procesamiento continuo usando memoria de bits anteriores[cite: 3]. Decodifica vía algoritmo Viterbi[cite: 3].</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">🗑️ Canal BEC</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Binary Erasure Channel. Los bits erróneos se pierden/borran, pero el sistema sabe qué posiciones faltan[cite: 3].</p></div>
+                    </div>
+                </div>
             </div>
         </section>
 
     </main>
 
     <script>
-        // Lógica de Navegación del Menú
+        // Navegación
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('aside nav button').forEach(btn => {
-                btn.classList.remove('bg-slate-800', 'border-blue-500', 'border-emerald-400', 'border-purple-400', 'border-amber-400', 'text-white');
-                if(btn.id.includes('sec1')) {
-                    btn.classList.add('border-transparent');
-                }
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'border-emerald-500', 'border-emerald-400', 'border-purple-500', 'border-purple-400', 'border-amber-500', 'border-amber-400', 'text-white');
+                if(btn.id.includes('sec1')) btn.classList.add('border-transparent');
             });
             
             document.getElementById(tabId).classList.remove('hidden');
@@ -276,12 +516,12 @@
             activeBtn.classList.remove('border-transparent');
             
             if(tabId.includes('sec1')) activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
-            if(tabId === 'sec2') activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
+            if(tabId === 'sec2-det' || tabId === 'sec2-cor') activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
             if(tabId === 'sec3') activeBtn.classList.add('bg-slate-800', 'border-purple-500', 'text-white');
             if(tabId === 'sec4') activeBtn.classList.add('bg-slate-800', 'border-amber-500', 'text-white');
         }
 
-        // Lógica Lab LDPC (DoS de Batería)
+        // Lab LDPC
         let battery = 100;
         function simulateDoS() {
             if(battery > 0) {
@@ -292,11 +532,14 @@
                 
                 if(battery <= 50) bar.classList.replace('bg-green-500', 'bg-amber-500');
                 if(battery <= 25) bar.classList.replace('bg-amber-500', 'bg-red-500');
-                if(battery === 0) document.getElementById('battery-text').innerText = '0% (DoS - Sensor Caído)';
+                if(battery === 0) {
+                    document.getElementById('battery-text').innerText = '0% (DoS)';
+                    document.getElementById('battery-text').classList.add('text-red-700');
+                }
             }
         }
 
-        // Lógica Lab Reed-Solomon
+        // Lab Reed-Solomon
         let destroyed = 0;
         function destroyBlock() {
             const blocks = document.getElementById('rs-blocks').children;
@@ -312,10 +555,10 @@
                 const res = document.getElementById('rs-result');
                 if(destroyed <= 2) {
                     res.innerText = `Estado: Íntegro. (${destroyed}/2 símbolos FEC usados).`;
-                    res.className = "text-xs mt-2 font-bold text-amber-600";
+                    res.className = "text-xs font-bold text-amber-600";
                 } else {
-                    res.innerText = `Estado: Corrupto. Límite matemático superado (3 bloques rotos > 2 símbolos FEC). Datos irrecuperables.`;
-                    res.className = "text-xs mt-2 font-bold text-red-600";
+                    res.innerText = `Estado: Corrupto. (3 bloques rotos > 2 FEC). Irrecuperable.`;
+                    res.className = "text-xs font-bold text-red-600";
                 }
             }
         }
