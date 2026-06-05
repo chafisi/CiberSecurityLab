@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 9: Compresión y Codificación (V3 - Visual y Vulnerabilidades)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .visual-block { font-family: monospace; letter-spacing: 0.05em; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-80 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-emerald-400">Auditoría U9</h1>
+            <p class="text-xs text-slate-500 mt-1">Fichas Avanzadas & Vulnerabilidades</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-4">
+            <ul class="space-y-1">
+                <li><button onclick="switchTab('sec1')" id="btn-sec1" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-emerald-400">1. El Enfoque CID</button></li>
+                <li><button onclick="switchTab('sec2')" id="btn-sec2" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium bg-slate-800 border-l-4 border-blue-500 text-white">2. Detección (Fichas)</button></li>
+                <li><button onclick="switchTab('sec3')" id="btn-sec3" class="w-full text-left px-6 py-3 hover:bg-slate-800 transition font-medium border-l-4 border-transparent text-purple-400">3. Corrección (Fichas)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 relative p-8">
+
+        <section id="sec1" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Perspectiva Global: La Triada CID</h2>
+            <div class="bg-white p-6 rounded shadow-sm">
+                <p>La compresión va antes del cifrado. El cifrado aporta Confidencialidad. Las técnicas de codificación aportan Integridad y Disponibilidad. (Ver versión anterior para más detalles).</p>
+            </div>
+        </section>
+
+        <section id="sec2" class="tab-content fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Nodos Verdes: Técnicas de Detección (Visual & Ataques)</h2>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                    <div class="bg-blue-600 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-xl">CRC (División Polinómica)</h3>
+                        <span class="bg-blue-800 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Integridad</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <p class="text-sm text-slate-600 mb-4">Calcula el resto matemático de dividir el mensaje completo por un polinomio predefinido. Muy usado en Ethernet e IoT.</p>
+                        
+                        <div class="bg-slate-100 p-4 rounded mb-4 text-center visual-block text-sm">
+                            <div class="flex justify-center items-center space-x-2">
+                                <span class="bg-slate-300 px-2 py-1 rounded text-slate-700">Mensaje: 11010110</span>
+                                <span class="text-slate-400">÷</span>
+                                <span class="bg-slate-300 px-2 py-1 rounded text-slate-700">Polinomio</span>
+                                <span class="text-slate-400">=</span>
+                                <span class="bg-blue-200 px-2 py-1 rounded text-blue-800 font-bold border border-blue-400">Firma: 011</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 mt-auto">
+                            <h4 class="font-bold text-red-700 text-sm flex items-center mb-1">
+                                <span>⚠️ Vulnerabilidad: Modificación Intencionada</span>
+                            </h4>
+                            <p class="text-xs text-red-900 leading-relaxed">
+                                El CRC no usa claves criptográficas. Un atacante (Man-in-the-Middle) puede interceptar "Pagar 10€", cambiarlo a "Pagar 99€", y recalcular el CRC él mismo. El receptor lo validará como perfecto. <strong>Solución:</strong> Usar HMAC (Firmas Criptográficas), no solo CRC.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                    <div class="bg-blue-600 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-xl">Bits de Paridad</h3>
+                        <span class="bg-blue-800 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Integridad</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <p class="text-sm text-slate-600 mb-4">Añade un bit al final de un bloque para asegurar que la cantidad total de "unos" sea siempre un número par (o impar). Usado en RAM (ECC).</p>
+                        
+                        <div class="bg-slate-100 p-4 rounded mb-4 text-center visual-block text-sm flex flex-col space-y-2">
+                            <div class="flex justify-center gap-1">
+                                <span class="w-6 h-6 flex items-center justify-center bg-slate-300 rounded">1</span>
+                                <span class="w-6 h-6 flex items-center justify-center bg-slate-300 rounded">0</span>
+                                <span class="w-6 h-6 flex items-center justify-center bg-slate-300 rounded">1</span>
+                                <span class="w-6 h-6 flex items-center justify-center bg-slate-300 rounded">1</span>
+                                <span class="mx-2 text-slate-500">➔ 3 Unos ➔</span>
+                                <span class="w-6 h-6 flex items-center justify-center bg-blue-300 text-blue-900 font-bold rounded animate-pulse">1</span>
+                            </div>
+                            <span class="text-xs text-slate-500">Ahora hay 4 unos (Número Par ✅)</span>
+                        </div>
+
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 mt-auto">
+                            <h4 class="font-bold text-red-700 text-sm flex items-center mb-1">
+                                <span>⚠️ Vulnerabilidad: Evasión por Múltiple Fallo</span>
+                            </h4>
+                            <p class="text-xs text-red-900 leading-relaxed">
+                                Solo detecta si cambia <strong>un bit</strong>. Si una interferencia fuerte (o un atacante) voltea dos bits a la vez, el resultado sigue siendo par. El sistema aceptará un archivo corrupto sin darse cuenta, comprometiendo la integridad silenciosamente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec3" class="tab-content hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6">Nodos Verdes: Técnicas de Corrección (FEC)</h2>
+            
+            <div class="grid grid-cols-1 gap-6">
+
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                    <div class="bg-purple-700 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-xl">LDPC (Low-Density Parity-Check)</h3>
+                        <span class="bg-purple-900 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Disponibilidad Avanzada</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col md:flex-row gap-6">
+                        <div class="flex-1">
+                            <p class="text-sm text-slate-600 mb-4">Código avanzado usado en <strong>5G y Wi-Fi 6</strong>. Funciona cruzando datos en una matriz dispersa (grafos bipartitos). Resuelve errores resolviendo ecuaciones de forma iterativa y probabilística.</p>
+                            
+                            <div class="bg-slate-100 p-4 rounded text-center visual-block text-sm flex justify-center items-center h-24 mb-4">
+                                <span class="text-purple-600 font-bold border border-purple-300 p-2 rounded bg-white">Nodos Dato</span>
+                                <span class="text-slate-400 mx-2 tracking-tighter">⤡ ⤢ ⤧ ⤨</span>
+                                <span class="text-emerald-600 font-bold border border-emerald-300 p-2 rounded bg-white">Nodos Chequeo</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 bg-red-50 border-l-4 border-red-500 p-4 flex flex-col justify-center">
+                            <h4 class="font-bold text-red-700 text-sm flex items-center mb-2">
+                                <span>⚠️ Vulnerabilidad: Energy/Compute Exhaustion (DoS)</span>
+                            </h4>
+                            <p class="text-xs text-red-900 leading-relaxed mb-2">
+                                LDPC decodifica en <strong>iteraciones</strong> (cuanto más ruido, más ciclos de CPU necesita para adivinar el dato original).
+                            </p>
+                            <p class="text-xs text-red-900 leading-relaxed font-bold bg-red-100 p-2 rounded">
+                                Ataque Práctico: Un atacante genera ruido artificial constante (Jamming moderado). La señal no se cae, pero obliga al receptor (ej. un dron o sensor IoT) a usar el 100% de CPU para decodificar, drenando su batería en minutos y provocando una Denegación de Servicio física.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                    <div class="bg-purple-700 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-xl">Reed-Solomon</h3>
+                        <span class="bg-purple-900 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Disponibilidad en Ráfaga</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col md:flex-row gap-6">
+                        <div class="flex-1">
+                            <p class="text-sm text-slate-600 mb-4">Opera agrupando bits en "símbolos" en lugar de bits individuales. Es el rey reparando <strong>errores contiguos masivos</strong> (ej. códigos QR manchados o arañazos en CDs).</p>
+                            
+                            <div class="bg-slate-100 p-4 rounded text-center visual-block text-sm flex justify-center items-center space-x-1 mb-4 h-24">
+                                <span class="bg-blue-300 px-3 py-2 rounded text-blue-900 font-bold">D1</span>
+                                <span class="bg-blue-300 px-3 py-2 rounded text-blue-900 font-bold">D2</span>
+                                <span class="bg-slate-800 text-white px-3 py-2 rounded font-bold animate-pulse" title="Bloque destruido">💥</span>
+                                <span class="bg-slate-800 text-white px-3 py-2 rounded font-bold animate-pulse" title="Bloque destruido">💥</span>
+                                <span class="bg-purple-300 px-3 py-2 rounded text-purple-900 border border-purple-500">FEC1</span>
+                                <span class="bg-purple-300 px-3 py-2 rounded text-purple-900 border border-purple-500">FEC2</span>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 bg-red-50 border-l-4 border-red-500 p-4 flex flex-col justify-center">
+                            <h4 class="font-bold text-red-700 text-sm flex items-center mb-2">
+                                <span>⚠️ Vulnerabilidad: Límite Matemático Estricto</span>
+                            </h4>
+                            <p class="text-xs text-red-900 leading-relaxed">
+                                Si Reed-Solomon tiene "2 símbolos" de redundancia (FEC), puede recuperar como máximo "2 símbolos" destruidos. Si un ataque o interferencia destruye <strong>3 símbolos</strong>, todo el bloque es matemáticamente irrecuperable. Los atacantes pueden calcular este margen para emitir pulsos electromagnéticos justos que superen el umbral sin gastar energía de más.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col border border-slate-200">
+                    <div class="bg-purple-700 p-4 text-white flex justify-between items-center">
+                        <h3 class="font-bold text-xl">Códigos de Hamming</h3>
+                        <span class="bg-purple-900 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">Integridad de Hardware</span>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col md:flex-row gap-6">
+                        <div class="flex-1">
+                            <p class="text-sm text-slate-600 mb-4">Mecanismo ultra-rápido de lógica computacional. Intercala bits de paridad en posiciones clave de los datos para triangular el bit exacto que falló.</p>
+                            
+                            <div class="bg-slate-100 p-3 rounded text-center visual-block text-sm flex justify-center items-center mb-4 h-24">
+                                <div class="flex space-x-1">
+                                    <span class="text-purple-600 font-bold border-b-2 border-purple-400">P1</span>
+                                    <span class="text-purple-600 font-bold border-b-2 border-purple-400">P2</span>
+                                    <span class="text-slate-700">D1</span>
+                                    <span class="text-purple-600 font-bold border-b-2 border-purple-400">P3</span>
+                                    <span class="text-slate-700">D2</span>
+                                    <span class="text-slate-700">D3</span>
+                                    <span class="text-slate-700">D4</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 bg-red-50 border-l-4 border-red-500 p-4 flex flex-col justify-center">
+                            <h4 class="font-bold text-red-700 text-sm flex items-center mb-2">
+                                <span>⚠️ Vulnerabilidad: Corrección Falsa (Corrupción Activa)</span>
+                            </h4>
+                            <p class="text-xs text-red-900 leading-relaxed">
+                                Hamming(7,4) detecta errores de 2 bits, pero <strong>solo corrige 1 bit</strong>. Si un atacante usa *Fault Injection* (ej. láser sobre un chip) para alterar 2 bits simultáneos, el algoritmo se confunde y "corrige" un tercer bit que estaba sano. El resultado es que el propio mecanismo de defensa corrompe aún más el sistema, provocando fallos impredecibles o escalada de privilegios.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'border-blue-500', 'border-purple-500', 'border-emerald-500', 'text-white');
+                btn.classList.add('text-slate-300', 'border-transparent');
+            });
+            
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-300');
+            
+            if(tabId === 'sec1') activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
+            if(tabId === 'sec2') activeBtn.classList.add('bg-slate-800', 'border-blue-500', 'text-white');
+            if(tabId === 'sec3') activeBtn.classList.add('bg-slate-800', 'border-purple-500', 'text-white');
+        }
+    </script>
+</body>
+</html>
