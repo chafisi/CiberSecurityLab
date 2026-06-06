@@ -59,6 +59,11 @@
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">5. Casos prácticos</li>
                 <li><button onclick="switchTab('sec5-17')" id="btn-sec5-17" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-amber-400">Caso 17: Reed-Solomon (Óptico)</button></li>
                 <li><button onclick="switchTab('sec5-18')" id="btn-sec5-18" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-amber-400">Caso 18: LDPC (Wi-Fi/5G)</button></li>
+                <!-- 6. GLOSARIO -->
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">6. Terminología</li>
+                <li><button onclick="switchTab('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-pink-400">Glosario Unidad 9</button></li>
+            
+            
             </ul>
         </nav>
     </aside>
@@ -594,8 +599,102 @@
             </div>
         </section>
 
+    
+            <!-- ==========================================
+        SECCIÓN 6: GLOSARIO UNIDAD 9
+        ========================================== -->
+        <section id="sec6" class="tab-content hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-pink-500 text-white p-2 rounded-lg font-bold text-xl">Aa</span>
+                <h2 class="text-3xl font-bold text-slate-800">Glosario de Términos (U9)</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">ARQ (Automatic Repeat Request)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Mecanismo de control de errores donde el receptor pide al emisor que retransmita el paquete si detecta que ha llegado corrupto[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">AWGN (Ruido Gaussiano Aditivo)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ruido térmico constante que afecta a la señal en transmisiones, típico en comunicaciones inalámbricas[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">BER (Bit Error Rate)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Tasa de error de bit. Proporción de bits recibidos incorrectamente respecto al total de bits transmitidos[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">BLER (Block Error Rate)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Tasa de error de bloque. Usada en soportes ópticos y radio para medir cuántos bloques completos llegan corruptos.</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">BSC (Canal Binario Simétrico)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Modelo teórico de canal donde la probabilidad de que un '0' se convierta en '1' es la misma que a la inversa[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">CRC (Cyclic Redundancy Check)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Algoritmo de detección de errores basado en división polinómica. Muy eficaz para ráfagas de errores físicos[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">FEC (Forward Error Correction)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Técnicas que añaden redundancia en origen para que el receptor pueda <strong>corregir</strong> el error sin pedir retransmisión[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Hamming (Códigos de)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Código de bloque que usa potencias de dos para corregir errores simples (1 bit) de forma extremadamente rápida en hardware (ej. caché)[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Huffman / Lempel-Ziv</h4>
+                        <p class="text-xs text-slate-600 mt-1">Algoritmos de compresión de fuente <strong>sin pérdida (Lossless)</strong> que eliminan redundancia estadística (ej. ficheros ZIP)[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Interleaving (Entrelazado)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Técnica que desordena temporalmente los bits antes de transmitir para que las interferencias largas ("ráfagas") afecten a bits separados al reordenarlos en destino[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Jamming</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ataque físico que emite ruido electromagnético intencionado para ahogar una señal legítima y causar denegación de servicio[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">LDPC (Low-Density Parity-Check)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Código avanzado de corrección iterativa mediante matrices dispersas. Imprescindible en estándares como Wi-Fi 6 y 5G[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Límite de Shannon</h4>
+                        <p class="text-xs text-slate-600 mt-1">La capacidad teórica máxima a la que se pueden transmitir datos sin error a través de un canal que tiene un ruido determinado[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Reed-Solomon</h4>
+                        <p class="text-xs text-slate-600 mt-1">Código FEC basado en símbolos y cuerpos de Galois, diseñado para corregir daños masivos contiguos (ej. arañazos en un CD)[cite: 3].</p>
+                    </div>
+
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">SNR (Signal-to-Noise Ratio)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Relación Señal/Ruido. Mide la potencia de la señal útil frente a la potencia del ruido de fondo. A mayor SNR, mejor canal[cite: 3].</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
 
 
+
+
+    
     </main>
 
     <script>
@@ -615,6 +714,10 @@
             if(tabId === 'sec2-det' || tabId === 'sec2-cor') activeBtn.classList.add('bg-slate-800', 'border-emerald-500', 'text-white');
             if(tabId === 'sec3') activeBtn.classList.add('bg-slate-800', 'border-purple-500', 'text-white');
             if(tabId === 'sec4') activeBtn.classList.add('bg-slate-800', 'border-amber-500', 'text-white');
+            if(tabId === 'sec5') activeBtn.classList.add('bg-slate-800', 'border-pink-500', 'text-white');
+            if(tabId === 'sec6') activeBtn.classList.add('bg-slate-800', 'border-pink-500', 'text-white');
+            if(tabId === 'sec5-17') activeBtn.classList.add('bg-slate-800', 'border-pink-500', 'text-white');
+             if(tabId === 'sec5-18') activeBtn.classList.add('bg-slate-800', 'border-pink-500', 'text-white');
         }
 
         // Lab LDPC
