@@ -192,7 +192,7 @@
                     <div class="pl-4 border-l-4 border-blue-200">
                         <p class="text-sm text-slate-600 mb-4">La compresión no aporta confidencialidad. Si se co-comprimen secretos (cookies) junto con datos controlados por el atacante, la reducción del tamaño del <em>ciphertext</em> revela el secreto.</p>
                         <div class="bg-red-50 p-4 rounded border border-red-200 text-sm text-slate-700">
-                            <strong>Ataques CRIME y BREACH:</strong> Explotan la compresión TLS y HTTP para crear oráculos de longitud[cite: 5, 7, 8]. Auditoría: Desactivar compresión TLS, usar padding aleatorio y separar contextos de compresión[cite: 5, 8].
+                            <strong>Ataques CRIME y BREACH:</strong> Explotan la compresión TLS y HTTP para crear oráculos de longitud. Auditoría: Desactivar compresión TLS, usar padding aleatorio y separar contextos de compresión[cite: 5, 8].
                         </div>
                     </div>
                 </div>
@@ -250,7 +250,7 @@
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">CRIME / BREACH</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Ataques que explotan co-compresión de secretos e inputs para inferir la cookie midiendo el tamaño del ciphertext[cite: 5, 7, 8].</p></div>
+                        <div class="flip-card-back"><p class="text-sm">Ataques que explotan co-compresión de secretos e inputs para inferir la cookie midiendo el tamaño del ciphertext.</p></div>
                     </div>
                 </div>
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -402,11 +402,11 @@
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">BREACH</h4>
-                        <p class="text-xs text-slate-600 mt-1">Ataque que explota compresión HTTP del cuerpo de la respuesta para inferir secretos[cite: 5, 7, 8].</p>
+                        <p class="text-xs text-slate-600 mt-1">Ataque que explota compresión HTTP del cuerpo de la respuesta para inferir secretos.</p>
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">CRIME</h4>
-                        <p class="text-xs text-slate-600 mt-1">Ataque que explota compresión TLS o cabeceras SPDY/HTTP inferir cookies[cite: 5, 7, 8].</p>
+                        <p class="text-xs text-slate-600 mt-1">Ataque que explota compresión TLS o cabeceras SPDY/HTTP inferir cookies.</p>
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">DEFLATE</h4>
@@ -418,7 +418,7 @@
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">HPACK / QPACK</h4>
-                        <p class="text-xs text-slate-600 mt-1">Sistemas de compresión de cabeceras en HTTP/2 y HTTP/3. Mal configurados causan oráculos de longitud[cite: 5, 7, 8].</p>
+                        <p class="text-xs text-slate-600 mt-1">Sistemas de compresión de cabeceras en HTTP/2 y HTTP/3. Mal configurados causan oráculos de longitud.</p>
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">Padding Aleatorio</h4>
