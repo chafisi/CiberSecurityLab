@@ -78,7 +78,7 @@
             <div class="space-y-6">
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
                     <h3 class="font-bold text-xl text-blue-800 mb-2">Fundamentos de Compresión y Shannon</h3>
-                    <p class="text-slate-700 text-sm mb-4">El objetivo de la codificación de la fuente es representar mensajes de forma eficiente eliminando redundancias[cite: 7, 8]. La métrica fundamental es la <strong>Entropía ($H(X)$)</strong>, que establece el límite teórico de compresión[cite: 7, 8].</p>
+                    <p class="text-slate-700 text-sm mb-4">El objetivo de la codificación de la fuente es representar mensajes de forma eficiente eliminando redundancias. La métrica fundamental es la <strong>Entropía ($H(X)$)</strong>, que establece el límite teórico de compresión.</p>
                     <div class="bg-blue-50 p-4 rounded text-center border border-blue-200 mb-4">
                         <span class="font-mono text-lg font-bold text-blue-900">$$H(X)=-\sum_{i=1}^{n}p(x_{i})\log_{2}p(x_{i})$$</span>
                     </div>
@@ -91,16 +91,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-emerald-200 border-t-4">
                         <h3 class="font-bold text-lg text-emerald-800 mb-2">Sin Pérdida (Lossless)</h3>
-                        <p class="text-sm text-slate-600 mb-2">Recupera exactamente el original bit a bit[cite: 7, 8].</p>
+                        <p class="text-sm text-slate-600 mb-2">Recupera exactamente el original bit a bit.</p>
                         <ul class="list-disc pl-5 text-sm text-slate-700">
-                            <li><strong>Huffman:</strong> Códigos cortos a símbolos frecuentes. Óptimo para fuentes estáticas[cite: 7, 8].</li>
-                            <li><strong>Aritmética:</strong> Codifica secuencias como subintervalos [0,1). Se acerca más a $H(X)$[cite: 7, 8].</li>
-                            <li><strong>Lempel-Ziv (LZ77/LZ78):</strong> Aprende patrones con ventanas deslizantes (ZIP, gzip)[cite: 7, 8].</li>
+                            <li><strong>Huffman:</strong> Códigos cortos a símbolos frecuentes. Óptimo para fuentes estáticas.</li>
+                            <li><strong>Aritmética:</strong> Codifica secuencias como subintervalos [0,1). Se acerca más a $H(X)$.</li>
+                            <li><strong>Lempel-Ziv (LZ77/LZ78):</strong> Aprende patrones con ventanas deslizantes (ZIP, gzip).</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-amber-200 border-t-4">
                         <h3 class="font-bold text-lg text-amber-800 mb-2">Con Pérdida (Lossy)</h3>
-                        <p class="text-sm text-slate-600 mb-2">Sacrifica información no esencial para mayor ratio de compresión[cite: 7, 8].</p>
+                        <p class="text-sm text-slate-600 mb-2">Sacrifica información no esencial para mayor ratio de compresión.</p>
                         <ul class="list-disc pl-5 text-sm text-slate-700">
                             <li><strong>JPEG:</strong> Usa DCT, cuantización y luego Huffman[cite: 6, 7].</li>
                             <li><strong>MP3 / MPEG:</strong> Para audio y vídeo[cite: 7].</li>
@@ -110,7 +110,7 @@
 
                 <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-900 text-white">
                     <h3 class="font-bold text-xl text-blue-300 mb-2">Pipeline Seguro: CtE (Compress-then-Encrypt)</h3>
-                    <p class="text-sm text-slate-300 mb-4">Comprimir elimina patrones; cifrar oculta la estructura[cite: 8]. Orden correcto para evitar fugas[cite: 7, 8]:</p>
+                    <p class="text-sm text-slate-300 mb-4">Comprimir elimina patrones; cifrar oculta la estructura[cite: 8]. Orden correcto para evitar fugas:</p>
                     <div class="flex items-center justify-between bg-slate-900 p-4 rounded border border-slate-700 text-center font-bold text-sm">
                         <div class="flex-1 text-blue-400">1. Compresión</div>
                         <span class="text-slate-500">➔</span>
@@ -134,8 +134,8 @@
             <div class="space-y-6">
                 <!-- LAB HUFFMAN -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Lab 1: Algoritmo de Huffman[cite: 7, 8]</h3>
-                    <p class="text-sm text-slate-600 mb-4">Asigna bits más cortos a las letras más probables[cite: 7, 8].</p>
+                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Lab 1: Algoritmo de Huffman</h3>
+                    <p class="text-sm text-slate-600 mb-4">Asigna bits más cortos a las letras más probables.</p>
                     <div class="flex gap-4 items-center bg-slate-50 p-4 rounded border">
                         <button onclick="runHuffman()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded text-sm font-bold">Generar Árbol Huffman</button>
                         <div id="huffman-out" class="text-sm font-mono text-slate-800 hidden bg-white p-2 border rounded flex-1">
@@ -146,8 +146,8 @@
 
                 <!-- LAB LZ77 -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Lab 2: Lempel-Ziv (LZ77)[cite: 7, 8]</h3>
-                    <p class="text-sm text-slate-600 mb-4">Utiliza una ventana deslizante para buscar repeticiones y genera tripletas (desplazamiento, longitud, literal)[cite: 7, 8].</p>
+                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Lab 2: Lempel-Ziv (LZ77)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Utiliza una ventana deslizante para buscar repeticiones y genera tripletas (desplazamiento, longitud, literal).</p>
                     <div class="bg-slate-50 p-4 rounded border">
                         <p class="font-mono text-lg tracking-widest text-center mb-4">A B A B A B A A B</p>
                         <button onclick="runLZ()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded text-sm font-bold w-full">Comprimir con LZ77</button>
@@ -160,8 +160,8 @@
 
                 <!-- LAB ARITMÉTICA -->
                 <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
-                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Lab 3: Codificación Aritmética[cite: 7, 8]</h3>
-                    <p class="text-sm text-slate-600 mb-4">Refina un intervalo [0, 1) iterativamente[cite: 7, 8]. Es más eficiente que Huffman pero computacionalmente más compleja[cite: 7, 8].</p>
+                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Lab 3: Codificación Aritmética</h3>
+                    <p class="text-sm text-slate-600 mb-4">Refina un intervalo [0, 1) iterativamente. Es más eficiente que Huffman pero computacionalmente más compleja.</p>
                     <div class="bg-slate-50 p-4 rounded border text-center">
                         <div class="h-8 bg-slate-200 flex rounded overflow-hidden text-xs text-white font-bold mb-2">
                             <div class="w-1/2 bg-blue-500 flex items-center justify-center">A [0, 0.5)</div>
@@ -190,7 +190,7 @@
                         <span class="bg-blue-600 text-white p-2 rounded-lg">C</span> Confidencialidad
                     </h3>
                     <div class="pl-4 border-l-4 border-blue-200">
-                        <p class="text-sm text-slate-600 mb-4">La compresión no aporta confidencialidad. Si se co-comprimen secretos (cookies) junto con datos controlados por el atacante, la reducción del tamaño del <em>ciphertext</em> revela el secreto[cite: 7, 8].</p>
+                        <p class="text-sm text-slate-600 mb-4">La compresión no aporta confidencialidad. Si se co-comprimen secretos (cookies) junto con datos controlados por el atacante, la reducción del tamaño del <em>ciphertext</em> revela el secreto.</p>
                         <div class="bg-red-50 p-4 rounded border border-red-200 text-sm text-slate-700">
                             <strong>Ataques CRIME y BREACH:</strong> Explotan la compresión TLS y HTTP para crear oráculos de longitud[cite: 5, 7, 8]. Auditoría: Desactivar compresión TLS, usar padding aleatorio y separar contextos de compresión[cite: 5, 8].
                         </div>
@@ -203,7 +203,7 @@
                         <span class="bg-emerald-600 text-white p-2 rounded-lg">I</span> Integridad
                     </h3>
                     <div class="pl-4 border-l-4 border-emerald-200">
-                        <p class="text-sm text-slate-600 mb-4">La codificación de fuente asume que el canal es fiable. Una alteración de 1 bit en un flujo Huffman o LZ desincroniza todo el decodificador[cite: 7, 8].</p>
+                        <p class="text-sm text-slate-600 mb-4">La codificación de fuente asume que el canal es fiable. Una alteración de 1 bit en un flujo Huffman o LZ desincroniza todo el decodificador.</p>
                         <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
                             <strong>Auditoría AEAD:</strong> Es obligatorio el uso de cifrado autenticado (AES-GCM, ChaCha20-Poly1305) posterior a la compresión para garantizar la integridad[cite: 6, 7, 8].
                         </div>
@@ -216,9 +216,9 @@
                         <span class="bg-amber-500 text-white p-2 rounded-lg">D</span> Disponibilidad
                     </h3>
                     <div class="pl-4 border-l-4 border-amber-200">
-                        <p class="text-sm text-slate-600 mb-4">Un algoritmo de compresión mal dimensionado consume excesiva CPU y RAM, abriendo vectores de Denegación de Servicio (DoS)[cite: 7, 8].</p>
+                        <p class="text-sm text-slate-600 mb-4">Un algoritmo de compresión mal dimensionado consume excesiva CPU y RAM, abriendo vectores de Denegación de Servicio (DoS).</p>
                         <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
-                            <strong>Zip-Bombs y Resource Exhaustion:</strong> Atacantes envían archivos altamente comprimidos que, al descomprimirse, agotan la memoria[cite: 7, 8]. Auditoría: Imponer límites de tamaño, <em>timeouts</em> y controlar profundidad de recursión[cite: 7, 8].
+                            <strong>Zip-Bombs y Resource Exhaustion:</strong> Atacantes envían archivos altamente comprimidos que, al descomprimirse, agotan la memoria. Auditoría: Imponer límites de tamaño, <em>timeouts</em> y controlar profundidad de recursión.
                         </div>
                     </div>
                 </div>
@@ -238,13 +238,13 @@
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Entropía $H(X)$</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Incertidumbre media y límite teórico de compresión[cite: 7, 8]. Alta entropía = claves, incompresible[cite: 8].</p></div>
+                        <div class="flip-card-back"><p class="text-sm">Incertidumbre media y límite teórico de compresión. Alta entropía = claves, incompresible[cite: 8].</p></div>
                     </div>
                 </div>
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Pipeline CtE</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Compress-then-Encrypt. Comprimir antes de cifrar elimina patrones y reduce carga[cite: 7, 8].</p></div>
+                        <div class="flip-card-back"><p class="text-sm">Compress-then-Encrypt. Comprimir antes de cifrar elimina patrones y reduce carga.</p></div>
                     </div>
                 </div>
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -256,13 +256,13 @@
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">LZ77 vs Huffman</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Huffman requiere conocer probabilidades[cite: 8]. LZ77 es universal, aprende patrones al vuelo usando ventana deslizante[cite: 7, 8].</p></div>
+                        <div class="flip-card-back"><p class="text-sm">Huffman requiere conocer probabilidades[cite: 8]. LZ77 es universal, aprende patrones al vuelo usando ventana deslizante.</p></div>
                     </div>
                 </div>
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
                     <div class="flip-card-inner">
                         <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Zip-bomb</h3></div>
-                        <div class="flip-card-back"><p class="text-sm">Ataque de DoS donde un archivo diminuto se expande gigabytes al descomprimirse, saturando la memoria[cite: 7, 8].</p></div>
+                        <div class="flip-card-back"><p class="text-sm">Ataque de DoS donde un archivo diminuto se expande gigabytes al descomprimirse, saturando la memoria.</p></div>
                     </div>
                 </div>
                 <div class="flip-card" onclick="this.classList.toggle('flipped')">
@@ -410,11 +410,11 @@
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">DEFLATE</h4>
-                        <p class="text-xs text-slate-600 mt-1">Algoritmo que combina LZ77 (patrones) y Huffman. Usado en ZIP, gzip y PNG[cite: 7, 8].</p>
+                        <p class="text-xs text-slate-600 mt-1">Algoritmo que combina LZ77 (patrones) y Huffman. Usado en ZIP, gzip y PNG.</p>
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">Entropía de Shannon</h4>
-                        <p class="text-xs text-slate-600 mt-1">Incertidumbre matemática de una fuente. Define el límite teórico al que se puede comprimir sin pérdida[cite: 7, 8].</p>
+                        <p class="text-xs text-slate-600 mt-1">Incertidumbre matemática de una fuente. Define el límite teórico al que se puede comprimir sin pérdida.</p>
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">HPACK / QPACK</h4>
@@ -426,7 +426,7 @@
                     </div>
                     <div class="border-b border-slate-100 pb-3">
                         <h4 class="font-bold text-pink-700 text-sm">Zip-bomb</h4>
-                        <p class="text-xs text-slate-600 mt-1">Ataque físico (DoS) donde un archivo malicioso agota la CPU/RAM durante la fase de descompresión[cite: 7, 8].</p>
+                        <p class="text-xs text-slate-600 mt-1">Ataque físico (DoS) donde un archivo malicioso agota la CPU/RAM durante la fase de descompresión.</p>
                     </div>
                 </div>
             </div>
