@@ -55,7 +55,8 @@
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">5. Casos Prácticos</li>
                 <li><button onclick="switchSection('sec5-15')" id="btn-sec5-15" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Caso 15: Huffman (JPEG)</button></li>
                 <li><button onclick="switchSection('sec5-16')" id="btn-sec5-16" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Caso 16: CRIME (TLS)</button></li>
-
+                <li><button onclick="switchSection('sec5-15-2')" id="btn-sec5-15" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Caso 15: Huffman (JPEG)#2</button></li>
+                <li><button onclick="switchSection('sec5-16-2')" id="btn-sec5-16" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Caso 16: CRIME (TLS) #2</button></li>    
                 <!-- 6. GLOSARIO -->
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">6. Terminología</li>
                 <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Glosario U8</button></li>
@@ -384,6 +385,225 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Segunda versión-->
+         <section id="sec5-15-2" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-xl">C15</span>
+                <h2 class="text-3xl font-bold text-slate-800">Caso 15: Huffman en JPEG y Transmisión Segura</h2>
+            </div>
+            
+            <div class="flex flex-col gap-5">
+                <div class="bg-slate-800 p-5 rounded-xl text-white shadow-md border-l-4 border-slate-500">
+                    <h3 class="font-bold text-indigo-300 mb-2 text-lg">Enunciado del Caso</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Muchas plataformas procesan imágenes subidas convirtiéndolas a JPEG (transformación DCT, cuantización y Huffman). Aunque se transmiten por HTTPS/TLS 1.3, la longitud del <em>ciphertext</em> puede revelar información indirecta (resolución, tipo). Esto crea un canal lateral si no se normaliza el tamaño o aplica <em>padding</em>. El caso analiza la interacción entre compresión y cifrado.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                    <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para un pipeline seguro "comprimir &rarr; cifrar"</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-700">
+                        <div class="bg-blue-50 p-3 rounded border border-blue-100">
+                            <strong class="text-blue-900 block mb-1">Funcionales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Comprimir imágenes antes del cifrado.</li>
+                                <li>Transmitir mediante canal cifrado (TLS 1.3).</li>
+                                <li>Aplicar padding o normalización si es necesario.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">No funcionales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Minimizar latencia en conversión.</li>
+                                <li>Reducir tamaño significativamente.</li>
+                                <li>Evitar patrones correlacionables en tamaño.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Técnicos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Codificación Huffman (JPEG).</li>
+                                <li>Algoritmos robustos (AES-GCM).</li>
+                                <li>Eliminar metadatos EXIF.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+                    <h4 class="font-bold text-emerald-800 mb-3 text-lg">2. Elaborar un caso de uso</h4>
+                    <div class="space-y-3 text-sm text-slate-700">
+                        <p><strong class="text-emerald-700">Caso de uso:</strong> Pipeline seguro "comprimir &rarr; cifrar" en el envío de imágenes.</p>
+                        <p><strong class="text-emerald-700">Actor:</strong> Usuario y Servidor seguro.</p>
+                        
+                        <div class="bg-emerald-50 p-3 rounded border border-emerald-100">
+                            <strong class="text-emerald-800 block mb-2">Flujo principal:</strong>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>El usuario selecciona y sube una imagen al sistema.</li>
+                                <li>La aplicación convierte la imagen a JPEG usando codificación Huffman.</li>
+                                <li>La comunicación con el servidor se cifra mediante TLS 1.3.</li>
+                                <li>El servidor recibe la imagen comprimida y la procesa o almacena.</li>
+                                <li>El sistema registra el tamaño resultante para análisis interno o estadísticas.</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="bg-red-50 p-3 rounded border border-red-100">
+                            <strong class="text-red-700 block mb-2">Excepciones:</strong>
+                            <ul class="list-disc pl-5 space-y-1 text-red-900">
+                                <li>La imagen contiene metadatos sensibles &rarr; se realiza una normalización previa.</li>
+                                <li>El tamaño del archivo podría revelar información &rarr; se aplica padding uniforme antes del cifrado.</li>
+                                <li>Fallo en la compresión &rarr; se reintenta con parámetros conservadores.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                    <h4 class="font-bold text-purple-800 mb-3 text-lg">3. Métodos de validación frente a oráculos de longitud</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>Pruebas de canal lateral por longitud:</strong> comparar archivos similares para verificar si la longitud del <em>ciphertext</em> permite inferencias (resolución, detalle).</li>
+                        <li><strong>Evaluación de rendimiento:</strong> comparar el ahorro de ancho de banda frente a PNG o RAW.</li>
+                        <li><strong>Verificación TLS:</strong> uso de SSL Labs o Wireshark para confirmar cifrado correcto sin fallback.</li>
+                        <li><strong>Análisis de privacidad:</strong> comprobar eliminación de EXIF.</li>
+                        <li><strong>Pruebas con padding:</strong> medir si el padding anula la deducibilidad de tamaños.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-500 shadow-sm">
+                    <h4 class="font-bold text-amber-800 mb-3 text-lg flex items-center gap-2">
+                        <span>💡</span> Puntos Clave de Correlación (Mindset de Ignacio)
+                    </h4>
+                    <p class="text-sm text-slate-700 mb-3">Cómo deducir la respuesta leyendo el enunciado:</p>
+                    <table class="w-full text-sm text-left border-collapse">
+                        <tr class="border-b border-amber-200">
+                            <th class="py-2 text-amber-900 w-1/2">Pista en el Enunciado</th>
+                            <th class="py-2 text-amber-900 w-1/2">Se transforma en (Solución)</th>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...generando archivos mucho más pequeños..."</td>
+                            <td class="py-2 font-semibold">Req. Funcional: Comprimir antes de cifrar.</td>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...longitud puede revelar información indirecta..."</td>
+                            <td class="py-2 font-semibold">Req. Técnico: Aplicar Padding uniforme.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 italic text-slate-600">"...filtrado de metadatos."</td>
+                            <td class="py-2 font-semibold">Excepción: Normalización previa (eliminar EXIF).</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5-16-2" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-xl">C16</span>
+                <h2 class="text-3xl font-bold text-slate-800">Caso 16: CRIME en TLS/HTTP y Filtración de Cabeceras</h2>
+            </div>
+            
+            <div class="flex flex-col gap-5">
+                <div class="bg-slate-800 p-5 rounded-xl text-white shadow-md border-l-4 border-slate-500">
+                    <h3 class="font-bold text-indigo-300 mb-2 text-lg">Enunciado del Caso</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        CRIME explota la compresión a nivel TLS/SPDY para inferir secretos (cookies). Si un servidor co-comprime datos del atacante y secretos, la variación de longitud del <em>ciphertext</em> revela coincidencias. Relevante en HTTP/2-3 (HPACK/QPACK), creando canales laterales si no se gestionan correctamente los contextos de compresión.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                    <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para evitar filtraciones por compresión</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-700">
+                        <div class="bg-blue-50 p-3 rounded border border-blue-100">
+                            <strong class="text-blue-900 block mb-1">Funcionales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Separar datos secretos de entradas del usuario.</li>
+                                <li>Desactivar compresión TLS si no aporta beneficio.</li>
+                                <li>Gestionar contextos (HTTP/2 y 3).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">No funcionales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Mantener rendimiento pese a desactivar TLS comp.</li>
+                                <li>Minimizar latencia de las mitigaciones.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Técnicos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Mitigaciones BREACH (Padding, Rate limit).</li>
+                                <li>Configurar HPACK/QPACK (cabeceras aisladas).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+                    <h4 class="font-bold text-emerald-800 mb-3 text-lg">2. Elaborar un caso de uso</h4>
+                    <div class="space-y-3 text-sm text-slate-700">
+                        <p><strong class="text-emerald-700">Caso de uso:</strong> Evitar la co-compresión de datos sensibles.</p>
+                        <p><strong class="text-emerald-700">Actor:</strong> Servidor Web o Balanceador de carga.</p>
+                        
+                        <div class="bg-emerald-50 p-3 rounded border border-emerald-100">
+                            <strong class="text-emerald-800 block mb-2">Flujo principal:</strong>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>El cliente envía petición con parámetros controlados.</li>
+                                <li>El servidor genera la respuesta incluyendo cookies secretas.</li>
+                                <li>El sistema evita co-comprimir datos sensibles (separa contextos HPACK o añade padding).</li>
+                                <li>La comunicación se cifra en TLS 1.3 sin compresión a nivel de protocolo.</li>
+                                <li>El usuario recibe respuesta sin revelar información por longitud.</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="bg-red-50 p-3 rounded border border-red-100">
+                            <strong class="text-red-700 block mb-2">Excepciones:</strong>
+                            <ul class="list-disc pl-5 space-y-1 text-red-900">
+                                <li>Uso de HTTP/2 o 3 sin políticas seguras &rarr; se activa separación estricta de contextos.</li>
+                                <li>Compresión en grandes volúmenes de tráfico &rarr; Padding aleatorio obligatorio.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                    <h4 class="font-bold text-purple-800 mb-3 text-lg">3. Métodos de validación de oráculos de longitud</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>Entorno de pruebas especializado (CRIME/BREACH):</strong> Comprobar variaciones de longitud al modificar parámetros.</li>
+                        <li><strong>Escaneos automáticos:</strong> Auditoría web para dependencias HPACK/QPACK.</li>
+                        <li><strong>Análisis de tráfico cifrado:</strong> Verificar que TLS no usa compresión y no hay correlación input/tamaño.</li>
+                        <li><strong>Revisión de políticas HPACK:</strong> Confirmar aislamiento de cookies.</li>
+                        <li><strong>Pruebas de padding:</strong> Evaluar si el relleno elimina el oráculo matemático.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-500 shadow-sm">
+                    <h4 class="font-bold text-amber-800 mb-3 text-lg flex items-center gap-2">
+                        <span>💡</span> Puntos Clave de Correlación (Mindset de Ignacio)
+                    </h4>
+                    <p class="text-sm text-slate-700 mb-3">Traducción del enunciado a la rúbrica oficial:</p>
+                    <table class="w-full text-sm text-left border-collapse">
+                        <tr class="border-b border-amber-200">
+                            <th class="py-2 text-amber-900 w-1/2">Pista en el Enunciado</th>
+                            <th class="py-2 text-amber-900 w-1/2">Se transforma en (Solución)</th>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...explota la compresión a nivel TLS..."</td>
+                            <td class="py-2 font-semibold">Req. Funcional: Desactivar compresión TLS.</td>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...co-comprime datos del atacante y secretos..."</td>
+                            <td class="py-2 font-semibold">Req. Funcional: Separar entradas de secretos.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 italic text-slate-600">"...mecanismos HPACK y QPACK..."</td>
+                            <td class="py-2 font-semibold">Validación: Revisión de políticas HPACK para aislar cookies.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
 
         <!-- ==========================================
              6. GLOSARIO
