@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Template - Unidad 4: Sistemas Cortafuegos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .flip-card { perspective: 1000px; height: 220px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .flip-card-front { background-color: white; }
+        .flip-card-back { background-color: #1e293b; color: white; transform: rotateY(180deg); overflow-y: auto; }
+        .tab-btn.active { background-color: #1e293b; border-color: #3b82f6; color: white; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-80 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
+        <div class="p-6 bg-slate-950 border-b border-slate-800">
+            <h1 class="text-xl font-bold text-blue-400">Master Template</h1>
+            <p class="text-xs text-slate-500 mt-1">Unidad 4: Sistemas Cortafuegos</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-2">
+            <ul class="space-y-1 text-sm">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-2">1. Apartado Teórico</li>
+                <li><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 tab-btn active">Arquitectura y Evolución</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">2. Métodos y Labs</li>
+                <li><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Reglas, NAT y Políticas</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">3. Perspectiva Auditoría</li>
+                <li><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Triada CID (Firewalls)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">4. Repaso Flash</li>
+                <li><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Tarjetas Memorización</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">5. Casos Prácticos</li>
+                <li><button onclick="switchSection('sec5-5')" id="btn-sec5-5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Caso 5: Mala config (Perimetral)</button></li>
+                <li><button onclick="switchSection('sec5-6')" id="btn-sec5-6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Caso 6: Migración a NGFW</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">6. Terminología</li>
+                <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Glosario U4</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 relative p-8">
+
+        <section id="sec1" class="main-section fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-blue-600 text-white p-2 rounded-lg font-bold text-xl">1</span>
+                <h2 class="text-3xl font-bold text-slate-800">Arquitectura y Evolución de Firewalls</h2>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-xl text-blue-800 mb-4 border-b pb-2">Evolución Histórica</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-50 p-4 rounded border">
+                            <span class="text-xs font-bold text-slate-500 uppercase">1ª Gen (Capa 3 y 4)</span>
+                            <h4 class="font-bold text-slate-800 mt-1">Filtro de Paquetes</h4>
+                            <p class="text-sm text-slate-600 mt-2">Analiza cabeceras (IP, Puerto). Estático. Sin memoria de las conexiones. Muy rápido pero fácil de evadir.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded border border-blue-200">
+                            <span class="text-xs font-bold text-blue-500 uppercase">2ª Gen (Capa 4)</span>
+                            <h4 class="font-bold text-blue-800 mt-1">Stateful Inspection</h4>
+                            <p class="text-sm text-slate-700 mt-2">Guarda el "estado" de la conexión en una tabla de sesiones. Si un paquete no pertenece a una conexión iniciada, se descarta.</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded border border-purple-200">
+                            <span class="text-xs font-bold text-purple-500 uppercase">3ª Gen (Capa 7)</span>
+                            <h4 class="font-bold text-purple-800 mt-1">NGFW & Proxy</h4>
+                            <p class="text-sm text-slate-700 mt-2">Inspección profunda de paquetes (DPI), análisis SSL, filtrado web e integración con IPS. Visibilidad total de las aplicaciones.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Zonas de Seguridad y DMZ</h3>
+                        <p class="text-sm text-slate-600 mb-3">Segmentación física o lógica para contener amenazas basándose en niveles de confianza:</p>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                            <li><strong>LAN (Inside):</strong> Máxima confianza. Usuarios corporativos.</li>
+                            <li><strong>WAN (Outside):</strong> Cero confianza. Internet.</li>
+                            <li><strong>DMZ (Desmilitarizada):</strong> Zona aislada para servicios públicos (Web, Correo). Si es comprometida, el atacante no puede saltar a la LAN.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Tipos de Despliegue</h3>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                            <li><strong>Cortafuegos de Red:</strong> Protege un perímetro o segmento completo (Appliance/Router).</li>
+                            <li><strong>Cortafuegos de Host:</strong> Software en el endpoint (Windows Defender FW). Evita movimientos laterales.</li>
+                            <li><strong>Transparente (Bridge):</strong> Modo invisible (Capa 2). No altera el enrutamiento IP, filtra tramas Ethernet subrepticiamente.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-emerald-600 text-white p-2 rounded-lg font-bold text-xl">2</span>
+                <h2 class="text-3xl font-bold text-slate-800">Configuración: Reglas, ACLs y NAT</h2>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl text-emerald-800 mb-2">Orden de Aplicación de Reglas (ACL)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Los firewalls evalúan las reglas <strong>Top-Down (de arriba hacia abajo)</strong>. La primera regla que hace "Match" se ejecuta y el resto se ignora. La última regla siempre debe ser <em>Implicit Deny</em> (Denegar todo).</p>
+                    
+                    <div class="bg-slate-900 text-green-400 p-4 rounded font-mono text-sm border-l-4 border-emerald-500 overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <tr><th class="pb-2 border-b border-slate-700">Orden</th><th class="pb-2 border-b border-slate-700">Origen</th><th class="pb-2 border-b border-slate-700">Destino</th><th class="pb-2 border-b border-slate-700">Puerto</th><th class="pb-2 border-b border-slate-700">Acción</th></tr>
+                            <tr><td class="py-1">1</td><td>192.168.1.50 (Admin)</td><td>Cualquiera</td><td>22 (SSH)</td><td>ALLOW</td></tr>
+                            <tr><td class="py-1">2</td><td>192.168.1.0/24 (LAN)</td><td>10.0.0.10 (DMZ)</td><td>443 (HTTPS)</td><td>ALLOW</td></tr>
+                            <tr><td class="py-1">3</td><td>Cualquiera</td><td>192.168.1.0/24</td><td>Cualquiera</td><td class="text-red-400">DENY</td></tr>
+                            <tr><td class="py-1 text-slate-500">4</td><td class="text-slate-500">0.0.0.0/0</td><td class="text-slate-500">0.0.0.0/0</td><td class="text-slate-500">ANY</td><td class="text-red-500 font-bold">DENY (Implicit)</td></tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="font-bold text-xl text-emerald-800 mb-2">NAT (Traducción de Direcciones)</h3>
+                        <p class="text-sm text-slate-600 mb-3">Oculta las IPs internas de la LAN al salir a Internet. El firewall sustituye la IP origen privada por su IP pública.</p>
+                        <div class="bg-slate-50 p-3 rounded border text-sm text-slate-700">
+                            <strong>PAT (Port Address Translation / NAT Overload):</strong> Permite que miles de equipos internos compartan una sola IP Pública utilizando diferentes puertos lógicos de salida.
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                        <h3 class="font-bold text-xl text-emerald-800 mb-2">WAF (Web Application Firewall)</h3>
+                        <p class="text-sm text-slate-600 mb-3">Cortafuegos especializado exclusivamente en la Capa 7 para tráfico HTTP/HTTPS.</p>
+                        <div class="bg-slate-50 p-3 rounded border text-sm text-slate-700">
+                            Bloquea ataques de inyección (SQLi), Cross-Site Scripting (XSS) y anomalías en APIs. Trabaja interpretando el comportamiento de la aplicación web, no solo los puertos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-purple-600 text-white p-2 rounded-lg font-bold text-xl">3</span>
+                <h2 class="text-3xl font-bold text-slate-800">Perspectiva Auditoría: Triada CID</h2>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-8 space-y-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-blue-200 pb-2 mb-4">
+                        <span class="bg-blue-600 text-white p-2 rounded-lg">C</span> Confidencialidad
+                    </h3>
+                    <div class="pl-4 border-l-4 border-blue-200">
+                        <p class="text-sm text-slate-600 mb-4">El firewall previene el acceso no autorizado aislando servicios (Segmentación/DMZ). Sin embargo, se enfrenta al reto del tráfico cifrado: si el atacante cifra la exfiltración o el malware (C2), un firewall tradicional está "ciego".</p>
+                        <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
+                            <strong>Control de Auditoría:</strong> Inspección SSL/TLS profunda (DPI) en NGFW. El firewall actúa como un proxy Man-in-the-Middle autorizado interno para abrir el túnel, leer el contenido, validarlo y volver a cifrarlo hacia el exterior.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-emerald-200 pb-2 mb-4">
+                        <span class="bg-emerald-600 text-white p-2 rounded-lg">I</span> Integridad
+                    </h3>
+                    <div class="pl-4 border-l-4 border-emerald-200">
+                        <p class="text-sm text-slate-600 mb-4">La integridad de un cortafuegos depende de la gestión de sus políticas. Una sola regla mal redactada (shadow rule) o un puerto expuesto por error de sintaxis compromete toda la red.</p>
+                        <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
+                            <strong>Control de Auditoría:</strong> Implementar <em>revisión por pares</em> antes del despliegue, auditorías automatizadas de la tabla de reglas (eliminación de reglas superpuestas) y aplicar siempre el Principio de Mínimo Privilegio.
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-2 border-b-2 border-amber-200 pb-2 mb-4">
+                        <span class="bg-amber-500 text-white p-2 rounded-lg">D</span> Disponibilidad
+                    </h3>
+                    <div class="pl-4 border-l-4 border-amber-200">
+                        <p class="text-sm text-slate-600 mb-4">Los firewalls protegen contra avalanchas de tráfico y conexiones anómalas (SYN Floods). Sin embargo, una mala configuración (Falsos Positivos) o la activación indiscriminada del DPI en NGFW puede agotar la CPU del equipo y colapsar la red legítima.</p>
+                        <div class="bg-slate-50 p-4 rounded border text-sm text-slate-700">
+                            <strong>Control de Auditoría:</strong> Escalabilidad y balanceo de carga (HA - Alta Disponibilidad). Monitorizar constantemente el consumo de recursos tras activar análisis heurísticos o de capa 7 para evitar un cuello de botella.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-amber-500 text-white p-2 rounded-lg font-bold text-xl">4</span>
+                <h2 class="text-3xl font-bold text-slate-800">Tarjetas de Memorización Flash</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Implicit Deny</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Regla fundamental al final de cualquier ACL: Si el tráfico no hace match con ninguna regla explícita superior, se bloquea por defecto.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">Stateful Firewall</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Mantiene una tabla de conexiones activas. Si un paquete de entrada pertenece a una conexión que inició un equipo interno, lo deja pasar dinámicamente.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">DMZ</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Zona Desmilitarizada. Subred lógica aislada que aloja servicios expuestos a Internet (Web, SMTP) para proteger la red local interna.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">NGFW</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Next-Gen Firewall. Combina el control clásico con IPS, Inteligencia de Amenazas, DPI (Capa 7) y Control de Aplicaciones.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">DPI</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Deep Packet Inspection. Análisis del contenido interno del paquete de datos (payload), no solo las cabeceras (IP/Puerto).</p></div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg text-slate-700">WAF</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Web Application Firewall. Protege aplicaciones web contra vulnerabilidades como OWASP Top 10 (Inyecciones SQL, XSS).</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5-5" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-xl">C5</span>
+                <h2 class="text-3xl font-bold text-slate-800">Caso 5: Mala config (Perimetral)</h2>
+            </div>
+            
+            <div class="flex flex-col gap-5">
+                <div class="bg-slate-800 p-5 rounded-xl text-white shadow-md border-l-4 border-slate-500">
+                    <h3 class="font-bold text-indigo-300 mb-2 text-lg">Enunciado del Caso</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Una mala configuración en un firewall perimetral dejó expuesto a Internet un puerto de BBDD. Falta de segmentación permitió acceso por fuerza bruta provocando exfiltración de datos. La auditoría reveló que la gestión era manual, no había revisión por pares, ni procedimientos formales, ni detección de puertos expuestos.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                    <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para evitar errores de configuración</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                        <div class="bg-blue-50 p-3 rounded border border-blue-100">
+                            <strong class="text-blue-900 block mb-1">Funcionales / No Funcionales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Prevenir exposición accidental de servicios hacia redes no confiables.</li>
+                                <li>Aislar activos críticos (segmentación).</li>
+                                <li>Garantizar disponibilidad ante incidentes.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Técnicos / Organizativos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Detección automatizada de puertos expuestos.</li>
+                                <li>Diseño bajo mínimo privilegio.</li>
+                                <li>Procedimientos formales y revisión por pares (evitar modo manual).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+                    <h4 class="font-bold text-emerald-800 mb-3 text-lg">2. Caso de Uso: Gestión segura de reglas</h4>
+                    <div class="space-y-3 text-sm text-slate-700">
+                        <p><strong class="text-emerald-700">Actor:</strong> Administrador de red y Auditor (revisión conjunta).</p>
+                        
+                        <div class="bg-emerald-50 p-3 rounded border border-emerald-100">
+                            <strong class="text-emerald-800 block mb-2">Flujo principal:</strong>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>El admin diseña una regla con "mínimo privilegio".</li>
+                                <li>Se envía a herramienta de gestión (no manual).</li>
+                                <li>Un auditor realiza "revisión por pares".</li>
+                                <li>Se aplican "procedimientos formales de validación" en preproducción.</li>
+                                <li>Se despliega y se monitoriza.</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="bg-red-50 p-3 rounded border border-red-100">
+                            <strong class="text-red-700 block mb-2">Excepciones:</strong>
+                            <ul class="list-disc pl-5 space-y-1 text-red-900">
+                                <li>La revisión detecta un puerto genérico expuesto &rarr; Se bloquea el pase a producción y se exige segmentación.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                    <h4 class="font-bold text-purple-800 mb-3 text-lg">3. Métodos de validación</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>Escaneos de vulnerabilidades:</strong> Proceso automatizado de detección empírica desde el exterior.</li>
+                        <li><strong>Simulación Fuerza Bruta:</strong> Verificar bloqueos temporales e IPS.</li>
+                        <li><strong>Auditorías periódicas:</strong> Depurar reglas obsoletas (shadow rules).</li>
+                        <li><strong>Logs de ticketing:</strong> Comprobar evidencias de revisión por pares.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-500 shadow-sm">
+                    <h4 class="font-bold text-amber-800 mb-3 text-lg flex items-center gap-2">
+                        <span>💡</span> Correlación Ignacio (Ingeniería Inversa)
+                    </h4>
+                    <table class="w-full text-sm text-left border-collapse">
+                        <tr class="border-b border-amber-200">
+                            <th class="py-2 text-amber-900 w-1/2">Pista (Enunciado)</th>
+                            <th class="py-2 text-amber-900 w-1/2">Solución</th>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...no existían procedimientos formales para validar reglas..."</td>
+                            <td class="py-2 font-semibold">Gobernanza estricta sobre cambios (Req. Organizativo).</td>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...no había revisión por pares..."</td>
+                            <td class="py-2 font-semibold">Participación obligatoria en el Flujo Principal (Caso Uso).</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 italic text-slate-600">"...proceso automatizado detección de puertos expuestos."</td>
+                            <td class="py-2 font-semibold">Validación mediante Escaneos automatizados desde el exterior.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5-6" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-indigo-600 text-white p-2 rounded-lg font-bold text-xl">C6</span>
+                <h2 class="text-3xl font-bold text-slate-800">Caso 6: Migración a NGFW</h2>
+            </div>
+            
+            <div class="flex flex-col gap-5">
+                <div class="bg-slate-800 p-5 rounded-xl text-white shadow-md border-l-4 border-slate-500">
+                    <h3 class="font-bold text-indigo-300 mb-2 text-lg">Enunciado del Caso</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Migración a NGFW para detectar apps evasivas (Tor, proxies anónimos) que saltan restricciones corporativas. Se integró inspección profunda de paquetes (DPI), control de aplicaciones y análisis de tráfico cifrado para ver patrones encubiertos. Requirió ajustes de rendimiento, optimización de políticas y formación del personal (alertas/capacidades). Requiere gestión del cambio.
+                    </p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                    <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para la transición a NGFW</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                        <div class="bg-blue-50 p-3 rounded border border-blue-100">
+                            <strong class="text-blue-900 block mb-1">Funcionales / No Funcionales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Bloquear tráfico encubierto (evasivas).</li>
+                                <li>Aplicar control de apps mediante DPI (Capa 7).</li>
+                                <li>Asegurar rendimiento de red (sin cuellos botella).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Técnicos / Organizativos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Infraestructura PKI para análisis de tráfico cifrado.</li>
+                                <li>Gestión del cambio organizativo.</li>
+                                <li>Capacitación continua del SOC.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+                    <h4 class="font-bold text-emerald-800 mb-3 text-lg">2. Caso de Uso: Detección apps no autorizadas</h4>
+                    <div class="space-y-3 text-sm text-slate-700">
+                        <p><strong class="text-emerald-700">Actor:</strong> Motor NGFW (Inspección Capa 7).</p>
+                        
+                        <div class="bg-emerald-50 p-3 rounded border border-emerald-100">
+                            <strong class="text-emerald-800 block mb-2">Flujo principal:</strong>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Empleado ejecuta herramienta evasiva (proxy anónimo).</li>
+                                <li>Firewall aplica "análisis de tráfico cifrado" abriendo el túnel.</li>
+                                <li>Se realiza "DPI" sobre el payload.</li>
+                                <li>El sistema identifica "patrones encubiertos" (firmas Tor).</li>
+                                <li>Bloquea "conexiones no autorizadas" y alerta al SOC.</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="bg-red-50 p-3 rounded border border-red-100">
+                            <strong class="text-red-700 block mb-2">Excepciones:</strong>
+                            <ul class="list-disc pl-5 space-y-1 text-red-900">
+                                <li>Tráfico pertenece a banca/salud (exento de inspección) &rarr; Omite descifrado y aplica filtro estándar SNI.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                    <h4 class="font-bold text-purple-800 mb-3 text-lg">3. Métodos de validación de eficacia</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>Inyección de tráfico simulado:</strong> Usar Tor/proxies controlados para confirmar el bloqueo en Capa 7.</li>
+                        <li><strong>Monitorización de rendimiento:</strong> Comprobar uso de CPU/RAM en horas pico para validar la "optimización de políticas".</li>
+                        <li><strong>Red Teaming:</strong> Validar "canales cifrados" y descifrado SSL sin errores de certificado.</li>
+                        <li><strong>Ejercicios de Incident Response:</strong> Validar que el SOC ha asimilado la "formación del personal".</li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-500 shadow-sm">
+                    <h4 class="font-bold text-amber-800 mb-3 text-lg flex items-center gap-2">
+                        <span>💡</span> Correlación Ignacio (Ingeniería Inversa)
+                    </h4>
+                    <table class="w-full text-sm text-left border-collapse">
+                        <tr class="border-b border-amber-200">
+                            <th class="py-2 text-amber-900 w-1/2">Pista (Enunciado)</th>
+                            <th class="py-2 text-amber-900 w-1/2">Solución</th>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...análisis de tráfico cifrado..."</td>
+                            <td class="py-2 font-semibold">Técnico: PKI para inspección SSL. Caso Uso: Apertura del túnel.</td>
+                        </tr>
+                        <tr class="border-b border-amber-100">
+                            <td class="py-2 italic text-slate-600">"...requirió ajustes de rendimiento..."</td>
+                            <td class="py-2 font-semibold">No Funcional: Asegurar rendimiento de red bajo carga de DPI.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 italic text-slate-600">"...formación del personal para comprender nuevas alertas..."</td>
+                            <td class="py-2 font-semibold">Validación: Ejercicios de respuesta a incidentes con el equipo.</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-pink-500 text-white p-2 rounded-lg font-bold text-xl">Aa</span>
+                <h2 class="text-3xl font-bold text-slate-800">Glosario de Términos (U4)</h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">ACL</h4>
+                        <p class="text-xs text-slate-600 mt-1">Access Control List. Lista secuencial de reglas (Permit/Deny) aplicadas top-down.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">DMZ</h4>
+                        <p class="text-xs text-slate-600 mt-1">Demilitarized Zone. Segmento intermedio que aísla los servicios expuestos a Internet para proteger la red interna.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">DPI</h4>
+                        <p class="text-xs text-slate-600 mt-1">Deep Packet Inspection. Análisis profundo del cuerpo (payload) del paquete, buscando firmas o malware, no solo cabeceras.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Implicit Deny</h4>
+                        <p class="text-xs text-slate-600 mt-1">Regla final invisible en un firewall: "Lo que no está explícitamente permitido, está prohibido".</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">NAT / PAT</h4>
+                        <p class="text-xs text-slate-600 mt-1">Network/Port Address Translation. Traduce direcciones IP privadas a públicas. PAT usa puertos para compartir una sola IP pública.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">NGFW</h4>
+                        <p class="text-xs text-slate-600 mt-1">Next-Generation Firewall. Integra inspección de estado con inteligencia de aplicaciones (Capa 7), IDS/IPS y descifrado SSL.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Shadow Rules</h4>
+                        <p class="text-xs text-slate-600 mt-1">Reglas superpuestas. Ocurre cuando una regla más amplia colocada arriba impide que una regla más específica abajo llegue a evaluarse.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">Stateful Firewall</h4>
+                        <p class="text-xs text-slate-600 mt-1">Cortafuegos con memoria. Rastrea el estado de las conexiones activas, permitiendo dinámicamente el tráfico de respuesta.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-pink-700 text-sm">WAF</h4>
+                        <p class="text-xs text-slate-600 mt-1">Web Application Firewall. Defiende aplicaciones web de inyecciones, XSS y abusos HTTP, actuando como escudo inverso.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function switchSection(secId) {
+            document.querySelectorAll('.main-section').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'bg-slate-800', 'text-white', 'border-blue-500', 'border-emerald-500', 'border-purple-500', 'border-amber-500', 'border-pink-500', 'border-indigo-500');
+                btn.classList.add('border-transparent');
+                btn.style.backgroundColor = '';
+            });
+            
+            document.getElementById(secId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + secId);
+            activeBtn.classList.remove('border-transparent');
+            activeBtn.classList.add('active', 'text-white');
+            
+            if(secId === 'sec1') activeBtn.classList.add('border-blue-500', 'bg-slate-800');
+            if(secId === 'sec2') activeBtn.classList.add('border-emerald-500', 'bg-slate-800');
+            if(secId === 'sec3') activeBtn.classList.add('border-purple-500', 'bg-slate-800');
+            if(secId === 'sec4') activeBtn.classList.add('border-amber-500', 'bg-slate-800');
+            if(secId.startsWith('sec5')) activeBtn.classList.add('border-indigo-500', 'bg-slate-800');
+            if(secId === 'sec6') activeBtn.classList.add('border-pink-500', 'bg-slate-800');
+        }
+    </script>
+</body>
+</html>
