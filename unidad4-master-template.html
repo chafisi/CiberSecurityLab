@@ -23,13 +23,14 @@
     <aside class="w-80 bg-slate-900 text-slate-300 flex flex-col shadow-2xl z-10 flex-shrink-0">
         <div class="p-6 bg-slate-950 border-b border-slate-800">
             <h1 class="text-xl font-bold text-blue-400">Master Template</h1>
-            <div class="px-6 pb-4 bg-slate-950 border-b border-slate-800">
-                <div class="flex gap-2">
-                    <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-slate-200 px-3 py-2 rounded text-sm border border-slate-700 focus:outline-none focus:border-blue-500" onkeydown="if(event.key === 'Enter') executeSearch()">
-                    <button onclick="executeSearch()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition">🔍</button>
-                </div>
-            </div>
+            
             <p class="text-xs text-slate-500 mt-1">Unidad 4: Sistemas Cortafuegos</p>
+        </div>
+        <div class="px-6 pb-4 bg-slate-950 border-b border-slate-800">
+            <div class="flex gap-2">
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-slate-200 px-3 py-2 rounded text-sm border border-slate-700 focus:outline-none focus:border-blue-500" onkeydown="if(event.key === 'Enter') executeSearch()">
+                <button onclick="executeSearch()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded text-sm transition">🔍</button>
+            </div>
         </div>
         <nav class="flex-1 overflow-y-auto no-scrollbar py-2">
             <ul class="space-y-1 text-sm">
@@ -258,19 +259,31 @@
                     <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para evitar errores de configuración</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
                         <div class="bg-blue-50 p-3 rounded border border-blue-100">
-                            <strong class="text-blue-900 block mb-1">Funcionales / No Funcionales:</strong>
+                            <strong class="text-blue-900 block mb-1">Funcionales:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Prevenir exposición accidental de servicios hacia redes no confiables.</li>
-                                <li>Aislar activos críticos (segmentación).</li>
-                                <li>Garantizar disponibilidad ante incidentes.</li>
+                                <li>Bloquear el acceso externo no autorizado a servicios internos críticos (BBDD).</li>
+                                <li>Aplicar segmentación de red estricta para contener posibles intrusiones.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-3 rounded border border-slate-200">
-                            <strong class="text-slate-800 block mb-1">Técnicos / Organizativos:</strong>
+                            <strong class="text-slate-800 block mb-1">No funcionales:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Detección automatizada de puertos expuestos.</li>
-                                <li>Diseño bajo mínimo privilegio.</li>
-                                <li>Procedimientos formales y revisión por pares (evitar modo manual).</li>
+                                <li>Garantizar la disponibilidad continua de los servicios ante incidentes.</li>
+                                <li>Mantener la resiliencia operativa frente a configuraciones erróneas.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Técnicos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Implementar escaneo automatizado de puertos expuestos.</li>
+                                <li>Configurar la base de reglas con un "Implicit Deny" final.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Organizativos / Legales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Implantar procedimientos formales de "revisión por pares" (cero gestión manual).</li>
+                                <li>Cumplir con el RGPD previniendo la exfiltración de datos mediante el Principio de Mínimo Privilegio.</li>
                             </ul>
                         </div>
                     </div>
@@ -352,22 +365,34 @@
                 </div>
 
                 <div class="bg-white p-5 rounded-xl border-l-4 border-blue-500 shadow-sm">
-                    <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para la transición a NGFW</h4>
+                    <h4 class="font-bold text-blue-800 mb-3 text-lg">1. Requisitos para la transición a un NGFW</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
                         <div class="bg-blue-50 p-3 rounded border border-blue-100">
-                            <strong class="text-blue-900 block mb-1">Funcionales / No Funcionales:</strong>
+                            <strong class="text-blue-900 block mb-1">Funcionales:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Bloquear tráfico encubierto (evasivas).</li>
-                                <li>Aplicar control de apps mediante DPI (Capa 7).</li>
-                                <li>Asegurar rendimiento de red (sin cuellos botella).</li>
+                                <li>Detectar y bloquear aplicaciones evasivas (Tor, proxies anónimos).</li>
+                                <li>Realizar inspección profunda de paquetes (DPI) en Capa 7.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-3 rounded border border-slate-200">
-                            <strong class="text-slate-800 block mb-1">Técnicos / Organizativos:</strong>
+                            <strong class="text-slate-800 block mb-1">No funcionales:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Infraestructura PKI para análisis de tráfico cifrado.</li>
-                                <li>Gestión del cambio organizativo.</li>
-                                <li>Capacitación continua del SOC.</li>
+                                <li>Asegurar el rendimiento de red (minimizar la latencia del análisis DPI).</li>
+                                <li>Garantizar la escalabilidad del appliance sin saturar la CPU/RAM.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Técnicos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Desplegar infraestructura PKI para el "análisis de tráfico cifrado".</li>
+                                <li>Optimizar políticas e integrar módulos de control de aplicaciones.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded border border-slate-200">
+                            <strong class="text-slate-800 block mb-1">Organizativos / Legales:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Ejecutar plan de gestión del cambio y capacitación del personal.</li>
+                                <li>Excluir de la inspección SSL el tráfico protegido (banca/salud) para cumplir con normativas de privacidad (LOPDGDD).</li>
                             </ul>
                         </div>
                     </div>
