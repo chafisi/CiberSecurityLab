@@ -365,27 +365,27 @@
                             <div class="bg-blue-50 p-3 rounded border border-blue-200">
                                 <strong class="text-blue-900 block mb-1">Funcionales:</strong>
                                 <ul class="list-disc pl-5 space-y-1">
-                                    <li>Definir y validar reglas de filtrado antes de su aplicación en producción[cite: 17].</li>
-                                    <li>Mantener un registro completo de cambios con historial de versiones[cite: 17].</li>
-                                    <li>Generar alertas automáticas ante puertos no autorizados o cambios sospechosos[cite: 17].</li>
+                                    <li>Definir y validar reglas de filtrado antes de su aplicación en producción.</li>
+                                    <li>Mantener un registro completo de cambios con historial de versiones.</li>
+                                    <li>Generar alertas automáticas ante puertos no autorizados o cambios sospechosos.</li>
                                 </ul>
                             </div>
                             <div class="bg-slate-50 p-3 rounded border border-slate-300">
                                 <strong class="text-slate-800 block mb-1">No funcionales:</strong>
                                 <ul class="list-disc pl-5 space-y-1">
-                                    <li>Alta disponibilidad del servicio de firewall (≥99,9%)[cite: 17].</li>
-                                    <li>Baja latencia en el filtrado para no afectar al tráfico legítimo[cite: 17].</li>
-                                    <li>Interfaz de gestión segura, clara y resistente a errores humanos[cite: 17].</li>
+                                    <li>Alta disponibilidad del servicio de firewall (≥99,9%).</li>
+                                    <li>Baja latencia en el filtrado para no afectar al tráfico legítimo.</li>
+                                    <li>Interfaz de gestión segura, clara y resistente a errores humanos.</li>
                                 </ul>
                             </div>
                             <div class="bg-slate-50 p-3 rounded border border-slate-300">
                                 <strong class="text-slate-800 block mb-1">Técnicos:</strong>
                                 <ul class="list-disc pl-5 space-y-1">
-                                    <li>Segmentación adecuada entre base de datos, frontend y administración[cite: 17].</li>
-                                    <li>Autenticación fuerte (MFA y RBAC)[cite: 17].</li>
-                                    <li>Automatización de pruebas (análisis y validación)[cite: 17].</li>
-                                    <li>Uso de entornos de prueba o staging antes del despliegue[cite: 17].</li>
-                                    <li>Aplicación del principio de mínimo privilegio[cite: 17].</li>
+                                    <li>Segmentación adecuada entre base de datos, frontend y administración.</li>
+                                    <li>Autenticación fuerte (MFA y RBAC).</li>
+                                    <li>Automatización de pruebas (análisis y validación).</li>
+                                    <li>Uso de entornos de prueba o staging antes del despliegue.</li>
+                                    <li>Aplicación del principio de mínimo privilegio.</li>
                                 </ul>
                             </div>
                         </div>
@@ -395,25 +395,25 @@
                     <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-600 shadow-sm">
                         <h4 class="font-bold text-emerald-900 mb-3 text-lg">2. Caso de uso: Creación segura de una regla</h4>
                         <div class="space-y-3 text-sm text-slate-700">
-                            <p><strong class="text-emerald-800">Actor:</strong> Administrador de seguridad[cite: 17].</p>
+                            <p><strong class="text-emerald-800">Actor:</strong> Administrador de seguridad.</p>
                             
                             <div class="bg-emerald-50 p-3 rounded border border-emerald-200">
                                 <strong class="text-emerald-900 block mb-2">Flujo principal:</strong>
                                 <ol class="list-decimal pl-5 space-y-1">
-                                    <li>Administrador propone nueva regla (ej. apertura de puerto)[cite: 17].</li>
-                                    <li>Revisión por pares (segundo admin o equipo)[cite: 17].</li>
-                                    <li>Sistema ejecuta validación automatizada (análisis de políticas)[cite: 17].</li>
-                                    <li>Aplicación en entorno de pruebas o modo controlado[cite: 17].</li>
-                                    <li>Despliegue en producción tras confirmar seguridad[cite: 17].</li>
-                                    <li>Cambio registrado en el historial del firewall[cite: 17].</li>
+                                    <li>Administrador propone nueva regla (ej. apertura de puerto).</li>
+                                    <li>Revisión por pares (segundo admin o equipo).</li>
+                                    <li>Sistema ejecuta validación automatizada (análisis de políticas).</li>
+                                    <li>Aplicación en entorno de pruebas o modo controlado.</li>
+                                    <li>Despliegue en producción tras confirmar seguridad.</li>
+                                    <li>Cambio registrado en el historial del firewall.</li>
                                 </ol>
                             </div>
                             
                             <div class="bg-red-50 p-3 rounded border border-red-200">
                                 <strong class="text-red-800 block mb-2">Excepciones:</strong>
                                 <ul class="list-disc pl-5 space-y-1 text-red-900">
-                                    <li>Regla insegura o redundante &rarr; se rechaza y documenta[cite: 17].</li>
-                                    <li>Fallos de rendimiento o interrupciones &rarr; rollback automático[cite: 17].</li>
+                                    <li>Regla insegura o redundante &rarr; se rechaza y documenta.</li>
+                                    <li>Fallos de rendimiento o interrupciones &rarr; rollback automático.</li>
                                 </ul>
                             </div>
                         </div>
@@ -423,16 +423,79 @@
                     <div class="bg-white p-5 rounded-xl border-l-4 border-purple-600 shadow-sm">
                         <h4 class="font-bold text-purple-900 mb-3 text-lg">3. Métodos de validación</h4>
                         <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
-                            <li>Auditorías periódicas de reglas, políticas y configuraciones[cite: 17].</li>
-                            <li>Escaneos automatizados (Nmap, Nessus, OpenVAS) para detectar puertos expuestos[cite: 17].</li>
-                            <li>Pruebas de penetración internas para verificar segmentación[cite: 17].</li>
-                            <li>Revisión por pares antes y después del despliegue[cite: 17].</li>
-                            <li>Comparación de arquitectura prevista vs configuración real (<em>config drift detection</em>)[cite: 17].</li>
+                            <li>Auditorías periódicas de reglas, políticas y configuraciones.</li>
+                            <li>Escaneos automatizados (Nmap, Nessus, OpenVAS) para detectar puertos expuestos.</li>
+                            <li>Pruebas de penetración internas para verificar segmentación.</li>
+                            <li>Revisión por pares antes y después del despliegue.</li>
+                            <li>Comparación de arquitectura prevista vs configuración real (<em>config drift detection</em>).</li>
                         </ul>
                     </div>
                 </div>
             </div>
-
+            
+            <!-- Correlación Oficial Ignacio (Ingeniería Inversa) -->
+            <div class="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-500 shadow-sm mt-2">
+                <h4 class="font-bold text-amber-900 mb-3 text-lg flex items-center gap-2">
+                    <span>🧠</span> Ficha de Correlación: Enunciado vs. Solución Oficial
+                </h4>
+                <p class="text-sm text-slate-700 mb-3">Análisis secuencial de cómo Ignacio transforma cada problema del caso en una propuesta exacta de su rúbrica[cite: 17]:</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left border-collapse">
+                        <thead>
+                            <tr class="bg-amber-200/50 text-amber-900">
+                                <th class="p-2 border-b border-amber-300 w-1/4">Enunciado (Problema)</th>
+                                <th class="p-2 border-b border-amber-300 w-1/6">Categoría</th>
+                                <th class="p-2 border-b border-amber-300 w-1/6">Tipo</th>
+                                <th class="p-2 border-b border-amber-300">Solución (Propuesta de Ignacio)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-700">
+                            <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...reutilización de contraseñas..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Con qué lo hace</td>
+                                <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. Técnico</span></td>
+                                <td class="p-2 font-medium">Autenticación fuerte para administradores (MFA y control de acceso basado en roles)[cite: 17].</td>
+                            </tr>
+                            <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...falta de segmentación..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Con qué lo hace</td>
+                                <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. Técnico</span></td>
+                                <td class="p-2 font-medium">Segmentación adecuada entre base de datos, frontend, servidores internos y administración[cite: 17].</td>
+                            </tr>
+                            <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...interrupción de varios servicios internos..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Cómo de bien lo hace</td>
+                                <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. No Funcional</span></td>
+                                <td class="p-2 font-medium">Alta disponibilidad del servicio de firewall (≥99,9%)[cite: 17].</td>
+                            </tr>
+                            <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...no existían procedimientos formales para validar reglas..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Qué hace el sistema</td>
+                                <td class="p-2"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Req. Funcional</span></td>
+                                <td class="p-2 font-medium">Definir y validar reglas de filtrado antes de su aplicación en producción[cite: 17].</td>
+                            </tr>
+                            <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...la gestión del cortafuegos se realizaba de forma manual..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Con qué lo hace</td>
+                                <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. Técnico</span></td>
+                                <td class="p-2 font-medium">Automatización de pruebas de reglas mediante herramientas de análisis y validación[cite: 17].</td>
+                            </tr>
+                            <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...no había revisión por pares..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Procedimiento</td>
+                                <td class="p-2"><span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">Validación / Flujo</span></td>
+                                <td class="p-2 font-medium">Revisión por pares de cualquier regla antes y después de su despliegue[cite: 17].</td>
+                            </tr>
+                            <tr class="hover:bg-amber-100/30 transition">
+                                <td class="p-2 italic">"...no existía un proceso automatizado de detección de puertos..."[cite: 17]</td>
+                                <td class="p-2 font-semibold">Control empírico</td>
+                                <td class="p-2"><span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">Validación</span></td>
+                                <td class="p-2 font-medium">Escaneos automatizados (Nmap, Nessus, OpenVAS) para detectar puertos expuestos[cite: 17].</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
 
         <section id="sec5-6" class="main-section hidden fade-in">
