@@ -348,6 +348,91 @@
                     </table>
                 </div>
             </div>
+
+            <!-- ==========================================
+                    APARTADO: SOLUCIONES IGNACIO (CASO 5)
+                    ========================================== -->
+            <div class="mt-8 pt-6 border-t-4 border-indigo-900">
+                <h3 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="bg-indigo-900 text-white p-2 rounded-lg text-sm">✅</span> Solución Oficial de Ignacio
+                </h3>
+                
+                <div class="flex flex-col gap-5">
+                    <!-- Requisitos Ignacio -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 shadow-sm">
+                        <h4 class="font-bold text-blue-900 mb-3 text-lg">1. Requisitos de seguridad en el firewall</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-700">
+                            <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                                <strong class="text-blue-900 block mb-1">Funcionales:</strong>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Definir y validar reglas de filtrado antes de su aplicación en producción[cite: 17].</li>
+                                    <li>Mantener un registro completo de cambios con historial de versiones[cite: 17].</li>
+                                    <li>Generar alertas automáticas ante puertos no autorizados o cambios sospechosos[cite: 17].</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-300">
+                                <strong class="text-slate-800 block mb-1">No funcionales:</strong>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Alta disponibilidad del servicio de firewall (≥99,9%)[cite: 17].</li>
+                                    <li>Baja latencia en el filtrado para no afectar al tráfico legítimo[cite: 17].</li>
+                                    <li>Interfaz de gestión segura, clara y resistente a errores humanos[cite: 17].</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-300">
+                                <strong class="text-slate-800 block mb-1">Técnicos:</strong>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Segmentación adecuada entre base de datos, frontend y administración[cite: 17].</li>
+                                    <li>Autenticación fuerte (MFA y RBAC)[cite: 17].</li>
+                                    <li>Automatización de pruebas (análisis y validación)[cite: 17].</li>
+                                    <li>Uso de entornos de prueba o staging antes del despliegue[cite: 17].</li>
+                                    <li>Aplicación del principio de mínimo privilegio[cite: 17].</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caso de Uso Ignacio -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-600 shadow-sm">
+                        <h4 class="font-bold text-emerald-900 mb-3 text-lg">2. Caso de uso: Creación segura de una regla</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <p><strong class="text-emerald-800">Actor:</strong> Administrador de seguridad[cite: 17].</p>
+                            
+                            <div class="bg-emerald-50 p-3 rounded border border-emerald-200">
+                                <strong class="text-emerald-900 block mb-2">Flujo principal:</strong>
+                                <ol class="list-decimal pl-5 space-y-1">
+                                    <li>Administrador propone nueva regla (ej. apertura de puerto)[cite: 17].</li>
+                                    <li>Revisión por pares (segundo admin o equipo)[cite: 17].</li>
+                                    <li>Sistema ejecuta validación automatizada (análisis de políticas)[cite: 17].</li>
+                                    <li>Aplicación en entorno de pruebas o modo controlado[cite: 17].</li>
+                                    <li>Despliegue en producción tras confirmar seguridad[cite: 17].</li>
+                                    <li>Cambio registrado en el historial del firewall[cite: 17].</li>
+                                </ol>
+                            </div>
+                            
+                            <div class="bg-red-50 p-3 rounded border border-red-200">
+                                <strong class="text-red-800 block mb-2">Excepciones:</strong>
+                                <ul class="list-disc pl-5 space-y-1 text-red-900">
+                                    <li>Regla insegura o redundante &rarr; se rechaza y documenta[cite: 17].</li>
+                                    <li>Fallos de rendimiento o interrupciones &rarr; rollback automático[cite: 17].</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validación Ignacio -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-purple-600 shadow-sm">
+                        <h4 class="font-bold text-purple-900 mb-3 text-lg">3. Métodos de validación</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                            <li>Auditorías periódicas de reglas, políticas y configuraciones[cite: 17].</li>
+                            <li>Escaneos automatizados (Nmap, Nessus, OpenVAS) para detectar puertos expuestos[cite: 17].</li>
+                            <li>Pruebas de penetración internas para verificar segmentación[cite: 17].</li>
+                            <li>Revisión por pares antes y después del despliegue[cite: 17].</li>
+                            <li>Comparación de arquitectura prevista vs configuración real (<em>config drift detection</em>)[cite: 17].</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
         <section id="sec5-6" class="main-section hidden fade-in">
