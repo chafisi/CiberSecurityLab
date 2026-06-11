@@ -605,6 +605,154 @@
                     </table>
                 </div>
             </div>
+
+            <!-- ==========================================
+                     APARTADO: SOLUCIONES IGNACIO (CASO 6)
+                     ========================================== -->
+            <div class="mt-8 pt-6 border-t-4 border-indigo-900">
+                <h3 class="text-2xl font-black text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="bg-indigo-900 text-white p-2 rounded-lg text-sm">✅</span> Solución Oficial de Ignacio
+                </h3>
+                
+                <div class="flex flex-col gap-5">
+                    <!-- Requisitos Ignacio -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-blue-600 shadow-sm">
+                        <h4 class="font-bold text-blue-900 mb-3 text-lg">1. Requisitos necesarios para transición a NGFW</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-700">
+                            <div class="bg-blue-50 p-3 rounded border border-blue-200">
+                                <strong class="text-blue-900 block mb-1">Funcionales:</strong>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Inspección profunda de paquetes (DPI) en tiempo real[cite: 15].</li>
+                                    <li>Identificación de aplicaciones, incluso cuando utilizan cifrado o técnicas evasivas[cite: 15].</li>
+                                    <li>Bloqueo automático de tráfico no autorizado según políticas corporativas[cite: 15].</li>
+                                    <li>Generación de reportes detallados sobre actividad sospechosa o evasiva[cite: 15].</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-300">
+                                <strong class="text-slate-800 block mb-1">No funcionales:</strong>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Rendimiento suficiente para DPI sin degradar servicios críticos[cite: 15].</li>
+                                    <li>Escalabilidad para gestionar picos de tráfico propios de entornos de telecomunicaciones[cite: 15].</li>
+                                    <li>Alertas claras y con baja tasa de falsos positivos[cite: 15].</li>
+                                    <li>Interfaz de gestión intuitiva para facilitar la adopción[cite: 15].</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded border border-slate-300">
+                                <strong class="text-slate-800 block mb-1">Técnicos:</strong>
+                                <ul class="list-disc pl-5 space-y-1">
+                                    <li>Integración con sistemas SIEM para correlación de eventos[cite: 15].</li>
+                                    <li>Soporte de políticas de control por usuario, aplicación, categoría y contenido[cite: 15].</li>
+                                    <li>Actualizaciones frecuentes de firmas, heurísticas y motores de análisis[cite: 15].</li>
+                                    <li>Capacidad de inspección TLS/SSL en escenarios permitidos[cite: 15].</li>
+                                    <li>Automatización de despliegue de reglas y políticas[cite: 15].</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caso de Uso Ignacio -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-emerald-600 shadow-sm">
+                        <h4 class="font-bold text-emerald-900 mb-3 text-lg">2. Caso de uso: Detección de una aplicación evasiva</h4>
+                        <div class="space-y-3 text-sm text-slate-700">
+                            <p><strong class="text-emerald-800">Actor:</strong> NGFW/Equipo de seguridad[cite: 15].</p>
+                            
+                            <div class="bg-emerald-50 p-3 rounded border border-emerald-200">
+                                <strong class="text-emerald-900 block mb-2">Flujo principal:</strong>
+                                <ol class="list-decimal pl-5 space-y-1">
+                                    <li>Un empleado intenta utilizar Tor, un proxy anónimo o una VPN no autorizada[cite: 15].</li>
+                                    <li>EI NGFW analiza el tráfico mediante DPI e identifica el patrón asociado a esa aplicación[cite: 15].</li>
+                                    <li>El cortafuegos bloquea automáticamente la conexión según las políticas definidas[cite: 15].</li>
+                                    <li>EI NGFW genera una alerta al SOC o al equipo de seguridad[cite: 15].</li>
+                                    <li>El incidente queda registrado para análisis y auditoría[cite: 15].</li>
+                                </ol>
+                            </div>
+                            
+                            <div class="bg-red-50 p-3 rounded border border-red-200">
+                                <strong class="text-red-800 block mb-2">Excepciones:</strong>
+                                <ul class="list-disc pl-5 space-y-1 text-red-900">
+                                    <li>Aplicación legítima mal clasificada &rarr; revisión de reglas, whitelisting controlado o reentrenamiento del motor de firmas[cite: 15].</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Validación Ignacio -->
+                    <div class="bg-white p-5 rounded-xl border-l-4 border-purple-600 shadow-sm">
+                        <h4 class="font-bold text-purple-900 mb-3 text-lg">3. Validación de eficacia tras despliegue</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                            <li>Pruebas de laboratorio utilizando aplicaciones evasivas reales (Tor, VPNs, túneles SSH, proxies)[cite: 15].</li>
+                            <li>Pruebas de rendimiento para verificar que el DPI no causa latencia excesiva ni afecta a servicios críticos[cite: 15].</li>
+                            <li>Revisión de alertas en el SOC para ajustar sensibilidad, reglas y reducir falsos positivos[cite: 15].</li>
+                            <li>Simulaciones de uso indebido para comprobar detección, bloqueo y correcto registro del incidente[cite: 15].</li>
+                            <li>Revisión periódica de políticas para asegurar que el NGFW cubre nuevas aplicaciones evasivas emergentes[cite: 15].</li>
+                        </ul>
+                    </div>
+
+                    <!-- Correlación Oficial Ignacio (Ingeniería Inversa) -->
+                    <div class="bg-amber-50 p-5 rounded-xl border-l-4 border-amber-500 shadow-sm mt-2">
+                        <h4 class="font-bold text-amber-900 mb-3 text-lg flex items-center gap-2">
+                            <span>🧠</span> Ficha de Correlación: Enunciado vs. Solución Oficial
+                        </h4>
+                        <p class="text-sm text-slate-700 mb-3">Análisis secuencial de cómo Ignacio transforma cada pista del caso en una métrica de su rúbrica[cite: 15]:</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-amber-200/50 text-amber-900">
+                                        <th class="p-2 border-b border-amber-300 w-1/4">Enunciado (Pista)</th>
+                                        <th class="p-2 border-b border-amber-300 w-1/6">Categoría</th>
+                                        <th class="p-2 border-b border-amber-300 w-1/6">Tipo</th>
+                                        <th class="p-2 border-b border-amber-300">Solución (Propuesta de Ignacio)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-slate-700">
+                                    <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...detectar aplicaciones evasivas como Tor, proxies..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Qué hace el sistema</td>
+                                        <td class="p-2"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Req. Funcional</span></td>
+                                        <td class="p-2 font-medium">Identificación de aplicaciones / Bloqueo automático de tráfico no autorizado[cite: 15].</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...inspección profunda de paquetes (DPI)..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Con qué / Qué hace</td>
+                                        <td class="p-2"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">Req. Funcional</span></td>
+                                        <td class="p-2 font-medium">Inspección profunda de paquetes (DPI) en tiempo real[cite: 15].</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...análisis de tráfico cifrado..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Con qué lo hace</td>
+                                        <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. Técnico</span></td>
+                                        <td class="p-2 font-medium">Capacidad de inspección TLS/SSL en escenarios permitidos[cite: 15].</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...requirió ajustes de rendimiento..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Cómo de bien lo hace</td>
+                                        <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. No Funcional</span></td>
+                                        <td class="p-2 font-medium">Rendimiento suficiente para DPI sin degradar servicios críticos[cite: 15].</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...formación del personal para comprender nuevas alertas..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Usabilidad / SOC</td>
+                                        <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. No Funcional</span></td>
+                                        <td class="p-2 font-medium">Alertas claras y con baja tasa de falsos positivos / Interfaz de gestión intuitiva[cite: 15].</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-100 hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...empresa de telecomunicaciones..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Contexto del negocio</td>
+                                        <td class="p-2"><span class="bg-slate-200 text-slate-700 px-2 py-1 rounded text-xs">Req. No Funcional</span></td>
+                                        <td class="p-2 font-medium">Escalabilidad para gestionar picos de tráfico propios de entornos de telecomunicaciones[cite: 15].</td>
+                                    </tr>
+                                    <tr class="hover:bg-amber-100/30 transition">
+                                        <td class="p-2 italic">"...el caso demuestra que los NGFW [...] requieren capacitación continua..."[cite: 15]</td>
+                                        <td class="p-2 font-semibold">Validación continua</td>
+                                        <td class="p-2"><span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs">Validación / Flujo</span></td>
+                                        <td class="p-2 font-medium">Revisión de alertas en el SOC para ajustar sensibilidad / Simulaciones de uso indebido[cite: 15].</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="sec6" class="main-section hidden fade-in">
