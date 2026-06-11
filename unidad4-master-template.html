@@ -52,6 +52,10 @@
 
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">6. Terminología</li>
                 <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Glosario U4</button></li>
+
+                <!-- 7. LABORATORIOS INTERACTIVOS -->
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">7. Labs Interactivos</li>
+                <li><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Simulador SOC (Ignacio)</button></li>
             </ul>
         </nav>
     </aside>
@@ -881,9 +885,229 @@
                 </div>
             </div>
         </section>
+        
+        <!-- ==========================================
+             7. LABORATORIOS INTERACTIVOS (SIMULADOR SOC)
+             ========================================== -->
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-red-600 text-white p-2 rounded-lg font-bold text-xl">🕹️</span>
+                    <h2 class="text-3xl font-bold text-slate-800">Simulador SOC: Operaciones de Firewall</h2>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="initLab1()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded font-bold shadow transition">Lab 1: Caso 5 (Perimetral)</button>
+                    <button onclick="initLab2()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded font-bold shadow transition">Lab 2: Caso 6 (NGFW)</button>
+                </div>
+            </div>
+
+            <!-- Contenedor de la Consola del Simulador -->
+            <div class="bg-slate-900 rounded-xl shadow-2xl flex-1 flex flex-col border border-slate-700 overflow-hidden">
+                <!-- Header de la consola -->
+                <div class="bg-slate-950 px-4 py-2 flex items-center justify-between border-b border-slate-800">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span id="lab-title" class="text-xs font-mono text-slate-500 uppercase tracking-widest">Selecciona un Laboratorio</span>
+                </div>
+
+                <!-- Pantalla del Terminal (Salida de texto) -->
+                <div id="terminal-screen" class="flex-1 p-6 font-mono text-sm text-green-400 overflow-y-auto space-y-4 bg-slate-900">
+                    <p class="text-slate-500">Esperando inicialización del entorno...</p>
+                </div>
+
+                <!-- Panel de Controles / Acciones -->
+                <div class="bg-slate-800 p-4 border-t border-slate-700">
+                    <p id="action-prompt" class="text-white font-semibold mb-3 text-sm hidden">Selecciona una acción técnica:</p>
+                    <div id="action-buttons" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Los botones se inyectarán aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
 
     </main>
 
+    <script>
+        // ==========================================
+        // LÓGICA DEL MOTOR DE LOS LABORATORIOS
+        // ==========================================
+        const terminal = document.getElementById('terminal-screen');
+        const actionButtons = document.getElementById('action-buttons');
+        const actionPrompt = document.getElementById('action-prompt');
+        const labTitle = document.getElementById('lab-title');
+
+        function printLog(message, type = 'info') {
+            const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : type === 'warning' ? 'text-yellow-400' : 'text-slate-300';
+            const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            terminal.innerHTML += `<div class="fade-in"><span class="text-slate-500">[${time}]</span> <span class="${color}">${message}</span></div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearTerminal() {
+            terminal.innerHTML = '';
+        }
+
+        function setActions(actions) {
+            actionButtons.innerHTML = '';
+            if (actions.length > 0) {
+                actionPrompt.classList.remove('hidden');
+                actions.forEach(act => {
+                    const btn = document.createElement('button');
+                    btn.className = "bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs px-4 py-3 rounded text-left border border-slate-600 transition flex items-center justify-between group";
+                    btn.innerHTML = `<span>${act.text}</span> <span class="opacity-0 group-hover:opacity-100 transition">↵</span>`;
+                    btn.onclick = act.action;
+                    actionButtons.appendChild(btn);
+                });
+            } else {
+                actionPrompt.classList.add('hidden');
+            }
+        }
+
+        // ==========================================
+        // JUEGO 1: CASO 5 (FIREWALL PERIMETRAL)
+        // ==========================================
+        function initLab1() {
+            labTitle.innerText = "LAB 01: HARDENING FIREWALL PERIMETRAL (Ignacio_Rúbrica_5)";
+            clearTerminal();
+            printLog("INICIANDO ENTORNO: Servidor de base de datos corporativo detectado.", "info");
+            printLog("ALERTA SIEM: Intentos de fuerza bruta detectados contra puerto 3306 desde WAN.", "error");
+            printLog("AUDITORÍA: La gestión actual es manual, sin MFA y sin segmentación.", "warning");
+            
+            setTimeout(() => {
+                printLog("TAREA: Diseñar una regla segura para permitir el acceso legítimo a la BBDD.", "info");
+                setActions([
+                    { text: "> ACCIÓN A: Abrir puerto 3306 en WAN, pero con contraseña fuerte.", action: lab1Fail },
+                    { text: "> ACCIÓN B: Implementar segmentación, MFA y despliegue en Staging.", action: lab1Step2 }
+                ]);
+            }, 1000);
+        }
+
+        function lab1Fail() {
+            printLog("APLICANDO CAMBIO DIRECTO EN PRODUCCIÓN...", "warning");
+            setTimeout(() => {
+                printLog("FALLO CRÍTICO: Brecha de datos. No hay segmentación adecuada ni revisión por pares. Los atacantes reutilizaron contraseñas (Fuerza Bruta).", "error");
+                setActions([{ text: "> Reiniciar Laboratorio 1", action: initLab1 }]);
+            }, 1000);
+        }
+
+        function lab1Step2() {
+            printLog("CONFIGURACIÓN: Aplicando segmentación entre BBDD, frontend y administración...", "success");
+            printLog("CONFIGURACIÓN: Forzando Autenticación Fuerte (MFA + RBAC) para el Admin...", "success");
+            
+            setTimeout(() => {
+                printLog("ESTADO: Regla redactada bajo el 'Principio de Mínimo Privilegio'.", "info");
+                printLog("TAREA: Validar la regla antes de producción.", "info");
+                setActions([
+                    { text: "> Desplegar directamente para ahorrar tiempo.", action: () => lab1FailStep2() },
+                    { text: "> Enviar a Revisión por Pares y desplegar en Staging (Entorno de pruebas).", action: lab1Step3 }
+                ]);
+            }, 1500);
+        }
+
+        function lab1FailStep2() {
+            printLog("FALLO: La auditoría exige que no existan procedimientos manuales sin validación.", "error");
+            setActions([{ text: "> Reiniciar Laboratorio 1", action: initLab1 }]);
+        }
+
+        function lab1Step3() {
+            printLog("SISTEMA: Analizador de políticas ejecutando validación automatizada...", "info");
+            printLog("SISTEMA: Revisión por pares APROBADA.", "success");
+            printLog("SISTEMA: Desplegando en Staging... Test de conectividad OK.", "success");
+            printLog("SISTEMA: Aplicando regla en Producción y registrando cambios en el historial.", "success");
+            
+            setTimeout(() => {
+                printLog("TAREA FINAL: Validación continua del perímetro.", "warning");
+                setActions([
+                    { text: "> Ejecutar escaneos automatizados (Nmap/OpenVAS) y pruebas de penetración.", action: lab1Win }
+                ]);
+            }, 1500);
+        }
+
+        function lab1Win() {
+            printLog("SCANNER: Ejecutando Nmap stealth scan contra el perímetro...", "info");
+            printLog("RESULTADO: 0 Puertos no autorizados expuestos. Segmentación verificada.", "success");
+            printLog("¡LABORATORIO 1 COMPLETADO! Cumples todos los requisitos de Ignacio (Funcionales y Técnicos).", "success");
+            setActions([]);
+        }
+
+        // ==========================================
+        // JUEGO 2: CASO 6 (NGFW Y EVASIÓN)
+        // ==========================================
+        function initLab2() {
+            labTitle.innerText = "LAB 02: MIGRACIÓN NGFW Y DPI (Ignacio_Rúbrica_6)";
+            clearTerminal();
+            printLog("INICIANDO ENTORNO: Firewall Legacy migrado a NGFW en empresa de Telecomunicaciones.", "info");
+            printLog("TIMESTAMP: 06:00 AM. Inicio de turno del SOC.", "info");
+            
+            setTimeout(() => {
+                printLog("TAREA: Preparar el equipo para inspeccionar tráfico evasivo cifrado (Tor/Proxies).", "info");
+                setActions([
+                    { text: "> Activar DPI sin configurar certificados SSL.", action: lab2FailCert },
+                    { text: "> Desplegar PKI, activar Inspección TLS/SSL y encender motor DPI.", action: lab2Step2 }
+                ]);
+            }, 1000);
+        }
+
+        function lab2FailCert() {
+            printLog("CONFIGURACIÓN: Activando DPI en puertos 443...", "info");
+            setTimeout(() => {
+                printLog("FALLO CRÍTICO: Los navegadores de los usuarios muestran errores de certificado inválido. Tráfico interrumpido. No se ha desplegado infraestructura PKI.", "error");
+                setActions([{ text: "> Reiniciar Laboratorio 2", action: initLab2 }]);
+            }, 1000);
+        }
+
+        function lab2Step2() {
+            printLog("CONFIGURACIÓN: PKI Desplegada. Inspección TLS/SSL activa en escenarios permitidos.", "success");
+            printLog("CONFIGURACIÓN: Integración con SIEM establecida.", "success");
+            
+            setTimeout(() => {
+                printLog("EVENTO: Un empleado intenta utilizar Tor (tráfico cifrado no estándar).", "warning");
+                printLog("SISTEMA: NGFW aplica DPI e identifica el patrón asociado a la aplicación evasiva.", "info");
+                setActions([
+                    { text: "> Registrar en log y permitir tráfico por rendimiento.", action: lab2FailLog },
+                    { text: "> Bloquear automáticamente la conexión según política y enviar alerta al SOC.", action: lab2Step3 }
+                ]);
+            }, 1500);
+        }
+
+        function lab2FailLog() {
+            printLog("FALLO: La rúbrica exige el bloqueo automático de tráfico no autorizado. Permitirlo expone la red corporativa.", "error");
+            setActions([{ text: "> Reiniciar Laboratorio 2", action: initLab2 }]);
+        }
+
+        function lab2Step3() {
+            printLog("ACCIÓN: TCP Reset enviado. Conexión Tor bloqueada automáticamente.", "success");
+            printLog("ALERTA: Evento registrado en el SIEM para análisis del SOC.", "success");
+            
+            setTimeout(() => {
+                printLog("MÉTRICAS: Alarma de rendimiento. El uso intensivo de DPI está elevando la CPU al 92%.", "warning");
+                printLog("TAREA: Garantizar el requisito NO funcional de rendimiento sin degradar servicios críticos.", "info");
+                setActions([
+                    { text: "> Desactivar DPI temporalmente para bajar la CPU.", action: lab2FailCPU },
+                    { text: "> Optimizar heurística, ajustar sensibilidad de firmas y hacer whitelist de tráfico legítimo (Banca/Salud).", action: lab2Win }
+                ]);
+            }, 1500);
+        }
+
+        function lab2FailCPU() {
+            printLog("FALLO: Desactivar DPI (Fail-Open) rompe el control de seguridad. Un atacante podría aprovechar la ventana de oportunidad.", "error");
+            setActions([{ text: "> Reiniciar Laboratorio 2", action: initLab2 }]);
+        }
+
+        function lab2Win() {
+            printLog("AJUSTE: Whitelisting aplicado. Sensibilidad de firmas recalibrada.", "success");
+            printLog("MÉTRICAS: CPU estable al 45%. Escalabilidad garantizada (RNF cumplido).", "success");
+            printLog("VALIDACIÓN: Simulaciones de uso indebido superadas. El equipo responde correctamente.", "success");
+            printLog("¡LABORATORIO 2 COMPLETADO! El NGFW opera de forma óptima bajo la rúbrica oficial.", "success");
+            setActions([]);
+        }
+    </script>
+
+    
     <script>
         function switchSection(secId) {
             document.querySelectorAll('.main-section').forEach(el => el.classList.add('hidden'));
