@@ -56,6 +56,10 @@
                 <!-- 7. LABORATORIOS INTERACTIVOS -->
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">7. Labs Interactivos</li>
                 <li><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">Simulador SOC (Ignacio)</button></li>
+
+                <!--Apartado 8: Flujo Operativo End-to-End.-->
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">8. Ciclo de Vida</li>
+                <li><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400">Flujo Operativo (E2E)</button></li>
             </ul>
         </nav>
     </aside>
@@ -927,7 +931,107 @@
                 </div>
             </div>
         </section>
-        
+        <!-- ==========================================
+        <!--Apartado 8: Flujo Operativo End-to-End.-->
+        <section id="sec8" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-cyan-600 text-white p-2 rounded-lg font-bold text-xl">⚙️</span>
+                <h2 class="text-3xl font-bold text-slate-800">Flujo Operativo del Firewall en la Organización</h2>
+            </div>
+            
+            <p class="text-slate-600 mb-8">Arquitectura de ciclo de vida completo: desde la gobernanza de identidades hasta la respuesta a incidentes en el SOC y la auditoría perimetral continua.</p>
+
+            
+
+            <div class="relative border-l-4 border-slate-300 ml-6 space-y-10 pb-8">
+                
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-blue-600 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">1</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-blue-100">
+                        <h3 class="font-bold text-blue-800 text-lg mb-2 flex items-center gap-2">🔐 Fase 1: Identidad y Gobernanza (Admin Portal)</h3>
+                        <p class="text-sm text-slate-600 mb-3">Antes de tocar ninguna regla, se asegura el acceso a la consola de gestión del firewall.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                            <div class="bg-blue-50 p-3 rounded">
+                                <strong class="text-blue-900 block">RBAC (Control por Roles):</strong> Se integra con el Directorio Activo. El "Analista" solo puede leer logs; el "Ingeniero" puede proponer reglas; el "Arquitecto" puede aprobarlas.
+                            </div>
+                            <div class="bg-blue-50 p-3 rounded">
+                                <strong class="text-blue-900 block">MFA (Multifactor):</strong> Para acceder a la interfaz de administración (GUI o SSH), se exige un token físico o app de autenticación para evitar ataques de fuerza bruta.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-emerald-500 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">2</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-emerald-100">
+                        <h3 class="font-bold text-emerald-800 text-lg mb-2 flex items-center gap-2">📝 Fase 2: Diseño y Validación (Staging)</h3>
+                        <p class="text-sm text-slate-600 mb-3">El proceso formal para evitar el "modo manual" que provoca interrupciones.</p>
+                        <div class="space-y-2 text-sm text-slate-700 bg-emerald-50 p-4 rounded border border-emerald-200">
+                            <div class="flex items-start gap-2"><span class="text-emerald-600 font-bold">A. Propuesta:</span> <span>El Ingeniero redacta la ACL aplicando el <em>Principio de Mínimo Privilegio</em>.</span></div>
+                            <div class="flex items-start gap-2"><span class="text-emerald-600 font-bold">B. Análisis Auto:</span> <span>El software revisa que no haya <em>Shadow Rules</em> (reglas superpuestas).</span></div>
+                            <div class="flex items-start gap-2"><span class="text-emerald-600 font-bold">C. Peer Review:</span> <span>El Arquitecto audita y aprueba el cambio (Revisión por pares).</span></div>
+                            <div class="flex items-start gap-2"><span class="text-emerald-600 font-bold">D. Staging:</span> <span>Se simula la regla en un entorno de laboratorio para asegurar que no corta tráfico legítimo.</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-amber-500 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">3</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-amber-100">
+                        <h3 class="font-bold text-amber-800 text-lg mb-2 flex items-center gap-2">🚀 Fase 3: Despliegue y Ejecución (Producción)</h3>
+                        <p class="text-sm text-slate-600 mb-3">El cortafuegos NGFW en acción inspeccionando el tráfico real de la empresa.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                            <div class="bg-amber-50 p-3 rounded border border-amber-200">
+                                <strong class="block text-amber-900">1. Cabeceras (Capa 3/4)</strong> Verifica IP y Puerto. Si no hace match, aplica <em>Implicit Deny</em>.
+                            </div>
+                            <div class="bg-amber-50 p-3 rounded border border-amber-200">
+                                <strong class="block text-amber-900">2. SSL Decryption</strong> El NGFW usa la PKI para abrir el túnel cifrado y ver el contenido.
+                            </div>
+                            <div class="bg-amber-50 p-3 rounded border border-amber-200">
+                                <strong class="block text-amber-900">3. DPI (Capa 7)</strong> Inspección profunda: bloquea Tor, proxies anónimos o malware.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-purple-600 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">4</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-purple-100">
+                        <h3 class="font-bold text-purple-800 text-lg mb-2 flex items-center gap-2">🚨 Fase 4: Telemetría y Respuesta (SIEM & SOC)</h3>
+                        <p class="text-sm text-slate-600 mb-3">El firewall no actúa solo; es un "sensor" que envía información al cerebro central de seguridad.</p>
+                        
+                        
+                        
+                        <div class="bg-purple-50 p-4 rounded text-sm text-slate-700 mt-4 border border-purple-200">
+                            <ul class="list-disc pl-5 space-y-2">
+                                <li><strong>Envío de Logs:</strong> El NGFW envía eventos Syslog al <strong>SIEM</strong> (Ej. Splunk, QRadar).</li>
+                                <li><strong>Correlación:</strong> El SIEM cruza un "bloqueo de proxy" del firewall con un "inicio de sesión a las 3 AM" del Directorio Activo para detectar una anomalía crítica.</li>
+                                <li><strong>Actuación del SOC:</strong> Los analistas del Centro de Operaciones de Seguridad (SOC) reciben la alerta ya cribada, analizan el incidente y aplican el plan de respuesta.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-red-500 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">5</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-red-100">
+                        <h3 class="font-bold text-red-800 text-lg mb-2 flex items-center gap-2">🎯 Fase 5: Auditoría Continua (Escaneo de Vulnerabilidades)</h3>
+                        <p class="text-sm text-slate-600 mb-3">Para evitar errores como el del "Caso 5", se implementa una revisión empírica automatizada "desde fuera".</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                            <div class="bg-slate-100 p-3 rounded border border-slate-300">
+                                <strong class="block text-slate-800">Nmap (Mapeo)</strong> Escáner de red. Bombardea la IP pública del firewall para detectar qué puertos están abiertos realmente.
+                            </div>
+                            <div class="bg-slate-100 p-3 rounded border border-slate-300">
+                                <strong class="block text-slate-800">OpenVAS (Open Source)</strong> Evalúa si los puertos abiertos de Nmap pertenecen a servicios con vulnerabilidades conocidas (CVEs).
+                            </div>
+                            <div class="bg-slate-100 p-3 rounded border border-slate-300">
+                                <strong class="block text-slate-800">Nessus (Comercial)</strong> Genera reportes avanzados sobre desviaciones de configuración (Config Drift) y exposición de servicios críticos (ej. BBDD).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
@@ -1128,6 +1232,8 @@
             if(secId === 'sec4') activeBtn.classList.add('border-amber-500', 'bg-slate-800');
             if(secId.startsWith('sec5')) activeBtn.classList.add('border-indigo-500', 'bg-slate-800');
             if(secId === 'sec6') activeBtn.classList.add('border-pink-500', 'bg-slate-800');
+            if(secId === 'sec7') activeBtn.classList.add('border-cyan-500', 'bg-slate-800');
+            if(secId === 'sec8') activeBtn.classList.add('border-cyan-500', 'bg-slate-800');
         }
 
         // ==========================================
