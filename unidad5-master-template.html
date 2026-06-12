@@ -57,6 +57,7 @@
                 <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Técnico</button></li>
                 <li><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400">7. Simulador SOC (Labs)</button></li>
                 <li><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400">8. Flujo Operativo (E2E)</button></li>
+                <li><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-fuchsia-400">9. Inspector DPI (Paquetes)</button></li>
             </ul>
         </nav>
     </aside>
@@ -556,6 +557,49 @@
             </div>
         </section>
 
+        <!-- SECCIÓN PYALOAD-->
+        <section id="sec9" class="main-section hidden fade-in h-full flex flex-col">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-fuchsia-600 text-white p-2 rounded-lg font-bold text-xl">📦</span>
+                <h2 class="text-3xl font-bold text-slate-800">Inspector DPI: Análisis de Cabeceras y Payload</h2>
+            </div>
+            
+            <p class="text-slate-600 mb-6">Un NIDS/IPS como Snort no lee la red como un humano; disecciona los paquetes binarios capa por capa. Selecciona una sección del paquete interceptado para ver cómo opera el motor de detección.</p>
+
+            <div class="bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-700 mb-6">
+                <h3 class="text-slate-400 text-sm font-mono mb-4 uppercase tracking-widest">Trama Capturada (Hex Dump Simulado)</h3>
+                <div class="flex flex-col md:flex-row w-full h-auto md:h-32 gap-2 font-mono text-sm cursor-pointer">
+                    
+                    <div onclick="showPacketDetail('l2')" class="packet-segment flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg flex flex-col items-center justify-center p-2 transition group">
+                        <span class="text-slate-500 group-hover:text-white font-bold mb-1">Capa 2 (MAC)</span>
+                        <span class="text-xs text-slate-500 break-all text-center">14 Bytes</span>
+                    </div>
+
+                    <div onclick="showPacketDetail('l3')" class="packet-segment flex-[2] bg-blue-900/50 hover:bg-blue-800/80 border border-blue-700 rounded-lg flex flex-col items-center justify-center p-2 transition group shadow-[0_0_15px_rgba(29,78,216,0.3)]">
+                        <span class="text-blue-400 group-hover:text-white font-bold mb-1">Cabecera IP (L3)</span>
+                        <span class="text-xs text-blue-300 break-all text-center">Src: 192.168.1.100 | Dst: 10.0.0.5 | TTL: 64</span>
+                    </div>
+
+                    <div onclick="showPacketDetail('l4')" class="packet-segment flex-[2] bg-purple-900/50 hover:bg-purple-800/80 border border-purple-700 rounded-lg flex flex-col items-center justify-center p-2 transition group shadow-[0_0_15px_rgba(126,34,206,0.3)]">
+                        <span class="text-purple-400 group-hover:text-white font-bold mb-1">Cabecera TCP (L4)</span>
+                        <span class="text-xs text-purple-300 break-all text-center">SPort: 54321 | DPort: 443 | Flags: [SYN]</span>
+                    </div>
+
+                    <div onclick="showPacketDetail('l7')" class="packet-segment flex-[4] bg-emerald-900/50 hover:bg-emerald-800/80 border border-emerald-700 rounded-lg flex flex-col items-center justify-center p-2 transition group shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                        <span class="text-emerald-400 group-hover:text-white font-bold mb-1">Payload (Datos / L7)</span>
+                        <span class="text-xs text-emerald-300 break-all text-center">GET /wp-admin/admin-ajax.php?action=... HTTP/1.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="packet-details-panel" class="flex-1 bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <div class="text-center text-slate-500 flex flex-col items-center justify-center h-full min-h-[250px]">
+                    <span class="text-4xl mb-3">👆</span>
+                    <p class="font-medium">Haz clic en una sección del paquete arriba para inspeccionar la metodología de análisis del IDS.</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- LOGIC SCRIPTS -->
@@ -576,6 +620,7 @@
             if(secId === 'sec5') activeBtn.classList.add('border-emerald-500', 'bg-slate-800', 'text-emerald-400');
             else if(secId === 'sec7') activeBtn.classList.add('border-yellow-500', 'bg-slate-800', 'text-yellow-400');
             else if(secId === 'sec8') activeBtn.classList.add('border-cyan-500', 'bg-slate-800', 'text-cyan-400');
+            else if(secId === 'sec9') activeBtn.classList.add('border-fuchsia-500', 'bg-slate-800', 'text-fuchsia-400');
             else activeBtn.classList.add('border-emerald-500', 'bg-slate-800', 'text-white');
         }
 
@@ -713,6 +758,85 @@
             printLog("RESULTADO: Alta disponibilidad garantizada. Ataques bloqueados eficientemente.", "success");
             printLog("¡LABORATORIO 2 SUPERADO! Requisitos del Caso 8 cumplidos.", "success");
             setActions([]);
+        }
+
+        // ==========================================
+        // LÓGICA DEL INSPECTOR DPI (SECCIÓN 9)
+        // ==========================================
+        const packetInfo = {
+            'l2': {
+                title: "Cabecera MAC (Capa Enlace)",
+                color: "text-slate-700",
+                bg: "bg-slate-100",
+                border: "border-slate-300",
+                content: `
+                    <p class="text-sm text-slate-600 mb-4">La Capa 2 contiene las direcciones físicas (MAC) de origen y destino. El IDS suele prestar menos atención al payload en esta capa, pero es vital para detectar ataques a nivel de infraestructura local.</p>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>ARP Spoofing:</strong> El IDS detecta si una IP de un servidor crítico (ej. Gateway) cambia repentinamente de dirección MAC (indica envenenamiento ARP / MITM).</li>
+                        <li><strong>MAC Flooding:</strong> Detecta tormentas de direcciones MAC falsas diseñadas para colapsar la tabla CAM del switch.</li>
+                    </ul>
+                    <div class="bg-slate-800 p-3 rounded text-green-400 font-mono text-xs">Regla Snort: alert arp any any -> any any (msg:"Anomalía ARP Detectada"; sid:1001;)</div>
+                `
+            },
+            'l3': {
+                title: "Cabecera IP (Capa de Red)",
+                color: "text-blue-800",
+                bg: "bg-blue-50",
+                border: "border-blue-200",
+                content: `
+                    <p class="text-sm text-slate-600 mb-4">Aquí el IDS evalúa el enrutamiento y la legitimidad del remitente. Antes de mirar qué lleva el paquete, valida de dónde viene y cómo ha sido ensamblado.</p>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>Reputación (Threat Intel):</strong> Cruza la IP de origen (Src IP) con listas negras de Botnets, nodos de salida Tor o países sancionados (GeoIP).</li>
+                        <li><strong>Análisis de Fragmentación:</strong> Los atacantes dividen el payload malicioso en diminutos fragmentos IP para evadir firmas. El IDS utiliza el <em>Frag3 Preprocessor</em> para mantener los fragmentos en memoria y reensamblarlos antes de analizarlos.</li>
+                        <li><strong>Spoofing:</strong> Verifica si la IP de origen es imposible (ej. una IP privada 192.168.x.x llegando desde la interfaz WAN de Internet).</li>
+                    </ul>
+                    <div class="bg-slate-800 p-3 rounded text-blue-400 font-mono text-xs">alert ip [Blacklist_IPs] any -> $HOME_NET any (msg:"Tráfico desde IP Maliciosa";)</div>
+                `
+            },
+            'l4': {
+                title: "Cabecera TCP/UDP (Capa de Transporte)",
+                color: "text-purple-800",
+                bg: "bg-purple-50",
+                border: "border-purple-200",
+                content: `
+                    <p class="text-sm text-slate-600 mb-4">En la Capa 4, el IDS analiza la naturaleza de la conexión. Los ataques de reconocimiento y denegación de servicio (DoS) operan manipulando estas cabeceras.</p>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>Análisis de Flags (Banderas):</strong> Detecta combinaciones ilegales. Por ejemplo, un paquete con banderas SYN, FIN y URG activadas al mismo tiempo (XMAS Scan de Nmap).</li>
+                        <li><strong>Detección de Escaneo:</strong> Si una misma IP envía paquetes SYN a 50 puertos diferentes en menos de 1 segundo, el IDS infiere un escaneo de puertos masivo.</li>
+                        <li><strong>Anomalías de Puerto:</strong> Busca tráfico de base de datos (puerto 3306) intentando salir por el puerto de navegación web (443) para evadir políticas perimetrales.</li>
+                    </ul>
+                    <div class="bg-slate-800 p-3 rounded text-purple-400 font-mono text-xs">alert tcp any any -> $HOME_NET any (flags:SFU; msg:"Nmap XMAS Scan detectado";)</div>
+                `
+            },
+            'l7': {
+                title: "Payload (Capa de Aplicación / DPI)",
+                color: "text-emerald-800",
+                bg: "bg-emerald-50",
+                border: "border-emerald-200",
+                content: `
+                    <p class="text-sm text-slate-600 mb-4">El "santo grial" del IDS (Inspección Profunda de Paquetes - DPI). Aquí reside la carga útil. Exige el mayor procesamiento de CPU.</p>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>Desofuscación y Decodificación:</strong> Los atacantes envían código codificado (ej. Base64, URL-encoding o comprimido en GZIP). El IDS emplea preprocesadores HTTP para "descomprimir" y decodificar el payload antes de leerlo.</li>
+                        <li><strong>Coincidencia de Firmas (PCRE):</strong> Utiliza Expresiones Regulares Compatibles con Perl (PCRE) para buscar la huella digital de un malware. Por ejemplo, busca la cadena <code>cmd.exe</code> o <code>/etc/passwd</code> dentro de una petición web.</li>
+                        <li><strong>Análisis de Cifrado (SSL/TLS):</strong> Si el payload está cifrado, el IDS estándar está ciego. Un NGFW moderno hará "SSL Decryption" usando un certificado interno, abrirá la carga, la inspeccionará con DPI, y la volverá a cifrar.</li>
+                    </ul>
+                    <div class="bg-slate-800 p-3 rounded text-emerald-400 font-mono text-xs overflow-x-auto">alert tcp any any -> $HTTP_SERVERS $HTTP_PORTS (msg:"SQL Injection"; content:"UNION SELECT"; http_uri; pcre:"/union\\s+select/i";)</div>
+                `
+            }
+        };
+
+        function showPacketDetail(layer) {
+            const panel = document.getElementById('packet-details-panel');
+            const data = packetInfo[layer];
+            
+            panel.innerHTML = `
+                <div class="${data.bg} border ${data.border} p-5 rounded-lg h-full fade-in flex flex-col">
+                    <h3 class="text-2xl font-bold ${data.color} mb-4 border-b ${data.border} pb-2">${data.title}</h3>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar pr-2">
+                        ${data.content}
+                    </div>
+                </div>
+            `;
         }
 
         // Iniciar en la primera sección
