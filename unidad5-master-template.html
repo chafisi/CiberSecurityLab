@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 5 - Sistemas IDS / IPS | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Card Styles */
+        .flip-card { perspective: 1000px; height: 200px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #1e293b; color: white; transform: rotateY(180deg); }
+        
+        /* Terminal Styles */
+        .terminal-scroll::-webkit-scrollbar { width: 8px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- BARRA LATERAL (ASIDE) -->
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-20 shrink-0">
+        <div class="p-6 border-b border-slate-800 bg-slate-950">
+            <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-emerald-500">Master</span></h1>
+            <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Unidad 5: Sistemas IDS / IPS</p>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <!-- TEORÍA Y CONCEPTOS -->
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider">Base Teórica</li>
+                <li><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-emerald-500 bg-slate-800 text-white tab-btn">1. Arquitectura y Evolución</button></li>
+                <li><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Métodos y Despliegues</button></li>
+                <li><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Perspectiva Auditoría</button></li>
+                <li><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Fichas Rápidas (Repaso)</button></li>
+
+                <!-- RESOLUCIÓN OFICIAL -->
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">Casos Prácticos (Ignacio)</li>
+                <li><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-emerald-400 font-semibold tab-btn">5. Casos 7 y 8 Resueltos</button></li>
+
+                <!-- HERRAMIENTAS Y PRÁCTICA -->
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">Herramientas E2E</li>
+                <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Técnico</button></li>
+                <li><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400">7. Simulador SOC (Labs)</button></li>
+                <li><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400">8. Flujo Operativo (E2E)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12" id="mainContent">
+        
+        <!-- ==========================================
+             1. ARQUITECTURA Y EVOLUCIÓN
+             ========================================== -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-emerald-500 pb-2 inline-block">1. Arquitectura y Evolución (IDS/IPS)</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-6">
+                <p class="text-slate-600 mb-4">Los sistemas de detección y prevención de intrusiones operan analizando flujos de red o comportamientos de host para localizar amenazas que han evadido el firewall perimetral.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                        <div class="text-3xl mb-3">📡</div>
+                        <h3 class="font-bold text-slate-800 mb-2">NIDS (Network IDS)</h3>
+                        <p class="text-sm text-slate-600">Sensores ubicados en puntos estratégicos de la red (perímetro, DMZ) que analizan el tráfico en tránsito. Tienen gran visibilidad pero sufren ante tráfico cifrado.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                        <div class="text-3xl mb-3">💻</div>
+                        <h3 class="font-bold text-slate-800 mb-2">HIDS (Host IDS)</h3>
+                        <p class="text-sm text-slate-600">Agentes instalados directamente en los servidores o endpoints. Analizan logs del SO, integridad de archivos y llamadas al sistema.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                        <div class="text-3xl mb-3">🛡️</div>
+                        <h3 class="font-bold text-slate-800 mb-2">IPS (Prevención)</h3>
+                        <p class="text-sm text-slate-600">Evolución del IDS que opera "en línea" (Inline). No solo detecta, sino que interrumpe dinámicamente conexiones maliciosas mediante TCP Resets o bloqueos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             2. MÉTODOS Y LABS
+             ========================================== -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-emerald-500 pb-2 inline-block">2. Métodos de Detección y Despliegue</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-xl text-slate-800 mb-4">Motores de Detección</h3>
+                    <ul class="space-y-4">
+                        <li class="flex gap-3">
+                            <span class="bg-blue-100 text-blue-700 p-2 rounded h-min">✍️</span>
+                            <div>
+                                <strong class="text-slate-800">Basado en Firmas (Signatures):</strong>
+                                <p class="text-sm text-slate-600">Compara el payload del paquete contra una base de datos de amenazas conocidas (ej. reglas Snort). Muy preciso, pero ineficaz contra ataques *Zero-Day*.</p>
+                            </div>
+                        </li>
+                        <li class="flex gap-3">
+                            <span class="bg-purple-100 text-purple-700 p-2 rounded h-min">📊</span>
+                            <div>
+                                <strong class="text-slate-800">Basado en Anomalías:</strong>
+                                <p class="text-sm text-slate-600">Construye una línea base de comportamiento "normal". Detecta desviaciones estadísticas. Ideal para ataques nuevos, pero genera altos falsos positivos.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-xl text-slate-800 mb-4">Modos de Despliegue</h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                            <strong class="text-slate-800">Modo Promiscuo (Pasivo / Out-of-band)</strong>
+                            <p class="text-sm text-slate-600 mt-1">El sensor se conecta a un puerto SPAN (Port Mirroring) o un TAP de red. Solo "escucha" una copia del tráfico. No introduce latencia ni corta el servicio si falla.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded border border-slate-200">
+                            <strong class="text-slate-800">Modo Inline (Activo / IPS)</strong>
+                            <p class="text-sm text-slate-600 mt-1">El equipo se intercala físicamente en el cableado. Todo el tráfico debe atravesarlo. Puede bloquear activamente, pero si falla, se interrumpe la red (riesgo de disponibilidad).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             3. PERSPECTIVA AUDITORÍA
+             ========================================== -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-emerald-500 pb-2 inline-block">3. Perspectiva de Auditoría (CID)</h2>
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 text-center">
+                <h3 class="text-xl font-bold text-slate-800 mb-6">Impacto del IDS/IPS en la Tríada CID</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+                    <div class="bg-red-50 p-5 rounded-lg border-t-4 border-red-500">
+                        <h4 class="font-bold text-red-800 mb-2">Confidencialidad</h4>
+                        <p class="text-sm text-slate-700">Los sensores capturan *payloads* completos (Pcap). Un auditor debe verificar que los logs del IDS estén protegidos, encriptados y con acceso RBAC estricto para evitar fugas de datos de red.</p>
+                    </div>
+                    <div class="bg-blue-50 p-5 rounded-lg border-t-4 border-blue-500">
+                        <h4 class="font-bold text-blue-800 mb-2">Integridad</h4>
+                        <p class="text-sm text-slate-700">El archivo de firmas y reglas (ej. `snort.conf`) debe estar asegurado mediante hashes. Una alteración de las reglas por un atacante interno "cegaría" al sistema de detección.</p>
+                    </div>
+                    <div class="bg-green-50 p-5 rounded-lg border-t-4 border-green-500">
+                        <h4 class="font-bold text-green-800 mb-2">Disponibilidad</h4>
+                        <p class="text-sm text-slate-700">Un IPS Inline mal configurado es un vector de auto-Denegación de Servicio (DoS). El auditor exigirá modos "Fail-Open" y despliegues graduales para evitar interrupciones de negocio.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             4. FICHAS RÁPIDAS
+             ========================================== -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-emerald-500 pb-2 inline-block">4. Fichas Rápidas (Memorización)</h2>
+            <p class="text-slate-600 mb-6">Pasa el ratón sobre las tarjetas para revelar el concepto exacto. Ideal para repasar terminología antes de los tests de la Unidad 5.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Tarjeta 1 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="font-bold text-lg text-slate-800">Falso Positivo</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm">El sistema clasifica tráfico legítimo o benigno como malicioso, bloqueando operativas válidas. Es el mayor problema de los IPS.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tarjeta 2 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="font-bold text-lg text-slate-800">Falso Negativo</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm">El sistema no detecta un ataque real, permitiendo que la amenaza acceda a la red. Es el mayor riesgo para la seguridad.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tarjeta 3 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="font-bold text-lg text-slate-800">SPAN / Port Mirroring</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm">Configuración de red que duplica el tráfico de un puerto o VLAN hacia un puerto específico donde está conectado el sensor NIDS pasivo.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tarjeta 4 -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="font-bold text-lg text-slate-800">Rollback de Reglas</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <p class="text-sm">Procedimiento crítico de marcha atrás. Retira de forma inmediata una regla IPS recién activada si esta comienza a afectar un servicio crítico.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             5. CASOS PRÁCTICOS (IGNACIO)
+             ========================================== -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-emerald-500 pb-2 inline-block">5. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones oficiales extraídas de la rúbrica estructuradas para ingeniería inversa.</p>
+
+            <!-- ================= CASO 7 ================= -->
+            <div class="mb-12">
+                <div class="bg-indigo-900 text-white p-4 rounded-t-xl flex items-center gap-3">
+                    <span class="text-2xl">🎓</span>
+                    <h3 class="text-xl font-bold">Caso Práctico 7: Uso de Snort en una universidad</h3>
+                </div>
+                <div class="bg-white border-x border-b border-slate-200 rounded-b-xl p-6 shadow-sm">
+                    
+                    <!-- Requisitos 2x2 -->
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">1. Requisitos para desplegar y operar un IDS (Snort)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <strong class="text-blue-900 block mb-2">Funcionales (Qué hace):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Monitorizar tráfico entrante y saliente en tiempo real[cite: 5].</li>
+                                <li>Detectar patrones de ataque basados en firmas (escaneos, exploits, anomalías comunes)[cite: 5].</li>
+                                <li>Generar alertas automáticas para el equipo de TI o el SOC[cite: 5].</li>
+                                <li>Registrar eventos y permitir análisis posterior[cite: 5].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">No Funcionales (Cómo de bien):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Capacidad para analizar grandes volúmenes de tráfico sin pérdida de paquetes[cite: 5].</li>
+                                <li>Actualización frecuente de la base de firmas para cubrir nuevas amenazas[cite: 5].</li>
+                                <li>Baja tasa de falsos positivos y reglas bien ajustadas[cite: 5].</li>
+                                <li>Disponibilidad continua del sensor IDS[cite: 5].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Técnicos (Con qué):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Integración con el cortafuegos perimetral para respuesta coordinada[cite: 5].</li>
+                                <li>Configuración adecuada de preprocessors y reglas personalizadas[cite: 5].</li>
+                                <li>Acceso a registros completos (pcap, alertas, logs) para análisis forense[cite: 5].</li>
+                                <li>Uso de hardware o red espejo (SPAN/TAP) para capturar tráfico real[cite: 5].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Organizativos/Estratégicos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Integrar la herramienta dentro de una estrategia de defensa en profundidad corporativa[cite: 5].</li>
+                                <li>Utilizar registros generados como material pedagógico formativo[cite: 5].</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Caso de Uso -->
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">2. Caso de uso: Detección de un escaneo de puertos</h4>
+                    <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 mb-6 text-sm">
+                        <p class="mb-2"><strong class="text-emerald-900">Actor:</strong> IDS Snort[cite: 5].</p>
+                        <strong class="text-emerald-900 block mb-1">Flujo principal:</strong>
+                        <ol class="list-decimal pl-5 space-y-1 text-slate-700 mb-3">
+                            <li>Snort inspecciona el tráfico que llega a la red perimetral[cite: 5].</li>
+                            <li>Detecta un patrón característico de escaneo masivo (p. ej., múltiples SYN a puertos consecutivos)[cite: 5].</li>
+                            <li>Genera una alerta con información del origen y destino del tráfico[cite: 5].</li>
+                            <li>El equipo de TI revisa la alerta en el dashboard o SIEM[cite: 5].</li>
+                            <li>El cortafuegos bloquea el origen del escaneo mediante una regla automática o manual[cite: 5].</li>
+                        </ol>
+                        <strong class="text-red-800 block mb-1">Excepciones:</strong>
+                        <ul class="list-disc pl-5 text-red-900">
+                            <li>Actividad interna legítima que genera alertas (pruebas, inventariado, monitoreo) &rarr; ajuste de reglas o whitelist[cite: 5].</li>
+                        </ul>
+                    </div>
+
+                    <!-- Validación & Correlación -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-3 text-lg">3. Métodos de Validación</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Realizar pruebas controladas con herramientas como Nmap o Masscan para verificar que Snort detecta los escaneos[cite: 5].</li>
+                                <li>Revisar y actualizar reglas periódicamente para mantener la detección eficaz[cite: 5].</li>
+                                <li>Analizar el rendimiento del IDS (pérdida de paquetes, carga del sensor, cuellos de botella)[cite: 5].</li>
+                                <li>Correlacionar alertas con otros sistemas (SIEM, firewall, syslog) para confirmar detecciones reales[cite: 5].</li>
+                                <li>Monitorizar la tasa de falsos positivos y ajustar reglas o preprocessors según necesidad[cite: 5].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500 text-sm">
+                            <h4 class="font-bold text-amber-900 mb-2">🧠 Correlación (Ingeniería Inversa)</h4>
+                            <table class="w-full text-left text-slate-700 border-collapse mt-2">
+                                <tbody>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"monitorizar tráfico entrante y saliente"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; Requisito Funcional directo.</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"bloquear proactivamente... desde el cortafuegos"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Integración con firewall / Paso 5 del Flujo.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 italic text-xs w-1/2">"entornos con recursos limitados"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RNF: Analizar tráfico sin pérdida en hardware limitado.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= CASO 8 ================= -->
+            <div>
+                <div class="bg-rose-900 text-white p-4 rounded-t-xl flex items-center gap-3">
+                    <span class="text-2xl">🏦</span>
+                    <h3 class="text-xl font-bold">Caso Práctico 8: Falsos positivos en un IPS financiero</h3>
+                </div>
+                <div class="bg-white border-x border-b border-slate-200 rounded-b-xl p-6 shadow-sm">
+                    
+                    <!-- Requisitos 2x2 -->
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">1. Requisitos para operar un IPS con bajos falsos positivos</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <strong class="text-blue-900 block mb-2">Funcionales (Qué hace):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Inspeccionar tráfico en tiempo real y bloquear ataques confirmados[cite: 4].</li>
+                                <li>Registrar cada acción de bloqueo y mantener trazabilidad completa[cite: 4].</li>
+                                <li>Habilitar un modo "alerta" para probar reglas antes de activarlas en modo "bloqueo"[cite: 4].</li>
+                                <li>Permitir despliegue gradual de reglas críticas[cite: 4].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">No Funcionales (Cómo de bien):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Baja tasa de falsos positivos[cite: 4].</li>
+                                <li>Alta disponibilidad del servicio (≥99,99%), imprescindible en entornos financieros[cite: 4].</li>
+                                <li>Latencia mínima en la inspección para no afectar la experiencia de usuario[cite: 4].</li>
+                                <li>Estabilidad del motor IPS bajo carga elevada[cite: 4].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Técnicos (Con qué):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Disponer de un entorno de pruebas o laboratorio para validar reglas antes del despliegue[cite: 4].</li>
+                                <li>Utilizar módulos de análisis heurístico o aprendizaje adaptativo para mejorar la clasificación[cite: 4].</li>
+                                <li>Integración con un SIEM para correlación de eventos y reducción de falsos positivos[cite: 4].</li>
+                                <li>Automatización de pruebas con tráfico realista y patrones maliciosos conocidos[cite: 4].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Organizativos/Estratégicos:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Establecer procedimientos formales para revisar y aprobar reglas IPS[cite: 4].</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Caso de Uso -->
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">2. Caso de uso: Validación de una regla IPS</h4>
+                    <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 mb-6 text-sm">
+                        <p class="mb-2"><strong class="text-emerald-900">Actor:</strong> Administrador de seguridad[cite: 4].</p>
+                        <strong class="text-emerald-900 block mb-1">Flujo principal:</strong>
+                        <ol class="list-decimal pl-5 space-y-1 text-slate-700 mb-3">
+                            <li>El administrador crea o modifica una regla IPS[cite: 4].</li>
+                            <li>La regla se prueba en un entorno de laboratorio en modo "alerta"[cite: 4].</li>
+                            <li>Se analizan los resultados: número de falsos positivos y falsos negativos[cite: 4].</li>
+                            <li>Si la regla es estable y precisa, se despliega gradualmente en modo "bloqueo"[cite: 4].</li>
+                            <li>El cambio se documenta y se registra en el sistema para trazabilidad[cite: 4].</li>
+                        </ol>
+                        <strong class="text-red-800 block mb-1">Excepciones:</strong>
+                        <ul class="list-disc pl-5 text-red-900">
+                            <li>Tasa excesiva de falsos positivos &rarr; reajuste o reescritura de la regla[cite: 4].</li>
+                            <li>Impacto en un servicio crítico &rarr; reversión inmediata (rollback)[cite: 4].</li>
+                        </ul>
+                    </div>
+
+                    <!-- Validación & Correlación -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-3 text-lg">3. Mecanismos para validar que no bloquea tráfico legítimo</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Realizar pruebas de carga y tráfico real (capturas, replay, simulaciones) antes de activar reglas[cite: 4].</li>
+                                <li>Monitorizar continuamente el comportamiento del IPS tras el despliegue[cite: 4].</li>
+                                <li>Revisar estadísticas de falsos positivos/falsos negativos y ajustar reglas iterativamente[cite: 4].</li>
+                                <li>Simular ataques reales o conocidos para verificar la eficacia del bloqueo[cite: 4].</li>
+                                <li>Correlacionar eventos del IPS con logs de aplicaciones, firewall y SIEM para detectar impactos no deseados[cite: 4].</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500 text-sm">
+                            <h4 class="font-bold text-amber-900 mb-2">🧠 Correlación (Ingeniería Inversa)</h4>
+                            <table class="w-full text-left text-slate-700 border-collapse mt-2">
+                                <tbody>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"ausencia de pruebas en un entorno previo"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Entorno de pruebas o laboratorio.</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"inexistencia de procedimientos formales"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RO: Procedimientos formales de aprobación.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 italic text-xs w-1/2">"demasiado control compromete disponibilidad"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RNF: Alta disponibilidad (≥99,99%).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             6. GLOSARIO TÉCNICO
+             ========================================== -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-emerald-500 pb-2 inline-block">6. Glosario Técnico (IDS/IPS)</h2>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">IDS (Intrusion Detection System)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Sistema pasivo que monitoriza la red en busca de anomalías y genera alertas, sin alterar el tráfico de red.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">IPS (Intrusion Prevention System)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Sistema activo colocado "en línea" capaz de bloquear o detener ataques en tiempo real.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">Snort</h4>
+                        <p class="text-xs text-slate-600 mt-1">Motor NIDS/IPS de código abierto estándar de la industria, que utiliza un lenguaje basado en reglas para el análisis de tráfico.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">Modo Promiscuo</h4>
+                        <p class="text-xs text-slate-600 mt-1">Estado de una tarjeta de red en el que captura todos los paquetes que circulan por el segmento, independientemente de la dirección MAC destino.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">TAP de Red (Test Access Point)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Dispositivo hardware que copia el flujo de red a un puerto de monitorización sin interrumpir el enlace principal.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">SPAN (Switched Port Analyzer)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Funcionalidad en un switch (Port Mirroring) que envía copias de paquetes de un puerto a otro para ser analizados por un NIDS.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">Falso Positivo</h4>
+                        <p class="text-xs text-slate-600 mt-1">Alerta generada por tráfico benigno que se clasifica incorrectamente como una amenaza.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">Rollback</h4>
+                        <p class="text-xs text-slate-600 mt-1">Proceso de revertir un sistema o regla a su estado anterior en caso de que un despliegue provoque interrupciones operativas.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-emerald-700 text-sm">Zero-Day</h4>
+                        <p class="text-xs text-slate-600 mt-1">Vulnerabilidad o ataque que aún no es conocido públicamente y para el que no existen firmas de detección clásicas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             7. LABS INTERACTIVOS (SIMULADOR SOC)
+             ========================================== -->
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[600px]">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="bg-yellow-500 text-white p-2 rounded-lg font-bold text-xl">🕹️</span>
+                    <h2 class="text-3xl font-bold text-slate-800">Simulador SOC: Gestión de Alertas y Despliegues</h2>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="initLab1()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded font-bold shadow transition">Lab 1: Snort (Caso 7)</button>
+                    <button onclick="initLab2()" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded font-bold shadow transition">Lab 2: IPS Financiero (Caso 8)</button>
+                </div>
+            </div>
+
+            <!-- Contenedor del Terminal -->
+            <div class="bg-slate-900 rounded-xl shadow-2xl flex-1 flex flex-col border border-slate-700 overflow-hidden">
+                <div class="bg-slate-950 px-4 py-2 flex items-center justify-between border-b border-slate-800">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span id="lab-title" class="text-xs font-mono text-slate-500 uppercase tracking-widest">Selecciona un Laboratorio</span>
+                </div>
+
+                <!-- Pantalla del Terminal -->
+                <div id="terminal-screen" class="flex-1 p-6 font-mono text-sm text-green-400 overflow-y-auto space-y-4 bg-slate-900 terminal-scroll">
+                    <p class="text-slate-500">Esperando inicialización del entorno SOC...</p>
+                </div>
+
+                <!-- Controles -->
+                <div class="bg-slate-800 p-4 border-t border-slate-700">
+                    <p id="action-prompt" class="text-white font-semibold mb-3 text-sm hidden">Selecciona una acción técnica:</p>
+                    <div id="action-buttons" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Botones inyectados dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             8. FLUJO OPERATIVO E2E
+             ========================================== -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="bg-cyan-600 text-white p-2 rounded-lg font-bold text-xl">⚙️</span>
+                <h2 class="text-3xl font-bold text-slate-800">Ciclo de Vida E2E: Validación de Reglas IPS</h2>
+            </div>
+            
+            <p class="text-slate-600 mb-8">Arquitectura del proceso de despliegue seguro para evitar la interrupción de servicios críticos (basado en rúbricas oficiales).</p>
+
+            <div class="relative border-l-4 border-slate-300 ml-6 space-y-10 pb-8">
+                <!-- FASE 1 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-blue-600 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">1</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-blue-100">
+                        <h3 class="font-bold text-blue-800 text-lg mb-2">Diseño y Aprobación</h3>
+                        <p class="text-sm text-slate-600">El ingeniero de seguridad crea una nueva firma IPS para bloquear una amenaza reciente. Antes de desplegar, se requiere aprobación mediante procedimientos formales (Revisión por pares).</p>
+                    </div>
+                </div>
+
+                <!-- FASE 2 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-yellow-500 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">2</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-yellow-100">
+                        <h3 class="font-bold text-yellow-800 text-lg mb-2">Staging y Modo "Alerta" (Laboratorio)</h3>
+                        <p class="text-sm text-slate-600">La regla se despliega en un entorno de pruebas recibiendo tráfico espejo real (SPAN). El IPS funciona en modo pasivo (solo alerta), no bloquea paquetes.</p>
+                    </div>
+                </div>
+
+                <!-- FASE 3 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-purple-600 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">3</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-purple-100">
+                        <h3 class="font-bold text-purple-800 text-lg mb-2">Correlación y Ajuste de Falsos Positivos</h3>
+                        <p class="text-sm text-slate-600">Los logs del IPS se analizan en el SIEM. Si se detectan bloqueos teóricos sobre tráfico legítimo (Falsos Positivos), la regla se ajusta, se reescribe o se aplican excepciones (Whitelisting).</p>
+                    </div>
+                </div>
+
+                <!-- FASE 4 -->
+                <div class="relative pl-8">
+                    <div class="absolute -left-[22px] top-0 bg-red-600 w-10 h-10 rounded-full border-4 border-white flex items-center justify-center text-white font-bold shadow">4</div>
+                    <div class="bg-white p-5 rounded-xl shadow-md border border-red-100">
+                        <h3 class="font-bold text-red-800 text-lg mb-2">Paso a Producción y Modo "Bloqueo"</h3>
+                        <p class="text-sm text-slate-600">Una vez estabilizada, la regla se despliega gradualmente en el IPS Inline activando el modo "Drop". En caso de disrupción crítica en el negocio financiero, se aplica *Rollback* inmediato.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- LOGIC SCRIPTS -->
+    <script>
+        // Navegación entre pestañas
+        function switchSection(secId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-emerald-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+            
+            document.getElementById(secId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + secId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            
+            // Colors dependent on section category
+            if(secId === 'sec5') activeBtn.classList.add('border-emerald-500', 'bg-slate-800', 'text-emerald-400');
+            else if(secId === 'sec7') activeBtn.classList.add('border-yellow-500', 'bg-slate-800', 'text-yellow-400');
+            else if(secId === 'sec8') activeBtn.classList.add('border-cyan-500', 'bg-slate-800', 'text-cyan-400');
+            else activeBtn.classList.add('border-emerald-500', 'bg-slate-800', 'text-white');
+        }
+
+        // Buscador Sencillo
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const term = e.target.value.toLowerCase();
+            const sections = document.querySelectorAll('.main-section');
+            if(term === '') {
+                sections.forEach(s => s.classList.remove('hidden'));
+                switchSection('sec1'); // reset
+                return;
+            }
+            sections.forEach(sec => {
+                const text = sec.innerText.toLowerCase();
+                if(text.includes(term)) sec.classList.remove('hidden');
+                else sec.classList.add('hidden');
+            });
+        });
+
+        // ==========================================
+        // LÓGICA DE LABORATORIOS (SIMULADOR SOC)
+        // ==========================================
+        const terminal = document.getElementById('terminal-screen');
+        const actionButtons = document.getElementById('action-buttons');
+        const actionPrompt = document.getElementById('action-prompt');
+        const labTitle = document.getElementById('lab-title');
+
+        function printLog(message, type = 'info') {
+            const color = type === 'error' ? 'text-red-400' : type === 'success' ? 'text-emerald-400' : type === 'warning' ? 'text-yellow-400' : 'text-slate-300';
+            const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            terminal.innerHTML += `<div class="fade-in"><span class="text-slate-500">[${time}]</span> <span class="${color}">${message}</span></div>`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function clearTerminal() { terminal.innerHTML = ''; }
+
+        function setActions(actions) {
+            actionButtons.innerHTML = '';
+            if (actions.length > 0) {
+                actionPrompt.classList.remove('hidden');
+                actions.forEach(act => {
+                    const btn = document.createElement('button');
+                    btn.className = "bg-slate-700 hover:bg-slate-600 text-white font-mono text-xs px-4 py-3 rounded text-left border border-slate-600 transition flex items-center justify-between group";
+                    btn.innerHTML = `<span>${act.text}</span> <span class="opacity-0 group-hover:opacity-100 transition">↵</span>`;
+                    btn.onclick = act.action;
+                    actionButtons.appendChild(btn);
+                });
+            } else {
+                actionPrompt.classList.add('hidden');
+            }
+        }
+
+        // --- Lab 1: Caso 7 Snort ---
+        function initLab1() {
+            labTitle.innerText = "LAB 01: DESPLIEGUE NIDS SNORT (Ignacio_Caso_7)";
+            clearTerminal();
+            printLog("INICIANDO ENTORNO: Red Universitaria Perimetral.", "info");
+            printLog("OBJETIVO: Detectar escaneos de red sin degradar tráfico legítimo.", "info");
+            
+            setTimeout(() => {
+                setActions([
+                    { text: "> Desplegar Snort en Modo Inline en el enlace principal.", action: lab1Fail },
+                    { text: "> Desplegar Snort en puerto SPAN (Modo Pasivo) conectado al router frontera.", action: lab1Step2 }
+                ]);
+            }, 1000);
+        }
+
+        function lab1Fail() {
+            printLog("ERROR: Al operar en modo Inline en hardware de recursos limitados, Snort provoca cuellos de botella y pérdida de paquetes. Servicio degradado.", "error");
+            setActions([{ text: "> Reiniciar Laboratorio 1", action: initLab1 }]);
+        }
+
+        function lab1Step2() {
+            printLog("CONFIGURACIÓN: Snort monitorizando en modo promiscuo a través de SPAN port.", "success");
+            printLog("ALERTA: Patrón detectado. Múltiples TCP SYN consecutivos hacia subred de servidores.", "warning");
+            
+            setTimeout(() => {
+                setActions([
+                    { text: "> Ignorar, parece tráfico normal universitario.", action: lab1Fail2 },
+                    { text: "> Enviar alerta al SIEM e integrar con firewall perimetral para bloqueo proactivo.", action: lab1Win }
+                ]);
+            }, 1500);
+        }
+
+        function lab1Fail2() {
+            printLog("ERROR: Intrusión efectiva. El escaneo de puertos permitió al atacante identificar vulnerabilidades no parcheadas.", "error");
+            setActions([{ text: "> Reiniciar Laboratorio 1", action: initLab1 }]);
+        }
+
+        function lab1Win() {
+            printLog("SIEM CORRELATION: Evento validado.", "success");
+            printLog("FIREWALL: Regla de bloqueo aplicada para la IP origen.", "success");
+            printLog("POST-INCIDENTE: Exportando registros PCAP para material formativo.", "info");
+            printLog("¡LABORATORIO 1 SUPERADO! Caso 7 dominado.", "success");
+            setActions([]);
+        }
+
+        // --- Lab 2: Caso 8 IPS Financiero ---
+        function initLab2() {
+            labTitle.innerText = "LAB 02: GESTIÓN DE FALSOS POSITIVOS IPS (Ignacio_Caso_8)";
+            clearTerminal();
+            printLog("INICIANDO ENTORNO: Data Center de Entidad Financiera.", "info");
+            printLog("CONTEXTO: Se requiere aplicar una nueva firma heurística para proteger pasarelas de pago.", "info");
+            
+            setTimeout(() => {
+                setActions([
+                    { text: "> Desplegar regla directamente en producción en modo BLOQUEO (Drop).", action: lab2Fail },
+                    { text: "> Desplegar regla en laboratorio de validación en modo ALERTA.", action: lab2Step2 }
+                ]);
+            }, 1000);
+        }
+
+        function lab2Fail() {
+            printLog("INCIDENTE CRÍTICO: La regla estricta está bloqueando transacciones válidas de clientes (Falso Positivo Masivo).", "error");
+            printLog("IMPACTO: Reputación dañada y caída de operaciones esenciales.", "error");
+            setActions([{ text: "> Ejecutar Rollback y Reiniciar", action: initLab2 }]);
+        }
+
+        function lab2Step2() {
+            printLog("STAGING: Regla cargada en modo alerta. Monitorizando tráfico espejo...", "info");
+            printLog("AUDITORÍA SIEM: Analizando estadísticas de capturas...", "info");
+            
+            setTimeout(() => {
+                printLog("REPORTE: La regla genera un 15% de Falsos Positivos sobre tráfico legítimo de una API interna.", "warning");
+                setActions([
+                    { text: "> Pasar a producción ignorando la alerta.", action: lab2Fail },
+                    { text: "> Ajustar umbral heurístico y crear Whitelist para la API interna.", action: lab2Step3 }
+                ]);
+            }, 1500);
+        }
+
+        function lab2Step3() {
+            printLog("AJUSTE: Sensibilidad recalibrada. Falsos positivos = 0.01%.", "success");
+            printLog("DESPLIEGUE: Activando regla de forma gradual en producción (Modo Inline/Bloqueo).", "success");
+            printLog("RESULTADO: Alta disponibilidad garantizada. Ataques bloqueados eficientemente.", "success");
+            printLog("¡LABORATORIO 2 SUPERADO! Requisitos del Caso 8 cumplidos.", "success");
+            setActions([]);
+        }
+
+        // Iniciar en la primera sección
+        switchSection('sec1');
+    </script>
+</body>
+</html>
