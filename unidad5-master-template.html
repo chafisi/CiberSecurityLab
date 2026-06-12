@@ -231,35 +231,35 @@
                         <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
                             <strong class="text-blue-900 block mb-2">Funcionales (Qué hace):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Monitorizar tráfico entrante y saliente en tiempo real[cite: 5].</li>
-                                <li>Detectar patrones de ataque basados en firmas (escaneos, exploits, anomalías comunes)[cite: 5].</li>
-                                <li>Generar alertas automáticas para el equipo de TI o el SOC[cite: 5].</li>
-                                <li>Registrar eventos y permitir análisis posterior[cite: 5].</li>
+                                <li>Monitorizar tráfico entrante y saliente en tiempo real.</li>
+                                <li>Detectar patrones de ataque basados en firmas (escaneos, exploits, anomalías comunes).</li>
+                                <li>Generar alertas automáticas para el equipo de TI o el SOC.</li>
+                                <li>Registrar eventos y permitir análisis posterior.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <strong class="text-slate-800 block mb-2">No Funcionales (Cómo de bien):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Capacidad para analizar grandes volúmenes de tráfico sin pérdida de paquetes[cite: 5].</li>
-                                <li>Actualización frecuente de la base de firmas para cubrir nuevas amenazas[cite: 5].</li>
-                                <li>Baja tasa de falsos positivos y reglas bien ajustadas[cite: 5].</li>
-                                <li>Disponibilidad continua del sensor IDS[cite: 5].</li>
+                                <li>Capacidad para analizar grandes volúmenes de tráfico sin pérdida de paquetes.</li>
+                                <li>Actualización frecuente de la base de firmas para cubrir nuevas amenazas.</li>
+                                <li>Baja tasa de falsos positivos y reglas bien ajustadas.</li>
+                                <li>Disponibilidad continua del sensor IDS.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <strong class="text-slate-800 block mb-2">Técnicos (Con qué):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Integración con el cortafuegos perimetral para respuesta coordinada[cite: 5].</li>
-                                <li>Configuración adecuada de preprocessors y reglas personalizadas[cite: 5].</li>
-                                <li>Acceso a registros completos (pcap, alertas, logs) para análisis forense[cite: 5].</li>
-                                <li>Uso de hardware o red espejo (SPAN/TAP) para capturar tráfico real[cite: 5].</li>
+                                <li>Integración con el cortafuegos perimetral para respuesta coordinada.</li>
+                                <li>Configuración adecuada de preprocessors y reglas personalizadas.</li>
+                                <li>Acceso a registros completos (pcap, alertas, logs) para análisis forense.</li>
+                                <li>Uso de hardware o red espejo (SPAN/TAP) para capturar tráfico real.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <strong class="text-slate-800 block mb-2">Organizativos/Estratégicos:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Integrar la herramienta dentro de una estrategia de defensa en profundidad corporativa[cite: 5].</li>
-                                <li>Utilizar registros generados como material pedagógico formativo[cite: 5].</li>
+                                <li>Integrar la herramienta dentro de una estrategia de defensa en profundidad corporativa.</li>
+                                <li>Utilizar registros generados como material pedagógico formativo.</li>
                             </ul>
                         </div>
                     </div>
@@ -267,18 +267,18 @@
                     <!-- Caso de Uso -->
                     <h4 class="font-bold text-slate-800 mb-4 text-lg">2. Caso de uso: Detección de un escaneo de puertos</h4>
                     <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 mb-6 text-sm">
-                        <p class="mb-2"><strong class="text-emerald-900">Actor:</strong> IDS Snort[cite: 5].</p>
+                        <p class="mb-2"><strong class="text-emerald-900">Actor:</strong> IDS Snort.</p>
                         <strong class="text-emerald-900 block mb-1">Flujo principal:</strong>
                         <ol class="list-decimal pl-5 space-y-1 text-slate-700 mb-3">
-                            <li>Snort inspecciona el tráfico que llega a la red perimetral[cite: 5].</li>
-                            <li>Detecta un patrón característico de escaneo masivo (p. ej., múltiples SYN a puertos consecutivos)[cite: 5].</li>
-                            <li>Genera una alerta con información del origen y destino del tráfico[cite: 5].</li>
-                            <li>El equipo de TI revisa la alerta en el dashboard o SIEM[cite: 5].</li>
-                            <li>El cortafuegos bloquea el origen del escaneo mediante una regla automática o manual[cite: 5].</li>
+                            <li>Snort inspecciona el tráfico que llega a la red perimetral.</li>
+                            <li>Detecta un patrón característico de escaneo masivo (p. ej., múltiples SYN a puertos consecutivos).</li>
+                            <li>Genera una alerta con información del origen y destino del tráfico.</li>
+                            <li>El equipo de TI revisa la alerta en el dashboard o SIEM.</li>
+                            <li>El cortafuegos bloquea el origen del escaneo mediante una regla automática o manual.</li>
                         </ol>
                         <strong class="text-red-800 block mb-1">Excepciones:</strong>
                         <ul class="list-disc pl-5 text-red-900">
-                            <li>Actividad interna legítima que genera alertas (pruebas, inventariado, monitoreo) &rarr; ajuste de reglas o whitelist[cite: 5].</li>
+                            <li>Actividad interna legítima que genera alertas (pruebas, inventariado, monitoreo) &rarr; ajuste de reglas o whitelist.</li>
                         </ul>
                     </div>
 
@@ -287,11 +287,11 @@
                         <div>
                             <h4 class="font-bold text-slate-800 mb-3 text-lg">3. Métodos de Validación</h4>
                             <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
-                                <li>Realizar pruebas controladas con herramientas como Nmap o Masscan para verificar que Snort detecta los escaneos[cite: 5].</li>
-                                <li>Revisar y actualizar reglas periódicamente para mantener la detección eficaz[cite: 5].</li>
-                                <li>Analizar el rendimiento del IDS (pérdida de paquetes, carga del sensor, cuellos de botella)[cite: 5].</li>
-                                <li>Correlacionar alertas con otros sistemas (SIEM, firewall, syslog) para confirmar detecciones reales[cite: 5].</li>
-                                <li>Monitorizar la tasa de falsos positivos y ajustar reglas o preprocessors según necesidad[cite: 5].</li>
+                                <li>Realizar pruebas controladas con herramientas como Nmap o Masscan para verificar que Snort detecta los escaneos.</li>
+                                <li>Revisar y actualizar reglas periódicamente para mantener la detección eficaz.</li>
+                                <li>Analizar el rendimiento del IDS (pérdida de paquetes, carga del sensor, cuellos de botella).</li>
+                                <li>Correlacionar alertas con otros sistemas (SIEM, firewall, syslog) para confirmar detecciones reales.</li>
+                                <li>Monitorizar la tasa de falsos positivos y ajustar reglas o preprocessors según necesidad.</li>
                             </ul>
                         </div>
                         <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500 text-sm">
@@ -331,34 +331,34 @@
                         <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
                             <strong class="text-blue-900 block mb-2">Funcionales (Qué hace):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Inspeccionar tráfico en tiempo real y bloquear ataques confirmados[cite: 4].</li>
-                                <li>Registrar cada acción de bloqueo y mantener trazabilidad completa[cite: 4].</li>
-                                <li>Habilitar un modo "alerta" para probar reglas antes de activarlas en modo "bloqueo"[cite: 4].</li>
-                                <li>Permitir despliegue gradual de reglas críticas[cite: 4].</li>
+                                <li>Inspeccionar tráfico en tiempo real y bloquear ataques confirmados.</li>
+                                <li>Registrar cada acción de bloqueo y mantener trazabilidad completa.</li>
+                                <li>Habilitar un modo "alerta" para probar reglas antes de activarlas en modo "bloqueo".</li>
+                                <li>Permitir despliegue gradual de reglas críticas.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <strong class="text-slate-800 block mb-2">No Funcionales (Cómo de bien):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Baja tasa de falsos positivos[cite: 4].</li>
-                                <li>Alta disponibilidad del servicio (≥99,99%), imprescindible en entornos financieros[cite: 4].</li>
-                                <li>Latencia mínima en la inspección para no afectar la experiencia de usuario[cite: 4].</li>
-                                <li>Estabilidad del motor IPS bajo carga elevada[cite: 4].</li>
+                                <li>Baja tasa de falsos positivos.</li>
+                                <li>Alta disponibilidad del servicio (≥99,99%), imprescindible en entornos financieros.</li>
+                                <li>Latencia mínima en la inspección para no afectar la experiencia de usuario.</li>
+                                <li>Estabilidad del motor IPS bajo carga elevada.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <strong class="text-slate-800 block mb-2">Técnicos (Con qué):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Disponer de un entorno de pruebas o laboratorio para validar reglas antes del despliegue[cite: 4].</li>
-                                <li>Utilizar módulos de análisis heurístico o aprendizaje adaptativo para mejorar la clasificación[cite: 4].</li>
-                                <li>Integración con un SIEM para correlación de eventos y reducción de falsos positivos[cite: 4].</li>
-                                <li>Automatización de pruebas con tráfico realista y patrones maliciosos conocidos[cite: 4].</li>
+                                <li>Disponer de un entorno de pruebas o laboratorio para validar reglas antes del despliegue.</li>
+                                <li>Utilizar módulos de análisis heurístico o aprendizaje adaptativo para mejorar la clasificación.</li>
+                                <li>Integración con un SIEM para correlación de eventos y reducción de falsos positivos.</li>
+                                <li>Automatización de pruebas con tráfico realista y patrones maliciosos conocidos.</li>
                             </ul>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
                             <strong class="text-slate-800 block mb-2">Organizativos/Estratégicos:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li>Establecer procedimientos formales para revisar y aprobar reglas IPS[cite: 4].</li>
+                                <li>Establecer procedimientos formales para revisar y aprobar reglas IPS.</li>
                             </ul>
                         </div>
                     </div>
@@ -366,19 +366,19 @@
                     <!-- Caso de Uso -->
                     <h4 class="font-bold text-slate-800 mb-4 text-lg">2. Caso de uso: Validación de una regla IPS</h4>
                     <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 mb-6 text-sm">
-                        <p class="mb-2"><strong class="text-emerald-900">Actor:</strong> Administrador de seguridad[cite: 4].</p>
+                        <p class="mb-2"><strong class="text-emerald-900">Actor:</strong> Administrador de seguridad.</p>
                         <strong class="text-emerald-900 block mb-1">Flujo principal:</strong>
                         <ol class="list-decimal pl-5 space-y-1 text-slate-700 mb-3">
-                            <li>El administrador crea o modifica una regla IPS[cite: 4].</li>
-                            <li>La regla se prueba en un entorno de laboratorio en modo "alerta"[cite: 4].</li>
-                            <li>Se analizan los resultados: número de falsos positivos y falsos negativos[cite: 4].</li>
-                            <li>Si la regla es estable y precisa, se despliega gradualmente en modo "bloqueo"[cite: 4].</li>
-                            <li>El cambio se documenta y se registra en el sistema para trazabilidad[cite: 4].</li>
+                            <li>El administrador crea o modifica una regla IPS.</li>
+                            <li>La regla se prueba en un entorno de laboratorio en modo "alerta".</li>
+                            <li>Se analizan los resultados: número de falsos positivos y falsos negativos.</li>
+                            <li>Si la regla es estable y precisa, se despliega gradualmente en modo "bloqueo".</li>
+                            <li>El cambio se documenta y se registra en el sistema para trazabilidad.</li>
                         </ol>
                         <strong class="text-red-800 block mb-1">Excepciones:</strong>
                         <ul class="list-disc pl-5 text-red-900">
-                            <li>Tasa excesiva de falsos positivos &rarr; reajuste o reescritura de la regla[cite: 4].</li>
-                            <li>Impacto en un servicio crítico &rarr; reversión inmediata (rollback)[cite: 4].</li>
+                            <li>Tasa excesiva de falsos positivos &rarr; reajuste o reescritura de la regla.</li>
+                            <li>Impacto en un servicio crítico &rarr; reversión inmediata (rollback).</li>
                         </ul>
                     </div>
 
@@ -387,11 +387,11 @@
                         <div>
                             <h4 class="font-bold text-slate-800 mb-3 text-lg">3. Mecanismos para validar que no bloquea tráfico legítimo</h4>
                             <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
-                                <li>Realizar pruebas de carga y tráfico real (capturas, replay, simulaciones) antes de activar reglas[cite: 4].</li>
-                                <li>Monitorizar continuamente el comportamiento del IPS tras el despliegue[cite: 4].</li>
-                                <li>Revisar estadísticas de falsos positivos/falsos negativos y ajustar reglas iterativamente[cite: 4].</li>
-                                <li>Simular ataques reales o conocidos para verificar la eficacia del bloqueo[cite: 4].</li>
-                                <li>Correlacionar eventos del IPS con logs de aplicaciones, firewall y SIEM para detectar impactos no deseados[cite: 4].</li>
+                                <li>Realizar pruebas de carga y tráfico real (capturas, replay, simulaciones) antes de activar reglas.</li>
+                                <li>Monitorizar continuamente el comportamiento del IPS tras el despliegue.</li>
+                                <li>Revisar estadísticas de falsos positivos/falsos negativos y ajustar reglas iterativamente.</li>
+                                <li>Simular ataques reales o conocidos para verificar la eficacia del bloqueo.</li>
+                                <li>Correlacionar eventos del IPS con logs de aplicaciones, firewall y SIEM para detectar impactos no deseados.</li>
                             </ul>
                         </div>
                         <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500 text-sm">
