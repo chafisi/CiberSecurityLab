@@ -221,13 +221,124 @@
             </div>
         </section>
 
+        !-- ==========================================
+             5. CASOS PRÁCTICOS (IGNACIO)
+             ========================================== -->
         <section id="sec5" class="main-section hidden fade-in">
             <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">5. Casos Prácticos Resueltos</h2>
-            
-            <div class="bg-violet-50 border-2 border-dashed border-violet-300 rounded-xl p-12 text-center mt-8">
-                <span class="text-5xl mb-4 block">🚧</span>
-                <h3 class="text-2xl font-bold text-violet-800 mb-2">Sección en Construcción</h3>
-                <p class="text-slate-600 max-w-lg mx-auto">Esta sección está a la espera de la resolución técnica y la rúbrica oficial de los <strong>Casos Prácticos 9 y 10</strong>. Una vez completados, se inyectará aquí la matriz de requisitos, el flujo del caso de uso y la correlación del auditor.</p>
+            <p class="text-slate-600 mb-8">Soluciones oficiales extraídas de la rúbrica estructuradas para ingeniería inversa.</p>
+
+            <!-- ================= CASO 9 ================= -->
+            <div class="mb-12">
+                <div class="bg-indigo-900 text-white p-4 rounded-t-xl flex items-center gap-3">
+                    <span class="text-2xl">🕵️‍♂️</span>
+                    <h3 class="text-xl font-bold">Caso Práctico 9: Uso de ARP spoofing en una red corporativa</h3>
+                </div>
+                <div class="bg-white border-x border-b border-slate-200 rounded-b-xl p-6 shadow-sm">
+                    
+                    <!-- Requisitos 2x2 -->
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">1. Requisitos para proteger una red frente a ARP spoofing</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 mb-6">
+                        <div class="bg-violet-50 p-4 rounded-lg border border-violet-100">
+                            <strong class="text-violet-900 block mb-2">Funcionales (Qué hace):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Verificar la integridad de los mensajes ARP mediante Dynamic ARP Inspection (DAI) u otros mecanismos.</li>
+                                <li>Monitorizar de forma continua las asociaciones IP–MAC.</li>
+                                <li>Generar alertas automáticas ante inconsistencias ARP sospechosas.</li>
+                                <li>Registrar eventos ARP para posterior análisis.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">No Funcionales (Cómo de bien):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Baja latencia en la comprobación del tráfico ARP (el protocolo es crítico para el rendimiento).</li>
+                                <li>Alta disponibilidad de la infraestructura de switching.</li>
+                                <li>Bajo impacto operacional tras activar DAI/DHCP Snooping.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Técnicos (Con qué):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Activar DAI y DHCP Snooping en switches gestionables.</li>
+                                <li>Implementar ARP estático en servidores y dispositivos críticos.</li>
+                                <li>Integrar los logs de red con un SIEM para correlación de eventos.</li>
+                                <li>Configurar puertos de confianza/no confianza en switches según su función.</li>
+                                <li>Supervisar cambios anómalos en tablas ARP mediante herramientas de red.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Operativos / Gestión:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Aislamiento manual de dispositivos atacantes tras la identificación del administrador.</li>
+                                <li>Revisión manual de asociaciones legítimas pero inusuales (excepciones).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Caso de Uso -->
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">2. Caso de uso: Detección de un ataque ARP</h4>
+                    <div class="bg-fuchsia-50 p-5 rounded-xl border border-fuchsia-200 mb-6 text-sm">
+                        <p class="mb-2"><strong class="text-fuchsia-900">Actor:</strong> Sistema de red (switch gestionable con DAI).</p>
+                        <strong class="text-fuchsia-900 block mb-1">Flujo principal:</strong>
+                        <ol class="list-decimal pl-5 space-y-1 text-slate-700 mb-3">
+                            <li>El switch inspecciona todos los mensajes ARP recibidos en puertos no confiables.</li>
+                            <li>Detecta una respuesta ARP incorrecta (inconsistencia IP–MAC o violación del binding DHCP Snooping).</li>
+                            <li>Bloquea el paquete automáticamente y registra el incidente.</li>
+                            <li>Se genera una alerta enviada al equipo de seguridad.</li>
+                            <li>El administrador identifica el dispositivo atacante y lo aísla.</li>
+                        </ol>
+                        <strong class="text-red-800 block mb-1">Excepciones:</strong>
+                        <ul class="list-disc pl-5 text-red-900">
+                            <li>Asociación ARP legítima pero inusual &rarr; requiere revisión manual antes de tomar acción.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Validación & Correlación -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-3 text-lg">3. Mecanismos de Validación</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Realizar ataques controlados (con <em>arpspoof</em>, <em>ettercap</em>) para comprobar que DAI detecta y bloquea la actividad maliciosa.</li>
+                                <li>Revisar periódicamente tablas ARP en switches y servidores.</li>
+                                <li>Probar en laboratorio el comportamiento de DAI y DHCP Snooping con distintos escenarios.</li>
+                                <li>Correlacionar alertas ARP con SIEM para análisis automatizado y detección temprana.</li>
+                                <li>Verificar que no se producen interrupciones ni falsos positivos en dispositivos críticos.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500 text-sm">
+                            <h4 class="font-bold text-amber-900 mb-2">🧠 Ficha de Correlación (Ingeniería Inversa)</h4>
+                            <table class="w-full text-left text-slate-700 border-collapse mt-2">
+                                <tbody>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"pasó desapercibido durante días"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Integrar logs de red con un SIEM / RF: Alertas automáticas.</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"detectó asociaciones IP–MAC anómalas"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RF: Monitorizar de forma continua las asociaciones.</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"activar DAI, habilitar DHCP Snooping"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Configurar puertos de confianza/no confianza en switches.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 italic text-xs w-1/2">"configurar ARP estático en sistemas críticos"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Implementar ARP estático / Validación: Falsos positivos.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= CASO 10 PLACEHOLDER ================= -->
+            <div id="caso10-placeholder">
+                <div class="bg-violet-50 border-2 border-dashed border-violet-300 rounded-xl p-12 text-center mt-8">
+                    <span class="text-5xl mb-4 block">🚧</span>
+                    <h3 class="text-2xl font-bold text-violet-800 mb-2">Caso Práctico 10 Pendiente</h3>
+                    <p class="text-slate-600 max-w-lg mx-auto">A la espera de la resolución técnica y la rúbrica oficial del Caso Práctico 10 (IPSec entre sedes). Cuando lo facilites, se añadirá debajo del Caso 9.</p>
+                </div>
             </div>
         </section>
 
