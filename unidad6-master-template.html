@@ -333,11 +333,107 @@
             </div>
 
             <!-- ================= CASO 10 PLACEHOLDER ================= -->
-            <div id="caso10-placeholder">
-                <div class="bg-violet-50 border-2 border-dashed border-violet-300 rounded-xl p-12 text-center mt-8">
-                    <span class="text-5xl mb-4 block">🚧</span>
-                    <h3 class="text-2xl font-bold text-violet-800 mb-2">Caso Práctico 10 Pendiente</h3>
-                    <p class="text-slate-600 max-w-lg mx-auto">A la espera de la resolución técnica y la rúbrica oficial del Caso Práctico 10 (IPSec entre sedes). Cuando lo facilites, se añadirá debajo del Caso 9.</p>
+            <div id="caso10" class="mt-12 fade-in">
+                <div class="bg-cyan-900 text-white p-4 rounded-t-xl flex items-center gap-3">
+                    <span class="text-2xl">🌍</span>
+                    <h3 class="text-xl font-bold">Caso Práctico 10: Implementación de IPSec entre sedes</h3>
+                </div>
+                <div class="bg-white border-x border-b border-slate-200 rounded-b-xl p-6 shadow-sm">
+                    
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">1. Requisitos para implementar IPSec entre sedes</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700 mb-6">
+                        <div class="bg-cyan-50 p-4 rounded-lg border border-cyan-100">
+                            <strong class="text-cyan-900 block mb-2">Funcionales (Qué hace):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Establecer túneles IPSec seguros entre sedes geográficamente distribuidas.</li>
+                                <li>Garantizar confidencialidad, integridad y autenticación del tráfico intercambiado.</li>
+                                <li>Implementar renegociación automática de claves mediante IKEv2.</li>
+                                <li>Mantener conexión estable con reconexión automática en caso de caída.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">No Funcionales (Cómo de bien):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Baja latencia para permitir operaciones críticas en tiempo real.</li>
+                                <li>Alta disponibilidad del túnel VPN IPSec (failover automático, redundancia).</li>
+                                <li>Escalabilidad para admitir múltiples sedes y diferentes zonas horarias.</li>
+                                <li>Estabilidad del enlace incluso ante fluctuaciones de red.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Técnicos (Con qué):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Compatibilidad e interoperabilidad entre dispositivos de distintos fabricantes (Cisco, Fortinet, Juniper, etc.).</li>
+                                <li>Uso de algoritmos modernos y seguros (AES-GCM para cifrado y SHA-2 para integridad).</li>
+                                <li>Soporte de Perfect Forward Secrecy (PFS).</li>
+                                <li>Monitoreo de estado del túnel e integración con sistemas de red corporativos.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <strong class="text-slate-800 block mb-2">Operativos / Gestión:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Gestión centralizada de claves, políticas de seguridad y plantillas de configuración.</li>
+                                <li>Revisión de configuraciones para confirmar consistencia.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-slate-800 mb-4 text-lg">2. Caso de uso: Establecimiento de un túnel IPSec</h4>
+                    
+                    <div class="bg-blue-50 p-5 rounded-xl border border-blue-200 mb-6 text-sm">
+                        <p class="mb-2"><strong class="text-blue-900">Actor:</strong> Gateway VPN de cada sede.</p>
+                        <strong class="text-blue-900 block mb-1">Flujo principal:</strong>
+                        <ol class="list-decimal pl-5 space-y-1 text-slate-700 mb-3">
+                            <li>Los gateways de cada sede intercambian parámetros de seguridad utilizando IKEv2.</li>
+                            <li>Cada gateway verifica la identidad del otro mediante certificados digitales o claves precompartidas (PSK).</li>
+                            <li>Se negocian los algoritmos de cifrado, integridad y los tiempos de vida de las claves (SA).</li>
+                            <li>Se establece el túnel IPSec (fase 2) y se crean las Security Associations.</li>
+                            <li>El tráfico entre sedes se cifra automáticamente y circula a través del túnel.</li>
+                        </ol>
+                        <strong class="text-red-800 block mb-1">Excepciones:</strong>
+                        <ul class="list-disc pl-5 text-red-900">
+                            <li>Fallo en la autenticación &rarr; el túnel se rechaza automáticamente.</li>
+                            <li>Diferencias en algoritmos/parámetros &rarr; negociación fallida.</li>
+                            <li>Desincronización temporal &rarr; necesidad de reintentos mediante IKEv2.</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-slate-800 mb-3 text-lg">3. Métodos de Validación</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Realizar pruebas de interoperabilidad entre distintos equipos y versiones de firmware.</li>
+                                <li>Simular pérdida de conectividad para validar mecanismos de failover y reconexión automática.</li>
+                                <li>Verificar periódicamente que el tráfico entre sedes viaja siempre cifrado mediante análisis de paquetes y herramientas de red.</li>
+                                <li>Revisar configuraciones para confirmar uso de algoritmos seguros y parámetros consistentes.</li>
+                                <li>Monitorizar logs de IKE e IPSec para identificar errores, renegociaciones o caídas recurrentes.</li>
+                                <li>Medir latencia y rendimiento del túnel bajo carga real para asegurar cumplimiento de requisitos.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-xl border-l-4 border-amber-500 text-sm">
+                            <h4 class="font-bold text-amber-900 mb-2">🧠 Ficha de Correlación (Ingeniería Inversa)</h4>
+                            <table class="w-full text-left text-slate-700 border-collapse mt-2">
+                                <tbody>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"problemas de interoperabilidad entre dispositivos de distintos fabricantes"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Compatibilidad e interoperabilidad / Validación de firmware.</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"garantizar seguridad de transferencias financieras"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RF: Garantizar confidencialidad, integridad y autenticación.</td>
+                                    </tr>
+                                    <tr class="border-b border-amber-200">
+                                        <td class="p-2 italic text-xs w-1/2">"desafíos en la gestión masiva de claves"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RT: Gestión centralizada de claves y renegociación IKEv2.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 italic text-xs w-1/2">"reforzando la continuidad operativa"</td>
+                                        <td class="p-2 text-xs font-semibold">&rarr; RNF: Alta disponibilidad (failover automático) / Requisitos de Latencia.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -378,14 +474,19 @@
              7. LABS INTERACTIVOS (SIMULADOR SOC)
              ========================================== -->
         <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="bg-yellow-500 text-white p-2 rounded-lg font-bold text-xl">🕹️</span>
-                <h2 class="text-3xl font-bold text-slate-800">Simulador L2: ARP Spoofing & DAI</h2>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="bg-yellow-500 text-white p-2 rounded-lg font-bold text-xl">🕹️</span>
+                    <h2 class="text-3xl font-bold text-slate-800">Simulador SOC: Capas 2 y 3</h2>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="switchLab('lab-arp')" id="btn-lab-arp" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded font-bold shadow transition">Lab 1: ARP (L2)</button>
+                    <button onclick="switchLab('lab-ipsec')" id="btn-lab-ipsec" class="bg-slate-300 hover:bg-slate-400 text-slate-700 px-4 py-2 rounded font-bold shadow transition">Lab 2: IPSec (L3)</button>
+                </div>
             </div>
-            
             <p class="text-slate-600 mb-6">Audita la red local ejecutando un ataque de envenenamiento ARP. Luego, asume el rol de administrador, configura las defensas en el switch y comprueba cómo la inspección dinámica detiene la amenaza.</p>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1" id="lab-arp-container">
                 
                 <!-- Columna Izquierda: Red y Atacante -->
                 <div class="flex flex-col gap-4">
@@ -492,8 +593,67 @@
                 </div>
                 
             </div>
+            <!--LAB IPSEC-->
+            <div id="lab-ipsec-container" class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 hidden">
+                <div class="flex flex-col gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-3 border-b pb-2">Topología VPN Site-to-Site</h3>
+                        <div class="flex flex-col items-center justify-center space-y-2 py-4">
+                            <div class="w-full flex justify-between items-center text-xs font-mono font-bold">
+                                <div class="bg-blue-100 text-blue-800 p-2 rounded border border-blue-300 text-center w-24">GW Europa<br><span class="text-[10px]">Cisco</span></div>
+                                <div id="ipsec-tunnel-ui" class="flex-1 h-2 bg-slate-200 mx-2 relative overflow-hidden">
+                                    <div id="ipsec-tunnel-anim" class="absolute inset-0 bg-emerald-500 w-0 transition-all duration-1000"></div>
+                                </div>
+                                <div class="bg-rose-100 text-rose-800 p-2 rounded border border-rose-300 text-center w-24">GW América<br><span class="text-[10px]">Fortinet</span></div>
+                            </div>
+                            <div id="tunnel-status-badge" class="mt-2 text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-300">Túnel Inactivo</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-100 p-4 rounded-xl shadow-sm border border-slate-300 flex-1">
+                        <h3 class="font-bold text-slate-800 mb-3 border-b border-slate-300 pb-2">Orquestación de Túnel</h3>
+                        <div class="space-y-2">
+                            <button id="btn-ike" onclick="runPhase1()" class="w-full bg-slate-700 hover:bg-slate-800 text-white text-sm font-bold py-2 px-4 rounded transition text-left flex justify-between">
+                                <span>1. Fase 1 (IKEv2 + Autenticación)</span> <span>▶</span>
+                            </button>
+                            <button id="btn-esp" onclick="runPhase2()" class="w-full bg-slate-300 text-slate-500 text-sm font-bold py-2 px-4 rounded transition cursor-not-allowed text-left flex justify-between" disabled>
+                                <span>2. Fase 2 (ESP + AES-GCM)</span> <span>▶</span>
+                            </button>
+                            <button id="btn-traffic" onclick="sendTraffic()" class="w-full bg-slate-300 text-slate-500 text-sm font-bold py-2 px-4 rounded transition cursor-not-allowed text-left flex justify-between" disabled>
+                                <span>3. Enviar Tráfico Financiero</span> <span>▶</span>
+                            </button>
+                            <button id="btn-failover" onclick="simulateFailover()" class="w-full bg-slate-300 text-slate-500 text-sm font-bold py-2 px-4 rounded transition cursor-not-allowed text-left flex justify-between mt-4" disabled>
+                                <span>⚡ Simular Caída (Failover)</span> <span>▶</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-cyan-200 flex-1 flex flex-col">
+                        <h3 class="font-bold text-cyan-800 mb-3 border-b border-cyan-100 pb-2">DPI: Análisis de Tráfico</h3>
+                        <div id="packet-capture" class="flex-1 bg-slate-50 border border-slate-200 rounded p-3 font-mono text-xs text-slate-500 overflow-y-auto">
+                            Esperando tráfico en la interfaz WAN...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="bg-slate-900 rounded-xl shadow-lg border border-slate-700 flex-1 flex flex-col overflow-hidden">
+                        <div class="bg-slate-950 px-4 py-2 flex items-center justify-between border-b border-slate-800">
+                            <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">Logs de Negociación VPN</span>
+                        </div>
+                        <div id="vpn-terminal" class="flex-1 p-4 font-mono text-[11px] text-green-400 overflow-y-auto space-y-2 terminal-scroll">
+                            <div class="text-slate-500">ISAKMP daemon iniciado. Escuchando en puerto UDP 500.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+
         </section>
 
+        
+        
         <section id="sec8" class="main-section hidden fade-in">
             <div class="flex items-center gap-3 mb-6">
                 <span class="bg-cyan-600 text-white p-2 rounded-lg font-bold text-xl">🛡️</span>
@@ -696,6 +856,110 @@
             
             // Reset Terminal
             terminalSoc.innerHTML = '<div class="text-slate-500">Sistema reiniciado. Puertos de acceso en estado Untrusted.</div>';
+        }
+        
+        // ==========================================
+        // LÓGICA SIMULADOR L3: IPSEC VPN
+        // ==========================================
+        let vpnState = { phase1: false, phase2: false };
+        const vpnTerminal = document.getElementById('vpn-terminal');
+        const packetCapture = document.getElementById('packet-capture');
+        const tunnelAnim = document.getElementById('ipsec-tunnel-anim');
+        const tunnelBadge = document.getElementById('tunnel-status-badge');
+        
+        const btnIke = document.getElementById('btn-ike');
+        const btnEsp = document.getElementById('btn-esp');
+        const btnTraffic = document.getElementById('btn-traffic');
+        const btnFailover = document.getElementById('btn-failover');
+
+        function logVpn(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString('es-ES');
+            let color = 'text-slate-300';
+            if (type === 'error') color = 'text-red-400 font-bold';
+            if (type === 'success') color = 'text-emerald-400';
+            if (type === 'warning') color = 'text-yellow-400';
+            vpnTerminal.innerHTML += `<div class="fade-in"><span class="text-slate-500">[${time}]</span> <span class="${color}">${msg}</span></div>`;
+            vpnTerminal.scrollTop = vpnTerminal.scrollHeight;
+        }
+
+        function switchLab(labId) {
+            document.getElementById('lab-arp-container').classList.add('hidden');
+            document.getElementById('lab-ipsec-container').classList.add('hidden');
+            document.getElementById('btn-lab-arp').className = "bg-slate-300 hover:bg-slate-400 text-slate-700 px-4 py-2 rounded font-bold shadow transition";
+            document.getElementById('btn-lab-ipsec').className = "bg-slate-300 hover:bg-slate-400 text-slate-700 px-4 py-2 rounded font-bold shadow transition";
+
+            if(labId === 'lab-arp') {
+                document.getElementById('lab-arp-container').classList.remove('hidden');
+                document.getElementById('btn-lab-arp').className = "bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded font-bold shadow transition";
+            } else {
+                document.getElementById('lab-ipsec-container').classList.remove('hidden');
+                document.getElementById('btn-lab-ipsec').className = "bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded font-bold shadow transition";
+            }
+        }
+
+        function runPhase1() {
+            logVpn("Iniciando negociación IKEv2 (Fase 1)...", "info");
+            logVpn("Intercambio de identidades: Certificados digitales validados.", "success");
+            logVpn("Negociación IKE Proposal: AES-256-CBC, SHA256, DH Group 14 -> MATCH", "success");
+            
+            vpnState.phase1 = true;
+            btnIke.classList.replace('bg-slate-700', 'bg-emerald-600');
+            btnIke.innerHTML = `<span>✅ Fase 1 Completada (ISAKMP SA)</span>`;
+            
+            btnEsp.disabled = false;
+            btnEsp.className = "w-full bg-slate-700 hover:bg-slate-800 text-white text-sm font-bold py-2 px-4 rounded transition text-left flex justify-between";
+        }
+
+        function runPhase2() {
+            logVpn("Iniciando Fase 2 (IPSec ESP)...", "info");
+            logVpn("Negociando Transform Set: ESP-AES-GCM-256 con PFS (Perfect Forward Secrecy).", "info");
+            logVpn("IPsec SA establecidas local y remotamente.", "success");
+            
+            vpnState.phase2 = true;
+            tunnelAnim.classList.replace('w-0', 'w-full');
+            tunnelBadge.innerText = "Túnel Activo (Encrypted)";
+            tunnelBadge.className = "mt-2 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 fade-in";
+
+            btnEsp.classList.replace('bg-slate-700', 'bg-emerald-600');
+            btnEsp.innerHTML = `<span>✅ Fase 2 Completada (IPsec SA)</span>`;
+            
+            btnTraffic.disabled = false;
+            btnFailover.disabled = false;
+            btnTraffic.className = "w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 px-4 rounded transition text-left flex justify-between";
+            btnFailover.className = "w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-bold py-2 px-4 rounded transition text-left flex justify-between mt-4";
+        }
+
+        function sendTraffic() {
+            logVpn("Enviando transferencia SWIFT desde Sede Europa...", "info");
+            packetCapture.innerHTML = `
+                <div class="fade-in mb-2">
+                    <strong class="text-blue-600">Paquete Capturado (WAN)</strong><br>
+                    <span class="text-slate-700">Src: IP_Publica_Europa | Dst: IP_Publica_América</span><br>
+                    <span class="text-purple-600 font-bold">Protocolo: ESP (Capa 3 / Protocolo 50)</span><br>
+                    <div class="bg-slate-800 text-green-400 p-2 mt-1 rounded break-all">
+                        Payload: 0x8A3F9B2... [DATOS CIFRADOS CON AES-GCM. PAYLOAD INVISIBLE]
+                    </div>
+                </div>
+                ${packetCapture.innerHTML.replace('Esperando tráfico en la interfaz WAN...', '')}
+            `;
+            logVpn("Validación: Tráfico capturado. El payload está 100% cifrado (ESP). Confidencialidad garantizada.", "success");
+        }
+
+        function simulateFailover() {
+            logVpn("ALERTA: Pérdida de conectividad detectada (Dead Peer Detection - DPD fallido).", "error");
+            tunnelAnim.classList.replace('w-full', 'w-0');
+            tunnelBadge.innerText = "Túnel Caído";
+            tunnelBadge.className = "mt-2 text-xs font-bold text-red-800 bg-red-100 px-3 py-1 rounded-full border border-red-300";
+            
+            setTimeout(() => {
+                logVpn("FAILOVER AUTOMÁTICO: Iniciando renegociación por enlace de respaldo (WAN 2)...", "warning");
+                setTimeout(() => {
+                    logVpn("IKEv2: Fase 1 y 2 reestablecidas exitosamente.", "success");
+                    tunnelAnim.classList.replace('w-0', 'w-full');
+                    tunnelBadge.innerText = "Túnel Activo (Respaldo)";
+                    tunnelBadge.className = "mt-2 text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 fade-in";
+                }, 1500);
+            }, 1500);
         }
 
         // Inicializar UI al cargar
