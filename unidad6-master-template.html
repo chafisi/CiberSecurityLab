@@ -221,7 +221,7 @@
             </div>
         </section>
 
-        !-- ==========================================
+        <!-- ==========================================
              5. CASOS PRÁCTICOS (IGNACIO)
              ========================================== -->
         <section id="sec5" class="main-section hidden fade-in">
@@ -374,16 +374,123 @@
             </div>
         </section>
 
-        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[600px]">
+        <!-- ==========================================
+             7. LABS INTERACTIVOS (SIMULADOR SOC)
+             ========================================== -->
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
             <div class="flex items-center gap-3 mb-6">
                 <span class="bg-yellow-500 text-white p-2 rounded-lg font-bold text-xl">🕹️</span>
-                <h2 class="text-3xl font-bold text-slate-800">Simulador SOC: Ataques L2 a L7</h2>
+                <h2 class="text-3xl font-bold text-slate-800">Simulador L2: ARP Spoofing & DAI</h2>
             </div>
             
-            <div class="bg-slate-900 rounded-xl shadow-2xl flex-1 flex flex-col border border-slate-700 items-center justify-center text-center p-8">
-                <span class="text-6xl text-slate-700 mb-4">⚙️</span>
-                <h3 class="text-white text-xl font-mono mb-2">Iniciando Entornos Virtuales...</h3>
-                <p class="text-slate-500 font-mono text-sm">Los simuladores de 'Ataque de Degradación TLS' y 'Secuestro de Sesión XSS' se programarán tras la resolución de los Casos Prácticos de la Unidad 6.</p>
+            <p class="text-slate-600 mb-6">Audita la red local ejecutando un ataque de envenenamiento ARP. Luego, asume el rol de administrador, configura las defensas en el switch y comprueba cómo la inspección dinámica detiene la amenaza.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+                
+                <!-- Columna Izquierda: Red y Atacante -->
+                <div class="flex flex-col gap-4">
+                    <!-- Topología -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 mb-3 border-b pb-2">Topología de Red</h3>
+                        <div class="text-xs text-slate-700 space-y-2 font-mono">
+                            <div class="flex justify-between items-center p-2 bg-slate-50 rounded border">
+                                <span>🌐 Gateway (Router)</span>
+                                <span>10.0.0.1<br><span class="text-slate-400">AA:AA:AA:AA:AA:AA</span></span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-blue-50 border-blue-200 rounded border">
+                                <span>💻 Alice (Víctima)</span>
+                                <span>10.0.0.50<br><span class="text-slate-400">BB:BB:BB:BB:BB:BB</span></span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-red-50 border-red-200 rounded border">
+                                <span>🥷 Atacante (Kali)</span>
+                                <span>10.0.0.99<br><span class="text-slate-400">FF:FF:FF:FF:FF:FF</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel Atacante -->
+                    <div class="bg-slate-900 p-4 rounded-xl shadow-lg border border-slate-700 flex-1 flex flex-col">
+                        <h3 class="font-bold text-red-400 mb-3 border-b border-slate-700 pb-2 flex items-center gap-2"><span>🥷</span> Consola Ofensiva</h3>
+                        <p class="text-xs text-slate-400 mb-4">Envía paquetes "ARP Reply" falsificados afirmando que la IP del Gateway (10.0.0.1) tiene la MAC del atacante (FF:...:FF).</p>
+                        <div class="mt-auto">
+                            <button onclick="executeArpSpoof()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition shadow-lg flex justify-center items-center gap-2">
+                                <span>Lanzar Ataque ARP</span> <span>▶</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Central: Tablas Internas -->
+                <div class="flex flex-col gap-4">
+                    <!-- Caché ARP de Alice -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-200 flex-1">
+                        <h3 class="font-bold text-blue-800 mb-3 border-b border-blue-100 pb-2">Caché ARP de Alice (Víctima)</h3>
+                        <table class="w-full text-xs text-left text-slate-600 font-mono">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="p-2 rounded-tl">Dirección IP</th>
+                                    <th class="p-2 rounded-tr">Dirección MAC (Física)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="alice-arp-table">
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                        <div id="alice-status" class="mt-4 text-xs font-bold text-green-600 bg-green-50 p-2 rounded border border-green-200 text-center">
+                            Estado: Tráfico Seguro hacia el Gateway.
+                        </div>
+                    </div>
+
+                    <!-- Switch Binding Table -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-violet-200 flex-1">
+                        <h3 class="font-bold text-violet-800 mb-3 border-b border-violet-100 pb-2">Switch: DHCP Binding Database</h3>
+                        <table class="w-full text-xs text-left text-slate-600 font-mono">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="p-2">IP</th>
+                                    <th class="p-2">MAC Confiable</th>
+                                    <th class="p-2">Puerto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dhcp-binding-table" class="opacity-30 blur-[1px] transition-all duration-500">
+                                <tr class="border-b"><td class="p-2">10.0.0.1</td><td class="p-2">AA:AA:AA:AA:AA:AA</td><td class="p-2">Gi0/1</td></tr>
+                                <tr class="border-b"><td class="p-2">10.0.0.50</td><td class="p-2">BB:BB:BB:BB:BB:BB</td><td class="p-2">Fa0/5</td></tr>
+                                <tr><td class="p-2">10.0.0.99</td><td class="p-2">FF:FF:FF:FF:FF:FF</td><td class="p-2">Fa0/8</td></tr>
+                            </tbody>
+                        </table>
+                        <div id="binding-status" class="mt-4 text-xs text-slate-500 text-center">Inactiva (DHCP Snooping Apagado)</div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: SOC y Defensas -->
+                <div class="flex flex-col gap-4">
+                    <!-- Controles Defensivos -->
+                    <div class="bg-slate-100 p-4 rounded-xl shadow-sm border border-slate-300">
+                        <h3 class="font-bold text-slate-800 mb-3 border-b border-slate-300 pb-2">Controles del Administrador (Switch)</h3>
+                        <div class="space-y-3">
+                            <button id="btn-dhcp" onclick="toggleDhcpSnooping()" class="w-full bg-slate-700 hover:bg-slate-800 text-white text-sm font-bold py-2 px-4 rounded transition">
+                                1. Habilitar DHCP Snooping
+                            </button>
+                            <button id="btn-dai" onclick="toggleDAI()" class="w-full bg-slate-300 text-slate-500 text-sm font-bold py-2 px-4 rounded cursor-not-allowed transition" disabled>
+                                2. Activar DAI (Requiere paso 1)
+                            </button>
+                            <button onclick="resetLabL2()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-bold py-2 px-4 rounded transition mt-4">
+                                🔄 Reiniciar Laboratorio
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Terminal SOC -->
+                    <div class="bg-slate-900 rounded-xl shadow-lg border border-slate-700 flex-1 flex flex-col overflow-hidden">
+                        <div class="bg-slate-950 px-4 py-2 flex items-center justify-between border-b border-slate-800">
+                            <span class="text-xs font-mono text-slate-500 uppercase tracking-widest">Logs del Switch (Syslog)</span>
+                        </div>
+                        <div id="soc-terminal" class="flex-1 p-4 font-mono text-[11px] text-green-400 overflow-y-auto space-y-2 terminal-scroll">
+                            <div class="text-slate-500">Sistema iniciado. Puertos de acceso en estado Untrusted.</div>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </section>
 
@@ -430,6 +537,7 @@
     </main>
 
     <script>
+        
         function switchSection(secId) {
             document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -461,6 +569,137 @@
                 else sec.classList.add('hidden');
             });
         });
+
+        // ==========================================
+        // LÓGICA SIMULADOR L2: ARP SPOOFING & DAI
+        // ==========================================
+        let labState = {
+            dhcpSnooping: false,
+            dai: false,
+            aliceArpCache: 'AA:AA:AA:AA:AA:AA', // Inicialmente apunta a la MAC real del Gateway
+            gatewayMac: 'AA:AA:AA:AA:AA:AA',
+            attackerMac: 'FF:FF:FF:FF:FF:FF'
+        };
+
+        const terminalSoc = document.getElementById('soc-terminal');
+        const aliceTable = document.getElementById('alice-arp-table');
+        const aliceStatus = document.getElementById('alice-status');
+        const dhcpTable = document.getElementById('dhcp-binding-table');
+        const bindingStatus = document.getElementById('binding-status');
+        const btnDhcp = document.getElementById('btn-dhcp');
+        const btnDai = document.getElementById('btn-dai');
+
+        function logSoc(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString('es-ES');
+            let color = 'text-slate-300';
+            if (type === 'error') color = 'text-red-400 font-bold';
+            if (type === 'success') color = 'text-emerald-400';
+            if (type === 'warning') color = 'text-yellow-400';
+            
+            terminalSoc.innerHTML += `<div class="fade-in"><span class="text-slate-500">[${time}]</span> <span class="${color}">${msg}</span></div>`;
+            terminalSoc.scrollTop = terminalSoc.scrollHeight;
+        }
+
+        function updateAliceArpUI() {
+            let isPoisoned = labState.aliceArpCache === labState.attackerMac;
+            
+            aliceTable.innerHTML = `
+                <tr class="border-b transition-colors duration-500 ${isPoisoned ? 'bg-red-50 text-red-700 font-bold' : ''}">
+                    <td class="p-2">10.0.0.1 (Gateway)</td>
+                    <td class="p-2">${labState.aliceArpCache}</td>
+                </tr>
+            `;
+
+            if (isPoisoned) {
+                aliceStatus.className = "mt-4 text-xs font-bold text-red-600 bg-red-50 p-2 rounded border border-red-200 text-center fade-in";
+                aliceStatus.innerText = "¡PELIGRO! Caché Envenenada. Tráfico interceptado (MitM).";
+            } else {
+                aliceStatus.className = "mt-4 text-xs font-bold text-green-600 bg-green-50 p-2 rounded border border-green-200 text-center fade-in";
+                aliceStatus.innerText = "Estado: Tráfico Seguro hacia el Gateway.";
+            }
+        }
+
+        function executeArpSpoof() {
+            logSoc("ALERTA: Se ha detectado un paquete ARP Reply (Gratuitous) inyectado en el puerto Fa0/8.", "warning");
+            
+            if (labState.dai) {
+                // DAI Activado: El switch intercepta y bloquea
+                logSoc("DAI CHECK: Inspeccionando paquete ARP...", "info");
+                logSoc("DAI CHECK: Fallo. La IP 10.0.0.1 NO pertenece a la MAC FF:FF:FF:FF:FF:FF en la BD.", "error");
+                logSoc("DAI ACTION: Paquete ARP malicioso DESCARTADO (Drop).", "success");
+            } else {
+                // DAI Apagado: El ataque tiene éxito
+                logSoc("SWITCH: Reenviando paquete ARP Reply a todos los puertos (Broadcast).", "info");
+                labState.aliceArpCache = labState.attackerMac; // Envenenamiento
+                updateAliceArpUI();
+                logSoc("VÍCTIMA: Tabla ARP modificada por paquete fraudulento.", "error");
+            }
+        }
+
+        function toggleDhcpSnooping() {
+            if (labState.dhcpSnooping) return;
+            labState.dhcpSnooping = true;
+            
+            // Actualizar UI
+            dhcpTable.classList.remove('opacity-30', 'blur-[1px]');
+            bindingStatus.innerText = "Activa (Base de Datos Confiable Generada)";
+            bindingStatus.className = "mt-4 text-xs font-bold text-violet-600 text-center fade-in";
+            
+            btnDhcp.classList.replace('bg-slate-700', 'bg-emerald-600');
+            btnDhcp.classList.replace('hover:bg-slate-800', 'hover:bg-emerald-700');
+            btnDhcp.innerText = "✅ DHCP Snooping Habilitado";
+            
+            // Habilitar botón DAI
+            btnDai.disabled = false;
+            btnDai.classList.replace('bg-slate-300', 'bg-violet-600');
+            btnDai.classList.replace('text-slate-500', 'text-white');
+            btnDai.classList.add('hover:bg-violet-700');
+            
+            logSoc("CONFIG: DHCP Snooping activado globalmente.", "success");
+            logSoc("SYS: Construyendo Binding Database con asignaciones legítimas...", "info");
+        }
+
+        function toggleDAI() {
+            if (labState.dai || !labState.dhcpSnooping) return;
+            labState.dai = true;
+            
+            btnDai.classList.replace('bg-violet-600', 'bg-emerald-600');
+            btnDai.classList.replace('hover:bg-violet-700', 'hover:bg-emerald-700');
+            btnDai.innerText = "✅ Dynamic ARP Inspection Activo";
+            
+            logSoc("CONFIG: Dynamic ARP Inspection (DAI) activado en puertos de acceso.", "success");
+            logSoc("SYS: Todo el tráfico ARP será interceptado y validado contra la base de datos.", "info");
+        }
+
+        function resetLabL2() {
+            labState.dhcpSnooping = false;
+            labState.dai = false;
+            labState.aliceArpCache = labState.gatewayMac;
+            
+            // Reset UI Alice
+            updateAliceArpUI();
+            
+            // Reset UI DHCP
+            dhcpTable.classList.add('opacity-30', 'blur-[1px]');
+            bindingStatus.innerText = "Inactiva (DHCP Snooping Apagado)";
+            bindingStatus.className = "mt-4 text-xs text-slate-500 text-center";
+            
+            // Reset Botones
+            btnDhcp.classList.replace('bg-emerald-600', 'bg-slate-700');
+            btnDhcp.classList.replace('hover:bg-emerald-700', 'hover:bg-slate-800');
+            btnDhcp.innerText = "1. Habilitar DHCP Snooping";
+            
+            btnDai.disabled = true;
+            btnDai.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+            btnDai.classList.add('bg-slate-300', 'text-slate-500');
+            btnDai.innerText = "2. Activar DAI (Requiere paso 1)";
+            
+            // Reset Terminal
+            terminalSoc.innerHTML = '<div class="text-slate-500">Sistema reiniciado. Puertos de acceso en estado Untrusted.</div>';
+        }
+
+        // Inicializar UI al cargar
+        updateAliceArpUI();
 
         // Inicio por defecto
         switchSection('sec1');
