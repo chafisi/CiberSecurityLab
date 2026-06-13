@@ -466,6 +466,56 @@
                         <h4 class="font-bold text-violet-700 text-sm">CSP</h4>
                         <p class="text-xs text-slate-600 mt-1">Content Security Policy. Cabecera HTTP que previene XSS limitando desde qué dominios puede cargar scripts un navegador.</p>
                     </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">ARP (Address Resolution Protocol)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Protocolo de Capa 2 que asocia una dirección lógica conocida (IP) a una dirección física desconocida (MAC) en la red local.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">ARP Spoofing</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ataque de Capa 2 donde se envían mensajes ARP falsos para vincular la MAC del atacante con la IP de un equipo legítimo (como el Gateway), logrando un Man-in-the-Middle.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">DAI (Dynamic ARP Inspection)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Mecanismo de seguridad en switches que intercepta y descarta paquetes ARP con mapeos IP-MAC inválidos, mitigando el ARP Spoofing.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">DHCP Snooping</h4>
+                        <p class="text-xs text-slate-600 mt-1">Función de Capa 2 que crea una base de datos confiable (Binding Database) de IPs, MACs y puertos, y que sirve de referencia para que el DAI pueda validar los ARP.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">Port Security</h4>
+                        <p class="text-xs text-slate-600 mt-1">Control de acceso en switches que restringe los dispositivos permitidos en un puerto basándose en su dirección MAC, bloqueando conexiones no autorizadas.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">WPA3</h4>
+                        <p class="text-xs text-slate-600 mt-1">Estándar de seguridad Wi-Fi (Capa 1/2) que mitiga ataques de diccionario en contraseñas precompartidas y añade protección criptográfica incluso en redes abiertas.</p>
+                    </div>
+                    
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">IP Spoofing</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ataque de Capa 3 que falsifica la dirección IP de origen en las cabeceras de los paquetes para ocultar la identidad o evadir reglas de firewall.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">IPSec & TLS</h4>
+                        <p class="text-xs text-slate-600 mt-1">Protocolos de cifrado. IPSec (Capa 3) autentica y cifra paquetes IP (ideal para VPNs site-to-site). TLS (Capa 4/5) cifra conexiones end-to-end sobre TCP.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">Downgrade Attack</h4>
+                        <p class="text-xs text-slate-600 mt-1">Ataque que fuerza a un servidor y un cliente a degradar su conexión a un protocolo de seguridad obsoleto y vulnerable (ej. de TLS 1.3 a SSL 3.0).</p>
+                    </div>
+                    
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">XSS (Cross-Site Scripting)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Vulnerabilidad de Capa 7 que permite a un atacante inyectar código JavaScript malicioso en una página web vista por otros usuarios (frecuente para robo de cookies).</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">SQLi (SQL Injection)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Vulnerabilidad de Capa 7 donde entradas no saneadas permiten manipular consultas a la base de datos, extrayendo, modificando o borrando información crítica.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-violet-700 text-sm">Session Hijacking</h4>
+                        <p class="text-xs text-slate-600 mt-1">Secuestro de sesión. Robo de un identificador válido (token o cookie) que permite a un atacante suplantar al usuario sin necesitar su contraseña.</p>
+                    </div>
                 </div>
             </div>
         </section>
