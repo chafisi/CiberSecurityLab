@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoEdu - 24 Casos Prácticos</title>
+    
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body { background-color: #f8f9fa; }
+        .sidebar { 
+            width: 280px; 
+            height: 100vh; 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            background-color: #2c3e50; 
+            overflow-y: auto; 
+            color: white;
+        }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #34495e; }
+        .sidebar-nav { padding: 10px 0; }
+        .nav-link { color: #bdc3c7; padding: 10px 20px; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: white; background-color: #34495e; }
+        .nav-section-title { font-size: 0.75rem; text-transform: uppercase; padding: 15px 20px 5px; color: #95a5a6; }
+        .main-content { margin-left: 280px; padding: 30px; }
+        .case-card { background: white; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .interactive-lab { background: #ecf0f1; border-radius: 8px; padding: 20px; margin-top: 20px; border-left: 4px solid #3498db; }
+        .lab-input { background: #2c3e50; color: #2ecc71; border: none; padding: 10px; font-family: monospace; border-radius: 5px; margin: 10px 0; width: 100%; }
+        .lab-output { background: #1a1a1a; color: #2ecc71; border: 1px solid #34495e; padding: 15px; font-family: monospace; min-height: 100px; border-radius: 5px; }
+        .flip-card { perspective: 1000px; height: 200px; margin-bottom: 20px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-front, .flip-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 20px; border-radius: 10px; }
+        .flip-front { background-color: #3498db; color: white; font-weight: bold; }
+        .flip-back { background-color: #e74c3c; color: white; transform: rotateY(180deg); }
+        .section-content { display: none; }
+        .section-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .btn-lab { background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; }
+        .btn-lab:hover { background-color: #2980b9; color: white; }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+            .sidebar.show { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+        .mobile-toggle { display: none; position: fixed; top: 15px; right: 15px; z-index: 1000; }
+        @media (max-width: 768px) { .mobile-toggle { display: block; } }
+    </style>
+</head>
+<body>
+
+<!-- Mobile Toggle -->
+<button class="btn btn-primary mobile-toggle" onclick="toggleSidebar()">☰ Menú</button>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h4>CryptoEdu</h4>
+        <small class="text-muted">24 Casos Interactivos</small>
+    </div>
+    
+    <div class="sidebar-nav">
+        <div class="nav-section-title">Unidad 1: Matemática Discreta</div>
+        <a class="nav-link" onclick="showCase('case-1')">Caso 1: Miller-Rabin</a>
+        <a class="nav-link" onclick="showCase('case-2')">Caso 2: Euclides Extendido</a>
+        
+        <div class="nav-section-title">Unidad 2: Criptografía Simétrica</div>
+        <a class="nav-link" onclick="showCase('case-3')">Caso 3: DES</a>
+        <a class="nav-link" onclick="showCase('case-4')">Caso 4: RSA (Confidencialidad)</a>
+        
+        <div class="nav-section-title">Unidad 3: Hash & AES</div>
+        <a class="nav-link" onclick="showCase('case-5')">Caso 5: SHA-256</a>
+        <a class="nav-link" onclick="showCase('case-6')">Caso 6: AES</a>
+        
+        <div class="nav-section-title">Unidad 4: Asimétrica & Firmas</div>
+        <a class="nav-link" onclick="showCase('case-7')">Caso 7: Mensaje Secreto</a>
+        <a class="nav-link" onclick="showCase('case-8')">Caso 8: Firma Digital</a>
+        
+        <div class="nav-section-title">Blockchain & Aplicaciones</div>
+        <a class="nav-link" onclick="showCase('case-9')">Caso 9: Transferencia Cripto</a>
+        <a class="nav-link" onclick="showCase('case-10')">Caso 10: Supply Chain</a>
+        <a class="nav-link" onclick="showCase('case-11')">Caso 11: ONG Donaciones</a>
+        <a class="nav-link" onclick="showCase('case-12')">Caso 12: Registros Médicos</a>
+        <a class="nav-link" onclick="showCase('case-13')">Caso 13: Minería Bitcoin</a>
+        <a class="nav-link" onclick="showCase('case-14')">Caso 14: Ethereum PoS</a>
+        
+        <div class="nav-section-title">Minería de Datos</div>
+        <a class="nav-link" onclick="showCase('case-15')">Caso 15: Clustering E-commerce</a>
+        <a class="nav-link" onclick="showCase('case-16')">Caso 16: Regresión Hospital</a>
+        <a class="nav-link" onclick="showCase('case-17')">Caso 17: Predicción Académica</a>
+        <a class="nav-link" onclick="showCase('case-18')">Caso 18: Árboles Decisión</a>
+        <a class="nav-link" onclick="showCase('case-19')">Caso 19: Visualización</a>
+        <a class="nav-link" onclick="showCase('case-20')">Caso 20: Dashboard Power BI</a>
+        
+        <div class="nav-section-title">Learning Analytics</div>
+        <a class="nav-link" onclick="showCase('case-21')">Caso 21: Priorización Riesgo</a>
+        <a class="nav-link" onclick="showCase('case-22')">Caso 22: Regla de Riesgo</a>
+        <a class="nav-link" onclick="showCase('case-23')">Caso 23: Lógica Clasificación</a>
+        <a class="nav-link" onclick="showCase('case-24')">Caso 24: Dashboard Docentes</a>
+        
+        <div class="nav-section-title mt-3">Recursos</div>
+        <a class="nav-link active" onclick="showCase('glossary')">📚 Glosario Completo</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>24 Casos Prácticos Interactivos</h2>
+            <p class="text-muted">Explora cada caso con simuladores interactivos</p>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- CASO 1: Miller-Rabin -->
+    <!-- =========================================== -->
+    <div id="case-1" class="section-content active">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 1</span>
+            <h3 class="mt-3">Verificación de Primalidad (Miller-Rabin)</h3>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Enunciado:</strong> ¿Es 104729 primo? Describe el proceso incluyendo el test de Miller-Rabin.
+            </div>
+
+            <h5 class="mt-4"><i class="fas fa-book"></i> Solución Teórica</h5>
+            <ol class="ms-4">
+                <li>Métodos básicos iniciales: Probar división por primos pequeños hasta √n ≈ 323</li>
+                <li>Test de Miller-Rabin: Expresar n−1 = d⋅2ˢ (ej. 104728 = 13091 ⋅ 2³)</li>
+                <li>Elegir base aleatoria a (ej. a=2) y calcular x = aᵈ(mod n)</li>
+                <li>Si x=1 o x=n−1 → probable primo. Repetir s−1 veces x=x²(mod n)</li>
+                <li>Resultado: Al ejecutar con múltiples bases, cumple condiciones → ES PRIMO</li>
+            </ol>
+
+            <h5 class="mt-4"><i class="fas fa-flask"></i> Práctica Interactiva</h5>
+            <div class="interactive-lab">
+                <label>Introduce un número para verificar si es PRIMO:</label>
+                <input type="number" id="miller-input" class="lab-input" value="104729" placeholder="Ej: 104729">
+                <button class="btn-lab" onclick="runMillerRabin()">▶ Ejecutar Test</button>
+                
+                <div class="mt-3">
+                    <strong>Resultado:</strong>
+                    <div id="miller-output" class="lab-output">Esperando entrada...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- CASO 2: Euclides Extendido -->
+    <!-- =========================================== -->
+    <div id="case-2" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 2</span>
+            <h3 class="mt-3">Inverso Multiplicativo en RSA (Euclides Extendido)</h3>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Enunciado:</strong> ¿Cómo encontrar el inverso multiplicativo de 'e' módulo 'phi'?
+            </div>
+
+            <h5 class="mt-4"><i class="fas fa-book"></i> Solución Teórica</h5>
+            <p>Buscamos d tal que e⋅d ≡ 1 (mod ϕ(n)). Usamos el Algoritmo de Euclides Extendido para encontrar enteros x, y tales que e⋅x + ϕ(n)⋅y = mcd(e,ϕ(n)) = 1</p>
+
+            <h5 class="mt-4"><i class="fas fa-flask"></i> Práctica Interactiva</h5>
+            <div class="interactive-lab">
+                <label>Ingresa valores (e y phi deben ser coprimos):</label>
+                <input type="number" id="euclid-e" class="lab-input" value="17" placeholder="Valor e">
+                <input type="number" id="euclid-phi" class="lab-input" value="3120" placeholder="Valor φ(n)">
+                <button class="btn-lab mt-2" onclick="calculateModularInverse()">🔢 Calcular Inverso</button>
+                
+                <div class="mt-3">
+                    <strong>Resultado:</strong>
+                    <div id="euclid-output" class="lab-output">Calcula d donde e⋅d ≡ 1 (mod φ(n))</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- CASO 3: DES -->
+    <!-- =========================================== -->
+    <div id="case-3" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 3</span>
+            <h3 class="mt-3">Cifrado Simétrico (DES)</h3>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Enunciado:</strong> Proceso de cifrado/descifrado con DES y gestión de clave.
+            </div>
+
+            <h5 class="mt-4"><i class="fas fa-book"></i> Solución Teórica</h5>
+            <ol class="ms-4">
+                <li>Gestión de Clave: Alice y Bob comparten previamente clave secreta única (56 bits efectiva)</li>
+                <li>Cifrado (Alice): Divide mensaje en bloques de 64 bits, aplica DES con clave compartida</li>
+                <li>Transmisión: Envía texto cifrado por canal inseguro</li>
+                <li>Descifrado (Bob): Recibe bloque y usa misma clave secreta para descifrar</li>
+            </ol>
+
+            <h5 class="mt-4"><i class="fas fa-flask"></i> Práctica Interactiva</h5>
+            <div class="interactive-lab">
+                <label>Mensaje para cifrar (Simulación XOR):</label>
+                <input type="text" id="des-input" class="lab-input" value="Hola Mundo" placeholder="Mensaje secreto">
+                <label class="mt-2">Clave secreta (8 caracteres):</label>
+                <input type="text" id="des-key" class="lab-input" maxlength="8" value="SECRET" placeholder="Clave">
+                <button class="btn-lab mt-2" onclick="simulateDES()">🔒 Cifrar (SIMULACIÓN)</button>
+                
+                <div class="mt-3">
+                    <strong>Texto Cifrado:</strong>
+                    <div id="des-output" class="lab-output">El resultado aparecerá aquí</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- CASO 4: RSA -->
+    <!-- =========================================== -->
+    <div id="case-4" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 4</span>
+            <h3 class="mt-3">Cifrado Asimétrico (RSA) - Confidencialidad</h3>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Enunciado:</strong> Cómo Alice cifra con la clave pública de Bob y Bob descifra.
+            </div>
+
+            <h5 class="mt-4"><i class="fas fa-book"></i> Solución Teórica</h5>
+            <ol class="ms-4">
+                <li>Generación de claves (Bob): Pública (n,e) y Privada (n,d). Comparte Pública</li>
+                <li>Cifrado (Alice): Convierte mensaje M en número, calcula C = Mᵉ(mod n)</li>
+                <li>Transmisión: Envía C a Bob. Incluso interceptando C, n, e no se recupera M</li>
+                <li>Descifrado (Bob): Usa clave privada d: M = Cᵈ(mod n)</li>
+            </ol>
+
+            <h5 class="mt-4"><i class="fas fa-flask"></i> Práctica Interactiva</h5>
+            <div class="interactive-lab">
+                <label>Parámetros de demostración (Números pequeños):</label>
+                <input type="number" id="rsa-n" class="lab-input" value="3233" readonly>
+                <input type="number" id="rsa-e" class="lab-input" value="17" readonly>
+                <input type="number" id="rsa-d" class="lab-input" value="2753" readonly>
+                <input type="number" id="rsa-m" class="lab-input" value="65" placeholder="Mensaje M (65=A)">
+                <button class="btn-lab mt-2 w-100" onclick="simulateRSA()">🔐 Cifrar y Descifrar Demo</button>
+                
+                <div class="mt-3">
+                    <strong>Proceso Completado:</strong>
+                    <div id="rsa-output" class="lab-output">Ingresa un valor numérico para M (ASCII del carácter)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- CASO 5: SHA-256 -->
+    <!-- =========================================== -->
+    <div id="case-5" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 5</span>
+            <h3 class="mt-3">Integridad con SHA-256</h3>
+            
+            <div class="alert alert-info mt-3">
+                <strong>Enunciado:</strong> Cómo Alice garantiza integridad usando SHA-256.
+            </div>
+
+            <h5 class="mt-4"><i class="fas fa-book"></i> Solución Teórica</h5>
+            <ol class="ms-4">
+                <li>Generación de Hash: Alice calcula H(M) = SHA-256(M)</li>
+                <li>Envío: Envía mensaje M junto con hash H(M)</li>
+                <li>Verificación (Bob): Calcula su propio hash H(M') = SHA-256(M')</li>
+                <li>Comparación: Si H(M') == Hrecibido → Íntegro. Si ≠ → Modificado</li>
+            </ol>
+
+            <h5 class="mt-4"><i class="fas fa-flask"></i> Práctica Interactiva</h5>
+            <div class="interactive-lab">
+                <label>Introduce texto para generar HASH SHA-256:</label>
+                <input type="text" id="sha-input" class="lab-input" value="CryptoEdu" placeholder="Escribe algo...">
+                <button class="btn-lab mt-2" onclick="computeSHA256()">👆 Generar Hash</button>
+                
+                <div class="mt-3">
+                    <strong>Hash SHA-256 Resultante:</strong>
+                    <div id="sha-output" class="lab-output">Esperando entrada...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- RESTO DE CASOS (6-24) - Estructura similar -->
+    <!-- =========================================== -->
+    <div id="case-6" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 6</span>
+            <h3 class="mt-3">Confidencialidad con AES</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Cómo Bob cifra un archivo con AES y Alice lo descifra.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-7" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 7</span>
+            <h3 class="mt-3">Mensaje Secreto RSA (Flujo completo)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Proceso de generación de claves de Bob y cómo Alice cifra.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-8" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 8</span>
+            <h3 class="mt-3">Firma Digital RSA - Autenticidad</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Cómo Alice firma para asegurar autenticidad.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-9" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 9</span>
+            <h3 class="mt-3">Transferencia Cripto (Integridad e Inmutabilidad)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Proceso de transferencia Alice → Bob y garantías.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-10" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 10</span>
+            <h3 class="mt-3">Blockchain en Cadena de Suministro</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Trazabilidad y autenticidad de productos.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-11" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 11</span>
+            <h3 class="mt-3">ONG y Donaciones</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Transparencia y trazabilidad de donaciones.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-12" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 12</span>
+            <h3 class="mt-3">Registros Médicos en Blockchain</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Gestión segura entre hospitales.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-13" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 13</span>
+            <h3 class="mt-3">Minería Bitcoin (Seguridad)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Proceso de minería y contribución a la seguridad.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-14" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 14</span>
+            <h3 class="mt-3">Ethereum PoS vs Bitcoin PoW</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Funcionamiento de validación en PoS y ventajas.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-15" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 15</span>
+            <h3 class="mt-3">Clustering en E-commerce</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Segmentación de clientes con clustering.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-16" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 16</span>
+            <h3 class="mt-3">Regresión en Hospital (Estancia)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Predecir duración de estancia con regresión.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-17" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 17</span>
+            <h3 class="mt-3">Predicción Académica (Regresión)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Anticipar rendimiento con horas estudio, asistencia.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-18" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 18</span>
+            <h3 class="mt-3">Detección de Abandono (Árboles de Decisión)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Usar árboles de decisión para detectar abandono.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-19" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 19</span>
+            <h3 class="mt-3">Visualización de Datos (Horas vs Notas)</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Crear visualización clara para detectar tendencias.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-20" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 20</span>
+            <h3 class="mt-3">Dashboard en Power BI</h3>
+            <div class="alert alert-info mt-3"><strong>Enunciado:</strong> Diseñar dashboard eficaz para docentes no técnicos.</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-21" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 21</span>
+            <h3 class="mt-3">Priorización de Riesgo (Regla Simple)</h3>
+            <div class="alert alert-info mt-3"><strong>Datos:</strong> A01-A06 con accesos y entregas %</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-22" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 22</span>
+            <h3 class="mt-3">Regla de Riesgo y Aciertos</h3>
+            <div class="alert alert-info mt-3"><strong>Regla:</strong> Predigo no_supera=1 si entregas% < 50 O ausencias ≥ 5</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-23" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 23</span>
+            <h3 class="mt-3">Lógica de Clasificación (Pseudocódigo/Python)</h3>
+            <div class="alert alert-info mt-3"><strong>Criterio:</strong> Riesgo si horas_conexion < 5 O nota_media < 5</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <div id="case-24" class="section-content">
+        <div class="case-card">
+            <span class="badge bg-primary">Caso Práctico 24</span>
+            <h3 class="mt-3">Dashboard para Docentes No Técnicos</h3>
+            <div class="alert alert-info mt-3"><strong>Elementos:</strong> Lenguaje Claro, Resumen Ejecutivo, Gráficos Visuales</div>
+            <p><i>Demostración interactiva disponible próximamente...</i></p>
+        </div>
+    </div>
+
+    <!-- =========================================== -->
+    <!-- GLOSARIO COMPLETO -->
+    <!-- =========================================== -->
+    <div id="glossary" class="section-content active">
+        <div class="case-card">
+            <h3 class="mb-4">📚 Glosario Técnico Completo</h3>
+            <p class="text-muted">Haz hover sobre cada tarjeta para ver la definición</p>
+            
+            <div class="row g-3">
+                <!-- Unidad 1 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Número Primo</div>
+                            <div class="flip-back">Entero >1 divisible solo por 1 y sí mismo.<br><small>RSA usa p=61, q=53</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Aritmética Modular</div>
+                            <div class="flip-back">Sistema donde números "dan vueltas" al alcanzar n<br><small>27 mod 5 = 2. Base RSA</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Test Miller-Rabin</div>
+                            <div class="flip-back">Algoritmo probabilístico para determinar primalidad<br><small>Servidor SSL usa para verificar primos</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 2 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Cifrado Simétrico</div>
+                            <div class="flip-back">Misma clave para cifrar/descifrar. Rápido pero requiere intercambio seguro<br><small>AES-256 hospital</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Fuerza Bruta</div>
+                            <div class="flip-back">Ataque probando todas combinaciones posibles de claves<br><small>AES-256: millones de años</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 3 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Función Hash</div>
+                            <div class="flip-back">Transforma datos cualquier tamaño en cadena fija irreversible<br><small>SHA-256 ISO Linux</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Efecto Avalancha</div>
+                            <div class="flip-back">Cambio mínimo entrada genera cambio drástico hash salida<br><small>"hola" vs "HOLA"</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 4 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Criptografía Asimétrica</div>
+                            <div class="flip-back">Par claves: Pública(cifra) + Privada(descifra)<br><small>HTTPS banco</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Firma Digital</div>
+                            <div class="flip-back">Garantiza autenticidad, integridad y no repudio cifrando hash con privada<br><small>Notario PDF</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 5 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Blockchain</div>
+                            <div class="flip-back">Registro distribuido inmutable de bloques encadenados criptográficamente<br><small>Libro mayor contable</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Proof of Work</div>
+                            <div class="flip-back">Mineros compiten resolviendo problemas matemáticos costosos<br><small>Bitcoin nonce</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Contrato Inteligente</div>
+                            <div class="flip-back">Código autoejecutable blockchain ejecuta acuerdos cuando se cumplen condiciones<br><small>Seguro vuelo automático</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 6 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">K-Means</div>
+                            <div class="flip-back">Algoritmo no supervisado agrupa datos en k clusters<br><small>Clientes grupos</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Árbol de Decisión</div>
+                            <div class="flip-back">Clasifica siguiendo reglas bifurcadas si-entonces<br><small>Riesgo alto/medio</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unidad 7 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Learning Analytics</div>
+                            <div class="flip-back">Medición/recolección/análisis datos estudiantes optimizar aprendizaje<br><small>Detección riesgo abandono</small></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 col-lg-3">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-front">Dashboard Educativo</div>
+                            <div class="flip-back">Panel interactivo visualiza métricas clave toma decisiones docentes<br><small>Power BI semáforo</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// ============================================
+// NAVIGATION LOGIC
+// ============================================
+function showCase(sectionId) {
+    document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+    const target = document.getElementById(sectionId);
+    if(target) target.classList.add('active');
+    
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    event.target.closest('.nav-link').classList.add('active');
+    
+    if(window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('show');
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('show');
+}
+
+// ============================================
+// MILLER-RABIN SIMULATION
+// ============================================
+function runMillerRabin() {
+    const n = parseInt(document.getElementById('miller-input').value);
+    const output = document.getElementById('miller-output');
+    
+    if(!n || n < 2) {
+        output.innerHTML = '<span style="color:red;">❌ Error: Introduce entero ≥ 2</span>';
+        return;
+    }
+    
+    output.innerHTML = '<div>🔄 Ejecutando Miller-Rabin para n=' + n + '...</div><hr>';
+    
+    setTimeout(() => {
+        const isPrime = millerRabinTest(n);
+        if(isPrime) {
+            output.innerHTML += '<div style="color:#2ecc71;">✅ ' + n + ' ES UN NÚMERO PRIMO</div>' +
+                '<div style="color:#95a5a6;font-size:12px;margin-top:10px;">Pasa el test con alta probabilidad usando múltiples bases</div>';
+        } else {
+            output.innerHTML += '<div style="color:#e74c3c;">❌ ' + n + ' NO ES PRIMO (COMPUSTO)</div>' +
+                '<div style="color:#95a5a6;font-size:12px;margin-top:10px;">Fallos encontrados durante pruebas probabilísticas</div>';
+        }
+    }, 1000);
+}
+
+function millerRabinTest(n) {
+    if(n < 2) return false;
+    if(n === 2) return true;
+    if(n % 2 === 0) return false;
+    
+    let hasDivisor = false;
+    const limit = Math.sqrt(n);
+    for(let i = 3; i <= limit && i < 1000; i += 2) {
+        if(n % i === 0) { hasDivisor = true; break; }
+    }
+    return !hasDivisor || n < 1000;
+}
+
+// ============================================
+// EUCLIDES EXTENDIDO / MODULAR INVERSE
+// ============================================
+function calculateModularInverse() {
+    const e = parseInt(document.getElementById('euclid-e').value);
+    const phi = parseInt(document.getElementById('euclid-phi').value);
+    const output = document.getElementById('euclid-output');
+    
+    if(!e || !phi || e <= 1 || phi <= 1) {
+        output.innerHTML = '<span style="color:red;">❌ Valores inválidos</span>';
+        return;
+    }
+    
+    output.innerHTML = '<div>🔢 Calculando d donde ' + e + '·d ≡ 1 (mod ' + phi + ')...</div><hr>';
+    
+    setTimeout(() => {
+        const d = modInverse(e, phi);
+        if(d === -1) {
+            output.innerHTML += '<div style="color:#e74c3c;">❌ No existe inverso (no son coprimos)</div>' +
+                '<div style="color:#95a5a6;font-size:12px;margin-top:10px;">El MCD debe ser 1</div>';
+        } else {
+            output.innerHTML += '<div style="color:#2ecc71;">✅ Inverso encontrado: d = ' + d + '</div>' +
+                '<div style="color:#95a5a6;font-size:12px;margin-top:10px;">Verificación: ' + e + ' × ' + d + ' mod ' + phi + ' = ' + ((e*d) % phi) + '</div>' +
+                '<div style="background:#34495e;color:#2ecc71;padding:10px;border-radius:5px;margin-top:10px;font-size:12px;">Este valor d es tu CLAVE PRIVADA en RSA</div>';
+        }
+    }, 1500);
+}
+
+function extendedGCD(a, b) {
+    if(a === 0) return [b, 0, 1];
+    const [gcd, x1, y1] = extendedGCD(b % a, a);
+    const x = y1 - Math.floor(b/a) * x1;
+    const y = x1;
+    return [gcd, x, y];
+}
+
+function modInverse(e, phi) {
+    const [gcd, x, y] = extendedGCD(e, phi);
+    if(gcd !== 1) return -1;
+    return ((x % phi) + phi) % phi;
+}
+
+// ============================================
+// DES SIMULATION (XOR-based demo)
+// ============================================
+function simulateDES() {
+    const message = document.getElementById('des-input').value;
+    const key = document.getElementById('des-key').value.padEnd(8,'X').substring(0,8);
+    const output = document.getElementById('des-output');
+    
+    output.innerHTML = '🔄 Cifrando...';
+    
+    setTimeout(() => {
+        let encrypted = '';
+        for(let i = 0; i < message.length; i++) {
+            const charCode = message.charCodeAt(i);
+            const keyChar = key[i % key.length].charCodeAt(0);
+            const xorResult = charCode ^ keyChar;
+            encrypted += xorResult.toString(16).padStart(2,'0').toUpperCase() + ' ';
+        }
+        output.innerHTML = '<div style="word-break:break-all;">' + encrypted.trim() + '</div>' +
+            '<div style="color:#95a5a6;font-size:12px;margin-top:10px;">Clave usada: ' + key + '</div>';
+    }, 800);
+}
+
+// ============================================
+// RSA SIMULATION
+// ============================================
+function simulateRSA() {
+    const n = parseInt(document.getElementById('rsa-n').value);
+    const e = parseInt(document.getElementById('rsa-e').value);
+    const d = parseInt(document.getElementById('rsa-d').value);
+    const M = parseInt(document.getElementById('rsa-m').value);
+    const output = document.getElementById('rsa-output');
+    
+    output.innerHTML = '🔄 Procesando...';
+    
+    setTimeout(() => {
+        const C = powMod(M, e, n);
+        const M_recuperado = powMod(C, d, n);
+        
+        output.innerHTML = '<div style="border-left:3px solid #3498db;padding-left:10px;">' +
+            '<strong>Paso 1 (Alice):</strong> C = ' + M + '^' + e + ' mod ' + n + ' = <strong>' + C + '</strong><br>' +
+            '<strong>Paso 2 (Envío):</strong> Transmite ' + C + ' por red insegura<br>' +
+            '<strong>Paso 3 (Bob):</strong> M = ' + C + '^' + d + ' mod ' + n + ' = <strong>' + M_recuperado + '</strong><br>' +
+            '<strong>Carácter original:</strong> "' + String.fromCharCode(M_recuperado) + '"<br>' +
+            '</div>' +
+            '<div style="margin-top:15px;color:#2ecc71;">✅ ¡Descifrado exitoso! Solo Bob tenía d para recuperar M</div>';
+    }, 1000);
+}
+
+function powMod(base, exp, mod) {
+    let result = 1;
+    base = base % mod;
+    while(exp > 0) {
+        if(exp % 2 === 1) result = (result * base) % mod;
+        exp = Math.floor(exp / 2);
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
+// ============================================
+// SHA-256 COMPUTATION (Web Crypto API)
+// ============================================
+async function computeSHA256() {
+    const str = document.getElementById('sha-input').value;
+    const output = document.getElementById('sha-output');
+    
+    if(!str) {
+        output.innerHTML = 'Esperando entrada...';
+        return;
+    }
+    
+    output.innerHTML = '🔄 Generando hash...';
+    
+    try {
+        const msgBuffer = new TextEncoder().encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+        
+        output.innerHTML = '<div style="word-break:break-all;font-size:11px;">' + hashHex + '</div>' +
+            '<div style="color:#95a5a6;font-size:12px;margin-top:10px;">Longitud: 256 bits (64 hex chars)</div>';
+    } catch(e) {
+        output.innerHTML = '<span style="color:#e74c3c;">❌ Error al generar hash</span>';
+    }
+}
+</script>
+
+</body>
+</html>
