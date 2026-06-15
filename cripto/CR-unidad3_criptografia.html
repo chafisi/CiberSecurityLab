@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 3: Funciones Hash y Encriptación Simétrica - Master Template</title>
+    <style>
+        :root {
+            --primary: #1a252f;
+            --secondary: #2c3e50;
+            --accent: #2980b9;
+            --highlight: #e74c3c;
+            --success: #27ae60;
+            --bg-body: #ecf0f1;
+            --bg-section: #ffffff;
+            --text-dark: #2c3e50;
+            --border-rad: 12px;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Menú Lateral (Sidebar) */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .sidebar-header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .sidebar-menu li a {
+            display: block;
+            padding: 1.2rem 1.5rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .sidebar-menu li a:hover, .sidebar-menu li a:focus {
+            background: rgba(255,255,255,0.03);
+            color: white;
+            border-left-color: var(--accent);
+            padding-left: 2rem;
+        }
+
+        /* Contenedor Principal */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background: var(--bg-body);
+        }
+
+        header {
+            background: white;
+            color: var(--primary);
+            padding: 4rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            margin: 1rem 0 0 0;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        /* Secciones Independientes */
+        section {
+            background: var(--bg-section);
+            padding: 3.5rem;
+            margin-bottom: 4rem;
+            border-radius: var(--border-rad);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            scroll-margin-top: 3rem;
+            border-top: 5px solid var(--accent);
+            position: relative;
+        }
+
+        section:nth-of-type(even) {
+            background: #f8fbff;
+            border-top: 5px solid var(--secondary);
+        }
+
+        .section-badge {
+            position: absolute;
+            top: -15px;
+            left: 3.5rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3);
+        }
+
+        section:nth-of-type(even) .section-badge {
+            background: var(--secondary);
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 1rem;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin-top: 2rem;
+            font-size: 1.3rem;
+        }
+
+        /* Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-rad);
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .card-header {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #f0f3f5;
+            padding-bottom: 0.8rem;
+        }
+
+        /* Flip Cards */
+        .flip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 240px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            border-radius: var(--border-rad);
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-rad);
+            padding: 1.5rem;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .flip-card-front {
+            background-color: white;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #ecf0f1;
+        }
+
+        .flip-card-back {
+            background-color: var(--accent);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 0.95rem;
+        }
+
+        /* Código */
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: var(--border-rad);
+            overflow-x: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            font-size: 0.95rem;
+        }
+
+        code { font-family: 'Courier New', Courier, monospace; }
+        .cmd { color: #569cd6; font-weight: bold; }
+        .arg { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+
+        /* Labs Telemetría */
+        .telemetry-container {
+            background: #0d1117;
+            border-radius: var(--border-rad);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid #30363d;
+        }
+
+        .telemetry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .telemetry-title {
+            color: #c9d1d9;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .telemetry-log {
+            height: 250px;
+            overflow-y: auto;
+            background: #000;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .log-entry { margin-bottom: 0.5rem; opacity: 0; animation: fadeIn 0.3s forwards; }
+        .log-alice { color: #d2a8ff; } /* Morado para Alice */
+        .log-bob { color: #7ee787; }   /* Verde para Bob */
+        .log-system { color: #f2cc60; }
+        .log-data { color: #ff7b72; word-break: break-all; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .btn-telemetry {
+            background: #238636;
+            color: white;
+            border: 1px solid rgba(240, 246, 252, 0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-telemetry:hover { background: #2ea043; }
+        .btn-telemetry:disabled { background: #21262d; color: #8b949e; cursor: not-allowed; }
+
+        /* Flujos Visuales E2E */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-rad);
+            border: 1px solid #eee;
+        }
+
+        .flow-step {
+            background: var(--bg-body);
+            color: var(--primary);
+            padding: 1.5rem;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid var(--accent);
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .control-point {
+            position: absolute;
+            bottom: -25px;
+            width: 140px;
+            font-size: 0.75rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0;
+            border-radius: 12px;
+            font-weight: normal;
+        }
+
+        /* Glosario */
+        dl {
+            margin: 0;
+        }
+        dt {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            background: #eef2f5;
+            padding: 0.5rem 1rem;
+            border-left: 4px solid var(--accent);
+            border-radius: 4px 4px 0 0;
+        }
+        dt:first-child { margin-top: 0; }
+        dd {
+            margin-left: 0;
+            padding: 1rem;
+            border: 1px solid #eef2f5;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            color: #555;
+            background: white;
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .flow-container { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); margin: 1.5rem 0; }
+            .section-badge { display: none; }
+            section { padding: 2rem; margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>Criptografía</h3>
+            <p>Master Template - U3</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#teoria">1. Fundamentos Teóricos</a></li>
+            <li><a href="#metodos">2. Implementación Técnica</a></li>
+            <li><a href="#fichas">3. Fichas de Repaso</a></li>
+            <li><a href="#casos">4. Casos Prácticos</a></li>
+            <li><a href="#glosario">5. Glosario Técnico</a></li>
+            <li><a href="#labs">6. Labs: Telemetría</a></li>
+            <li><a href="#flujo">7. Flujo Operativo E2E</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <header>
+            <h1>Unidad 3: Funciones Hash y Encriptación Simétrica Avanzada</h1>
+            <p>Arquitectura AES, Algoritmos de Resumen (SHA) y Validación de Casos Oficiales</p>
+        </header>
+
+        <div class="container">
+
+            <section id="teoria">
+                <div class="section-badge">APARTADO 1</div>
+                <h2>1. Fundamentos Matemáticos y Evolución del Algoritmo</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">Propiedades de las Funciones Hash</div>
+                        <p>Las funciones Hash son algoritmos matemáticos que transforman un bloque de datos de longitud variable en una cadena de longitud fija (resumen o *digest*). Sus pilares son:</p>
+                        <ul>
+                            <li><strong>Determinismo:</strong> La misma entrada siempre producirá exactamente el mismo hash de salida.</li>
+                            <li><strong>Unidireccionalidad:</strong> Es computacionalmente inviable deducir el mensaje original a partir del hash generado.</li>
+                            <li><strong>Efecto Avalancha:</strong> Un cambio mínimo en la entrada (incluso un solo bit) altera drásticamente el hash resultante.</li>
+                            <li><strong>Resistencia a Colisiones:</strong> Es altamente improbable encontrar dos mensajes diferentes que generen el mismo hash.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">Simetría Avanzada: El Estándar AES</div>
+                        <p>El *Advanced Encryption Standard* (AES) sustituyó a DES, solventando sus vulnerabilidades de fuerza bruta y tamaño de clave.</p>
+                        <ul>
+                            <li><strong>Estructura Operativa:</strong> No utiliza redes de Feistel, sino una red de Sustitución-Permutación (Rijndael).</li>
+                            <li><strong>Bloques:</strong> Opera dividiendo los datos en matrices de estado de tamaño fijo de <strong>128 bits</strong>.</li>
+                            <li><strong>Claves y Rondas:</strong> Soporta longitudes de clave de <strong>128, 192 o 256 bits</strong>. A mayor clave, mayor número de rondas de transformación matemática (10, 12 y 14 rondas respectivamente), garantizando la confidencialidad.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="metodos">
+                <div class="section-badge">APARTADO 2</div>
+                <h2>2. Implementación Algorítmica y Despliegue Técnico</h2>
+                <h3>Flujo Lógico: Integridad vs Confidencialidad</h3>
+                <div class="card" style="margin-bottom: 2rem;">
+                    <p><strong>Para Integridad (SHA-256):</strong> El texto original es sometido a operaciones lógicas complejas (AND, OR, XOR, ROT, SHR) y sumas modulares a lo largo de 64 rondas para emitir un resumen irreversible de 256 bits.</p>
+                    <p><strong>Para Confidencialidad (AES):</strong> El texto plano se divide en bloques de 128 bits. En cada ronda de cifrado se aplican cuatro pasos: <em>SubBytes</em> (sustitución no lineal), <em>ShiftRows</em> (desplazamiento de filas), <em>MixColumns</em> (mezcla lineal de columnas) y <em>AddRoundKey</em> (XOR con subclave derivada).</p>
+                </div>
+
+                <h3>Comandos de Laboratorio (OpenSSL)</h3>
+                <pre><code><span class="comment"># 1. Generar un Hash SHA-256 para verificar la integridad de un archivo de datos</span>
+<span class="cmd">openssl</span> dgst <span class="arg">-sha256 dataset_edushield.csv</span>
+
+<span class="comment"># 2. Cifrar un archivo usando AES de 256 bits (Confidencialidad)</span>
+<span class="comment"># Se solicitará una contraseña para derivar la clave simétrica.</span>
+<span class="cmd">openssl</span> enc <span class="arg">-aes-256-cbc -salt -in reporte_patito.pdf -out reporte_cifrado.enc</span>
+
+<span class="comment"># 3. Descifrar el archivo AES usando la contraseña compartida</span>
+<span class="cmd">openssl</span> enc <span class="arg">-aes-256-cbc -d -in reporte_cifrado.enc -out reporte_recuperado.pdf</span></code></pre>
+            </section>
+
+            <section id="fichas">
+                <div class="section-badge">APARTADO 3</div>
+                <h2>3. Fichas de Repaso (Tarjetas de Memorización)</h2>
+                <div class="flip-grid">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Efecto Avalancha</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Propiedad criptográfica donde un pequeño cambio en la entrada (un bit) altera al menos la mitad de los bits de salida.<br><br>
+                                <strong>Ejemplo:</strong> Hash("Hola") vs Hash("hola") son completamente distintos.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Colisión Hash</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Sucede cuando dos entradas de datos completamente diferentes generan la misma huella digital (hash).<br><br>
+                                <strong>Ejemplo:</strong> La principal vulnerabilidad que hizo obsoleto a MD5.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Matriz de Estado (AES)</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Estructura interna de 4x4 bytes (128 bits) donde AES realiza sus operaciones de sustitución y permutación.<br><br>
+                                <strong>Ejemplo:</strong> ShiftRows mueve las filas de esta matriz para aplicar difusión.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Unidireccionalidad</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Es fácil calcular la salida desde una entrada, pero computacionalmente imposible calcular la entrada desde la salida.<br><br>
+                                <strong>Ejemplo:</strong> La base del almacenamiento seguro de contraseñas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="casos">
+                <div class="section-badge">APARTADO 4</div>
+                <h2>4. Casos Prácticos: Soluciones Oficiales Integradas</h2>
+                <div class="grid-2">
+                    <div class="card" style="border-top: 4px solid var(--accent);">
+                        <div class="card-header">Caso Práctico 5: Integridad con SHA-256</div>
+                        <p><strong>Contexto:</strong> Alice quiere asegurar que un mensaje enviado a Bob no ha sido alterado. Decide usar SHA-256. Describe el proceso.</p>
+                        <hr style="border:0; border-top:1px solid #eee; margin: 1rem 0;">
+                        <p><strong>Solución Oficial:</strong></p>
+                        <ul>
+                            <li><strong>Generación del Hash:</strong> Antes de enviar el mensaje, Alice calcula el hash del mensaje usando SHA-256 (produce 256 bits). Es resistente a colisiones.</li>
+                            <li><strong>Transmisión:</strong> Alice envía el mensaje junto con su hash SHA-256 a Bob.</li>
+                            <li><strong>Verificación por Bob:</strong> Bob recibe ambos. Genera el hash del mensaje recibido usando SHA-256 y lo compara con el enviado por Alice.</li>
+                            <li><strong>Seguridad:</strong> Si coinciden, el mensaje no ha sido alterado. Se basa en la resistencia a colisiones de SHA-256 y la imposibilidad de revertirlo.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-top: 4px solid var(--secondary);">
+                        <div class="card-header">Caso Práctico 6: Confidencialidad con AES</div>
+                        <p><strong>Contexto:</strong> Bob necesita asegurar que solo Alice pueda leer un archivo críptico. Decide usar AES. Describe el cifrado y descifrado.</p>
+                        <hr style="border:0; border-top:1px solid #eee; margin: 1rem 0;">
+                        <p><strong>Solución Oficial:</strong></p>
+                        <ul>
+                            <li><strong>Generación de la Clave:</strong> Bob y Alice comparten una clave secreta de 128, 192 o 256 bits. La seguridad depende de mantenerla en secreto.</li>
+                            <li><strong>Cifrado (Bob):</strong> AES opera en bloques de 128 bits. El archivo se divide y se aplican múltiples rondas de sustituciones y permutaciones combinadas con la clave. Bob transmite el archivo.</li>
+                            <li><strong>Descifrado (Alice):</strong> Alice usa la <em>misma</em> clave secreta. El proceso es el inverso del cifrado (operaciones en orden inverso).</li>
+                            <li><strong>Confidencialidad:</strong> Solo quien tiene la clave correcta puede descifrar, asegurando el acceso exclusivo a Alice.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="glosario">
+                <div class="section-badge">APARTADO 5</div>
+                <h2>5. Glosario Técnico</h2>
+                <dl>
+                    <dt>SHA-256 (Secure Hash Algorithm)</dt>
+                    <dd>Algoritmo de la familia SHA-2 que genera un resumen criptográfico de 256 bits. Es el estándar actual en la industria para firmas digitales, certificados TLS y tecnología Blockchain (Bitcoin).</dd>
+                    
+                    <dt>AES (Advanced Encryption Standard)</dt>
+                    <dd>El estándar global para el cifrado de datos simétricos. Fue adoptado por el NIST en 2001 (Rijndael). Utiliza longitud de bloques fija y es altamente eficiente tanto en software como en hardware.</dd>
+                    
+                    <dt>Determinismo Criptográfico</dt>
+                    <dd>La garantía algorítmica de que, en las funciones hash, si se ingresa exactamente el mismo conjunto de datos bajo las mismas condiciones, se generará indefectiblemente el mismo hash de salida.</dd>
+                    
+                    <dt>S-Box (Caja de Sustitución)</dt>
+                    <dd>Componente fundamental de algoritmos de clave simétrica como AES que introduce no linealidad en el cifrado, haciendo que sea resistente al criptoanálisis lineal y diferencial.</dd>
+                </dl>
+            </section>
+
+            <section id="labs">
+                <div class="section-badge">APARTADO 6</div>
+                <h2>6. Laboratorios de Telemetría (Casos Prácticos EduShield)</h2>
+                <p>Simulación secuencial del flujo de datos entre nodos en el ecosistema EduShield Analytics, demostrando la validación de integridad y el cifrado de bloques simétricos.</p>
+                
+                <div class="telemetry-container">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">SIMULACIÓN 1: Verificación de Integridad (Caso Práctico 5 - SHA-256)</span>
+                        <span style="color:var(--success); font-size:0.8rem;">● En espera</span>
+                    </div>
+                    <div class="telemetry-log" id="log-sha">
+                        <div class="log-entry log-system">Iniciando consola de validación Hash...</div>
+                    </div>
+                    <button class="btn-telemetry" id="btn-sha" onclick="stepSha()">Ejecutar Siguiente Secuencia</button>
+                </div>
+
+                <div class="telemetry-container" style="margin-top: 3rem;">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">SIMULACIÓN 2: Cifrado de Bloques por Rondas (Caso Práctico 6 - AES)</span>
+                        <span style="color:var(--success); font-size:0.8rem;">● En espera</span>
+                    </div>
+                    <div class="telemetry-log" id="log-aes">
+                        <div class="log-entry log-system">Iniciando máquina de estados Rijndael...</div>
+                    </div>
+                    <button class="btn-telemetry" id="btn-aes" onclick="stepAes()">Ejecutar Siguiente Secuencia</button>
+                </div>
+            </section>
+
+            <section id="flujo">
+                <div class="section-badge">APARTADO 7</div>
+                <h2>7. Flujo Operativo E2E (End-to-End)</h2>
+                <p>Arquitectura de transmisión segura garantizando simultáneamente Confidencialidad e Integridad de la información.</p>
+                
+                <div class="flow-container">
+                    <div class="flow-step">
+                        Preparación
+                        <span class="control-point">Generar Payload</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Hash / Firma
+                        <span class="control-point">Cálculo SHA-256</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Cifrado AES
+                        <span class="control-point">S-Boxes + ShiftRows</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Transmisión
+                        <span class="control-point">Envío (Mensaje + Hash) Enc.</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Descifrado y Valid.
+                        <span class="control-point">Comprobación de Hashes</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        // Lógica Telemetría Caso 5 (SHA-256 Integridad)
+        const shaSteps = [
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Preparando paquete de datos críticos para el Nodo Bob.",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Calculando digestión criptográfica mediante SHA-256...",
+            "<span class='log-data'>[Hash Gen] d2a84f4b8b6... (256 bits generados)</span>",
+            "<span class='log-system'>[Protocolo]</span> Concatenando [Mensaje Original] + [Hash SHA-256].",
+            "<span class='log-system'>[Red]</span> Transmitiendo paquete de datos >>>",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Paquete recibido. Separando [Mensaje] y [Hash Origen].",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Recalculando hash SHA-256 de forma independiente sobre el [Mensaje] recibido...",
+            "<span class='log-data'>[Hash Recalc] d2a84f4b8b6... (256 bits calculados localmente)</span>",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Comparando Hash Origen == Hash Recalculado.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> ¡Coincidencia Exacta! <span style='color:#7ee787;'>INTEGRIDAD VERIFICADA: El mensaje no sufrió mutaciones en tránsito.</span>"
+        ];
+        let currentSha = 0;
+
+        function stepSha() {
+            const logBox = document.getElementById('log-sha');
+            const btn = document.getElementById('btn-sha');
+            
+            if (currentSha < shaSteps.length) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = shaSteps[currentSha];
+                logBox.appendChild(entry);
+                logBox.scrollTop = logBox.scrollHeight;
+                currentSha++;
+                
+                if (currentSha === shaSteps.length) {
+                    btn.disabled = true;
+                    btn.innerText = "Simulación Completada";
+                }
+            }
+        }
+
+        // Lógica Telemetría Caso 6 (AES Confidencialidad)
+        const aesSteps = [
+            "<span class='log-system'>[Key Management]</span> Validando clave simétrica pre-compartida (256 bits).",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Archivo críptico cargado en memoria.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Segmentando archivo en matrices de estado de 128 bits.",
+            "<span class='log-system'>[AES-Engine]</span> Aplicando Ronda 1: SubBytes (S-Boxes) -> ShiftRows -> MixColumns -> AddRoundKey...",
+            "<span class='log-system'>[AES-Engine]</span> Iterando hasta Ronda 14 (por usar clave de 256 bits)...",
+            "<span class='log-data'>[Buffer] 0x4f 0x8c 0x1a 0x92 0x3d... (Archivo Cifrado)</span>",
+            "<span class='log-system'>[Red]</span> Transmitiendo datos cifrados por canal inseguro >>>",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Archivo cifrado recibido en terminal.",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Inyectando la MISMA clave secreta compartida.",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Aplicando proceso Rijndael Inverso (InvShiftRows, InvSubBytes...).",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Bloques de 128 bits reensamblados correctamente. <span style='color:#7ee787;'>CONFIDENCIALIDAD GARANTIZADA.</span>"
+        ];
+        let currentAes = 0;
+
+        function stepAes() {
+            const logBox = document.getElementById('log-aes');
+            const btn = document.getElementById('btn-aes');
+            
+            if (currentAes < aesSteps.length) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = aesSteps[currentAes];
+                logBox.appendChild(entry);
+                logBox.scrollTop = logBox.scrollHeight;
+                currentAes++;
+                
+                if (currentAes === aesSteps.length) {
+                    btn.disabled = true;
+                    btn.innerText = "Simulación Completada";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
