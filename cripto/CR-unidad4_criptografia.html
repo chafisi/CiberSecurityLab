@@ -212,15 +212,34 @@
                         <span class="text-2xl">🤫</span>
                         <h3 class="text-lg font-bold">Caso Práctico 7: Mensaje Secreto (Confidencialidad RSA)</h3>
                     </div>
-                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución</span>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
                 </div>
                 <div class="p-6">
-                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere enviar un mensaje secreto a Bob usando RSA. Describe el proceso de generación de claves por Bob y cómo Alice cifra el mensaje para que solo él pueda leerlo.</p>
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere enviar un mensaje secreto a Bob utilizando RSA. Describe el proceso de generación de claves por parte de Bob y cómo Alice cifra el mensaje para que solo Bob pueda leerlo.</p>
                     
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mt-4 shadow-sm">
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Generación de Claves por Bob:</strong>
+                                <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                                    <li>Bob elige dos números primos grandes <code>p</code> y <code>q</code>.</li>
+                                    <li>Calcula <code>n = p * q</code> y <code>&phi;(n) = (p - 1)(q - 1)</code>.</li>
+                                    <li>Selecciona un número público <code>e</code> tal que <code>1 < e < &phi;(n)</code> y <code>gcd(e, &phi;(n)) = 1</code>.</li>
+                                    <li>Calcula la clave privada <code>d</code> tal que <code>d * e &equiv; 1 mod &phi;(n)</code>, usando el algoritmo de Euclides extendido.</li>
+                                    <li>La clave pública es <code>(e, n)</code> y la clave privada es <code>(d, n)</code>.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Cifrado por Alice:</strong> Alice obtiene la clave pública de Bob <code>(e, n)</code>. Convierte su mensaje en un número <code>M</code> (usando algún esquema de codificación). Cifra el mensaje con la fórmula <code>C = M<sup>e</sup> mod n</code>, donde C es el mensaje cifrado.</li>
+                            <li><strong>Transmisión:</strong> Alice envía el mensaje cifrado <code>C</code> a Bob.</li>
+                            <li><strong>Descifrado por Bob:</strong> Bob usa su clave privada <code>(d, n)</code> para descifrar el mensaje con <code>M = C<sup>d</sup> mod n</code>.</li>
+                            <li><strong>Confidencialidad:</strong> Solo Bob, con su clave privada, puede descifrar el mensaje, asegurando que solo él pueda leer el contenido.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
                         <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 7: RSA (CONFIDENCIALIDAD)</h3>
                         <ul class="space-y-2 text-sm text-slate-700 font-mono">
-                            <li><strong>1️⃣ GÉNESIS 🗝️</strong> Bob genera (e,n) Pública y (d,n) Privada. (Calculando p, q y módulo n).</li>
+                            <li><strong>1️⃣ GÉNESIS 🗝️</strong> Bob genera (e,n) Pública y (d,n) Privada.</li>
                             <li><strong>2️⃣ CIFRADO 🔒</strong> Alice usa la Pública de Bob. Aplica la fórmula: C = M^e mod n.</li>
                             <li><strong>3️⃣ TRANSMISIÓN 📡</strong> Alice envía el Criptograma (C).</li>
                             <li><strong>4️⃣ DESCIFRADO 🔓</strong> Bob usa su Privada exclusiva. Aplica la fórmula: M = C^d mod n.</li>
@@ -240,12 +259,29 @@
                         <span class="text-2xl">✍️</span>
                         <h3 class="text-lg font-bold">Caso Práctico 8: Firma Digital (Autenticidad RSA)</h3>
                     </div>
-                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución</span>
+                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
                 </div>
                 <div class="p-6">
-                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-violet-300 pl-4">Enunciado: Bob quiere verificar que un mensaje recibido realmente proviene de Alice. Describe cómo Alice puede firmar digitalmente su mensaje usando RSA para asegurar la autenticidad.</p>
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-violet-300 pl-4">Enunciado: Bob quiere verificar que un mensaje recibido realmente proviene de Alice. Describe cómo Alice puede firmar digitalmente su mensaje usando RSA para asegurar la autenticidad.</p>
                     
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mt-4 shadow-sm">
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Generación de Claves por Alice:</strong> Alice genera su par de claves RSA, obteniendo una clave pública <code>(Alice_e, Alice_n)</code> y una clave privada <code>(Alice_d, Alice_n)</code>.</li>
+                            <li><strong>Firma Digital:</strong> Alice calcula un hash del mensaje <code>H(M)</code> usando una función de hash segura como SHA-256. Firma este hash usando su clave privada: <code>S = H(M)<sup>Alice_d</sup> mod Alice_n</code>.</li>
+                            <li><strong>Transmisión:</strong> Alice envía el mensaje <code>M</code> junto con la firma digital <code>S</code> a Bob.</li>
+                            <li><strong>Verificación por Bob:</strong> 
+                                <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                                    <li>Bob calcula el hash del mensaje recibido, <code>H(M')</code>.</li>
+                                    <li>Usa la clave pública de Alice para verificar la firma: <code>H(M) = S<sup>Alice_e</sup> mod Alice_n</code>.</li>
+                                    <li>Si <code>H(M')</code> coincide con el hash calculado <code>H(M)</code>, Bob puede confiar en que el mensaje proviene de Alice y no ha sido alterado.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Seguridad:</strong> La autenticidad se asegura porque solo Alice tiene acceso a su clave privada. Si la firma es válida, el mensaje no ha sido modificado y su origen es auténtico.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
                         <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 8: FIRMA DIGITAL (AUTENTICIDAD)</h3>
                         <ul class="space-y-2 text-sm text-slate-700 font-mono">
                             <li><strong>1️⃣ HASHING ⚙️</strong> Alice calcula el resumen H(M) con SHA-256.</li>
