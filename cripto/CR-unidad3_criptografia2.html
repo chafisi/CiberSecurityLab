@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 3 - Hash y AES | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Card Styles */
+        .flip-card { perspective: 1000px; height: 220px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; }
+        
+        /* Terminal Styles */
+        .terminal-scroll::-webkit-scrollbar { width: 8px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 4px; }
+
+        /* Custom Scrollbar for Sidebar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-20 shrink-0">
+        <div class="p-6 border-b border-slate-800 bg-slate-950">
+            <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+            <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Unidad 3: Hash y AES</p>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Base Teórica</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Funciones Hash</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Simetría Avanzada (AES)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Implementación (OpenSSL)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Fichas Rápidas (Repaso)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Casos Prácticos (Ignacio)</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">5. Casos 5 y 6 (Soluciones)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Técnico</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400">7. Simuladores (Labs Interactivos)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400">8. Flujo Operativo (E2E)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12 relative" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Funciones Hash: Fundamentos de Integridad</h2>
+            
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3 flex items-center gap-2"><span class="text-violet-500">🔍</span> Propiedades Esenciales</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li><strong class="text-slate-800">Determinismo:</strong> La misma entrada de datos siempre producirá exactamente el mismo hash.</li>
+                        <li><strong class="text-slate-800">Unidireccionalidad:</strong> Es computacionalmente inviable reconstruir el mensaje original a partir de su hash.</li>
+                        <li><strong class="text-slate-800">Efecto Avalancha:</strong> Modificar un solo bit en la entrada altera drásticamente el resultado final.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3 flex items-center gap-2"><span class="text-violet-500">🛡️</span> Casos de Uso Reales</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li><strong class="text-slate-800">Integridad de Archivos:</strong> Validar descargas comprobando el checksum SHA-256.</li>
+                        <li><strong class="text-slate-800">Contraseñas:</strong> Almacenamiento de credenciales seguras (Hash + Salt) en bases de datos.</li>
+                        <li><strong class="text-slate-800">Blockchain:</strong> Minería de bloques y creación de cadenas inmutables.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Encriptación Simétrica Avanzada (AES)</h2>
+            
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="p-8 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-50">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-slate-200 text-slate-600 mb-4 text-xl">⏳</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">De DES a AES</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">El antiguo estándar DES operaba con bloques de 64 bits y claves de 56 bits (vulnerables a fuerza bruta). AES fue seleccionado por el NIST como estándar superior, utilizando un algoritmo de sustitución-permutación llamado Rijndael.</p>
+                    </div>
+                    <div class="p-8 bg-violet-50">
+                        <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-violet-200 text-violet-700 mb-4 text-xl">🧱</div>
+                        <h3 class="text-xl font-bold text-violet-900 mb-2">Arquitectura de Bloques y Rondas</h3>
+                        <p class="text-violet-800 text-sm leading-relaxed">AES opera siempre dividiendo los datos en <strong>matrices de estado de 128 bits</strong> (4x4 bytes). Soporta claves de 128, 192 o 256 bits. A mayor tamaño de clave, mayor número de rondas de cifrado (10, 12 y 14 rondas respectivamente).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Implementación Técnica (Línea de Comandos)</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-slate-900 rounded-xl p-1 shadow-lg">
+                    <div class="bg-slate-800 rounded-t-lg px-4 py-2 flex items-center gap-2 border-b border-slate-700">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-slate-400 text-xs ml-2 font-mono">crypto-lab.sh</span>
+                    </div>
+                    <div class="p-4 text-sm font-mono text-slate-300 overflow-x-auto">
+                        <p class="text-slate-500 italic mb-2"># 1. Calcular el Hash SHA-256 para comprobar la integridad de un archivo (Caso 5)</p>
+                        <p class="mb-4"><span class="text-green-400">openssl</span> dgst -sha256 EduShield_Analytics_v1.zip</p>
+                        
+                        <p class="text-slate-500 italic mb-2"># 2. Cifrado Simétrico AES de 256 bits en modo CBC (Caso 6)</p>
+                        <p class="text-slate-500 italic mb-1"># Esto solicitará introducir la contraseña compartida e inyectará salt automáticamente</p>
+                        <p class="mb-4"><span class="text-green-400">openssl</span> enc -aes-256-cbc -salt -in reporte_patito.pdf -out reporte.enc</p>
+                        
+                        <p class="text-slate-500 italic mb-2"># 3. Descifrado Simétrico AES de 256 bits (El receptor ejecuta esto con la misma clave)</p>
+                        <p><span class="text-green-400">openssl</span> enc -aes-256-cbc -d -in reporte.enc -out reporte_recuperado.pdf</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Fichas Rápidas (Memorización)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🏔️</span>
+                            <h3 class="font-bold text-lg">Efecto Avalancha</h3>
+                            <p class="text-xs text-slate-500 mt-2">Propiedad vital del Hash y AES</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4>
+                            <p class="text-sm">Si se cambia un solo bit en la entrada (ej. una "A" por una "a"), el hash resultante o bloque cifrado cambiará de forma irreconocible (más del 50%).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">💥</span>
+                            <h3 class="font-bold text-lg">Colisión</h3>
+                            <p class="text-xs text-slate-500 mt-2">Vulnerabilidad en Funciones Hash</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4>
+                            <p class="text-sm">Ocurre cuando el algoritmo produce exactamente el <strong>mismo hash</strong> para dos mensajes de origen completamente distintos. (El motivo por el que MD5 ya no se usa).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">📦</span>
+                            <h3 class="font-bold text-lg">Matriz de Estado</h3>
+                            <p class="text-xs text-slate-500 mt-2">Estructura interna de AES</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4>
+                            <p class="text-sm">En AES, los datos no se cifran en cadena plana, sino que se mapean en una cuadrícula de 4x4 bytes (128 bits) donde se aplican desplazamientos de filas y mezcla de columnas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🔀</span>
+                            <h3 class="font-bold text-lg">S-Box (Sustitución)</h3>
+                            <p class="text-xs text-slate-500 mt-2">Fase no lineal de cifrado</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">SubBytes</h4>
+                            <p class="text-sm">Es una tabla de búsqueda (LUT) matemática que reemplaza cada byte del estado por otro. Aporta la "confusión" necesaria para frustrar el criptoanálisis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">5. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones oficiales extraídas de la rúbrica de la plataforma (Casos Prácticos 5 y 6).</p>
+
+            <div class="mb-10 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🛡️</span>
+                        <h3 class="text-lg font-bold">Caso 5: Integridad con SHA-256</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Plataforma</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere asegurar que un mensaje enviado a Bob no ha sido alterado durante la transmisión. Decide usar una función hash. Describe cómo usar SHA-256 para este propósito.</p>
+                    
+                    <h4 class="font-bold text-violet-700 mt-4 mb-2">Secuencia Operativa:</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-600 space-y-3">
+                        <li><strong>Generación del Hash:</strong> Antes de enviar el mensaje, Alice calcula el hash del mensaje usando SHA-256 (produce 256 bits). Es prácticamente imposible encontrar dos mensajes diferentes con el mismo hash (resistencia a colisiones).</li>
+                        <li><strong>Transmisión:</strong> Alice envía el mensaje junto con su hash SHA-256 a Bob.</li>
+                        <li><strong>Verificación (Bob):</strong> Al recibir el mensaje, Bob genera el hash del mensaje recibido usando SHA-256 de manera independiente.</li>
+                        <li><strong>Garantía de Seguridad:</strong> Si el hash calculado coincide con el enviado por Alice, Bob puede estar seguro de que el mensaje no ha sido alterado. Esto se basa en la resistencia a colisiones de SHA-256 y su unidireccionalidad.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔒</span>
+                        <h3 class="text-lg font-bold">Caso 6: Confidencialidad con AES</h3>
+                    </div>
+                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Plataforma</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-violet-300 pl-4">Enunciado: Bob necesita asegurar que solo Alice pueda leer un archivo críptico que él le enviará. Decide usar AES. Describe cómo Bob cifraría el archivo y cómo Alice lo descifraría.</p>
+                    
+                    <h4 class="font-bold text-violet-700 mt-4 mb-2">Secuencia Operativa:</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-600 space-y-3">
+                        <li><strong>Acuerdo de Clave:</strong> Bob y Alice comparten de antemano una clave secreta (AES soporta 128, 192 o 256 bits). La seguridad recae completamente en proteger esta clave.</li>
+                        <li><strong>Cifrado (Bob):</strong> Bob usa AES, que opera dividiendo el archivo en bloques de 128 bits. A cada bloque se le aplican múltiples rondas (sustituciones, permutaciones y combinaciones con la clave). Posteriormente transmite el archivo cifrado.</li>
+                        <li><strong>Descifrado (Alice):</strong> Alice usa la <em>misma</em> clave secreta. El proceso aplica las mismas operaciones de cifrado pero en orden inverso para recuperar el original.</li>
+                        <li><strong>Confidencialidad:</strong> Solo alguien con la clave simétrica correcta puede descifrar el bloque de datos.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Técnico</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Integridad de Datos</h4>
+                    <p class="text-sm text-slate-600 mt-1">Garantía de que la información no ha sido modificada, alterada o destruida de forma no autorizada durante su almacenamiento o transmisión (Objetivo del Hash).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Confidencialidad</h4>
+                    <p class="text-sm text-slate-600 mt-1">Garantía de que la información solo es accesible por personas, entidades o procesos autorizados (Objetivo de la encriptación AES).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Cifrado de Bloque (Block Cipher)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Método de cifrado simétrico que opera en grupos de bits de longitud fija llamados bloques, a diferencia del cifrado de flujo (Stream Cipher).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Rondas (Rounds en AES)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Iteraciones del proceso matemático de confusión y difusión que AES aplica sobre la matriz de estado. Las rondas se repiten 10, 12 o 14 veces según la clave.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-600 mb-6">Experimenta con los conceptos centrales de la Unidad 3: Hash Efecto Avalancha y Telemetría AES.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 flex-1">
+                
+                <div class="flex flex-col bg-slate-900 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800">
+                        <span class="text-xs font-mono text-yellow-500 font-bold tracking-widest">LAB 1: DEMO EFECTO AVALANCHA (SHA-256)</span>
+                    </div>
+                    <div class="p-6 flex flex-col gap-4">
+                        <p class="text-slate-400 text-sm">Modifica el texto letra a letra y observa cómo el hash criptográfico cambia drásticamente.</p>
+                        
+                        <label class="text-white text-sm font-bold">Mensaje de Entrada (Texto Plano):</label>
+                        <input type="text" id="hashInput" value="Proyecto EduShield" oninput="calculateHashLive()" class="bg-slate-800 text-white rounded p-3 font-mono border border-slate-600 focus:border-yellow-500 outline-none">
+                        
+                        <label class="text-white text-sm font-bold mt-2">Salida Digest (Hash SHA-256 - 64 Caracteres Hex):</label>
+                        <div id="hashOutput" class="bg-black text-green-400 p-4 rounded font-mono text-sm break-all border border-slate-800 h-24">Calculando...</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col bg-slate-900 rounded-xl shadow-xl border border-slate-700 overflow-hidden">
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800">
+                        <span class="text-xs font-mono text-cyan-500 font-bold tracking-widest">LAB 2: TELEMETRÍA AES (Caso 6)</span>
+                    </div>
+                    <div class="p-4 font-mono text-xs h-48 overflow-y-auto terminal-scroll bg-[#0d1117] text-slate-300" id="aesTerminal">
+                        <p class="text-slate-500">// Esperando inicio de transmisión cifrada entre Alice y Bob...</p>
+                    </div>
+                    <div class="p-4 bg-slate-800 border-t border-slate-700">
+                        <button onclick="runAesSimulation()" id="aesSimBtn" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded w-full transition text-sm">
+                            Ejecutar Secuencia Cifrado AES
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo: Confidencialidad + Integridad</h2>
+            <p class="text-slate-600 mb-8">Arquitectura combinando el escenario del Caso 5 y el Caso 6 simultáneamente (El estándar de facto en transmisiones modernas).</p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+                <div class="flex-1 bg-white p-6 rounded-3xl border-2 border-slate-200 text-center relative z-10 shadow-sm w-full md:w-auto h-48 flex flex-col justify-center">
+                    <div class="text-3xl mb-2">✍️</div>
+                    <h4 class="font-bold text-slate-800">1. Firma / Hash</h4>
+                    <p class="text-xs text-slate-500 mt-1">El emisor calcula el SHA-256 del texto plano original para garantizar Integridad.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-4xl">➔</div>
+                
+                <div class="flex-1 bg-white p-6 rounded-3xl border-2 border-cyan-400 text-center relative z-10 shadow-sm w-full md:w-auto h-48 flex flex-col justify-center">
+                    <div class="text-3xl mb-2">🔐</div>
+                    <h4 class="font-bold text-slate-800">2. Cifrado Bloques</h4>
+                    <p class="text-xs text-slate-500 mt-1">El [Mensaje + Hash] se divide en bloques de 128 bits y se cifra vía AES.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-4xl">➔</div>
+
+                <div class="flex-1 bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 text-center relative z-10 shadow-sm w-full md:w-auto h-48 flex flex-col justify-center">
+                    <div class="text-3xl mb-2">📡</div>
+                    <h4 class="font-bold text-white">3. Red Insegura</h4>
+                    <p class="text-xs text-slate-400 mt-1">Tránsito del criptograma. Solo se observa ruido de alta entropía.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-4xl">➔</div>
+
+                <div class="flex-1 bg-white p-6 rounded-3xl border-2 border-violet-500 text-center relative z-10 shadow-lg w-full md:w-auto h-48 flex flex-col justify-center">
+                    <div class="text-3xl mb-2">✅</div>
+                    <h4 class="font-bold text-slate-800">4. Desempaquetado</h4>
+                    <p class="text-xs text-slate-500 mt-1">El receptor descifra con clave AES y recalcula SHA-256 validando la información.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // LÓGICA DE NAVEGACIÓN Y BÚSQUEDA
+        // ==========================================
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-violet-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400');
+            currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            
+            // Si entra a la sección de labs, renderizar el hash inicial
+            if(sectionId === 'sec7') calculateHashLive();
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.nav-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // ==========================================
+        // LÓGICA SIMULADOR 1: EFECTO AVALANCHA (SHA-256)
+        // ==========================================
+        async function calculateHashLive() {
+            const input = document.getElementById('hashInput').value;
+            const outputBox = document.getElementById('hashOutput');
+            
+            if(!input) {
+                outputBox.innerText = "Escribe algo para generar el hash...";
+                return;
+            }
+
+            // Web Crypto API nativa para SHA-256
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            
+            outputBox.innerText = hashHex;
+        }
+
+        // ==========================================
+        // LÓGICA SIMULADOR 2: TELEMETRÍA AES (Consola interactiva)
+        // ==========================================
+        const aesTerminal = document.getElementById('aesTerminal');
+        const aesSequence = [
+            { text: "[Bob] Acordando Clave Secreta Simétrica (256-bit) out-of-band...", color: "text-slate-400" },
+            { text: "[Bob] Cargando payload: 'informe_auditoria.docx'", color: "text-blue-400" },
+            { text: "[System] Inicializando Máquina de Estados AES Rijndael.", color: "text-yellow-400 font-bold mt-2" },
+            { text: "[System] Dividiendo archivo en bloques fijos de 128-bits (4x4 bytes)...", color: "text-slate-300" },
+            { text: "> Ejecutando Ronda 1: SubBytes -> ShiftRows -> MixColumns -> AddRoundKey", color: "text-slate-500" },
+            { text: "> Iterando 14 Rondas (Requisito para claves AES-256)...", color: "text-slate-500" },
+            { text: "[System] Proceso de Cifrado completado.", color: "text-green-400 font-bold" },
+            { text: "[Red] Transmitiendo Criptograma: 0x9f2a4b8e11c... >>> Alice", color: "text-cyan-400 mt-2 italic" },
+            { text: "[Alice] Criptograma Interceptado. Inyectando Clave Secreta compartida.", color: "text-purple-400 mt-2" },
+            { text: "[System] Ejecutando Rijndael Inverso (InvSubBytes, InvShiftRows...)", color: "text-yellow-400 font-bold" },
+            { text: "[Alice] Bloques descifrados y ensamblados. Archivo recuperado.", color: "text-green-400 font-bold" },
+            { text: "==> CONFIDENCIALIDAD GARANTIZADA <==", color: "text-white font-bold bg-green-800 p-1 mt-2 inline-block rounded" }
+        ];
+
+        function appendAesLog(logObj) {
+            const p = document.createElement('p');
+            p.className = logObj.color + " mt-1 fade-in";
+            p.innerHTML = logObj.text;
+            aesTerminal.appendChild(p);
+            aesTerminal.scrollTop = aesTerminal.scrollHeight;
+        }
+
+        function runAesSimulation() {
+            const btn = document.getElementById('aesSimBtn');
+            btn.disabled = true;
+            btn.innerText = "Simulando Tráfico...";
+            btn.classList.replace('bg-violet-600', 'bg-slate-700');
+            
+            aesTerminal.innerHTML = ""; // Clear console
+            
+            let delay = 0;
+            aesSequence.forEach((log, index) => {
+                setTimeout(() => {
+                    appendAesLog(log);
+                    // Reset button after last log
+                    if (index === aesSequence.length - 1) {
+                        btn.disabled = false;
+                        btn.innerText = "Reiniciar Simulación AES";
+                        btn.classList.replace('bg-slate-700', 'bg-violet-600');
+                    }
+                }, delay);
+                delay += 700; // 700ms entre cada log
+            });
+        }
+    </script>
+</body>
+</html>
