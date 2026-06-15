@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 4 - Criptografía Asimétrica | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Card Styles */
+        .flip-card { perspective: 1000px; height: 220px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; }
+        
+        /* Terminal Styles */
+        .terminal-scroll::-webkit-scrollbar { width: 8px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 4px; }
+
+        /* Custom Scrollbar for Sidebar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-20 shrink-0">
+        <div class="p-6 border-b border-slate-800 bg-slate-950">
+            <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+            <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Unidad 4: Cripto Asimétrica</p>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Base Teórica</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Claves Públicas y Privadas</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Algoritmo RSA Avanzado</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Terminal OpenSSL</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Fichas Rápidas (Repaso)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Casos Prácticos (Ignacio)</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">5. Casos 7 y 8 (Soluciones)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Técnico</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400">7. Simulador EduShield (Labs)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400">8. Flujo Operativo E2E</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12 relative" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Fundamentos: Claves Públicas y Privadas</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3 flex items-center gap-2"><span class="text-violet-500">🗝️</span> El Paradigma Asimétrico</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-3">
+                        A diferencia de la criptografía simétrica (donde se comparte una sola clave), la criptografía asimétrica utiliza un par de claves matemáticamente vinculadas.
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-600 list-disc pl-5">
+                        <li><strong>Clave Pública:</strong> Se distribuye libremente. Se usa para cifrar mensajes hacia el propietario o verificar sus firmas.</li>
+                        <li><strong>Clave Privada:</strong> Debe permanecer en secreto absoluto. Se usa para descifrar mensajes recibidos o firmar digitalmente.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3 flex items-center gap-2"><span class="text-violet-500">🏆</span> Ventajas Clave</h3>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li><strong class="text-slate-800">Cero intercambio previo:</strong> No es necesario arriesgarse a transmitir una clave secreta por un canal inseguro.</li>
+                        <li><strong class="text-slate-800">Autenticación (No repudio):</strong> Si un mensaje se cifra con la clave privada de Alice, y todos pueden leerlo con su clave pública, es matemáticamente indudable que Alice lo envió.</li>
+                        <li><strong class="text-slate-800">Mitigación de MITM:</strong> Protege contra ataques de Intermediario al establecer canales seguros (ej. TLS/SSL).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Arquitectura de las Firmas Digitales RSA</h2>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-4">
+                <div class="p-8 bg-violet-50 border-b border-slate-200">
+                    <h3 class="text-xl font-bold text-violet-900 mb-4">¿Cómo funciona la Firma Digital? (Autenticidad)</h3>
+                    <p class="text-sm text-violet-800 mb-4">La firma digital invierte el proceso de confidencialidad. Aquí, el emisor utiliza su propia clave <strong>Privada</strong> para "sellar" matemáticamente el documento.</p>
+                    <ol class="list-decimal pl-5 space-y-3 text-sm text-violet-800 font-medium">
+                        <li>El emisor calcula el <code class="bg-white px-1 rounded text-violet-900">Hash (SHA-256)</code> del mensaje original.</li>
+                        <li>El emisor cifra ese Hash usando su <code class="bg-white px-1 rounded text-violet-900">Clave Privada (d)</code>. El resultado es la Firma Digital (S).</li>
+                        <li>Se transmite el Mensaje original junto con la Firma Digital (S).</li>
+                        <li>El receptor calcula su propio Hash del mensaje. Además, descifra la Firma Digital (S) usando la <code class="bg-white px-1 rounded text-violet-900">Clave Pública (e)</code> del emisor.</li>
+                        <li>Si ambos Hashes coinciden, la firma es válida: el mensaje es auténtico y no ha sido alterado.</li>
+                    </ol>
+                </div>
+                <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50">
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2">Crear Firma (Emisor)</h4>
+                        <div class="bg-slate-800 text-purple-400 font-mono p-4 rounded-lg text-center text-lg">
+                            S = H(M)<sup>d</sup> mod n
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2">Verificar Firma (Receptor)</h4>
+                        <div class="bg-slate-800 text-cyan-400 font-mono p-4 rounded-lg text-center text-lg">
+                            H(M)' = S<sup>e</sup> mod n
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Implementación Técnica (OpenSSL)</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-slate-900 rounded-xl p-1 shadow-lg">
+                    <div class="bg-slate-800 rounded-t-lg px-4 py-2 flex items-center gap-2 border-b border-slate-700">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-slate-400 text-xs ml-2 font-mono">rsa-firmas.sh</span>
+                    </div>
+                    <div class="p-4 text-sm font-mono text-slate-300 overflow-x-auto">
+                        <p class="text-slate-500 italic mb-2"># 1. Generar par de claves RSA (Alice)</p>
+                        <p class="mb-4"><span class="text-green-400">openssl</span> genrsa -out alice_privada.pem 2048<br>
+                        <span class="text-green-400">openssl</span> rsa -in alice_privada.pem -pubout -out alice_publica.pem</p>
+                        
+                        <p class="text-slate-500 italic mb-2"># 2. Firmar digitalmente un documento (Genera el Hash SHA256 y lo cifra con la clave Privada)</p>
+                        <p class="mb-4"><span class="text-green-400">openssl</span> dgst -sha256 -sign alice_privada.pem -out firma.sig contrato.pdf</p>
+                        
+                        <p class="text-slate-500 italic mb-2"># 3. Verificar la firma digital (El receptor usa la clave Pública de Alice y el documento original)</p>
+                        <p><span class="text-green-400">openssl</span> dgst -sha256 -verify alice_publica.pem -signature firma.sig contrato.pdf</p>
+                        <p class="text-slate-500 italic mt-1"># Output esperado: "Verified OK"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Fichas Rápidas (Memorización)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🛡️</span>
+                            <h3 class="font-bold text-lg text-center">No Repudio</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Autenticidad</h4>
+                            <p class="text-sm">Garantía legal y técnica de que el remitente de un mensaje no puede negar posteriormente haberlo enviado, gracias al uso de su Clave Privada exclusiva.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🪪</span>
+                            <h3 class="font-bold text-lg">Certificado Digital</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Identidad</h4>
+                            <p class="text-sm">Documento electrónico emitido por una CA que vincula una Clave Pública con la identidad real de una persona o entidad (ej. DNIe).</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">✍️</span>
+                            <h3 class="font-bold text-lg text-center">Firma Digital vs <br>Cifrado</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Direccionalidad</h4>
+                            <p class="text-sm"><strong>Firma:</strong> Se cifra con Privada, se valida con Pública.<br><strong>Cifrado (Confidencialidad):</strong> Se cifra con Pública, se descifra con Privada.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🏛️</span>
+                            <h3 class="font-bold text-lg text-center">Autoridad de Certificación (CA)</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Confianza</h4>
+                            <p class="text-sm">Entidad de confianza responsable de emitir y revocar los certificados digitales dentro de una infraestructura PKI.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">5. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas de la plataforma oficial, estructuradas con esquemas listos para la agenda de auditoría.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🤫</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 7: Mensaje Secreto (Confidencialidad RSA)</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere enviar un mensaje secreto a Bob usando RSA. Describe el proceso de generación de claves por Bob y cómo Alice cifra el mensaje para que solo él pueda leerlo.</p>
+                    
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mt-4 shadow-sm">
+                        <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 7: RSA (CONFIDENCIALIDAD)</h3>
+                        <ul class="space-y-2 text-sm text-slate-700 font-mono">
+                            <li><strong>1️⃣ GÉNESIS 🗝️</strong> Bob genera (e,n) Pública y (d,n) Privada. (Calculando p, q y módulo n).</li>
+                            <li><strong>2️⃣ CIFRADO 🔒</strong> Alice usa la Pública de Bob. Aplica la fórmula: C = M^e mod n.</li>
+                            <li><strong>3️⃣ TRANSMISIÓN 📡</strong> Alice envía el Criptograma (C).</li>
+                            <li><strong>4️⃣ DESCIFRADO 🔓</strong> Bob usa su Privada exclusiva. Aplica la fórmula: M = C^d mod n.</li>
+                        </ul>
+                        <p class="mt-4 text-xs font-bold text-slate-500 uppercase">🛡️ Seguridad: Solo Bob posee 'd', la clave privada necesaria para recuperar M.</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <img src="img/Caso Practico 7 - Etiqueta.jpg" alt="Generar imagen para el Caso 7" class="rounded-xl shadow-lg border border-slate-200 w-full md:w-3/4 max-w-2xl mx-auto block bg-slate-100 min-h-[150px] text-center" style="font-style: italic; color: #888; line-height: 150px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">✍️</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 8: Firma Digital (Autenticidad RSA)</h3>
+                    </div>
+                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-violet-300 pl-4">Enunciado: Bob quiere verificar que un mensaje recibido realmente proviene de Alice. Describe cómo Alice puede firmar digitalmente su mensaje usando RSA para asegurar la autenticidad.</p>
+                    
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mt-4 shadow-sm">
+                        <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 8: FIRMA DIGITAL (AUTENTICIDAD)</h3>
+                        <ul class="space-y-2 text-sm text-slate-700 font-mono">
+                            <li><strong>1️⃣ HASHING ⚙️</strong> Alice calcula el resumen H(M) con SHA-256.</li>
+                            <li><strong>2️⃣ FIRMA ✍️</strong> Alice cifra H(M) con SU clave Privada (d). Resulta S = H(M)^d mod n.</li>
+                            <li><strong>3️⃣ TRANSMISIÓN 📤</strong> Alice envía el paquete: [Mensaje (M) + Firma (S)].</li>
+                            <li><strong>4️⃣ VERIFICACIÓN 🕵️‍♂️</strong> Bob usa la Pública de Alice sobre (S) para extraer el Hash original, y lo compara con el Hash del mensaje (M) recibido.</li>
+                        </ul>
+                        <p class="mt-4 text-xs font-bold text-slate-500 uppercase">✅ Autenticidad: Si la firma cuadra, solo pudo crearla Alice (la única poseedora de su Privada).</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <img src="img/Caso Practico 8 - Etiqueta.jpg" alt="Generar imagen para el Caso 8" class="rounded-xl shadow-lg border border-slate-200 w-full md:w-3/4 max-w-2xl mx-auto block bg-slate-100 min-h-[150px] text-center" style="font-style: italic; color: #888; line-height: 150px;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Técnico</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Infraestructura de Clave Pública (PKI)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Marco tecnológico, políticas y servicios (como las Autoridades de Certificación) requeridos para gestionar, emitir y revocar los pares de claves asimétricas de forma escalable y confiable.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Algoritmo de Euclides Extendido</h4>
+                    <p class="text-sm text-slate-600 mt-1">Ecuación matemática utilizada en la fase de generación de claves RSA para hallar el inverso multiplicativo modular, que permite obtener el exponente privado 'd'.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Firma Digital</h4>
+                    <p class="text-sm text-slate-600 mt-1">Mecanismo criptográfico resultante de aplicar la clave privada de un emisor sobre el hash de un documento, garantizando Autenticidad, Integridad y No Repudio.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Módulo 'n'</h4>
+                    <p class="text-sm text-slate-600 mt-1">En RSA, es el producto de dos números primos enormes (p y q). Se utiliza en la aritmética modular tanto para la operación de cifrado como para la de descifrado.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Simuladores Interactivos (EduShield)</h2>
+            <p class="text-slate-600 mb-6">Consolas de telemetría para monitorizar el ciclo de vida de los Casos Prácticos 7 y 8.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+                
+                <div class="flex flex-col bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+                    <div class="bg-slate-950 px-4 py-3 flex justify-between items-center border-b border-slate-800">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400 font-bold tracking-widest">RSA Engine - Caso 7</span>
+                    </div>
+                    <div id="rsaConfTerminal" class="p-6 font-mono text-sm h-64 overflow-y-auto terminal-scroll bg-[#0d1117] text-slate-300">
+                        <p class="text-green-400">root@edushield-soc:~# ./rsa_secreto</p>
+                        <p class="text-slate-500 mb-2">// Esperando inicio de transmisión confidencial...</p>
+                    </div>
+                    <div class="p-4 bg-slate-800 border-t border-slate-700">
+                        <button onclick="runRsaConf()" id="btnRsaConf" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition text-sm">
+                            Ejecutar Confidencialidad RSA
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+                    <div class="bg-slate-950 px-4 py-3 flex justify-between items-center border-b border-slate-800">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400 font-bold tracking-widest">RSA Sign - Caso 8</span>
+                    </div>
+                    <div id="rsaSignTerminal" class="p-6 font-mono text-sm h-64 overflow-y-auto terminal-scroll bg-[#0d1117] text-slate-300">
+                        <p class="text-green-400">root@edushield-soc:~# ./rsa_firma_verify</p>
+                        <p class="text-slate-500 mb-2">// Esperando firma digital entrante de Alice...</p>
+                    </div>
+                    <div class="p-4 bg-slate-800 border-t border-slate-700">
+                        <button onclick="runRsaSign()" id="btnRsaSign" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded w-full transition text-sm">
+                            Ejecutar Validación de Firma
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo Híbrido Completo (E2E)</h2>
+            <p class="text-slate-600 mb-8">El estándar moderno (PGP/GPG) combina las Unidades 3 y 4: Firma Asimétrica + Cifrado Asimétrico para la clave de sesión + Cifrado Simétrico Bulk.</p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-slate-200 text-center relative z-10 shadow-sm w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">✍️</div>
+                    <h4 class="font-bold text-slate-800">1. Firma (Integridad)</h4>
+                    <p class="text-xs text-slate-500 mt-1">Alice aplica SHA-256 al documento y lo cifra con su <strong class="text-violet-600">Clave Privada</strong>.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-3xl">➔</div>
+                
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-cyan-400 text-center relative z-10 shadow-sm w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">🔒</div>
+                    <h4 class="font-bold text-slate-800">2. Cifrado (Confidencial)</h4>
+                    <p class="text-xs text-slate-500 mt-1">Alice cifra el Doc+Firma usando una clave simétrica, y protege esa clave con la <strong class="text-blue-600">Pública de Bob</strong>.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-3xl">➔</div>
+
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-slate-200 text-center relative z-10 shadow-sm w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">🔓</div>
+                    <h4 class="font-bold text-slate-800">3. Descifrado</h4>
+                    <p class="text-xs text-slate-500 mt-1">Bob usa su <strong class="text-blue-600">Privada</strong> para obtener la clave simétrica y descifrar el paquete original.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-3xl">➔</div>
+
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-violet-500 text-center relative z-10 shadow-lg w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">✅</div>
+                    <h4 class="font-bold text-slate-800">4. Verificación</h4>
+                    <p class="text-xs text-slate-500 mt-1">Bob extrae la firma, usa la <strong class="text-violet-600">Pública de Alice</strong> y verifica los Hashes (No Repudio).</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // LÓGICA DE NAVEGACIÓN
+        // ==========================================
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-violet-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400');
+            currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.nav-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // ==========================================
+        // LÓGICA SIMULADORES (CASO 7 & CASO 8)
+        // ==========================================
+        const termConf = document.getElementById('rsaConfTerminal');
+        const termSign = document.getElementById('rsaSignTerminal');
+
+        const seqConf = [
+            { text: "[Bob] Extrayendo primos 'p' y 'q'. Calculando módulo n = p*q...", color: "text-slate-400" },
+            { text: "[Bob] Generando Public Key (e,n) y Private Key (d,n).", color: "text-yellow-400" },
+            { text: "[Alice] Obtiene clave pública de Bob. Preparando Mensaje: M = 4821", color: "text-blue-400 mt-2" },
+            { text: "[Alice] Aplicando cifrado modular: C = 4821^e mod n", color: "text-blue-400 font-bold" },
+            { text: "[Red] Criptograma C en tránsito >>> Bob", color: "text-cyan-400 italic mt-2" },
+            { text: "[Bob] Intercepta C. Ejecutando descifrado: M = C^d mod n", color: "text-green-400 font-bold mt-2" },
+            { text: "[✓] Recuperado M = 4821. (Solo la Privada 'd' pudo resolverlo).", color: "text-white bg-green-700 inline-block p-1 mt-2 rounded" }
+        ];
+
+        const seqSign = [
+            { text: "[Alice] Generando documento: 'Contrato_Final.pdf'", color: "text-slate-400" },
+            { text: "[Alice] Calculando HASH (SHA-256) del documento original...", color: "text-purple-400 mt-2" },
+            { text: "[Alice] Firmando: Encriptando Hash con su CLAVE PRIVADA.", color: "text-purple-400 font-bold" },
+            { text: "[Red] Transmitiendo [Doc + Firma_Digital] >>> Bob", color: "text-cyan-400 italic mt-2" },
+            { text: "[Bob] Paquete recibido. Calculando HASH local del documento...", color: "text-yellow-400 mt-2" },
+            { text: "[Bob] Desencriptando Firma_Digital con CLAVE PÚBLICA de Alice...", color: "text-yellow-400 font-bold" },
+            { text: "[System] Verificando: Hash_Local == Hash_Desencriptado", color: "text-slate-300" },
+            { text: "[✓] Verified OK. Origen: Alice (Autenticado y No Repudiable).", color: "text-white bg-violet-700 inline-block p-1 mt-2 rounded" }
+        ];
+
+        function runSimSequence(sequence, terminalElement, btnElement, btnOriginalColor, btnOriginalText) {
+            btnElement.disabled = true;
+            btnElement.innerText = "Simulando Telemetría...";
+            btnElement.classList.replace(btnOriginalColor, 'bg-slate-700');
+            
+            while(terminalElement.childNodes.length > 5) {
+                terminalElement.removeChild(terminalElement.lastChild);
+            }
+            
+            let delay = 0;
+            sequence.forEach((log, index) => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.className = log.color + " mt-1 fade-in";
+                    p.innerHTML = log.text;
+                    terminalElement.appendChild(p);
+                    terminalElement.scrollTop = terminalElement.scrollHeight;
+                    
+                    if (index === sequence.length - 1) {
+                        btnElement.disabled = false;
+                        btnElement.innerText = "Reiniciar " + btnOriginalText;
+                        btnElement.classList.replace('bg-slate-700', btnOriginalColor);
+                    }
+                }, delay);
+                delay += 850; // 850ms pause
+            });
+        }
+
+        function runRsaConf() {
+            runSimSequence(seqConf, termConf, document.getElementById('btnRsaConf'), 'bg-blue-600', 'Confidencialidad');
+        }
+
+        function runRsaSign() {
+            runSimSequence(seqSign, termSign, document.getElementById('btnRsaSign'), 'bg-violet-600', 'Validación');
+        }
+    </script>
+</body>
+</html>
