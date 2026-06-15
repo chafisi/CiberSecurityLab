@@ -1,591 +1,745 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unidad 2: Fundamentos de Criptografía - Master Template</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #1a252f;
+            --secondary: #2c3e50;
+            --accent: #2980b9;
+            --highlight: #e74c3c;
+            --success: #27ae60;
+            --bg-body: #ecf0f1;
+            --bg-section: #ffffff;
+            --text-dark: #2c3e50;
+            --border-rad: 12px;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Menú Lateral (Sidebar) */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 2.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .sidebar-header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0;
+        }
+
+        .sidebar-menu li a {
+            display: block;
+            padding: 1.2rem 1.5rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .sidebar-menu li a:hover, .sidebar-menu li a:focus {
+            background: rgba(255,255,255,0.03);
+            color: white;
+            border-left-color: var(--accent);
+            padding-left: 2rem;
+        }
+
+        /* Contenedor Principal */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background: var(--bg-body);
+        }
+
+        header {
+            background: white;
+            color: var(--primary);
+            padding: 4rem 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            margin: 1rem 0 0 0;
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem;
+        }
+
+        /* Secciones Independientes */
+        section {
+            background: var(--bg-section);
+            padding: 3.5rem;
+            margin-bottom: 4rem;
+            border-radius: var(--border-rad);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            scroll-margin-top: 3rem;
+            border-top: 5px solid var(--accent);
+            position: relative;
+        }
+
+        /* Alternar diseño de secciones para mayor independencia visual */
+        section:nth-of-type(even) {
+            background: #f8fbff;
+            border-top: 5px solid var(--secondary);
+        }
+
+        .section-badge {
+            position: absolute;
+            top: -15px;
+            left: 3.5rem;
+            background: var(--accent);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(41, 128, 185, 0.3);
+        }
+
+        section:nth-of-type(even) .section-badge {
+            background: var(--secondary);
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 1rem;
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary);
+            margin-top: 2rem;
+            font-size: 1.3rem;
+        }
+
+        /* Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-rad);
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .card-header {
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #f0f3f5;
+            padding-bottom: 0.8rem;
+        }
+
+        /* Flip Cards */
+        .flip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            height: 240px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            border-radius: var(--border-rad);
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-rad);
+            padding: 1.5rem;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .flip-card-front {
+            background-color: white;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid #ecf0f1;
+        }
+
+        .flip-card-back {
+            background-color: var(--accent);
+            color: white;
+            transform: rotateY(180deg);
+            font-size: 0.95rem;
+        }
+
+        /* Código */
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1.5rem;
+            border-radius: var(--border-rad);
+            overflow-x: auto;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            font-size: 0.95rem;
+        }
+
+        code { font-family: 'Courier New', Courier, monospace; }
+        .cmd { color: #569cd6; font-weight: bold; }
+        .arg { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+
+        /* Labs Telemetría */
+        .telemetry-container {
+            background: #0d1117;
+            border-radius: var(--border-rad);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid #30363d;
+        }
+
+        .telemetry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .telemetry-title {
+            color: #c9d1d9;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .telemetry-log {
+            height: 250px;
+            overflow-y: auto;
+            background: #000;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #8b949e;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .log-entry { margin-bottom: 0.5rem; opacity: 0; animation: fadeIn 0.3s forwards; }
+        .log-alice { color: #58a6ff; }
+        .log-bob { color: #7ee787; }
+        .log-system { color: #f2cc60; }
+        .log-data { color: #ff7b72; word-break: break-all; }
+
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .btn-telemetry {
+            background: #238636;
+            color: white;
+            border: 1px solid rgba(240, 246, 252, 0.1);
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-telemetry:hover { background: #2ea043; }
+        .btn-telemetry:disabled { background: #21262d; color: #8b949e; cursor: not-allowed; }
+
+        /* Flujos Visuales E2E */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 3rem 0;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-rad);
+            border: 1px solid #eee;
+        }
+
+        .flow-step {
+            background: var(--bg-body);
+            color: var(--primary);
+            padding: 1.5rem;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 2px solid var(--accent);
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .control-point {
+            position: absolute;
+            bottom: -25px;
+            width: 140px;
+            font-size: 0.75rem;
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0;
+            border-radius: 12px;
+            font-weight: normal;
+        }
+
+        /* Glosario */
+        dl {
+            margin: 0;
+        }
+        dt {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+            background: #eef2f5;
+            padding: 0.5rem 1rem;
+            border-left: 4px solid var(--accent);
+            border-radius: 4px 4px 0 0;
+        }
+        dt:first-child { margin-top: 0; }
+        dd {
+            margin-left: 0;
+            padding: 1rem;
+            border: 1px solid #eef2f5;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            color: #555;
+            background: white;
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { margin-left: 0; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .flow-container { flex-direction: column; }
+            .flow-arrow { transform: rotate(90deg); margin: 1.5rem 0; }
+            .section-badge { display: none; }
+            section { padding: 2rem; margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <h3>Criptografía</h3>
+            <p>Master Template - U2</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#teoria">1. Fundamentos Teóricos</a></li>
+            <li><a href="#metodos">2. Implementación Técnica</a></li>
+            <li><a href="#fichas">3. Fichas de Repaso</a></li>
+            <li><a href="#casos">4. Casos Prácticos</a></li>
+            <li><a href="#glosario">5. Glosario Técnico</a></li>
+            <li><a href="#labs">6. Labs: Telemetría</a></li>
+            <li><a href="#flujo">7. Flujo Operativo E2E</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <header>
+            <h1>Unidad 2: Fundamentos de Criptografía</h1>
+            <p>Arquitectura, Algoritmos y Validación de Casos Oficiales</p>
+        </header>
+
+        <div class="container">
+
+            <section id="teoria">
+                <div class="section-badge">APARTADO 1</div>
+                <h2>1. Fundamentos Matemáticos y Evolución del Algoritmo</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header">Estructuras Matemáticas Base</div>
+                        <p>La seguridad de los sistemas criptográficos modernos se divide según su estructura operacional:</p>
+                        <ul>
+                            <li><strong>Asimétrica (RSA):</strong> Descansa directamente sobre la teoría de números y la complejidad computacional del problema de la factorización de enteros. Trabaja con aritmética modular sobre el producto de dos números primos grandes de alta entropía (<code>n = p * q</code>).</li>
+                            <li><strong>Simétrica (AES / DES):</strong> No depende de problemas matemáticos de factorización, sino de funciones de confusión y difusión implementadas mediante permutaciones y cajas de sustitución (S-Boxes) que alteran las estructuras de bits en bloques fijos.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">Evolución Histórica</div>
+                        <ul>
+                            <li><strong>Clásicos (César, Vigenère):</strong> Sustitución simple. Rotos mediante análisis de frecuencias.</li>
+                            <li><strong>DES (Data Encryption Standard):</strong> Bloques de 64 bits y clave de 56 bits. <strong>Inseguro</strong> hoy frente a ataques de fuerza bruta.</li>
+                            <li><strong>AES (Advanced Encryption Standard):</strong> Matrices de estado y claves de 128/192/256 bits. Matemáticamente robusto.</li>
+                            <li><strong>RSA:</strong> Pilar del PKI. Seguro con claves ≥2048 bits, pero amenazado teóricamente por la futura computación cuántica (Algoritmo de Shor).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="metodos">
+                <div class="section-badge">APARTADO 2</div>
+                <h2>2. Implementación Algorítmica y Despliegue Técnico</h2>
+                <h3>Matemática Subyacente: Cálculo RSA</h3>
+                <div class="card" style="margin-bottom: 2rem;">
+                    <ol>
+                        <li>Seleccionar dos números primos grandes aleatorios, <code>p</code> y <code>q</code>.</li>
+                        <li>Calcular módulo compuesto: <code>n = p * q</code>.</li>
+                        <li>Calcular función indicatriz de Euler: <code>&phi;(n) = (p - 1) * (q - 1)</code>.</li>
+                        <li>Elegir exponente público <code>e</code>, coprimo con &phi;(n), tal que <code>MCD(e, &phi;(n)) = 1</code>.</li>
+                        <li>Calcular exponente privado <code>d</code> mediante inverso multiplicativo modular: <code>(d * e) &equiv; 1 (mod &phi;(n))</code> usando Euclides Extendido.</li>
+                    </ol>
+                </div>
+
+                <h3>Comandos de Laboratorio (OpenSSL)</h3>
+                <pre><code><span class="comment"># 1. Generar clave privada RSA (2048 bits)</span>
+<span class="cmd">openssl</span> genrsa <span class="arg">-out privada.pem 2048</span>
+
+<span class="comment"># 2. Extraer clave pública correspondiente</span>
+<span class="cmd">openssl</span> rsa <span class="arg">-in privada.pem -pubout -out publica.pem</span>
+
+<span class="comment"># 3. Cifrar simétricamente con AES-256-CBC y Salt</span>
+<span class="cmd">openssl</span> enc <span class="arg">-aes-256-cbc -salt -in datos.txt -out cifrado.enc</span>
+
+<span class="comment"># 4. Generar Hash SHA-256 para validación de integridad</span>
+<span class="cmd">openssl</span> dgst <span class="arg">-sha256 reporte.pdf</span></code></pre>
+            </section>
+
+            <section id="fichas">
+                <div class="section-badge">APARTADO 3</div>
+                <h2>3. Fichas de Repaso (Tarjetas de Memorización)</h2>
+                <div class="flip-grid">
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Clave Pública vs Privada</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Par asimétrico vinculado. La pública cifra/verifica; la privada descifra/firma.<br><br>
+                                <strong>Ejemplo:</strong> Compartir la pública para recibir archivos confidenciales.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Salting (Salado)</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Bits aleatorios añadidos a una contraseña antes del hash.<br><br>
+                                <strong>Ejemplo:</strong> Mitiga ataques de Rainbow Tables.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Nonce</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Número utilizado una única vez en un protocolo.<br><br>
+                                <strong>Ejemplo:</strong> Evita ataques de repetición (Replay).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">Vector de Inicialización (IV)</div>
+                            <div class="flip-card-back">
+                                <strong>Definición:</strong> Bloque de datos aleatorios para el primer bloque cifrado (CBC).<br><br>
+                                <strong>Ejemplo:</strong> Cifrar dos frases idénticas da resultados diferentes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="casos">
+                <div class="section-badge">APARTADO 4</div>
+                <h2>4. Casos Prácticos: Soluciones Oficiales Integradas</h2>
+                <div class="grid-2">
+                    <div class="card" style="border-top: 4px solid var(--accent);">
+                        <div class="card-header">Caso 3: Cifrado Simétrico (DES)</div>
+                        <p><strong>Contexto:</strong> Alice y Bob desean comunicarse de manera segura usando DES. Describe el proceso y manejo de clave garantizando confidencialidad.</p>
+                        <hr style="border:0; border-top:1px solid #eee; margin: 1rem 0;">
+                        <p><strong>Solución Oficial:</strong></p>
+                        <ul>
+                            <li><strong>Generación de Clave:</strong> Acuerdan de forma segura una clave secreta de 56 bits efectivos (64 bits total, 8 de paridad).</li>
+                            <li><strong>Cifrado (Alice):</strong> Divide el texto plano en bloques de 64 bits. Aplica DES a cada bloque usando la clave secreta (permutaciones, sustituciones y funciones de Feistel). Envía texto cifrado.</li>
+                            <li><strong>Descifrado (Bob):</strong> Usa la misma clave secreta. Al ser simétrico, aplica proceso inverso para recuperar el original.</li>
+                            <li><strong>Confidencialidad:</strong> Depende de mantener la clave secreta. (Nota: DES es inseguro hoy por su clave corta).</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-top: 4px solid var(--secondary);">
+                        <div class="card-header">Caso 4: Cifrado Asimétrico (RSA)</div>
+                        <p><strong>Contexto:</strong> Alice quiere enviar un mensaje a Bob garantizando confidencialidad con RSA. Describe el cifrado y descifrado.</p>
+                        <hr style="border:0; border-top:1px solid #eee; margin: 1rem 0;">
+                        <p><strong>Solución Oficial:</strong></p>
+                        <ul>
+                            <li><strong>Generación (Bob):</strong> Bob genera clave pública <code>(e, n)</code> y privada <code>(d, n)</code>. Distribuye la pública.</li>
+                            <li><strong>Cifrado (Alice):</strong> Obtiene la pública de Bob. Convierte mensaje a número <code>M</code>. Cifra con la fórmula: <br><code>C = M<sup>e</sup> mod n</code>. Envía <code>C</code>.</li>
+                            <li><strong>Descifrado (Bob):</strong> Recibe el criptograma <code>C</code> y aplica su clave privada con la fórmula: <br><code>M = C<sup>d</sup> mod n</code>.</li>
+                            <li><strong>Confidencialidad:</strong> Solo Bob puede descifrarlo porque solo él posee el exponente privado <code>d</code>.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="glosario">
+                <div class="section-badge">APARTADO 5</div>
+                <h2>5. Glosario Técnico</h2>
+                <dl>
+                    <dt>Cifrado Simétrico / Asimétrico</dt>
+                    <dd>Simétrico: Única clave compartida de alta velocidad (AES). Asimétrico: Par de claves (pública/privada) para intercambio seguro o firmas (RSA).</dd>
+                    
+                    <dt>Colisión Hash</dt>
+                    <dd>Fallo donde dos entradas distintas producen el mismo hash de salida (ej. debilidad de MD5). Rompe el principio de integridad.</dd>
+                    
+                    <dt>Entropía</dt>
+                    <dd>Grado de aleatoriedad o imprevisibilidad. Esencial en la generación de claves para evitar patrones explotables.</dd>
+                    
+                    <dt>Padding (Relleno)</dt>
+                    <dd>Datos añadidos al final de un mensaje para que su tamaño sea múltiplo exacto del tamaño de bloque requerido por el algoritmo.</dd>
+                    
+                    <dt>Key Exchange (Intercambio de Claves)</dt>
+                    <dd>Mecanismo (ej. Diffie-Hellman) para acordar contraseñas simétricas sobre canales expuestos.</dd>
+                </dl>
+            </section>
+
+            <section id="labs">
+                <div class="section-badge">APARTADO 6</div>
+                <h2>6. Laboratorios de Telemetría (Casos Prácticos)</h2>
+                <p>Simulación secuencial del flujo de datos y manejo de bloques entre los nodos Alice y Bob, integrando los conceptos de EduShield Analytics.</p>
+                
+                <div class="telemetry-container">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">SIMULACIÓN 1: Canal Simétrico (Caso Práctico 3 - Bloques 64-bit)</span>
+                        <span style="color:var(--success); font-size:0.8rem;">● En espera</span>
+                    </div>
+                    <div class="telemetry-log" id="log-des">
+                        <div class="log-entry log-system">Inicializando consola de telemetría simétrica...</div>
+                    </div>
+                    <button class="btn-telemetry" id="btn-des" onclick="stepDes()">Ejecutar Siguiente Secuencia</button>
+                </div>
+
+                <div class="telemetry-container" style="margin-top: 3rem;">
+                    <div class="telemetry-header">
+                        <span class="telemetry-title">SIMULACIÓN 2: Intercambio Asimétrico RSA (Caso Práctico 4)</span>
+                        <span style="color:var(--success); font-size:0.8rem;">● En espera</span>
+                    </div>
+                    <div class="telemetry-log" id="log-rsa">
+                        <div class="log-entry log-system">Inicializando consola de telemetría asimétrica...</div>
+                    </div>
+                    <button class="btn-telemetry" id="btn-rsa" onclick="stepRsa()">Ejecutar Siguiente Secuencia</button>
+                </div>
+            </section>
+
+            <section id="flujo">
+                <div class="section-badge">APARTADO 7</div>
+                <h2>7. Flujo Operativo E2E (End-to-End)</h2>
+                <p>Esquema de arquitectura horizontal mostrando el ciclo de vida completo del proceso criptográfico híbrido.</p>
+                
+                <div class="flow-container">
+                    <div class="flow-step">
+                        Génesis
+                        <span class="control-point">Entropía CSPRNG</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Key Exchange
+                        <span class="control-point">RSA / Diffie-Hellman</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Cifrado
+                        <span class="control-point">División Bloques + Padding</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Tránsito
+                        <span class="control-point">Capa Segura (TLS)</span>
+                    </div>
+                    <div class="flow-arrow">&rarr;</div>
+                    
+                    <div class="flow-step">
+                        Descifrado
+                        <span class="control-point">Verificación Integridad</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        crypto: {
-                            dark: '#0f172a',
-                            light: '#1e293b',
-                            accent: '#38bdf8',
-                            success: '#22c55e',
-                            danger: '#ef4444'
-                        }
-                    }
+        // Lógica Telemetría Simétrica (DES - Bloques 64-bit)
+        const desSteps = [
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Solicitando comunicación segura con Nodo Bob.",
+            "<span class='log-system'>[Protocolo]</span> Generando Clave Secreta Compartida (56 bits efectivos, 8 bits paridad).",
+            "<span class='log-system'>[Protocolo]</span> Clave Secreta acordada y distribuida por canal seguro OOB.",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Preparando payload: 'REPORTE_AUDITORIA_CRITICO'",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Segmentando payload en bloques rígidos de 64 bits...",
+            "<span class='log-data'>[Buffer] BLK_1: 01010010 01000101 01010000 01001111 ... (64 bits)</span>",
+            "<span class='log-data'>[Buffer] BLK_2: 01010100 01000101 01011111 01000001 ... (64 bits)</span>",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Aplicando algoritmo DES (Permutaciones, Red de Feistel, S-Boxes) usando Clave Secreta.",
+            "<span class='log-system'>[Red]</span> Transmitiendo Criptograma a través de canal expuesto >>>",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Criptograma interceptado. Iniciando rutina de descifrado.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Aplicando la MISMA Clave Secreta en proceso inverso.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Bloques de 64 bits ensamblados. Mensaje descifrado: 'REPORTE_AUDITORIA_CRITICO'. <span style='color:#7ee787;'>Confidencialidad Mantenida.</span>"
+        ];
+        let currentDes = 0;
+
+        function stepDes() {
+            const logBox = document.getElementById('log-des');
+            const btn = document.getElementById('btn-des');
+            
+            if (currentDes < desSteps.length) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = desSteps[currentDes];
+                logBox.appendChild(entry);
+                logBox.scrollTop = logBox.scrollHeight; // Auto-scroll
+                currentDes++;
+                
+                if (currentDes === desSteps.length) {
+                    btn.disabled = true;
+                    btn.innerText = "Simulación Completada";
                 }
             }
         }
-    </script>
-    <style>
-        .flip-card { perspective: 1000px; }
-        .flip-card-inner { transition: transform 0.6s; transform-style: preserve-3d; }
-        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
-        .flip-front, .flip-back { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; padding: 1rem; text-align: center; }
-        .flip-front { background-color: #1e293b; color: white; border: 1px solid #334155; }
-        .flip-back { background-color: #38bdf8; color: #0f172a; transform: rotateY(180deg); border: 1px solid #0ea5e9; }
-        code { font-family: 'Courier New', Courier, monospace; }
-    </style>
-</head>
-<body class="bg-slate-900 text-slate-200 font-sans antialiased">
 
-    <!-- Navbar & Sidebar Structure (Simplified for Single Page) -->
-    <div class="flex h-screen overflow-hidden">
-        
-        <!-- Sidebar -->
-        <aside class="w-64 bg-crypto-light hidden md:flex flex-col border-r border-slate-700">
-            <div class="p-6 text-xl font-bold text-crypto-accent">Crypto<span class="text-white">Edu</span></div>
-            <nav class="flex-1 p-4 space-y-2">
-                <a href="#teorico" class="block px-4 py-2 rounded hover:bg-slate-700 transition">1. Teoría Matemática</a>
-                <a href="#metodos" class="block px-4 py-2 rounded hover:bg-slate-700 transition">2. Métodos & Labs</a>
-                <a href="#auditoria" class="block px-4 py-2 rounded hover:bg-slate-700 transition">3. Perspectiva Auditoría</a>
-                <a href="#fichas" class="block px-4 py-2 rounded hover:bg-slate-700 transition">4. Fichas Rápidas</a>
-                <a href="#casos" class="block px-4 py-2 rounded hover:bg-slate-700 transition">5. Casos Prácticos</a>
-                <a href="#glosario" class="block px-4 py-2 rounded hover:bg-slate-700 transition">6. Glosario</a>
-                <a href="#labs" class="block px-4 py-2 rounded hover:bg-slate-700 transition">7. Labs Interactivos</a>
-                <a href="#flujo" class="block px-4 py-2 rounded hover:bg-slate-700 transition">8. Flujo E2E</a>
-            </nav>
-        </aside>
+        // Lógica Telemetría Asimétrica (RSA - Matemáticas)
+        const rsaSteps = [
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Iniciando generación de par de claves RSA.",
+            "<span class='log-system'>[Cálculo]</span> Generando primos grandes 'p' y 'q'. Calculando módulo n = p*q.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Clave Pública (e, n) creada. Clave Privada (d, n) resguardada en enclave seguro.",
+            "<span class='log-system'>[Red]</span> Nodo Bob hace broadcast de Clave Pública (e, n).",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Clave Pública de Bob recibida y verificada.",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Preparando mensaje: 'M = 84529' (Representación numérica del texto plano).",
+            "<span class='log-alice'>[Nodo Alice - EduShield]</span> Ejecutando cifrado modular: C = M^e mod n.",
+            "<span class='log-data'>[Criptograma] C Generado: 23948571029384...</span>",
+            "<span class='log-system'>[Red]</span> Transmitiendo criptograma 'C' a Bob >>>",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Criptograma 'C' recibido.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Ejecutando descifrado modular con Clave Privada 'd': M = C^d mod n.",
+            "<span class='log-bob'>[Nodo Bob - EduShield]</span> Ecuación resuelta. Mensaje recuperado: 'M = 84529'. <span style='color:#7ee787;'>Solo Bob poseía 'd'. Confidencialidad Asegurada.</span>"
+        ];
+        let currentRsa = 0;
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-8 relative">
-            <!-- Top Bar -->
-            <header class="flex justify-between items-center mb-10 border-b border-slate-700 pb-4">
-                <div>
-                    <h1 class="text-3xl font-bold text-white">Unidad 2: Fundamentos de Criptografía</h1>
-                    <p class="text-slate-400 mt-1">Soluciones Oficiales: Casos Prácticos 3 (DES) & 4 (RSA)</p>
-                </div>
-                <div class="relative">
-                    <input type="text" placeholder="Buscar concepto..." class="bg-slate-800 border border-slate-600 rounded px-4 py-2 text-sm focus:outline-none focus:border-crypto-accent w-64">
-                </div>
-            </header>
-
-            <!-- 1. APARTADO TEÓRICO -->
-            <section id="teorico" class="mb-16 animate-fade-in">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">1. Fundamentos Matemáticos y Evolución</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-slate-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-xl font-semibold mb-3 text-white">Cifrado Simétrico: DES</h3>
-                        <p class="mb-4 text-slate-300">El <strong>Data Encryption Standard (DES)</strong> se basa en la estructura de redes de Feistel. Opera con bloques de 64 bits usando una clave efectiva de 56 bits.</p>
-                        <ul class="list-disc pl-5 text-slate-400 space-y-2">
-                            <li><strong>Base Matemática:</strong> Permutaciones, sustituciones (S-boxes) y funciones XOR.</li>
-                            <li><strong>Evolución:</strong> Desarrollado en los 70s. Hoy es vulnerable a ataques de fuerza bruta (clave demasiado corta).</li>
-                            <li><strong>Vulnerabilidad:</strong> La búsqueda exhaustiva de claves es trivial con hardware moderno.</li>
-                        </ul>
-                    </div>
-                    <div class="bg-slate-800 p-6 rounded-lg shadow-lg">
-                        <h3 class="text-xl font-semibold mb-3 text-white">Cifrado Asimétrico: RSA</h3>
-                        <p class="mb-4 text-slate-300">El algoritmo <strong>RSA</strong> se fundamenta en la dificultad computacional de factorizar números enteros grandes en sus primos componentes.</p>
-                        <ul class="list-disc pl-5 text-slate-400 space-y-2">
-                            <li><strong>Base Matemática:</strong> Teorema de Euler, aritmética modular ($a^b \pmod n$), números primos.</li>
-                            <li><strong>Evolución:</strong> Propuesto en 1977. Estándar actual para intercambio de claves y firmas digitales.</li>
-                            <li><strong>Seguridad:</strong> Seguro mientras $n = p \times q$ sea suficientemente grande (>2048 bits).</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2. MÉTODOS Y LABS -->
-            <section id="metodos" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">2. Implementación Algorítmica y Despliegue</h2>
-                
-                <div class="space-y-6">
-                    <!-- Lab DES -->
-                    <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
-                        <div class="bg-slate-700 px-4 py-2 font-mono text-sm text-yellow-300"># Laboratorio: Cifrado Simétrico (Python + PyCryptodome)</div>
-                        <div class="p-4 overflow-x-auto">
-<pre class="text-xs text-green-400"><code>from Crypto.Cipher import DES
-import base64
-
-# 1. Generación de Clave (Simulada)
-key = b'SECRETA8' # 8 bytes = 64 bits (56 efectivos)
-
-# 2. Preparación del Mensaje (Padding PKCS#5)
-message = b"Alice necesita enviar un mensaje secreto."
-padding_length = DES.block_size - len(message) % DES.block_size
-message += bytes([padding_length]) * padding_length
-
-# 3. Cifrado
-cipher = DES.new(key, DES.MODE_ECB)
-ciphertext = cipher.encrypt(message)
-print(f"Texto Cifrado (Hex): {ciphertext.hex()}")
-
-# 4. Descifrado (Bob usa la misma clave)
-decipher = DES.new(key, DES.MODE_ECB)
-plaintext = decipher.decrypt(ciphertext).rstrip(b'\x00')
-print(f"Mensaje Original: {plaintext.decode()}")
-</code></pre>
-                        </div>
-                        <div class="p-4 bg-slate-900 text-sm text-slate-400 border-t border-slate-700">
-                            <strong>Nota de Seguridad:</strong> En producción, DES debe ser reemplazado por AES-256 debido a su corta clave.
-                        </div>
-                    </div>
-
-                    <!-- Lab RSA -->
-                    <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
-                        <div class="bg-slate-700 px-4 py-2 font-mono text-sm text-blue-300"># Laboratorio: Cifrado Asimétrico (Lógica RSA Simplificada)</div>
-                        <div class="p-4 overflow-x-auto">
-<pre class="text-xs text-green-400"><code>import random
-
-# 1. Selección de Primos Pequeños (Para demostración)
-p, q = 61, 53
-n = p * q          # 3233
-phi = (p-1)*(q-1)  # 3120
-e = 17             # Exponente público (coprimo con phi)
-# d = inverso(e, phi) -> Calculado manualmente o con Euclides Expandido
-d = 2753           # Exponente privado
-
-# 2. Cifrado por Alice (M = 65, ASCII 'A')
-M = 65
-C = pow(M, e, n)   # 65^17 mod 3233
-print(f"Cifrado: {C}")
-
-# 3. Descifrado por Bob
-M_recuperado = pow(C, d, n) # C^2753 mod 3233
-print(f"Descifrado: {M_recuperado} -> {chr(M_recuperado)}")
-</code></pre>
-                        </div>
-                        <div class="p-4 bg-slate-900 text-sm text-slate-400 border-t border-slate-700">
-                            <strong>Parámetros Críticos:</strong> $p$ y $q$ deben ser grandes y aleatorios. $n$ se hace público, $d$ se mantiene secreto.
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 3. PERSPECTIVA AUDITORÍA -->
-            <section id="auditoria" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">3. Triada CID Aplicada</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-slate-800 p-5 rounded border-l-4 border-purple-500">
-                        <h4 class="font-bold text-purple-400 mb-2">Confidencialidad</h4>
-                        <p class="text-sm text-slate-300">Garantizada por la imposibilidad de revertir el algoritmo sin la clave. En <strong>RSA</strong>, solo quien tiene la privada puede leer. En <strong>DES</strong>, depende de que nadie robe la clave compartida.</p>
-                    </div>
-                    <div class="bg-slate-800 p-5 rounded border-l-4 border-green-500">
-                        <h4 class="font-bold text-green-400 mb-2">Integridad</h4>
-                        <p class="text-sm text-slate-300">Aunque el cifrado protege el contenido, no asegura por sí solo que no fue alterado. Se requiere complementar con <strong>Hashes (SHA-256)</strong> o <strong>Firmas Digitales</strong> para validar integridad.</p>
-                    </div>
-                    <div class="bg-slate-800 p-5 rounded border-l-4 border-yellow-500">
-                        <h4 class="font-bold text-yellow-400 mb-2">Disponibilidad</h4>
-                        <p class="text-sm text-slate-300">Balance seguridad vs. rendimiento. <strong>RSA</strong> es computacionalmente costoso (lento para grandes datos), por lo que se suele usar para intercambiar claves, mientras <strong>AES/DES</strong> cifra el flujo masivo.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 4. FICHAS RÁPIDAS (Flip Cards) -->
-            <section id="fichas" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">4. Tarjetas de Memorización</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    
-                    <div class="flip-card h-48 w-full cursor-pointer">
-                        <div class="flip-card-inner">
-                            <div class="flip-front">
-                                <span class="text-xl font-bold">Clave Privada vs Pública</span>
-                            </div>
-                            <div class="flip-back">
-                                <p class="font-medium">Pública: Se comparte libremente (Cifrar/Verificar).<br>Privada: Secreto absoluto (Descifrar/Firmar).</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flip-card h-48 w-full cursor-pointer">
-                        <div class="flip-card-inner">
-                            <div class="flip-front">
-                                <span class="text-xl font-bold">Vector de Iniciación (IV)</span>
-                            </div>
-                            <div class="flip-back">
-                                <p class="font-medium">Valor aleatorio usado en modo CBC para asegurar que idénticos mensajes produzcan diferentes textos cifrados.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flip-card h-48 w-full cursor-pointer">
-                        <div class="flip-card-inner">
-                            <div class="flip-front">
-                                <span class="text-xl font-bold">Salting</span>
-                            </div>
-                            <div class="flip-back">
-                                <p class="font-medium">Dato aleatorio añadido a una contraseña antes de calcular el hash para evitar ataques de diccionario/rainbow tables.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flip-card h-48 w-full cursor-pointer">
-                        <div class="flip-card-inner">
-                            <div class="flip-front">
-                                <span class="text-xl font-bold">Teorema de Fermat</span>
-                            </div>
-                            <div class="flip-back">
-                                <p class="font-medium">Base matemática para pruebas de primalidad y parte fundamental en la generación de claves RSA.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- 5. CASOS PRÁCTICOS -->
-            <section id="casos" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">5. Casos Prácticos Oficiales</h2>
-                
-                <!-- Caso 3: DES -->
-                <div class="mb-12 border border-slate-700 rounded-lg bg-slate-800 overflow-hidden">
-                    <div class="bg-slate-700 px-6 py-3 border-b border-slate-600">
-                        <h3 class="text-lg font-bold text-white">Caso Práctico 3: Cifrado Simétrico (DES)</h3>
-                    </div>
-                    
-                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Cuadrícula 2x2 -->
-                        <div>
-                            <h4 class="text-crypto-accent font-bold mb-3 uppercase tracking-wider text-sm">Cuadrícula de Requisitos</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Entrada</span>
-                                    <span class="text-sm font-mono">Mensaje Plano + Clave Secreta (56 bits)</span>
-                                </div>
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Algoritmo</span>
-                                    <span class="text-sm font-mono">DES (Feistel Network, 16 rondas)</span>
-                                </div>
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Proceso</span>
-                                    <span class="text-sm font-mono">Dividir bloque 64b → Permutar → S-Boxes → Invertir</span>
-                                </div>
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Salida</span>
-                                    <span class="text-sm font-mono">Texto Cifrado (Hexadecimal)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Caso de Uso EstRICTO -->
-                        <div>
-                            <h4 class="text-crypto-accent font-bold mb-3 uppercase tracking-wider text-sm">Flujo Operativo (Alice & Bob)</h4>
-                            <div class="space-y-3 text-sm text-slate-300">
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">1</div>
-                                    <p><strong>Acuerdo Previo:</strong> Alice y Bob comparten la clave secreta por un canal seguro (fuera del sistema).</p>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">2</div>
-                                    <p><strong>Cifrado:</strong> Alice divide su mensaje en bloques de 64 bits y aplica DES con la clave.</p>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">3</div>
-                                    <p><strong>Transmisión:</strong> Envío del texto cifrado por red insegura.</p>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">4</div>
-                                    <p><strong>Descifrado:</strong> Bob aplica la función inversa de DES con la misma clave para obtener el original.</p>
-                                </div>
-                                <div class="mt-4 p-3 bg-red-900/20 border border-red-800 rounded text-xs text-red-300">
-                                    ⚠️ <strong>Punto de Fallo:</strong> El intercambio inicial de la clave secreta. Si es interceptado, todo el sistema colapsa.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Ficha de Verificación -->
-                    <div class="bg-slate-900 p-6 border-t border-slate-700">
-                        <h4 class="text-yellow-500 font-bold mb-2">Ficha de Verificación Técnica</h4>
-                        <p class="text-sm text-slate-400">
-                            <strong>Dificultad Computacional:</strong> Con una clave de 56 bits, el espacio de claves es $2^{56} \approx 7.2 \times 10^{16}$. 
-                            Aunque parece grande, máquinas modernas pueden probar todas las claves en horas/días (ataque de fuerza bruta). 
-                            Por ello, <strong>DES se considera obsoleto</strong> para protección de datos sensibles a largo plazo. Se recomienda migrar a AES-256.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Caso 4: RSA -->
-                <div class="mb-12 border border-slate-700 rounded-lg bg-slate-800 overflow-hidden">
-                    <div class="bg-slate-700 px-6 py-3 border-b border-slate-600">
-                        <h3 class="text-lg font-bold text-white">Caso Práctico 4: Cifrado Asimétrico (RSA)</h3>
-                    </div>
-                    
-                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- Cuadrícula 2x2 -->
-                        <div>
-                            <h4 class="text-crypto-accent font-bold mb-3 uppercase tracking-wider text-sm">Cuadrícula de Requisitos</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Entrada</span>
-                                    <span class="text-sm font-mono">Mensaje M (numérico), Clave Pública (e, n)</span>
-                                </div>
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Algoritmo</span>
-                                    <span class="text-sm font-mono">RSA (Exponenciación Modular)</span>
-                                </div>
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Proceso</span>
-                                    <span class="text-sm font-mono">C = M^e mod n → Transmisión → M = C^d mod n</span>
-                                </div>
-                                <div class="bg-slate-900 p-3 rounded border border-slate-700">
-                                    <span class="block text-xs text-slate-500 uppercase">Salida</span>
-                                    <span class="text-sm font-mono">Texto Cifrado C recuperado en M</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Caso de Uso EstRICTO -->
-                        <div>
-                            <h4 class="text-crypto-accent font-bold mb-3 uppercase tracking-wider text-sm">Flujo Operativo (Alice & Bob)</h4>
-                            <div class="space-y-3 text-sm text-slate-300">
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">1</div>
-                                    <p><strong>Generación:</strong> Bob genera par $(e, n)$ pública y $(d, n)$ privada. Publica $(e, n)$.</p>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">2</div>
-                                    <p><strong>Cifrado:</strong> Alice codifica su mensaje $M$ y calcula $C = M^e \pmod n$.</p>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">3</div>
-                                    <p><strong>Transmisión:</strong> Envío del valor numérico $C$ por cualquier canal.</p>
-                                </div>
-                                <div class="flex items-start gap-3">
-                                    <div class="bg-crypto-dark p-1 rounded text-xs font-bold w-6 text-center mt-1">4</div>
-                                    <p><strong>Descifrado:</strong> Bob aplica su clave privada: $M = C^d \pmod n$.</p>
-                                </div>
-                                <div class="mt-4 p-3 bg-green-900/20 border border-green-800 rounded text-xs text-green-300">
-                                    ✅ <strong>Garantía:</strong> Incluso si alguien roba la clave pública, sin la privada $d$, es matemáticamente inviable recuperar $M$ (problema de factorización).
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Ficha de Verificación -->
-                    <div class="bg-slate-900 p-6 border-t border-slate-700">
-                        <h4 class="text-yellow-500 font-bold mb-2">Ficha de Verificación Técnica</h4>
-                        <p class="text-sm text-slate-400">
-                            <strong>Ingeniería Inversa:</strong> Para romper RSA, un atacante necesitaría factorizar $n$ para encontrar $p$ y $q$, y así calcular $\phi(n)$ y luego $d$. 
-                            Con claves de 2048 bits actuales, esto tomaría miles de años con supercomputadoras actuales. 
-                            La seguridad reside en la <strong>asimetría computacional</strong>: multiplicar primos es fácil; factorizar el resultado es difícil.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 6. GLOSARIO -->
-            <section id="glosario" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">6. Glosario Técnico</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-slate-800 p-3 rounded border border-slate-700">
-                        <span class="font-bold text-white block">Cifrado Simétrico</span>
-                        <span class="text-xs text-slate-400">Mismo algoritmo y clave para cifrar/descifrar (ej. DES, AES).</span>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded border border-slate-700">
-                        <span class="font-bold text-white block">Cifrado Asimétrico</span>
-                        <span class="text-xs text-slate-400">Par de claves pública/privada (ej. RSA, ECC).</span>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded border border-slate-700">
-                        <span class="font-bold text-white block">Nonce</span>
-                        <span class="text-xs text-slate-400">Número usado una sola vez en protocolos criptográficos para prevenir replay attacks.</span>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded border border-slate-700">
-                        <span class="font-bold text-white block">Padding</span>
-                        <span class="text-xs text-slate-400">Relleno añadido al mensaje para cumplir el tamaño de bloque requerido.</span>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded border border-slate-700">
-                        <span class="font-bold text-white block">Entropía</span>
-                        <span class="text-xs text-slate-400">Medida de aleatoriedad esencial para generar claves seguras.</span>
-                    </div>
-                    <div class="bg-slate-800 p-3 rounded border border-slate-700">
-                        <span class="font-bold text-white block">Key Exchange</span>
-                        <span class="text-xs text-slate-400">Protocolo para intercambiar claves seguras sobre canales públicos (ej. Diffie-Hellman).</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 7. LABS INTERACTIVOS (JUEGOS JS) -->
-            <section id="labs" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">7. Labs Interactivos</h2>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- Juego 1: Rompe-Cadenas -->
-                    <div class="bg-slate-800 p-6 rounded-lg border border-slate-600 shadow-lg">
-                        <h3 class="text-lg font-bold text-white mb-4">🔐 Rompe-Cadenas (Caesar Cipher)</h3>
-                        <p class="text-sm text-slate-400 mb-4">Descifra el siguiente mensaje moviendo el slider. El mensaje oculto es "SECRET".</p>
-                        
-                        <div class="mb-4 bg-black p-3 rounded font-mono text-center text-xl text-green-400" id="cipher-display">ZKHW</div>
-                        <input type="range" min="-10" max="10" value="-3" class="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer" id="cipher-slider">
-                        <div class="flex justify-between text-xs text-slate-500 mt-1">
-                            <span>-10</span><span>0</span><span>+10</span>
-                        </div>
-                        <div class="mt-4 text-center text-white font-bold" id="cipher-result">Resultado...</div>
-                    </div>
-
-                    <!-- Juego 2: Efecto Avalancha -->
-                    <div class="bg-slate-800 p-6 rounded-lg border border-slate-600 shadow-lg">
-                        <h3 class="text-lg font-bold text-white mb-4">⚡ Efecto Avalancha (Visual)</h3>
-                        <p class="text-sm text-slate-400 mb-4">Escribe un texto y observa cómo cambia drásticamente el Hash SHA-256 ante mínimos cambios.</p>
-                        
-                        <input type="text" id="hash-input" placeholder="Escribe algo aquí..." class="w-full bg-slate-900 border border-slate-600 rounded p-2 mb-4 text-white">
-                        <div class="bg-black p-3 rounded font-mono text-xs break-all text-blue-400" id="hash-output">Esperando entrada...</div>
-                        <div class="mt-2 text-xs text-slate-500 text-center">Cambia una letra y verás el cambio radical.</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 8. FLUJO OPERATIVO (E2E) -->
-            <section id="flujo" class="mb-16">
-                <h2 class="text-2xl font-bold text-crypto-accent mb-6 border-l-4 border-crypto-accent pl-4">8. Flujo Operativo (E2E)</h2>
-                
-                <div class="relative bg-slate-800 p-8 rounded-lg border border-slate-700 overflow-x-auto">
-                    <!-- Timeline Visual -->
-                    <div class="flex flex-col md:flex-row items-center justify-between min-w-[800px] gap-4">
-                        
-                        <!-- Fase 1 -->
-                        <div class="flex flex-col items-center flex-1 group">
-                            <div class="w-12 h-12 bg-purple-900 rounded-full flex items-center justify-center border-2 border-purple-500 z-10 text-white font-bold">1</div>
-                            <div class="mt-3 text-center">
-                                <h4 class="font-bold text-purple-400">Génesis de Clave</h4>
-                                <p class="text-xs text-slate-400 mt-1">Generación de Números Primos (RSA) o acuerdo de secreto (DES).</p>
-                            </div>
-                        </div>
-
-                        <!-- Flecha -->
-                        <div class="hidden md:block flex-1 h-1 bg-slate-700 relative">
-                            <div class="absolute right-0 top-[-4px] w-2 h-2 border-t-2 border-r-2 border-slate-700 transform rotate-45"></div>
-                        </div>
-
-                        <!-- Fase 2 -->
-                        <div class="flex flex-col items-center flex-1">
-                            <div class="w-12 h-12 bg-blue-900 rounded-full flex items-center justify-center border-2 border-blue-500 z-10 text-white font-bold">2</div>
-                            <div class="mt-3 text-center">
-                                <h4 class="font-bold text-blue-400">Parametrización</h4>
-                                <p class="text-xs text-slate-400 mt-1">Definición de N, E, D (RSA) o Padding/IV (DES).</p>
-                            </div>
-                        </div>
-
-                        <!-- Flecha -->
-                        <div class="hidden md:block flex-1 h-1 bg-slate-700 relative">
-                            <div class="absolute right-0 top-[-4px] w-2 h-2 border-t-2 border-r-2 border-slate-700 transform rotate-45"></div>
-                        </div>
-
-                        <!-- Fase 3 -->
-                        <div class="flex flex-col items-center flex-1">
-                            <div class="w-12 h-12 bg-green-900 rounded-full flex items-center justify-center border-2 border-green-500 z-10 text-white font-bold">3</div>
-                            <div class="mt-3 text-center">
-                                <h4 class="font-bold text-green-400">Aplicación Algoritmo</h4>
-                                <p class="text-xs text-slate-400 mt-1">Cifrado ($C=M^e \pmod n$) o Transformación de Bloques.</p>
-                            </div>
-                        </div>
-
-                        <!-- Flecha -->
-                        <div class="hidden md:block flex-1 h-1 bg-slate-700 relative">
-                            <div class="absolute right-0 top-[-4px] w-2 h-2 border-t-2 border-r-2 border-slate-700 transform rotate-45"></div>
-                        </div>
-
-                        <!-- Fase 4 -->
-                        <div class="flex flex-col items-center flex-1">
-                            <div class="w-12 h-12 bg-yellow-900 rounded-full flex items-center justify-center border-2 border-yellow-500 z-10 text-white font-bold">4</div>
-                            <div class="mt-3 text-center">
-                                <h4 class="font-bold text-yellow-400">Transmisión Segura</h4>
-                                <p class="text-xs text-slate-400 mt-1">Envío de datos cifrados por canal público.</p>
-                            </div>
-                        </div>
-
-                        <!-- Flecha -->
-                        <div class="hidden md:block flex-1 h-1 bg-slate-700 relative">
-                            <div class="absolute right-0 top-[-4px] w-2 h-2 border-t-2 border-r-2 border-slate-700 transform rotate-45"></div>
-                        </div>
-
-                        <!-- Fase 5 -->
-                        <div class="flex flex-col items-center flex-1">
-                            <div class="w-12 h-12 bg-red-900 rounded-full flex items-center justify-center border-2 border-red-500 z-10 text-white font-bold">5</div>
-                            <div class="mt-3 text-center">
-                                <h4 class="font-bold text-red-400">Verificación/Descifrado</h4>
-                                <p class="text-xs text-slate-400 mt-1">Uso de Clave Privada para recuperar M.</p>
-                            </div>
-                        </div>
-
-                    </div>
-                    
-                    <div class="mt-6 text-center bg-slate-900 p-3 rounded border border-slate-700">
-                        <span class="text-sm text-slate-300">⚠️ Punto Crítico de Seguridad: La gestión y custodia de la <strong>Clave Privada</strong> en Fase 5.</span>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <!-- Scripts para Interactividad -->
-    <script>
-        // Juego 1: Caesar Cipher Logic
-        const cipherDisplay = document.getElementById('cipher-display');
-        const cipherSlider = document.getElementById('cipher-slider');
-        const cipherResult = document.getElementById('cipher-result');
-        const encryptedText = "ZKHW"; // "WHAT" shifted by -3? No, let's use "SECRET" shifted by 3 -> "VHFUHW"
-        // Let's reverse engineer for the demo: Target "SECRET", Shift -3 (Left) -> "PB...". 
-        // Let's just make it generic: Display is fixed, Slider shifts it back.
-        // Encoded "HELLO" with +3 is "KHOOR". 
-        // If slider is -3, we get HELLO.
-        const targetPlain = "HELLO WORLD";
-        const shiftVal = 3; 
-        
-        function caesar(text, shift) {
-            return text.replace(/[a-z]/gi, (c) => {
-                const offset = c <= 'Z' ? 65 : 97;
-                return String.fromCharCode(((c.charCodeAt(0) - offset + shift + 26) % 26) + offset);
-            });
-        }
-
-        // Initial state: Show "Khoor Zruog" (Hello World +3)
-        cipherDisplay.textContent = caesar(targetPlain, shiftVal);
-
-        cipherSlider.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            // We start at shift+3. So if user moves to -3, total shift becomes 0.
-            // Actually simpler: Apply inverse of slider to the stored encrypted text.
-            // Stored text is +3. Slider is negative correction.
-            // Current logic: Text displayed is Fixed Encrypted. Slider adds 'val'.
-            const decoded = caesar(caesar(targetPlain, shiftVal), val);
-            cipherResult.textContent = val === -shiftVal ? `¡Correcto! ${decoded.toUpperCase()}` : decoded;
+        function stepRsa() {
+            const logBox = document.getElementById('log-rsa');
+            const btn = document.getElementById('btn-rsa');
             
-            if (val === -shiftVal) {
-                cipherResult.classList.add('text-green-400');
-                cipherResult.classList.remove('text-white');
-            } else {
-                cipherResult.classList.remove('text-green-400');
-                cipherResult.classList.add('text-white');
-            }
-        });
-
-        // Trigger initial render
-        cipherSlider.dispatchEvent(new Event('input'));
-
-
-        // Juego 2: Real-time SHA-256 Simulation (Using Web Crypto API or simple mock)
-        // Since we can't import external heavy libs easily in single file without CDN complexity, 
-        // we will simulate the visual effect of avalanche using a deterministic pseudo-random generator 
-        // based on string char codes for demonstration purposes if API fails, but let's try Web Crypto.
-        const hashInput = document.getElementById('hash-input');
-        const hashOutput = document.getElementById('hash-output');
-
-        async function computeHash(str) {
-            if (!str) {
-                hashOutput.textContent = "Esperando entrada...";
-                return;
-            }
-            try {
-                const msgBuffer = new TextEncoder().encode(str);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                hashOutput.textContent = hashHex;
-            } catch (e) {
-                // Fallback for browsers that might not support async digest directly in some contexts (rare)
-                hashOutput.textContent = "Error computing hash (simulated mode). Try typing again.";
+            if (currentRsa < rsaSteps.length) {
+                const entry = document.createElement('div');
+                entry.className = 'log-entry';
+                entry.innerHTML = rsaSteps[currentRsa];
+                logBox.appendChild(entry);
+                logBox.scrollTop = logBox.scrollHeight;
+                currentRsa++;
+                
+                if (currentRsa === rsaSteps.length) {
+                    btn.disabled = true;
+                    btn.innerText = "Simulación Completada";
+                }
             }
         }
-
-        hashInput.addEventListener('input', (e) => computeHash(e.target.value));
-
     </script>
 </body>
 </html>
