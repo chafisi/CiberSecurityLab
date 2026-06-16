@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 6 - Aplicaciones de Blockchain | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Animaciones para flujo E2E */
+        @keyframes pulse-border { 0% { border-color: #8b5cf6; } 50% { border-color: #c4b5fd; } 100% { border-color: #8b5cf6; } }
+        .animate-pulse-border { animation: pulse-border 2s infinite; }
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 3s linear infinite; }
+
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; }
+        
+        /* Scrollbars */
+        .terminal-scroll::-webkit-scrollbar { width: 8px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 4px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">UD 6: Apps Blockchain</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Tipos y Arquitectura</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Smart Contracts y Tokenización</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Privacidad y Casos de Uso</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos 11 y 12</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400 font-bold">7. Simuladores (JS Real)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 9. Test Oficial (20 Preguntas)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Tipos de Blockchain y Arquitectura</h2>
+            
+            
+            <p class="text-slate-600 mb-6">No todas las blockchains son iguales. Su arquitectura define quién puede leer, escribir o validar las transacciones. Esto determina su aplicabilidad en diferentes sectores industriales.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-green-500 hover:shadow-md transition">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🔓</span>
+                        <h3 class="text-xl font-bold text-slate-800">Públicas (Permissionless)</h3>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">Redes abiertas donde cualquier persona puede unirse, leer, escribir y participar en el consenso sin pedir permiso a una autoridad central.</p>
+                    <ul class="text-sm text-slate-700 space-y-1 mb-4 list-disc pl-5">
+                        <li><strong>Seguridad:</strong> Altamente descentralizadas (resistentes a la censura).</li>
+                        <li><strong>Desventaja:</strong> Menor velocidad y privacidad total difícil de alcanzar.</li>
+                    </ul>
+                    <span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded">Ejemplos: Bitcoin, Ethereum</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-red-500 hover:shadow-md transition">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🔒</span>
+                        <h3 class="text-xl font-bold text-slate-800">Privadas (Permissioned)</h3>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">Controladas por una sola organización. Se requiere una invitación validada para poder leer los datos o participar en la validación de transacciones.</p>
+                    <ul class="text-sm text-slate-700 space-y-1 mb-4 list-disc pl-5">
+                        <li><strong>Seguridad:</strong> Centralizadas. Basadas en la confianza de la entidad matriz.</li>
+                        <li><strong>Ventaja:</strong> Extremadamente rápidas, baratas y privadas.</li>
+                    </ul>
+                    <span class="text-xs font-bold text-red-700 bg-red-100 px-2 py-1 rounded">Ejemplos: Hyperledger Fabric (Uso interno empresarial)</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-blue-500 hover:shadow-md transition">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🤝</span>
+                        <h3 class="text-xl font-bold text-slate-800">Consorcios (Federadas)</h3>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">Gobernadas por un grupo de organizaciones pre-aprobadas en lugar de una sola entidad. El consenso es determinado por un conjunto de nodos preseleccionados.</p>
+                    <ul class="text-sm text-slate-700 space-y-1 mb-4 list-disc pl-5">
+                        <li><strong>Mecanismo:</strong> Si hay 15 bancos, se requiere la firma de al menos 10 para validar un bloque.</li>
+                    </ul>
+                    <span class="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded">Ejemplos: R3 Corda, Quorum</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-yellow-500 hover:shadow-md transition">
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-3xl">🧩</span>
+                        <h3 class="text-xl font-bold text-slate-800">Híbridas</h3>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">Combinan características de redes públicas y privadas. Las transacciones y datos sensibles se mantienen en privado, pero se "anclan" periódicamente a una blockchain pública.</p>
+                    <ul class="text-sm text-slate-700 space-y-1 mb-4 list-disc pl-5">
+                        <li><strong>Ventaja:</strong> Privacidad interna con inmutabilidad verificable públicamente.</li>
+                    </ul>
+                    <span class="text-xs font-bold text-yellow-700 bg-yellow-100 px-2 py-1 rounded">Ejemplos: Dragonchain, IBM Food Trust</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Smart Contracts y Tokenización</h2>
+
+            <div class="mb-10">
+                <h3 class="text-2xl font-bold text-slate-800 mb-4">Smart Contracts (Contratos Inteligentes)</h3>
+                
+                <p class="text-slate-600 mb-6">Programas informáticos almacenados en la blockchain que se ejecutan automáticamente cuando se cumplen condiciones predeterminadas. Su inmutabilidad los hace potentes pero peligrosos si contienen errores.</p>
+
+                <div class="bg-slate-900 rounded-xl p-6 text-white grid grid-cols-1 md:grid-cols-3 gap-6 shadow-lg">
+                    <div class="border-l-2 border-violet-500 pl-4">
+                        <h4 class="font-bold text-violet-400 mb-2">1. Deployment (Despliegue)</h4>
+                        <p class="text-sm text-slate-300">El código (ej. Solidity) se compila a Bytecode y se sube a la red (EVM). Una vez subido, <strong>no se puede modificar</strong>. Se le asigna una dirección única.</p>
+                    </div>
+                    <div class="border-l-2 border-cyan-500 pl-4">
+                        <h4 class="font-bold text-cyan-400 mb-2">2. Execution & Gas Fees</h4>
+                        <p class="text-sm text-slate-300">Interactuar con el contrato altera el estado de la red, lo que requiere pagar <strong>Gas</strong> a los mineros. <br><br>
+                        <em>Ejemplo Matemático:</em><br>
+                        <code class="bg-black p-1 text-xs text-green-400 rounded">Gas Fee = Gas Usado (50,000) * Precio Base (20 Gwei) = 0.001 ETH</code></p>
+                    </div>
+                    <div class="border-l-2 border-red-500 pl-4">
+                        <h4 class="font-bold text-red-400 mb-2">3. Vulnerabilidades Críticas</h4>
+                        <p class="text-sm text-slate-300">Dado que el código es público e inmutable, los hackers buscan fallos. El más famoso es el <strong>Reentrancy Attack</strong> (robar fondos llamando repetidamente a una función de retiro antes de que el contrato actualice su saldo).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-4">Tokenización de Activos</h3>
+                <p class="text-slate-600 mb-4">Proceso de convertir derechos sobre un activo físico o digital en un token digital en una blockchain. Facilita la liquidez y la propiedad fraccionada.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                        <div class="text-center text-3xl mb-2">🪙</div>
+                        <h4 class="font-bold text-center text-slate-800">Coins (Monedas)</h4>
+                        <p class="text-xs text-slate-600 mt-2 text-center">Tienen su propia blockchain nativa. Funcionan principalmente como medio de pago o reserva de valor. (Ej: Bitcoin, Ether).</p>
+                    </div>
+                    <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                        <div class="text-center text-3xl mb-2">⚙️</div>
+                        <h4 class="font-bold text-center text-slate-800">Utility Tokens</h4>
+                        <p class="text-xs text-slate-600 mt-2 text-center">Creados sobre una blockchain existente (ej: ERC-20). Otorgan acceso a un producto, servicio o gobernanza dentro de un ecosistema (Ej: BAT, UNI).</p>
+                    </div>
+                    <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                        <div class="text-center text-3xl mb-2">📜</div>
+                        <h4 class="font-bold text-center text-slate-800">Security Tokens</h4>
+                        <p class="text-xs text-slate-600 mt-2 text-center">Representan activos financieros tradicionales (acciones, bonos, bienes raíces). Están fuertemente regulados por las leyes de valores (Ej: RealT, participaciones tokenizadas).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Privacidad, Escalabilidad y Casos Reales</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                <div class="bg-slate-900 text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl">🕵️</div>
+                    <h3 class="text-xl font-bold text-violet-400 mb-3 relative z-10">Privacidad: ZK-SNARKs</h3>
+                    <p class="text-sm text-slate-300 relative z-10 mb-4">Las blockchains públicas son transparentes (todo el mundo ve todo). Para aplicaciones empresariales o bancarias, se necesitan pruebas de conocimiento cero (Zero-Knowledge Proofs).</p>
+                    <div class="bg-black/50 p-3 rounded text-sm text-slate-300 relative z-10 border-l-4 border-violet-500">
+                        <strong>¿Qué hace ZK-SNARK?</strong> Permite a una parte (Prover) demostrar a otra (Verifier) que posee cierta información (ej. que es mayor de edad o tiene fondos suficientes) <strong>sin revelar</strong> la información en sí misma.
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 text-white rounded-xl p-6 shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl">🚀</div>
+                    <h3 class="text-xl font-bold text-cyan-400 mb-3 relative z-10">Escalabilidad: Capas (Layers)</h3>
+                    <p class="text-sm text-slate-300 relative z-10 mb-4">El Trilema de Blockchain: Es difícil tener Seguridad, Descentralización y Escalabilidad a la vez. Soluciones actuales:</p>
+                    <ul class="text-sm text-slate-300 relative z-10 space-y-2">
+                        <li><span class="bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded text-xs">Capa 1 (On-Chain):</span> Mejoras en el protocolo base (Aumentar tamaño de bloque, Sharding).</li>
+                        <li><span class="bg-cyan-900 text-cyan-300 px-2 py-0.5 rounded text-xs">Capa 2 (Off-Chain):</span> Protocolos construidos encima de L1. <strong>Lightning Network</strong> para micro-pagos BTC. <strong>Rollups</strong> (agrupar miles de transacciones fuera de la cadena principal y enviar un solo resumen comprimido).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold text-slate-800 mb-4">Casos de Uso Transformativos</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div class="bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition border-t-4 border-t-indigo-500">
+                    <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">🗳️ Votación Segura</h4>
+                    <p class="text-xs text-slate-600">Asegura votos inalterables y transparentes. Un votante recibe un token intransferible, emite su voto (transacción a un Smart Contract), y los resultados son auditables públicamente en tiempo real sin revelar identidades (ZK-Proofs).</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition border-t-4 border-t-emerald-500">
+                    <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">🏥 Salud (EHR)</h4>
+                    <p class="text-xs text-slate-600">Intercambio seguro de Registros Médicos Electrónicos (EHR). El historial no está en la blockchain (por privacidad), sino que el hash del documento se almacena allí. El paciente usa Smart Contracts para dar o revocar acceso temporal a médicos específicos.</p>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-lg p-5 hover:shadow-md transition border-t-4 border-t-orange-500">
+                    <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">🆔 Identidad Digital (SSI)</h4>
+                    <p class="text-xs text-slate-600">Identidad Soberana (Self-Sovereign Identity). En lugar de que Google/Facebook controlen tus datos, tú guardas tus credenciales en una wallet y la blockchain actúa como notario público verificando la firma del emisor (ej. tu universidad).</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas de la plataforma oficial, estructuradas para el estudio.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🌍</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 11: ONG y Donaciones (Transparencia y Trazabilidad)</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Una organización no gubernamental (ONG) quiere asegurar la transparencia y la trazabilidad de las donaciones que recibe. Describe cómo podrían usar blockchain para este propósito.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Registro de Donaciones:</strong> Cada donación se registra como una transacción en la blockchain. La información clave como el donante (opcionalmente anónimo), la cantidad donada, y el propósito de la donación se registran de manera inmutable.</li>
+                            <li><strong>Transparencia:</strong> La naturaleza pública y distribuida de la blockchain permite que cualquier persona pueda verificar todas las transacciones de donación. Esto proporciona transparencia sobre cómo se recaudan y usan los fondos.</li>
+                            <li><strong>Seguimiento del Uso de Fondos:</strong> Las ONGs pueden registrar cómo se gastan los fondos (proyectos, gastos operativos, etc.) como transacciones adicionales en la cadena. Smart contracts pueden ser utilizados para liberar fondos solo para propósitos específicos una vez que se cumplen ciertas condiciones.</li>
+                            <li><strong>Autenticidad y Seguridad:</strong> El uso de criptografía asegura que las transacciones sean auténticas y seguras. La firma digital de cada transacción garantiza que solo las partes autorizadas pueden registrar donaciones o gastos.</li>
+                            <li><strong>Disminución del Fraude:</strong> La inmutabilidad de la blockchain hace que sea extremadamente difícil manipular o falsificar registros de donaciones, reduciendo el riesgo de fraude.</li>
+                            <li><strong>Acceso Público a Información:</strong> Se puede proporcionar un explorador de blockchain o una interfaz donde donantes y público puedan verificar el estado de las donaciones y su uso sin necesidad de intermediarios.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 11: ONG & BLOCKCHAIN</h3>
+                        <ul class="space-y-2 text-sm text-slate-700 font-mono">
+                            <li><strong>1️⃣ REGISTRO 📦</strong> Inmutable. Guarda donante (opcional), cantidad y propósito.</li>
+                            <li><strong>2️⃣ TRAZABILIDAD 🔍</strong> Todos los gastos operativos se registran como transacciones auditable públicamente.</li>
+                            <li><strong>3️⃣ AUTOMATIZACIÓN ⚙️</strong> Smart Contracts liberan fondos solo si se cumplen hitos del proyecto.</li>
+                            <li><strong>4️⃣ CONFIANZA 🛡️</strong> Explorador público. Reduce drásticamente el fraude y la corrupción.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏥</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 12: Registros Médicos en Blockchain</h3>
+                    </div>
+                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-violet-300 pl-4">Enunciado: Un hospital quiere implementar un sistema basado en blockchain para gestionar y compartir registros médicos de manera segura entre diferentes instituciones sanitarias. Describe cómo puede blockchain facilitar esta gestión.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Registros Inmutables:</strong> Cada registro médico se almacena en la blockchain, asegurando que una vez registrado, el historial no puede ser alterado sin que se detecte.</li>
+                            <li><strong>Control de Acceso:</strong> Los registros pueden ser cifrados y solo accesibles mediante claves privadas o permisos específicos, asegurando que solo se compartan con las instituciones o profesionales autorizados.</li>
+                            <li><strong>Interoperabilidad:</strong> La blockchain permite que diferentes sistemas de salud operen en la misma red, compartiendo datos de manera estandarizada y sin necesidad de múltiples integraciones directas entre sistemas.</li>
+                            <li><strong>Consentimiento del Paciente:</strong> Los pacientes pueden tener control sobre quién accede a su información mediante smart contracts que gestionan los permisos, asegurando el cumplimiento de normativas de privacidad como GDPR.</li>
+                            <li><strong>Seguridad y Privacidad:</strong> La criptografía asegura que los datos personales sean protegidos. Además, la descentralización minimiza el riesgo de un solo punto de fallo o hackeo.</li>
+                            <li><strong>Historial Completo:</strong> Cada interacción con los registros médicos se registra, proporcionando un historial completo y verificable del tratamiento y el acceso a los datos del paciente.</li>
+                            <li><strong>Eficiencia en la Gestión:</strong> Al reducir la necesidad de papeles y sistemas físicos de almacenamiento, se mejora la eficiencia y se reducen costos, al tiempo que se facilita la consulta rápida de información crítica.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 12: SALUD (EHR) BLOCKCHAIN</h3>
+                        <ul class="space-y-2 text-sm text-slate-700 font-mono">
+                            <li><strong>1️⃣ INTEROPERABILIDAD 🌐</strong> Red compartida estandarizada (evita silos de datos hospitalarios).</li>
+                            <li><strong>2️⃣ PRIVACIDAD & GDPR 🔒</strong> Datos cifrados. Consentimiento explícito manejado vía Smart Contracts por el propio paciente.</li>
+                            <li><strong>3️⃣ SEGURIDAD 🛡️</strong> Sin punto único de fallo (descentralizado). Historial inmutable y auditable de accesos.</li>
+                            <li><strong>4️⃣ EFICIENCIA ⚡</strong> Menos papel, menor coste, consulta inmediata y segura.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Avanzados)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">⚡</span><h3 class="font-bold text-lg">Layer 2 Scaling</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Capa 2</h4><p class="text-sm">Protocolos (Lightning, Rollups) que procesan transacciones fuera de la cadena principal para aumentar velocidad y reducir costes.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🌉</span><h3 class="font-bold text-lg">Bridge (Puente)</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Interoperabilidad</h4><p class="text-sm">Protocolo que conecta dos blockchains independientes permitiendo la transferencia de tokens o datos entre ellas.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🔮</span><h3 class="font-bold text-lg">Oracle</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Oráculo</h4><p class="text-sm">Servicio que proporciona datos del mundo real (precios, clima, resultados) a los contratos inteligentes (ej. Chainlink).</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🗡️</span><h3 class="font-bold text-lg">Slashing</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Penalización</h4><p class="text-sm">En redes Proof of Stake, la destrucción o confiscación de los fondos depositados (stake) por un validador malicioso.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">⛽</span><h3 class="font-bold text-lg">Gas Limit</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Límite de Gas</h4><p class="text-sm">La cantidad máxima de unidades computacionales que un usuario está dispuesto a gastar para ejecutar una transacción o contrato.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🔢</span><h3 class="font-bold text-lg">Nonce</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Un Solo Uso</h4><p class="text-sm">Número que solo se usa una vez. En minería es el objetivo matemático. En transacciones, previene ataques de repetición.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🧩</span><h3 class="font-bold text-lg">Sharding</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Fragmentación</h4><p class="text-sm">División de la red blockchain (L1) en múltiples sub-cadenas que procesan transacciones y datos en paralelo.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🔓</span><h3 class="font-bold text-lg">Permissionless</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Sin Permisos</h4><p class="text-sm">Propiedad de blockchains públicas donde nadie necesita autorización para unirse, operar o validar la red.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Técnico Extendido</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">DApp (Aplicación Descentralizada)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Aplicación de software que se ejecuta en una red P2P en lugar de un servidor centralizado. Suele tener un backend de contratos inteligentes y un frontend web tradicional.</p>
+                    <p class="text-xs text-violet-600 mt-2 font-bold bg-violet-50 p-1 rounded inline-block">Ejemplo: Uniswap (Exchange descentralizado).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">DeFi (Finanzas Descentralizadas)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Ecosistema de servicios financieros (préstamos, intercambios, seguros) construidos sobre redes públicas que operan sin intermediarios tradicionales (bancos o brokers).</p>
+                    <p class="text-xs text-cyan-700 mt-2 font-bold bg-cyan-50 p-1 rounded inline-block">Ejemplo: Pedir un préstamo en Aave usando criptos como colateral.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-green-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">ICO (Initial Coin Offering)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Método de recaudación de fondos no regulado en el que una startup emite su propio token a cambio de criptomonedas establecidas (como ETH o BTC) para financiar su proyecto.</p>
+                    <p class="text-xs text-green-700 mt-2 font-bold bg-green-50 p-1 rounded inline-block">Ejemplo: Ethereum en 2014 recaudó fondos mediante una ICO.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-yellow-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">NFT (Token No Fungible)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Activo criptográfico único en una blockchain con códigos de identificación y metadatos únicos que los distinguen entre sí. No se pueden replicar ni intercambiar en equivalencia 1:1.</p>
+                    <p class="text-xs text-yellow-700 mt-2 font-bold bg-yellow-50 p-1 rounded inline-block">Ejemplo: Representación digital de una obra de arte original o título de propiedad.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-red-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Reentrancy Attack</h4>
+                    <p class="text-sm text-slate-600 mt-1">Vulnerabilidad de los smart contracts donde un atacante interrumpe repetidamente una función de retiro de fondos antes de que el contrato tenga tiempo de actualizar el saldo del atacante a cero.</p>
+                    <p class="text-xs text-red-700 mt-2 font-bold bg-red-50 p-1 rounded inline-block">Ejemplo: El ataque The DAO en 2016 que robó millones en Ethereum.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-blue-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">ZK-SNARKs</h4>
+                    <p class="text-sm text-slate-600 mt-1">Zero-Knowledge Succinct Non-Interactive Argument of Knowledge. Tecnología criptográfica que permite demostrar la posesión de cierta información sin revelar la información en sí.</p>
+                    <p class="text-xs text-blue-700 mt-2 font-bold bg-blue-50 p-1 rounded inline-block">Ejemplo: Probar que eres mayor de edad sin mostrar tu fecha de nacimiento.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Simuladores Interactivos (JavaScript Real)</h2>
+            <p class="text-slate-600 mb-6">Experimenta con el funcionamiento de los Smart Contracts y Exploradores de Bloques en tiempo real.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 pb-10">
+                
+                <div class="bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col">
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
+                        <span class="text-xs font-mono text-violet-400 font-bold tracking-widest">⚙️ SIM A: SMART CONTRACT PLAYGROUND (ESCROW)</span>
+                        <span id="scSimStatus" class="text-xs font-bold text-yellow-500">Estado: PENDING</span>
+                    </div>
+                    
+                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                        <div class="bg-[#0d1117] p-3 rounded font-mono text-xs text-slate-300 overflow-y-auto border border-slate-700 h-48 md:h-full">
+                            <span class="text-purple-400">contract</span> Escrow {<br>
+                            &nbsp;&nbsp;<span class="text-blue-400">address</span> buyer;<br>
+                            &nbsp;&nbsp;<span class="text-blue-400">address</span> seller;<br>
+                            &nbsp;&nbsp;<span class="text-blue-400">uint</span> balance;<br>
+                            <br>
+                            &nbsp;&nbsp;<span class="text-yellow-300">function</span> deposit() <span class="text-purple-400">payable</span> {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;require(msg.value > 0);<br>
+                            &nbsp;&nbsp;}<br>
+                            <br>
+                            &nbsp;&nbsp;<span class="text-yellow-300">function</span> release() {<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;require(conditionMet);<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;seller.transfer(balance);<br>
+                            &nbsp;&nbsp;}<br>
+                            }
+                        </div>
+                        
+                        <div class="flex flex-col gap-3">
+                            <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                                <p class="text-xs text-slate-400 font-bold uppercase mb-2">Panel de Control</p>
+                                <button onclick="scDeposit()" id="btnDeposit" class="w-full bg-blue-600 hover:bg-blue-500 text-white text-xs py-2 rounded font-bold transition shadow mb-2">1. Fondos Depositados</button>
+                                <button onclick="scCondition()" id="btnCondition" class="w-full bg-slate-600 text-slate-400 text-xs py-2 rounded font-bold transition shadow mb-2" disabled>2. Condiciones Cumplidas</button>
+                                <div class="flex gap-2">
+                                    <button onclick="scRelease()" id="btnRelease" class="w-full bg-slate-600 text-slate-400 text-xs py-2 rounded font-bold transition shadow" disabled>3. Liberar Pago</button>
+                                    <button onclick="scRefund()" id="btnRefund" class="w-full bg-slate-600 text-slate-400 text-xs py-2 rounded font-bold transition shadow" disabled>Reembolsar</button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-black p-3 rounded border border-slate-700 flex-1 overflow-y-auto">
+                                <p class="text-xs text-slate-500 font-mono mb-1 border-b border-slate-800 pb-1">Event Logs</p>
+                                <div id="scLogs" class="text-xs font-mono text-green-400 space-y-1">
+                                    > Contract deployed successfully.<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col">
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between">
+                        <span class="text-xs font-mono text-cyan-400 font-bold tracking-widest">🔍 SIM B: BLOCK EXPLORER MOCKUP</span>
+                        <button onclick="generateMockBlock()" class="bg-slate-800 hover:bg-slate-700 text-white text-xs px-2 py-1 rounded font-mono border border-slate-600 transition">+ New Block</button>
+                    </div>
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="flex items-center gap-2 mb-4 bg-slate-800 p-2 rounded border border-slate-700">
+                            <span class="text-slate-400">🔎</span>
+                            <input type="text" id="explorerSearch" placeholder="Buscar por Hash de bloque..." oninput="filterBlocks()" class="bg-transparent text-white text-sm outline-none w-full font-mono placeholder-slate-500">
+                        </div>
+                        
+                        <div id="blockContainer" class="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E (Ciclo Transaccional)</h2>
+            <p class="text-slate-600 mb-8">Haz clic en cada paso para comprender qué ocurre internamente durante una transacción en una blockchain pública.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-violet-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('step1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-violet-100 w-12 h-12 flex justify-center items-center rounded-full">✍️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">1. Origen y Firma (Wallet)</h4>
+                                <span class="text-xs font-bold text-violet-500 uppercase">Estado: Pending ⏳</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="step1" class="hidden p-5 border-t border-slate-100 bg-slate-50">
+                        <p class="text-sm text-slate-700">El usuario define los parámetros de la transacción (Monto, Destino, Límite de Gas). Su software de billetera aplica criptografía asimétrica (Ej: ECDSA) usando la <strong>Clave Privada</strong> del usuario para generar una firma digital. Esto demuestra matemáticamente la propiedad de los fondos sin revelar la clave.</p>
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('step2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">🌐</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">2. Propagación y Mempool (Red P2P)</h4>
+                                <span class="text-xs font-bold text-blue-500 uppercase">Estado: Processing ⚙️</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="step2" class="hidden p-5 border-t border-slate-100 bg-slate-50">
+                        <p class="text-sm text-slate-700">La transacción firmada se envía (broadcast) a los nodos de la red. Cada nodo verifica la validez de la firma y el saldo. Si es correcta, se almacena en el <strong>Mempool</strong> (Memory Pool), una "sala de espera" de transacciones ordenadas generalmente por la tarifa de Gas que están dispuestas a pagar.</p>
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-cyan-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('step3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-cyan-100 w-12 h-12 flex justify-center items-center rounded-full">⛏️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">3. Empaquetado y Validación (PoW/PoS)</h4>
+                                <span class="text-xs font-bold text-cyan-500 uppercase">Estado: Processing ⚙️</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="step3" class="hidden p-5 border-t border-slate-100 bg-slate-50">
+                        <p class="text-sm text-slate-700">Un Minero (o Validador) selecciona un grupo de transacciones del Mempool y las empaqueta en un bloque. Para validarlo y añadirlo a la cadena, debe resolver un puzzle criptográfico compitiendo en fuerza bruta (Proof of Work) o ser seleccionado basándose en los tokens que ha dejado en garantía (Proof of Stake).</p>
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-yellow-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('step4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-yellow-100 w-12 h-12 flex justify-center items-center rounded-full">🔗</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">4. Inmutabilidad (Sincronización)</h4>
+                                <span class="text-xs font-bold text-yellow-600 uppercase">Estado: Confirmed (1/6) ✅</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="step4" class="hidden p-5 border-t border-slate-100 bg-slate-50">
+                        <p class="text-sm text-slate-700">El minero que valida el bloque lo transmite a toda la red. El bloque contiene el <strong>Hash del bloque anterior</strong> (PrevHash). Todos los nodos añaden este bloque a su libro mayor. La transacción se considera ahora inmutable y ejecutada (los Smart Contracts cambian de estado).</p>
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden animate-pulse-border group cursor-pointer" onclick="toggleE2E('step5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">🛡️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">5. Seguridad Progresiva (Confirmaciones)</h4>
+                                <span class="text-xs font-bold text-green-600 uppercase">Estado: Finalizado (6/6) ✅✅</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="step5" class="hidden p-5 border-t border-slate-100 bg-slate-50">
+                        <p class="text-sm text-slate-700">A medida que se añaden nuevos bloques <em>encima</em> del bloque que contiene tu transacción, esta se vuelve cada vez más segura matemáticamente frente a ataques (Efecto Avalancha). Generalmente, después de 6 confirmaciones (bloques añadidos), la transacción se considera irreversible y 100% definitiva (Finalidad).</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-green-500 pb-2 inline-block">9. Test de Evaluación (Simulador Examen)</h2>
+            <p class="text-slate-600 mb-6">Preguntas extraídas exactamente del documento [CRIPTO] - Test - UD6.pdf. Evalúa tus conocimientos.</p>
+            
+            <form id="quizForm" class="space-y-6">
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">1. Blockchain puede mejorar la "transparencia" en:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A. Solo en redes sociales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B. No tiene relación con la transparencia.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C. Procesos de votación, cadenas de suministro, y seguimiento de productos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D. Solo en transacciones financieras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">2. La "seguridad" de las transacciones en blockchain se basa en:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A. Solo la longitud de las contraseñas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B. No tiene medidas de seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C. Solo en sistemas centralizados.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D. Criptografía, consenso distribuido y la inmutabilidad de los datos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">3. La "seguridad alimentaria" puede beneficiarse de blockchain para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A. Rastrear y verificar la cadena de suministro de alimentos desde el origen hasta el consumidor.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B. Solo para pagos en restaurantes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C. No tiene aplicaciones en este sector.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D. Solo para productos importados.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">4. La "privacidad" en aplicaciones de blockchain puede ser mejorada con:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A. Solo el uso de contraseñas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B. Técnicas como ZK-SNARKs para transacciones privadas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C. No tiene relación con la privacidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D. Solo publicando datos anónimos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">5. "Tokenización" en blockchain se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A. Solo crear dinero falso.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B. No tiene significado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C. Convertir derechos de un activo en un token digital en una blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D. Solo para pagos de tarifas en redes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">6. Las "ICO" (Initial Coin Offerings) son:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A. Un nuevo tipo de cuenta bancaria.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B. Un método de recaudación de fondos usando criptomonedas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C. No tienen valor real.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D. Solo para gobiernos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">7. En la "gestión de identidad", blockchain puede:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="A"> A. Dar a los individuos control sobre sus propios datos de identidad, reduciendo el riesgo de robo de identidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="B"> B. Solo centralizar la identidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="C"> C. No es útil para la identidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="D"> D. Eliminar completamente la necesidad de pasaportes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">8. Un "contrato inteligente" para seguros podría:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="A"> A. Solo imprimir pólizas de seguro en papel.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="B"> B. No tiene aplicaciones en seguros.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="C"> C. Automatizar el pago de reclamaciones cuando se cumplen condiciones verificables (como un retraso de vuelo comprobado por un oráculo).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="D"> D. Eliminar a todas las aseguradoras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">9. La "propiedad intelectual" se beneficia de blockchain mediante:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="A"> A. Hacer públicas todas las patentes gratuitamente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="B"> B. El registro inmutable de la creación de una obra, probando la autoría y el momento de creación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="C"> C. Solo para obras de arte tradicionales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="D"> D. No puede proteger los derechos de autor.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">10. Blockchain en "salud" permite:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="A"> A. Sustituir a los médicos por algoritmos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="B"> B. Solo facturar citas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="C"> C. Un intercambio seguro y eficiente de registros médicos electrónicos entre diferentes proveedores, manteniendo la privacidad del paciente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="D"> D. Hacer públicos los historiales médicos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">11. "DeFi" (Finanzas Descentralizadas) se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="A"> A. Un nuevo banco central global.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="B"> B. Ecosistema de aplicaciones financieras construidas sobre redes blockchain que operan sin intermediarios tradicionales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="C"> C. Solo a préstamos personales sin interés.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="D"> D. No tiene relación con blockchain.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">12. El uso de blockchain en "bienes raíces" puede:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="A"> A. Facilitar transacciones más rápidas y transparentes, y permitir la propiedad fraccionada mediante tokenización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="B"> B. Solo construir casas digitales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="C"> C. No se aplica a este sector.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="D"> D. Solo para pagar alquileres.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">13. Los "NFTs" (Non-Fungible Tokens) son útiles para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="A"> A. Solo como moneda de curso legal.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="B"> B. Reemplazar a los bancos centrales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="C"> C. Representar propiedad digital única, como arte, coleccionables y bienes virtuales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="D"> D. No tienen valor.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">14. Una "DApp" es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="A"> A. Una aplicación descentralizada que funciona en una red P2P, a menudo usando contratos inteligentes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="B"> B. Una aplicación móvil estándar.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="C"> C. Solo funciona en sistemas operativos de escritorio.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="D"> D. No tiene base en la tecnología blockchain.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">15. El uso de blockchain en "logística" permite:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="A"> A. Solo aumentar los costos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="B"> B. No tiene aplicaciones en logística.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="C"> C. Proveer un registro inmutable de la procedencia y movimientos de productos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="D"> D. Solo para productos digitales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">16. La "votación" utilizando blockchain puede:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="A"> A. Solo ser usada en elecciones locales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="B"> B. No tiene aplicaciones en votaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="C"> C. Solo para encuestas en línea.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="D"> D. Asegurar votos inalterables y transparentes, aumentando la confianza en el proceso electoral.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">17. La "descentralización" en blockchain aplica a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="A"> A. Solo a la distribución de software.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="B"> B. No tiene impacto en las aplicaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="C"> C. Redes donde el control y la validación de datos no están en manos de una autoridad central.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="D"> D. Solo en sistemas de pago.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">18. Ethereum amplía las aplicaciones de blockchain con:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="A"> A. Solo pagos rápidos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="B"> B. La capacidad de ejecutar contratos inteligentes y aplicaciones descentralizadas (DApps).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="C"> C. No tiene nuevas aplicaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="D"> D. Solo para juegos en línea.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">19. Bitcoin es un ejemplo de blockchain aplicado a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="A"> A. Criptomonedas y sistemas de pago descentralizados.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="B"> B. Gestión de identidad digital.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="C"> C. No es un ejemplo de blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="D"> D. Solo para contratos legales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">20. La "tokenización" de activos en blockchain puede:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="A"> A. Solo aplicarse a criptomonedas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="B"> B. Facilitar la fraccionabilidad, la liquidez y la transferencia de activos sin intermediarios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="C"> C. No tiene aplicaciones prácticas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="D"> D. Solo para registrar obras de arte.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-violet-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        });
+
+        function toggleE2E(stepId) {
+            document.getElementById(stepId).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // SIMULADOR A: SMART CONTRACT ESCROW
+        // ==========================================
+        let scState = 0; // 0: Init, 1: Funded, 2: Condition Met, 3: Completed
+        
+        function logScEvent(msg, isError = false) {
+            const logs = document.getElementById('scLogs');
+            const color = isError ? 'text-red-400' : 'text-green-400';
+            logs.innerHTML += `<div class="${color}">> ${msg}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function updateScUI() {
+            const statusBadge = document.getElementById('scSimStatus');
+            const btnDeposit = document.getElementById('btnDeposit');
+            const btnCondition = document.getElementById('btnCondition');
+            const btnRelease = document.getElementById('btnRelease');
+            const btnRefund = document.getElementById('btnRefund');
+
+            // Reset classes
+            btnDeposit.className = "w-full text-xs py-2 rounded font-bold transition shadow mb-2 bg-slate-600 text-slate-400";
+            btnCondition.className = "w-full text-xs py-2 rounded font-bold transition shadow mb-2 bg-slate-600 text-slate-400";
+            btnRelease.className = "w-full text-xs py-2 rounded font-bold transition shadow bg-slate-600 text-slate-400";
+            btnRefund.className = "w-full text-xs py-2 rounded font-bold transition shadow bg-slate-600 text-slate-400";
+
+            if (scState === 0) {
+                statusBadge.innerText = "Estado: AWAITING_FUNDS"; statusBadge.className = "text-xs font-bold text-yellow-500";
+                btnDeposit.classList.replace('bg-slate-600', 'bg-blue-600'); btnDeposit.classList.replace('text-slate-400', 'text-white');
+                btnDeposit.disabled = false; btnCondition.disabled = true; btnRelease.disabled = true; btnRefund.disabled = true;
+            } else if (scState === 1) {
+                statusBadge.innerText = "Estado: FUNDED (LOCKED)"; statusBadge.className = "text-xs font-bold text-cyan-400";
+                btnDeposit.disabled = true;
+                btnCondition.classList.replace('bg-slate-600', 'bg-yellow-600'); btnCondition.classList.replace('text-slate-400', 'text-white');
+                btnCondition.disabled = false; btnRelease.disabled = true; 
+                btnRefund.classList.replace('bg-slate-600', 'bg-red-600'); btnRefund.classList.replace('text-slate-400', 'text-white');
+                btnRefund.disabled = false;
+            } else if (scState === 2) {
+                statusBadge.innerText = "Estado: CONDITION_MET"; statusBadge.className = "text-xs font-bold text-blue-400";
+                btnDeposit.disabled = true; btnCondition.disabled = true; btnRefund.disabled = true;
+                btnRelease.classList.replace('bg-slate-600', 'bg-green-600'); btnRelease.classList.replace('text-slate-400', 'text-white');
+                btnRelease.disabled = false;
+            } else if (scState === 3) {
+                statusBadge.innerText = "Estado: COMPLETED / CLOSED"; statusBadge.className = "text-xs font-bold text-green-500";
+                btnDeposit.disabled = true; btnCondition.disabled = true; btnRelease.disabled = true; btnRefund.disabled = true;
+            }
+        }
+
+        function scDeposit() {
+            scState = 1;
+            logScEvent("Event: FundsDeposited (Balance = 5 ETH)");
+            updateScUI();
+        }
+
+        function scCondition() {
+            scState = 2;
+            logScEvent("Oracle Trigger: ConditionMet = true");
+            updateScUI();
+        }
+
+        function scRelease() {
+            if(scState !== 2) {
+                logScEvent("Error: Conditions not met to release funds.", true);
+                return;
+            }
+            scState = 3;
+            logScEvent("Event: FundsReleased (Transferred to Seller)");
+            updateScUI();
+        }
+
+        function scRefund() {
+            scState = 3;
+            logScEvent("Event: ContractCancelled (Funds refunded to Buyer)", true);
+            updateScUI();
+        }
+
+        // ==========================================
+        // SIMULADOR B: BLOCK EXPLORER
+        // ==========================================
+        let blocks = [
+            { height: 189432, hash: "0x8fa1...c992", prev: "0x3ab4...b1a1", tx: 142, time: "Hace 1 min", sender: "0xAl1c3...", receiver: "0xB0b...", amt: "1.2 ETH" },
+            { height: 189431, hash: "0x3ab4...b1a1", prev: "0x77c2...d2e3", tx: 89, time: "Hace 5 min", sender: "0xM1n3r...", receiver: "0xP00L...", amt: "2.0 ETH" },
+            { height: 189430, hash: "0x77c2...d2e3", prev: "0x11a0...9f81", tx: 210, time: "Hace 15 min", sender: "0xDEX...", receiver: "0xUs3r...", amt: "0.5 ETH" }
+        ];
+
+        function renderBlocks() {
+            const container = document.getElementById('blockContainer');
+            const term = document.getElementById('explorerSearch').value.toLowerCase();
+            container.innerHTML = "";
+            
+            blocks.forEach((b) => {
+                if(term && !b.hash.toLowerCase().includes(term) && !b.height.toString().includes(term)) return;
+                
+                const html = `
+                    <div class="bg-slate-950 p-3 rounded border border-slate-700 hover:border-cyan-500 transition cursor-pointer" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <div class="flex justify-between items-center text-xs font-mono text-slate-300">
+                            <div><span class="text-cyan-400 font-bold">Bloque #${b.height}</span> | Hash: ${b.hash}</div>
+                            <div class="text-slate-500">${b.time} | Txs: ${b.tx} ⬇️</div>
+                        </div>
+                    </div>
+                    <div class="hidden bg-slate-800 p-3 rounded-b border-x border-b border-slate-700 text-xs font-mono text-slate-400 ml-4 mb-2 shadow-inner">
+                        <div class="text-yellow-400 mb-1">PrevHash: ${b.prev}</div>
+                        <div class="border-t border-slate-700 pt-1 mt-1 flex justify-between">
+                            <span><span class="text-white">Tx0:</span> ${b.sender} <span class="text-cyan-400">-></span> ${b.receiver}</span>
+                            <span class="text-green-400 font-bold">${b.amt}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        function generateMockBlock() {
+            const last = blocks[0];
+            const newHeight = last.height + 1;
+            const newHash = "0x" + Math.random().toString(16).slice(2,8) + "...a1f";
+            blocks.unshift({
+                height: newHeight, hash: newHash, prev: last.hash, tx: Math.floor(Math.random()*300)+10,
+                time: "Ahora", sender: "0x" + Math.random().toString(16).slice(2,7) + "...", receiver: "0x" + Math.random().toString(16).slice(2,7) + "...", amt: (Math.random()*5).toFixed(2) + " ETH"
+            });
+            if(blocks.length > 10) blocks.pop();
+            renderBlocks();
+        }
+
+        function filterBlocks() { renderBlocks(); }
+        
+        // Init functions
+        window.addEventListener('DOMContentLoaded', () => { 
+            updateScUI();
+            renderBlocks(); 
+        });
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (SECCIÓN 9)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Reset styles
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La respuesta correcta era la opción ${correctAns}.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No has respondido. La respuesta correcta era la opción ${correctAns}.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-400', 'text-red-400', 'text-yellow-400');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-400');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-400');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas un 80% para la excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-400');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Repasa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
