@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 5 - Blockchain | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .flip-card { perspective: 1000px; height: 220px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; }
+        
+        .terminal-scroll::-webkit-scrollbar { width: 8px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 4px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-20 shrink-0">
+        <div class="p-6 border-b border-slate-800 bg-slate-950">
+            <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+            <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Unidad 5: Blockchain</p>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Base Teórica</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Fundamentos y Motivación</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Estructuras de Datos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Consenso y Seguridad</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Fichas Rápidas (Repaso)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Casos Prácticos (Ignacio)</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">5. Casos 9 y 10 (Soluciones)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Técnico</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400">7. Simulador EduShield (Labs)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400">8. Flujo Operativo E2E</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12 relative" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Fundamentos y Motivación</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3 flex items-center gap-2"><span class="text-violet-500">🔗</span> ¿Qué es Blockchain?</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-3">
+                        Es un libro mayor distribuido (Distributed Ledger Technology) que registra transacciones a través de una red de computadoras (nodos) de manera que el registro no puede ser alterado retroactivamente sin la alteración de todos los bloques subsiguientes y el consenso de la red.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3 flex items-center gap-2"><span class="text-violet-500">🚫</span> Eliminación de Intermediarios</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed">
+                        La principal motivación detrás de su creación fue permitir transacciones financieras P2P sin la necesidad de una entidad central de confianza (como un banco), resolviendo el problema del doble gasto mediante la criptografía (Hashes SHA-256 y Firmas RSA/ECDSA).
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Estructuras de Datos Criptográficas</h2>
+            
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-4">
+                <div class="p-8 bg-violet-50 border-b border-slate-200">
+                    <h3 class="text-xl font-bold text-violet-900 mb-4">Arquitectura Interna de un Bloque</h3>
+                    <p class="text-sm text-violet-800 mb-4">Un bloque en la cadena no es más que una estructura de datos que empaqueta información crítica. Su integridad depende del enlace matemático con su predecesor.</p>
+                    <ul class="list-disc pl-5 space-y-3 text-sm text-violet-800 font-medium">
+                        <li><strong>Cabecera (Header):</strong> Contiene el <code class="bg-white px-1 rounded text-violet-900">Hash del Bloque Anterior</code>, un <code>Timestamp</code>, el <code>Nonce</code> (para la minería) y la raíz del árbol de Merkle.</li>
+                        <li><strong>Cuerpo (Body):</strong> Contiene la lista de todas las transacciones confirmadas.</li>
+                        <li><strong>Árboles de Merkle:</strong> Estructura de árbol binario donde cada nodo hoja es el hash de una transacción. Permite verificar si una transacción específica está en un bloque sin descargar todo el contenido del mismo.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Consenso e Inmutabilidad</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3">Proof of Work (PoW)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Mecanismo de consenso donde los mineros compiten por resolver un acertijo criptográfico complejo (encontrar un hash que empiece con una cantidad específica de ceros modificando el Nonce). Requiere un inmenso poder computacional.</p>
+                    <div class="bg-slate-800 text-green-400 font-mono p-3 rounded text-xs text-center break-all">
+                        00000000000000000003b54a1d7...
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-700 mb-3">El Efecto Inmutabilidad</h3>
+                    <p class="text-sm text-slate-600 mb-4">Si un atacante modifica una transacción en el Bloque 10, su Hash cambiará drásticamente (Efecto Avalancha). Esto rompe el Bloque 11 (que referenciaba el viejo hash del 10), el 12, el 13, etc. Para falsificar el registro, el atacante tendría que re-minar toda la cadena más rápido que el resto del mundo.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Fichas Rápidas (Memorización)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🌳</span>
+                            <h3 class="font-bold text-lg text-center">Árbol de Merkle</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Estructura</h4>
+                            <p class="text-sm">Árbol de hashes (bottom-up) que resume todas las transacciones de un bloque en un único "Root Hash". Optimiza la verificación de integridad.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">⛏️</span>
+                            <h3 class="font-bold text-lg">Minería (Nodo)</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Validación</h4>
+                            <p class="text-sm">Proceso de agrupar transacciones pendientes en un bloque y calcular el PoW válido. El primero en lograrlo recibe una recompensa.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">📜</span>
+                            <h3 class="font-bold text-lg text-center">Smart Contract</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Automatización</h4>
+                            <p class="text-sm">Código autoejecutable almacenado en la blockchain que se activa cuando se cumplen condiciones predefinidas, sin intermediarios.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3">🖇️</span>
+                            <h3 class="font-bold text-lg text-center">Doble Gasto</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Vulnerabilidad</h4>
+                            <p class="text-sm">El riesgo de que un mismo token digital sea gastado dos veces. Blockchain lo soluciona mediante el consenso de la red y el sellado de tiempo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">5. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas de la plataforma oficial, estructuradas con esquemas listos para la agenda de auditoría.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">💸</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 9: Transferencia Cripto (Integridad e Inmutabilidad)</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere transferir criptomonedas a Bob usando una blockchain. Describe el proceso de cómo se realiza esta transferencia y cómo se asegura la integridad y la inmutabilidad de la transacción.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Iniciación de la Transacción:</strong> Alice genera una transacción desde su billetera digital, especificando la cantidad de criptomonedas que desea transferir a Bob, junto con la dirección de la billetera de Bob.</li>
+                            <li><strong>Verificación y Firma:</strong> La transacción es firmada digitalmente por Alice usando su clave privada, asegurando que solo Alice puede haber autorizado esta transacción.</li>
+                            <li><strong>Propagación a la Red:</strong> La transacción se envía a la red blockchain donde es verificada por los nodos (mineros). Los nodos verifican que Alice tenga los fondos, que la firma sea válida, y que no haya doble gasto.</li>
+                            <li><strong>Inclusión en un Bloque:</strong> Si la transacción es válida, se incluye en un bloque junto con otras transacciones. Este bloque contiene un hash del bloque anterior, el timestamp y las transacciones.</li>
+                            <li><strong>Minado del Bloque:</strong> Los mineros compiten para resolver un problema criptográfico complejo (Proof of Work) para añadir el bloque a la cadena. Una vez resuelto, el bloque se añade a la blockchain.</li>
+                            <li><strong>Consenso y Seguridad:</strong> El consenso de la red acepta el nuevo bloque si la mayoría de los nodos están de acuerdo. La integridad de la transacción se asegura por la cadena de hashes, donde cada bloque contiene el hash del bloque anterior, haciendo que cualquier alteración sea detectada. La inmutabilidad se consigue porque cambiar una transacción requeriría rehacer toda la cadena desde el punto de la alteración, lo cual es computacionalmente prohibitivo.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 9: TRANSFERENCIA BLOCKCHAIN</h3>
+                        <ul class="space-y-2 text-sm text-slate-700 font-mono">
+                            <li><strong>1️⃣ INICIO & FIRMA ✍️</strong> Alice envía a Wallet_Bob. Firma con su Clave Privada (garantiza origen).</li>
+                            <li><strong>2️⃣ PROPAGACIÓN 📡</strong> Los nodos verifican fondos y firma (evitan doble gasto).</li>
+                            <li><strong>3️⃣ MINADO ⛏️</strong> Transacción va a un bloque (incluye Hash anterior + Timestamp). Mineros aplican PoW.</li>
+                            <li><strong>4️⃣ CONSENSO ✅</strong> La red acepta. La cadena de hashes sella la inmutabilidad de la transacción.</li>
+                        </ul>
+                        <p class="mt-4 text-xs font-bold text-slate-500 uppercase">🛡️ Seguridad: Inmutabilidad respaldada por la potencia computacional global de la red.</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <img src="img/Caso Practico 9 - Etiqueta.jpg" alt="Generar imagen para el Caso 9" class="rounded-xl shadow-lg border border-slate-200 w-full md:w-3/4 max-w-2xl mx-auto block bg-slate-100 min-h-[150px] text-center" style="font-style: italic; color: #888; line-height: 150px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📦</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 10: Cadena de Suministro</h3>
+                    </div>
+                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-violet-300 pl-4">Enunciado: Una empresa quiere usar blockchain para mantener un registro de su cadena de suministro. Describe cómo se puede utilizar blockchain para asegurar la trazabilidad y autenticidad de los productos.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Registro de Eventos:</strong> Cada movimiento o cambio de estado de un producto se registra como una transacción en la blockchain. Esto incluye la producción, envío, recepción y cualquier otro evento significativo.</li>
+                            <li><strong>Transparencia y Acceso:</strong> Todos los participantes en la cadena de suministro tienen acceso a los registros, pero solo las partes autorizadas pueden escribir en el libro de contabilidad. Esto asegura transparencia mientras se mantiene la seguridad.</li>
+                            <li><strong>Inmutabilidad:</strong> Una vez que un evento es registrado en un bloque, no puede ser alterado. Esto asegura que la historia completa de un producto sea auténtica y verificable.</li>
+                            <li><strong>Verificación de Autenticidad:</strong> Cada producto puede tener un identificador único registrado en la blockchain. Cualquier persona puede verificar la autenticidad del producto escaneando este identificador y revisando su historial en la cadena.</li>
+                            <li><strong>Smart Contracts:</strong> Se pueden implementar contratos inteligentes para automatizar ciertas verificaciones o acciones basadas en eventos de la cadena de suministro, como liberar pagos solo cuando se confirma la recepción de un producto.</li>
+                            <li><strong>Seguridad:</strong> La estructura descentralizada y el uso de criptografía aseguran que los datos sean seguros y que cualquier intento de falsificación sea detectado por la red.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h3 class="font-bold text-indigo-900 mb-2">ESQUEMA 10: SUPPLY CHAIN BLOCKCHAIN</h3>
+                        <ul class="space-y-2 text-sm text-slate-700 font-mono">
+                            <li><strong>1️⃣ REGISTRO 📦</strong> Cada paso (producción, envío) se graba como una transacción inmutable.</li>
+                            <li><strong>2️⃣ TRAZABILIDAD 🔎</strong> Uso de identificadores únicos (IDs) auditables por cualquier participante.</li>
+                            <li><strong>3️⃣ AUTOMATIZACIÓN ⚙️</strong> Smart Contracts liberan pagos automáticamente tras escanear la recepción.</li>
+                            <li><strong>4️⃣ TRANSPARENCIA 🌐</strong> Red descentralizada y criptográficamente sellada contra falsificaciones.</li>
+                        </ul>
+                        <p class="mt-4 text-xs font-bold text-slate-500 uppercase">✅ Aplicación: Control de auditorías y trazabilidad confiable desde origen a destino.</p>
+                    </div>
+
+                    <div class="mt-6">
+                        <img src="img/Caso Practico 10 - Etiqueta.jpg" alt="Generar imagen para el Caso 10" class="rounded-xl shadow-lg border border-slate-200 w-full md:w-3/4 max-w-2xl mx-auto block bg-slate-100 min-h-[150px] text-center" style="font-style: italic; color: #888; line-height: 150px;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Técnico</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Ledger Distribuido</h4>
+                    <p class="text-sm text-slate-600 mt-1">Base de datos que se consensua, comparte y sincroniza consensualmente entre múltiples sitios, instituciones o geografías, accesible por múltiples personas.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Nonce</h4>
+                    <p class="text-sm text-slate-600 mt-1">Número de un solo uso que los mineros modifican iterativamente en la cabecera del bloque para intentar que el Hash resultante cumpla con la dificultad de la red (cantidad de ceros).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Wallet (Billetera)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Software que gestiona el par de claves criptográficas del usuario (pública y privada). La pública funciona como cuenta de recepción, la privada para firmar salidas.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg">
+                    <h4 class="font-bold text-slate-800">Timestamping</h4>
+                    <p class="text-sm text-slate-600 mt-1">Sellado de tiempo incrustado en cada bloque. Demuestra que los datos existieron en un momento temporal específico y establece el orden cronológico absoluto.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos (EduShield)</h2>
+            <p class="text-slate-600 mb-6">Consolas de telemetría para monitorizar el ciclo de vida de los Casos Prácticos 9 y 10 en un entorno de red descentralizado.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+                
+                <div class="flex flex-col bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+                    <div class="bg-slate-950 px-4 py-3 flex justify-between items-center border-b border-slate-800">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400 font-bold tracking-widest">EduShield Network - Transacción (Caso 9)</span>
+                    </div>
+                    <div id="cryptoTerminal" class="p-6 font-mono text-sm h-64 overflow-y-auto terminal-scroll bg-[#0d1117] text-slate-300">
+                        <p class="text-green-400">root@edushield-node:~# ./init_blockchain_tx</p>
+                        <p class="text-slate-500 mb-2">// Esperando firma de transacción en billetera local...</p>
+                    </div>
+                    <div class="p-4 bg-slate-800 border-t border-slate-700">
+                        <button onclick="runCryptoTx()" id="btnCryptoTx" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full transition text-sm">
+                            Ejecutar Estrategia DCA (Enviar ETH)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden">
+                    <div class="bg-slate-950 px-4 py-3 flex justify-between items-center border-b border-slate-800">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                        <span class="text-xs font-mono text-slate-400 font-bold tracking-widest">EduShield SC - Logística (Caso 10)</span>
+                    </div>
+                    <div id="scTerminal" class="p-6 font-mono text-sm h-64 overflow-y-auto terminal-scroll bg-[#0d1117] text-slate-300">
+                        <p class="text-green-400">root@edushield-node:~# tail -f /sc/patito_audit.log</p>
+                        <p class="text-slate-500 mb-2">// Escuchando eventos del contrato inteligente logístico...</p>
+                    </div>
+                    <div class="p-4 bg-slate-800 border-t border-slate-700">
+                        <button onclick="runSCLogistics()" id="btnSC" class="bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded w-full transition text-sm">
+                            Escanear Lote y Activar Contrato
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo: Ciclo de Vida en Blockchain</h2>
+            <p class="text-slate-600 mb-8">El proceso E2E desde que un usuario (o contrato) inicia una solicitud hasta que queda grabada en piedra para la eternidad.</p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 mt-8">
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-slate-200 text-center relative z-10 shadow-sm w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">📲</div>
+                    <h4 class="font-bold text-slate-800">1. Intención</h4>
+                    <p class="text-xs text-slate-500 mt-1">El usuario solicita la transacción (Transferencia o actualización de registro) y la firma criptográficamente.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-3xl">➔</div>
+                
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-cyan-400 text-center relative z-10 shadow-sm w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">🌐</div>
+                    <h4 class="font-bold text-slate-800">2. Mempool</h4>
+                    <p class="text-xs text-slate-500 mt-1">La red P2P recibe la Tx. Los nodos validan las firmas y la almacenan en un pool de transacciones pendientes.</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-3xl">➔</div>
+
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-slate-200 text-center relative z-10 shadow-sm w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">⛏️</div>
+                    <h4 class="font-bold text-slate-800">3. Empaquetado</h4>
+                    <p class="text-xs text-slate-500 mt-1">Un minero agrupa la Tx en un nuevo bloque y compite por resolver el rompecabezas criptográfico (PoW).</p>
+                </div>
+                <div class="hidden md:block text-slate-300 text-3xl">➔</div>
+
+                <div class="flex-1 bg-white p-6 rounded-2xl border-2 border-violet-500 text-center relative z-10 shadow-lg w-full md:w-auto min-h-[180px] flex flex-col justify-center">
+                    <div class="text-3xl mb-2">🔗</div>
+                    <h4 class="font-bold text-slate-800">4. Cadena y Cierre</h4>
+                    <p class="text-xs text-slate-500 mt-1">El bloque se añade. La ejecución del Smart Contract ocurre. La Tx es inmutable y distribuida a todos.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // LÓGICA DE NAVEGACIÓN
+        // ==========================================
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-violet-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400');
+            currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            const items = document.querySelectorAll('.nav-item');
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // ==========================================
+        // LÓGICA SIMULADORES (CASO 9 & CASO 10)
+        // ==========================================
+        const termCrypto = document.getElementById('cryptoTerminal');
+        const termSC = document.getElementById('scTerminal');
+
+        const seqCrypto = [
+            { text: "[DCA Strategy] Ejecutando orden programada desde Wirex Wallet.", color: "text-slate-400" },
+            { text: "[Tx Gen] Transferencia: 0.15 ETH -> 0xBobWalletAddress...", color: "text-blue-400 mt-2" },
+            { text: "[Firma] Firmando con Clave Privada (ECDSA) para autorizar gasto...", color: "text-yellow-400 font-bold mt-2" },
+            { text: "[Red] Propagando Tx a los nodos de la red Ethereum...", color: "text-slate-300 mt-2" },
+            { text: "[Minería] Tx incluida en Bloque #19056230. Resolviendo PoW...", color: "text-cyan-400 mt-2" },
+            { text: "[Consenso] Bloque validado por la mayoría. Hash enlazado.", color: "text-green-400 font-bold mt-2" },
+            { text: "[✓] Transferencia Completada e Inmutable en el Ledger.", color: "text-white bg-green-700 inline-block p-1 mt-2 rounded" }
+        ];
+
+        const seqSC = [
+            { text: "[Scanner] Código QR detectado en almacén de Madrid.", color: "text-slate-400" },
+            { text: "[Oracle] Inyectando evento Logístico en la Blockchain...", color: "text-purple-400 mt-2" },
+            { text: "[Smart Contract] Condición evaluada: Estado_Lote == 'Recibido'", color: "text-yellow-400 font-bold mt-2" },
+            { text: "[Smart Contract] Validando origen y Trazabilidad del ID...", color: "text-slate-300 mt-2" },
+            { text: "[Smart Contract] Autenticidad comprobada. Ningún dato alterado en tránsito.", color: "text-cyan-400 mt-2" },
+            { text: "[Smart Contract] Ejecutando función liberarPago().", color: "text-green-400 font-bold mt-2" },
+            { text: "[✓] Proveedor Pagado Automáticamente. Registro inmutable.", color: "text-white bg-violet-700 inline-block p-1 mt-2 rounded" }
+        ];
+
+        function runSimSequence(sequence, terminalElement, btnElement, btnOriginalColor, btnOriginalText) {
+            btnElement.disabled = true;
+            btnElement.innerText = "Sincronizando con Nodos...";
+            btnElement.classList.replace(btnOriginalColor, 'bg-slate-700');
+            
+            while(terminalElement.childNodes.length > 5) {
+                terminalElement.removeChild(terminalElement.lastChild);
+            }
+            
+            let delay = 0;
+            sequence.forEach((log, index) => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.className = log.color + " mt-1 fade-in";
+                    p.innerHTML = log.text;
+                    terminalElement.appendChild(p);
+                    terminalElement.scrollTop = terminalElement.scrollHeight;
+                    
+                    if (index === sequence.length - 1) {
+                        btnElement.disabled = false;
+                        btnElement.innerText = "Reiniciar " + btnOriginalText;
+                        btnElement.classList.replace('bg-slate-700', btnOriginalColor);
+                    }
+                }, delay);
+                delay += 850; // 850ms pause
+            });
+        }
+
+        function runCryptoTx() {
+            runSimSequence(seqCrypto, termCrypto, document.getElementById('btnCryptoTx'), 'bg-blue-600', 'Transacción');
+        }
+
+        function runSCLogistics() {
+            runSimSequence(seqSC, termSC, document.getElementById('btnSC'), 'bg-violet-600', 'Escaneo Logístico');
+        }
+    </script>
+</body>
+</html>
