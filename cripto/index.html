@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CiberMaster | Portal Criptografía</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .hover-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-20 shrink-0">
+        <div class="p-6 border-b border-slate-800 bg-slate-950">
+            <h1 class="text-3xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+            <p class="text-xs text-slate-400 mt-2 uppercase tracking-widest font-bold">Grado en Ingeniería Informática</p>
+        </div>
+        
+        <div class="p-6 border-b border-slate-800 bg-slate-900/50 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-violet-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                AM
+            </div>
+            <div>
+                <p class="text-sm font-bold text-white">Aitor Martínez</p>
+                <p class="text-xs text-slate-500">Universidad Europea</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-2">Navegación Rápida</li>
+                <li><a href="CR-Casos-Practicos.html" class="block pl-8 pr-4 py-3 hover:bg-slate-800 transition border-l-4 border-transparent hover:border-violet-500 text-slate-300 hover:text-white font-medium">📚 Todos los Casos Prácticos</a></li>
+                <li><a href="criptografia_master_labs.html" class="block pl-8 pr-4 py-3 hover:bg-slate-800 transition border-l-4 border-transparent hover:border-cyan-400 text-slate-300 hover:text-white font-medium">🧪 Master Labs (Simuladores)</a></li>
+            </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800 text-center">
+            <p class="text-xs text-slate-500">Módulo: Criptografía y Seguridad</p>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12 relative" id="mainContent">
+        
+        <header class="mb-10 fade-in">
+            <h2 class="text-4xl font-black text-slate-800 tracking-tight">Dashboard de <span class="text-violet-600">Criptografía</span></h2>
+            <p class="text-lg text-slate-500 mt-2">Selecciona un módulo para acceder a los apuntes, esquemas de resolución y laboratorios interactivos.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 fade-in" style="animation-delay: 0.1s;">
+            
+            <a href="CR-unidad1_matematica.html" class="block group">
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover-card transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-violet-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">🧮</div>
+                    <div class="text-4xl mb-4">🧮</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 1: Matemáticas</h3>
+                    <p class="text-slate-600 text-sm flex-1">Matemática Discreta, Primalidad (Miller-Rabin), Divisibilidad y Algoritmo de Euclides Extendido.</p>
+                    <div class="mt-6 flex items-center text-violet-600 font-bold text-sm uppercase tracking-wide">
+                        Acceder a la unidad <span class="ml-2">→</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="CR-unidad2_criptografia.html" class="block group">
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover-card transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-blue-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">🔐</div>
+                    <div class="text-4xl mb-4">🔐</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 2: Cripto Base</h3>
+                    <p class="text-slate-600 text-sm flex-1">Fundamentos de Criptografía, evolución clásica a moderna, cifrado simétrico (DES) y conceptos de RSA.</p>
+                    <div class="mt-6 flex items-center text-blue-600 font-bold text-sm uppercase tracking-wide">
+                        Acceder a la unidad <span class="ml-2">→</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="CR-unidad3_criptografia2.html" class="block group">
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover-card transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-cyan-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">🛡️</div>
+                    <div class="text-4xl mb-4">🛡️</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 3: Hash y AES</h3>
+                    <p class="text-slate-600 text-sm flex-1">Funciones Hash (SHA-256), Integridad, Efecto Avalancha y Encriptación Simétrica Avanzada (AES).</p>
+                    <div class="mt-6 flex items-center text-cyan-600 font-bold text-sm uppercase tracking-wide">
+                        Acceder a la unidad <span class="ml-2">→</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="CR-unidad4_criptografia.html" class="block group">
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover-card transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-yellow-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">✍️</div>
+                    <div class="text-4xl mb-4">✍️</div>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 4: Asimétrica</h3>
+                    <p class="text-slate-600 text-sm flex-1">Criptografía Asimétrica, Firmas Digitales, Autenticidad, PKI, Certificados y No Repudio.</p>
+                    <div class="mt-6 flex items-center text-yellow-600 font-bold text-sm uppercase tracking-wide">
+                        Acceder a la unidad <span class="ml-2">→</span>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="mt-12 fade-in" style="animation-delay: 0.3s;">
+            <h3 class="text-xl font-bold text-slate-800 mb-6 border-b-2 border-slate-200 pb-2">Herramientas Globales E2E</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <a href="CR-Casos-Practicos.html" class="block group">
+                    <div class="bg-slate-900 p-6 rounded-xl shadow-lg hover-card transition-all flex items-center gap-6 border border-slate-700 hover:border-violet-500">
+                        <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-3xl shadow-inner border border-slate-700">
+                            📚
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Compendio de Casos</h4>
+                            <p class="text-sm text-slate-400 mt-1">Todos los ejercicios prácticos y esquemas de resolución listos para imprimir.</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="criptografia_master_labs.html" class="block group">
+                    <div class="bg-slate-900 p-6 rounded-xl shadow-lg hover-card transition-all flex items-center gap-6 border border-slate-700 hover:border-cyan-400">
+                        <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-3xl shadow-inner border border-slate-700">
+                            🧪
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Master Labs (Simuladores)</h4>
+                            <p class="text-sm text-slate-400 mt-1">Entornos interactivos para RSA, AES, SHA-256 y matemáticas criptográficas.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
