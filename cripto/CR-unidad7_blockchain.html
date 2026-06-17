@@ -29,7 +29,7 @@
         .theme-border { border-color: var(--border-color); transition: border-color 0.3s; }
         .theme-text { color: var(--text-main); transition: color 0.3s; }
         .theme-text-muted { color: var(--text-muted); transition: color 0.3s; }
-        
+
         /* Animaciones Core */
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -270,6 +270,33 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="mt-8 bg-black p-6 rounded-xl border border-slate-700 shadow-inner">
+                        <h4 class="font-bold text-orange-500 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Flujo de Minería y Seguridad</h4>
+                        
+                        <div class="w-full h-48 bg-slate-900 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center mb-6 hover:border-orange-500 transition cursor-pointer">
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Generar imagen: Diagrama de flujo del proceso de minería de Bitcoin mostrando la mempool, el cálculo PoW y la inmutabilidad de la cadena]</span>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-slate-400 font-mono">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-orange-900/50 text-orange-500 p-2 rounded text-lg leading-none">1️⃣</span> 
+                                <div><strong class="text-white block mb-1">TRANSACCIÓN Y MEMPOOL:</strong> Alice envía BTC, los mineros recogen la Tx y verifican firmas y fondos.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-orange-900/50 text-orange-500 p-2 rounded text-lg leading-none">2️⃣</span> 
+                                <div><strong class="text-white block mb-1">CREACIÓN Y POW:</strong> Agrupación en bloque (PrevHash + Tx + Nonce) y fuerza bruta para cumplir la dificultad matemática.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-green-900/50 text-green-500 p-2 rounded text-lg leading-none">3️⃣</span> 
+                                <div><strong class="text-white block mb-1">CONSENSO E INMUTABILIDAD:</strong> El bloque se añade. Alterarlo requiere rehacer todos los hashes siguientes (imposible a gran escala).</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-red-900/50 text-red-500 p-2 rounded text-lg leading-none">🛡️</span> 
+                                <div><strong class="text-white block mb-1">PROTECCIÓN 51%:</strong> El inmenso coste computacional y eléctrico hace que un ataque a la red sea económicamente inviable.</div>
+                            </li>
+                        </ul>
+                    </div>
             </div>
 
             <div class="bg-slate-900 rounded-xl border border-slate-700 overflow-hidden shadow-2xl">
@@ -299,6 +326,33 @@
                             </ul>
                         </div>
                     </div>
+                </div>
+
+                <div class="mt-8 bg-black p-6 rounded-xl border border-slate-700 shadow-inner">
+                    <h4 class="font-bold text-blue-500 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Transición a Proof of Stake</h4>
+                    
+                    <div class="w-full h-48 bg-slate-900 border-2 border-dashed border-slate-700 rounded-lg flex items-center justify-center mb-6 hover:border-blue-500 transition cursor-pointer">
+                        <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Generar imagen: Diagrama comparativo ilustrando mineros con ASICs consumiendo energía (PoW) versus validadores bloqueando monedas en un Smart Contract (PoS)]</span>
+                    </div>
+
+                    <ul class="space-y-4 text-sm text-slate-400 font-mono">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-blue-900/50 text-blue-500 p-2 rounded text-lg leading-none">🏦</span> 
+                            <div><strong class="text-white block mb-1">STAKING (Fianza):</strong> Los validadores bloquean ETH en un contrato inteligente en lugar de comprar hardware de minería.</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-blue-900/50 text-blue-500 p-2 rounded text-lg leading-none">🎲</span> 
+                            <div><strong class="text-white block mb-1">SELECCIÓN ESTOCÁSTICA:</strong> Sorteo ponderado por la cantidad apostada para proponer el bloque. El resto de la red verifica.</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-green-900/50 text-green-500 p-2 rounded text-lg leading-none">🌱</span> 
+                            <div><strong class="text-white block mb-1">EFICIENCIA ENERGÉTICA:</strong> Al eliminar la competencia de fuerza bruta criptográfica, se logra una red casi 100% sostenible.</div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-red-900/50 text-red-500 p-2 rounded text-lg leading-none">⚔️</span> 
+                            <div><strong class="text-white block mb-1">SEGURIDAD (Slashing):</strong> Un ataque del 51% requeriría poseer la mitad del circulante. El fraude se castiga quemando (destruyendo) los fondos del atacante.</div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
