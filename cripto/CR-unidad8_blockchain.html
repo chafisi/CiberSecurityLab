@@ -241,35 +241,33 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                <div class="bg-teal-900 text-white p-4 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <span class="text-2xl">🏥</span>
-                        <h3 class="text-lg font-bold">Caso Práctico 16: Predicción de Estancia Hospitalaria (Regresión)</h3>
-                    </div>
-                    <span class="bg-teal-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
-                </div>
-                <div class="p-6">
-                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Un hospital quiere predecir la duración de estancia de los pacientes para optimizar la gestión de camas y recursos. Describe cómo usar técnicas de regresión para este fin.</p>
-                    
-                    <div class="mb-8 border-l-4 border-teal-400 bg-teal-50/50 p-5 rounded-r-lg">
-                        <h4 class="font-bold text-teal-800 mb-3 text-lg">Flujo de Solución:</h4>
-                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
-                            <li><strong>Recolección:</strong> Datos históricos (edad, diagnóstico, pruebas) y duración de estancia real (Variable Objetivo).</li>
-                            <li><strong>Preprocesamiento:</strong> Manejar faltantes y aplicar One-Hot Encoding a diagnósticos categóricos.</li>
-                            <li><strong>Modelado (Regresión Lineal Múltiple):</strong> Dividir en entrenamiento y prueba. Usar mínimos cuadrados para ajustar coeficientes predictores.</li>
-                            <li><strong>Validación:</strong> Evaluar con métricas como RMSE o $R^2$ para verificar precisión.</li>
-                            <li><strong>Aplicación:</strong> Usar la fórmula generada para predecir días en nuevos ingresos, optimizando la planificación hospitalaria.</li>
-                        </ul>
-                    </div>
+            <!-- ESQUEMA Y PLACEHOLDER CASO 16 -->
+            <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h4 class="font-bold text-teal-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Modelo Predictivo de Regresión</h4>
+                
+                <!-- Esquema en pasos -->
+                <ul class="space-y-4 text-sm text-slate-700 font-mono">
+                    <li class="flex items-start gap-3">
+                        <span class="bg-teal-100 text-teal-600 p-2 rounded text-lg leading-none">📋</span> 
+                        <div><strong class="text-slate-900 block mb-1">INPUTS (VARIABLES INDEPENDIENTES):</strong> Recopilación de edad, resultados de pruebas y codificación de los diagnósticos (One-Hot Encoding).</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-teal-100 text-teal-600 p-2 rounded text-lg leading-none">📈</span> 
+                        <div><strong class="text-slate-900 block mb-1">ENTRENAMIENTO (MCO):</strong> Ajuste matemático de la recta de regresión múltiple mediante Mínimos Cuadrados para minimizar los residuos.</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-teal-100 text-teal-600 p-2 rounded text-lg leading-none">⚖️</span> 
+                        <div><strong class="text-slate-900 block mb-1">EVALUACIÓN DE PRECISIÓN:</strong> Validación del margen de error del modelo utilizando métricas estadísticas clave como el RMSE y el coeficiente R².</div>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="bg-teal-100 text-teal-600 p-2 rounded text-lg leading-none">🏥</span> 
+                        <div><strong class="text-slate-900 block mb-1">DESPLIEGUE (VARIABLE OBJETIVO):</strong> Predicción automatizada de los días de estancia para nuevos ingresos, permitiendo una gestión proactiva de camas.</div>
+                    </li>
+                </ul>
 
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-teal-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Modelo Predictivo</h4>
-                        
-                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-teal-500 transition cursor-pointer">
-                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Espacio para esquema visual: Gráfico de Regresión mostrando una línea de tendencia sobre nube de puntos y una Tabla de Coeficientes de impacto (ej: Edad +2 días)]</span>
-                        </div>
-                    </div>
+                <!-- Hueco para la imagen -->
+                <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-teal-500 transition cursor-pointer">
+                    <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Generar imagen: Gráfico de Regresión Lineal Múltiple mostrando una línea de tendencia sobre una nube de puntos, acompañado de una pequeña tabla que indique los "Pesos/Coeficientes" de cada variable]</span>
                 </div>
             </div>
         </section>
