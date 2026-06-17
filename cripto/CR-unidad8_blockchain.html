@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 8 - Minería de Datos (KDD) | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Efectos visuales interactivos */
+        @keyframes pulse-border { 0% { border-color: #8b5cf6; } 50% { border-color: #c4b5fd; } 100% { border-color: #8b5cf6; } }
+        .animate-pulse-border { animation: pulse-border 2s infinite; }
+
+        /* Flip Cards (Esqueleto Unidad 6) */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; }
+        
+        /* Scrollbars (Esqueleto Unidad 6) */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Canvas Simulators */
+        canvas { background-color: #f8fafc; border-radius: 0.5rem; border: 1px solid #e2e8f0; cursor: crosshair; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 8: Minería de Datos</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Introducción al KDD</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Preprocesamiento Datos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Técnicas Estadísticas</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos 15 y 16</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400 font-bold">7. Laboratorios KDD</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 9. Test Oficial (20 Preg.)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Introducción a la Minería de Datos (KDD)</h2>
+            <p class="text-slate-600 mb-6">A diferencia del Big Data (que trata sobre el volumen y almacenamiento), la <strong>Minería de Datos</strong> es el proceso de analizar grandes conjuntos de datos para descubrir patrones ocultos, extraer información valiosa y generar conocimiento. Es el núcleo de la metodología <strong>KDD (Knowledge Discovery in Databases)</strong>.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-4">Objetivos Principales y Tipos de Tareas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-50 border-l-4 border-blue-500 p-4 rounded shadow-sm">
+                        <h4 class="font-bold text-slate-800">1. Descripción</h4>
+                        <p class="text-sm text-slate-600 mt-1">Entender qué ha pasado resumiendo la información y encontrando patrones interpretables por humanos.</p>
+                    </div>
+                    <div class="bg-slate-50 border-l-4 border-orange-500 p-4 rounded shadow-sm">
+                        <h4 class="font-bold text-slate-800">2. Predicción</h4>
+                        <p class="text-sm text-slate-600 mt-1">Anticipar eventos futuros o valores desconocidos basándose en el análisis de datos históricos.</p>
+                    </div>
+                </div>
+
+                <h4 class="font-bold text-slate-800 mt-6 mb-3">Técnicas Clave de Minería:</h4>
+                <ul class="space-y-2 text-sm text-slate-700">
+                    <li class="flex items-center gap-2"><span class="bg-violet-100 text-violet-600 px-2 py-1 rounded font-bold text-xs">Clasificación</span> (Supervisada) Asigna elementos a categorías predefinidas.</li>
+                    <li class="flex items-center gap-2"><span class="bg-green-100 text-green-600 px-2 py-1 rounded font-bold text-xs">Clustering</span> (No supervisada) Agrupa elementos similares sin etiquetas previas.</li>
+                    <li class="flex items-center gap-2"><span class="bg-red-100 text-red-600 px-2 py-1 rounded font-bold text-xs">Regresión</span> (Supervisada) Estima o predice un valor numérico continuo.</li>
+                    <li class="flex items-center gap-2"><span class="bg-yellow-100 text-yellow-600 px-2 py-1 rounded font-bold text-xs">Asociación</span> Descubre reglas "si-entonces" (ej. "Si compra pan, comprará leche").</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Preprocesamiento y Limpieza de Datos</h2>
+            <div class="bg-white border-t-4 border-t-red-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-2">El Principio GIGO: "Garbage In, Garbage Out"</h3>
+                <p class="text-sm text-slate-600">Ningún algoritmo avanzado puede compensar datos de mala calidad. El preprocesamiento consume habitualmente el 70-80% del tiempo de un proyecto de minería.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><span class="text-xl">🧹</span> Limpieza e Integración</h4>
+                    <ul class="text-sm text-slate-600 space-y-3">
+                        <li><strong>Integración:</strong> Fusionar datos de múltiples fuentes heterogéneas (ERP, CRM, LMS) en un almacén coherente.</li>
+                        <li><strong>Valores Faltantes:</strong> Decidir entre eliminar registros incompletos o aplicar imputación (sustituir por media, mediana o algoritmos).</li>
+                        <li><strong>Ruido y Outliers:</strong> Identificar y corregir valores atípicos que pueden sesgar el modelo (ej. una edad de "999" años).</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <h4 class="font-bold text-slate-800 mb-3 flex items-center gap-2"><span class="text-xl">⚙️</span> Transformación y Reducción</h4>
+                    <ul class="text-sm text-slate-600 space-y-3">
+                        <li><strong>Normalización:</strong> Escalar variables para que estén en el mismo rango (ej. 0 a 1) para evitar que variables grandes dominen a las pequeñas.</li>
+                        <li><strong>One-Hot Encoding:</strong> Convertir variables categóricas (ej. Color: Rojo/Azul) en columnas binarias (1 o 0) entendibles por la máquina.</li>
+                        <li><strong>Reducción de Dimensionalidad:</strong> Usar técnicas como PCA para reducir la cantidad de variables manteniendo la información esencial.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Técnicas Estadísticas Avanzadas</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 text-indigo-600">Técnicas No Supervisadas</h3>
+                    <p class="text-sm text-slate-600 mb-4">Agrupan datos basándose exclusivamente en su similitud matemática, sin disponer de etiquetas (respuestas) previas.</p>
+                    
+                    <div class="bg-slate-50 border-l-4 border-indigo-400 p-3 rounded mb-3">
+                        <strong class="text-sm text-slate-800">Algoritmo K-Means:</strong>
+                        <ol class="text-xs text-slate-600 mt-1 list-decimal pl-4 space-y-1">
+                            <li>Elegir K (número de clusters) usando Método del Codo o Silueta.</li>
+                            <li>Posicionar K centroides aleatorios.</li>
+                            <li>Asignar cada dato al centroide más cercano.</li>
+                            <li>Recalcular el centroide basándose en la media del grupo. Repetir hasta converger.</li>
+                        </ol>
+                    </div>
+                    <div class="bg-slate-50 border-l-4 border-indigo-400 p-3 rounded">
+                        <strong class="text-sm text-slate-800">Agrupamiento Jerárquico:</strong>
+                        <p class="text-xs text-slate-600 mt-1">Crea una jerarquía de clústeres representable mediante un <em>Dendrograma</em>.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 text-teal-600">Técnicas Supervisadas</h3>
+                    <p class="text-sm text-slate-600 mb-4">Aprende de un conjunto de datos histórico que ya contiene las respuestas correctas (etiquetas) para predecir futuros valores.</p>
+                    
+                    <div class="bg-slate-50 border-l-4 border-teal-400 p-3 rounded mb-3">
+                        <strong class="text-sm text-slate-800">Regresión Lineal:</strong>
+                        <p class="text-xs text-slate-600 mt-1">Simple ($y = mx + b$) o Múltiple. Busca la línea recta que minimiza la distancia con todos los puntos de datos.</p>
+                    </div>
+                    <div class="bg-slate-50 border-l-4 border-teal-400 p-3 rounded">
+                        <strong class="text-sm text-slate-800">Validación y Riesgos:</strong>
+                        <ul class="text-xs text-slate-600 mt-1 list-disc pl-4 space-y-1">
+                            <li><strong>RMSE:</strong> Raíz del Error Cuadrático Medio. (Menor es mejor).</li>
+                            <li><strong>R²:</strong> Coeficiente de determinación (0 a 1).</li>
+                            <li><strong>Overfitting:</strong> El modelo memoriza los datos de entrenamiento y falla con datos nuevos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Aplicaciones empresariales de Minería de Datos basadas en los documentos oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🛒</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 15: Segmentación en E-commerce (Clustering)</h3>
+                    </div>
+                    <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Una empresa de comercio electrónico quiere entender mejor el comportamiento de compra para mejorar sus estrategias de marketing. Describe cómo usar técnicas de clustering para segmentar a sus clientes.</p>
+                    
+                    <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-indigo-800 mb-3 text-lg">Flujo de Solución:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Preprocesamiento:</strong> Recolectar historial de compras, frecuencia, valor promedio. Limpiar y normalizar datos para asegurar la misma escala.</li>
+                            <li><strong>Algoritmo (K-Means):</strong> Paso 1: Determinar clusters (K) usando método del codo. Paso 2: Asignar cliente al centroide cercano. Paso 3: Recalcular centroides hasta que no cambien.</li>
+                            <li><strong>Interpretación:</strong> Analizar perfiles (ej. alta frecuencia/bajo valor vs alta valor/baja frecuencia).</li>
+                            <li><strong>Aplicación de Negocio:</strong> Personalizar campañas de marketing, gestión de inventario predictivo y retención de clientes clave.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-indigo-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Clustering K-Means</h4>
+                        
+                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-indigo-500 transition cursor-pointer">
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Espacio para esquema visual: Gráfico de Dispersión (Frecuencia vs Gasto) mostrando Puntos agrupados y coloreados según su cluster]</span>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-slate-600 font-bold bg-white p-3 rounded border border-slate-200 overflow-x-auto">
+                            <span>Datos Brutos</span> ➔ 
+                            <span class="text-blue-500">Normalización</span> ➔ 
+                            <span class="text-orange-500">Iteración K-Means</span> ➔ 
+                            <span class="text-green-500">Grupos Definidos</span> ➔ 
+                            <span class="text-purple-600">Campaña Marketing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-teal-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏥</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 16: Predicción de Estancia Hospitalaria (Regresión)</h3>
+                    </div>
+                    <span class="bg-teal-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Un hospital quiere predecir la duración de estancia de los pacientes para optimizar la gestión de camas y recursos. Describe cómo usar técnicas de regresión para este fin.</p>
+                    
+                    <div class="mb-8 border-l-4 border-teal-400 bg-teal-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-teal-800 mb-3 text-lg">Flujo de Solución:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Recolección:</strong> Datos históricos (edad, diagnóstico, pruebas) y duración de estancia real (Variable Objetivo).</li>
+                            <li><strong>Preprocesamiento:</strong> Manejar faltantes y aplicar One-Hot Encoding a diagnósticos categóricos.</li>
+                            <li><strong>Modelado (Regresión Lineal Múltiple):</strong> Dividir en entrenamiento y prueba. Usar mínimos cuadrados para ajustar coeficientes predictores.</li>
+                            <li><strong>Validación:</strong> Evaluar con métricas como RMSE o $R^2$ para verificar precisión.</li>
+                            <li><strong>Aplicación:</strong> Usar la fórmula generada para predecir días en nuevos ingresos, optimizando la planificación hospitalaria.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-teal-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Modelo Predictivo</h4>
+                        
+                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-teal-500 transition cursor-pointer">
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Espacio para esquema visual: Gráfico de Regresión mostrando una línea de tendencia sobre nube de puntos y una Tabla de Coeficientes de impacto (ej: Edad +2 días)]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Core)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-blue-500">🎯</span><h3 class="font-bold text-lg">K-Means</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Algoritmo</h4><p class="text-sm">Agrupamiento no supervisado basado en iterar la distancia hacia centroides dinámicos.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-orange-500">📉</span><h3 class="font-bold text-lg">Método del Codo</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Evaluación</h4><p class="text-sm">Técnica gráfica para encontrar el número óptimo de clusters buscando la inflexión en la varianza.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-green-500">📈</span><h3 class="font-bold text-lg">Regresión Lineal</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Modelo Predictivo</h4><p class="text-sm">Modela matemáticamente la relación lineal entre variables independientes y una dependiente.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-red-500">📏</span><h3 class="font-bold text-lg">RMSE</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Métrica de Error</h4><p class="text-sm">Raíz del Error Cuadrático Medio. Penaliza grandes desviaciones; a menor valor, mejor modelo.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-purple-500">🧠</span><h3 class="font-bold text-lg">Overfitting</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Sobreajuste</h4><p class="text-sm">Cuando el modelo memoriza el ruido del entrenamiento y falla al generalizar datos nuevos.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-cyan-500">🔢</span><h3 class="font-bold text-lg">One-Hot Encoding</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Transformación</h4><p class="text-sm">Convierte variables categóricas (texto) en múltiples columnas binarias de 0 y 1.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-teal-500">⚖️</span><h3 class="font-bold text-lg">Normalización</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Preprocesamiento</h4><p class="text-sm">Escalar datos numéricos a un rango estándar (ej. 0 a 1) evitando sesgos de magnitud.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-yellow-500">📍</span><h3 class="font-bold text-lg">Cluster Centroid</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Centro Geométrico</h4><p class="text-sm">El punto central representativo de un clúster calculado como la media de sus integrantes.</p></div>
+                </div></div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Operativo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Feature Engineering</h4>
+                    <p class="text-sm text-slate-600 mt-1">Creación matemática de nuevas variables a partir de datos existentes para darle más "señal" al modelo.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Label (Etiqueta)</h4>
+                    <p class="text-sm text-slate-600 mt-1">En aprendizaje supervisado, es la variable objetivo que queremos que el modelo aprenda a predecir.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-green-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Training Set / Test Set</h4>
+                    <p class="text-sm text-slate-600 mt-1">División estricta de datos; una porción para enseñar al modelo y otra oculta para examinar su precisión.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-yellow-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Distance Metric</h4>
+                    <p class="text-sm text-slate-600 mt-1">Fórmula matemática (como Euclidiana o Manhattan) usada para medir qué tan similares son dos registros.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-red-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Confusion Matrix</h4>
+                    <p class="text-sm text-slate-600 mt-1">Tabla evaluativa de clasificadores que desglosa Verdaderos/Falsos Positivos y Negativos.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-blue-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Imputación y Outliers</h4>
+                    <p class="text-sm text-slate-600 mt-1">Imputar es rellenar huecos vacíos con estimaciones. Outliers son datos anómalos que distorsionan el aprendizaje.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[850px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos (KDD)</h2>
+            <p class="text-slate-600 mb-6">Programados en JavaScript nativo. Visualiza las matemáticas detrás de los modelos.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">Simulador A: K-Means Clustering</span>
+                        <span id="kmeansStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Esperando inicio</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="w-full flex justify-center mb-4 bg-slate-900 rounded-lg overflow-hidden border border-slate-700 relative h-64">
+                            <canvas id="kmeansCanvas" width="400" height="250" class="w-full h-full object-contain"></canvas>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded border border-slate-700 mb-4 shrink-0">
+                            <label class="text-slate-400 text-xs font-bold uppercase mb-2 block">Número de Clusters (K)</label>
+                            <div class="flex items-center gap-4 mb-4">
+                                <input type="range" id="kSlider" min="2" max="5" value="3" class="w-full accent-cyan-500" oninput="document.getElementById('kLabel').innerText = this.value; resetKMeans();">
+                                <span id="kLabel" class="text-cyan-400 font-bold bg-black px-3 py-1 rounded w-10 text-center">3</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="startKMeans()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white py-2 rounded font-bold transition text-sm">Iniciar Clustering Iterativo</button>
+                                <button onclick="resetKMeans()" class="bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 rounded font-bold transition text-sm">Reset</button>
+                            </div>
+                        </div>
+                        
+                        <div id="kMeansLog" class="bg-black p-3 rounded border border-slate-700 text-xs text-green-400 font-mono h-20 overflow-y-auto custom-scrollbar">
+                            > Sistema de Agrupamiento Listo...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-teal-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-teal-400 font-bold">Simulador B: Regresión Lineal</span>
+                        <span id="lrStatus" class="text-xs text-slate-400 bg-slate-800 px-2 rounded">R²: -</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="w-full flex justify-center mb-4 bg-slate-900 rounded-lg overflow-hidden border border-slate-700 relative h-64">
+                            <canvas id="lrCanvas" width="400" height="250" class="w-full h-full object-contain"></canvas>
+                        </div>
+
+                        <div class="bg-slate-900 p-4 rounded border border-slate-700 mb-2 shrink-0 flex gap-2">
+                            <button onclick="lrAddNoise()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded font-bold transition text-xs">Añadir Ruido</button>
+                            <button onclick="lrAddOutlier()" class="w-full bg-red-900/60 hover:bg-red-800 text-red-200 py-2 rounded font-bold transition border border-red-800 text-xs">Añadir Outlier</button>
+                            <button onclick="lrCalculate()" class="w-full bg-teal-600 hover:bg-teal-500 text-white py-2 rounded font-bold transition text-xs shadow-lg">Calcular Modelo</button>
+                        </div>
+
+                        <div class="bg-black p-3 rounded border border-slate-700 text-sm flex gap-2 items-center shrink-0">
+                            <span class="text-slate-400 font-mono">X=</span>
+                            <input type="number" id="lrInputX" placeholder="Ej: 50" class="bg-slate-800 text-white px-2 py-1 rounded w-20 outline-none text-center border border-slate-600">
+                            <button onclick="lrPredict()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded font-bold text-xs">Predecir Y</button>
+                            <span id="lrPredictionRes" class="ml-auto text-yellow-400 font-bold"></span>
+                        </div>
+                        
+                        <div id="lrEqDisplay" class="mt-2 text-center text-xs text-slate-400 font-mono bg-slate-900 p-2 rounded">
+                            Esperando cálculo de Mínimos Cuadrados...
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E (Ciclo KDD)</h2>
+            <p class="text-slate-600 mb-8">El ciclo de vida estándar en Minería de Datos (basado en metodologías como CRISP-DM). Haz clic para expandir.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-slate-800 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-slate-100 w-12 h-12 flex justify-center items-center rounded-full">🏢</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">1. Entendimiento del Negocio</h4><span class="text-xs font-bold text-slate-500">Definición de Objetivos</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-1" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Traducir el problema de negocio ("Perdemos clientes") en un problema de minería de datos ("Modelo de predicción de abandono").</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">📊</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">2. Comprensión de Datos</h4><span class="text-xs font-bold text-blue-500">Exploración (EDA)</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-2" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Recolección inicial y análisis exploratorio. Verificación de la calidad, distribución de variables y detección visual de anomalías.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-orange-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-orange-100 w-12 h-12 flex justify-center items-center rounded-full">🧹</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">3. Preparación de Datos</h4><span class="text-xs font-bold text-orange-500">Limpieza y Transformación (70% del tiempo)</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-3" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Imputación de nulos, eliminación de outliers, normalización y One-Hot Encoding. Aquí se define la calidad del modelo (GIGO).</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-violet-500 overflow-hidden group cursor-pointer animate-pulse-border" onclick="toggleE2E('e2e-4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-violet-100 w-12 h-12 flex justify-center items-center rounded-full">⚙️</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">4. Modelado</h4><span class="text-xs font-bold text-violet-600">Entrenamiento de Algoritmos</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-4" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Selección de técnica (Regresión, K-Means, etc.). Se entrena el algoritmo ajustando sus hiperparámetros.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">🎯</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">5. Evaluación y Despliegue</h4><span class="text-xs font-bold text-green-600">Validación y Producción</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-5" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Cálculo de métricas (RMSE, R2). Si supera las expectativas del negocio, el modelo se integra en sistemas de producción y se monitoriza su desviación en el tiempo (Data Drift).</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-green-500 pb-2 inline-block">9. Test de Evaluación Oficial (UD8)</h2>
+            <p class="text-slate-600 mb-6">Demuestra tus conocimientos en Minería de Datos. 20 preguntas basadas en el temario.</p>
+            
+            <form id="quizForm" class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">1. Un objetivo principal de la minería de datos es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A. Solo almacenar datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B. Eliminar datos innecesarios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C. Predecir comportamientos futuros, segmentar mercados y descubrir relaciones ocultas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D. Solo para entretenimiento.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">2. El "overfitting" (sobreajuste) en modelos ocurre cuando:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A. El modelo es muy simple.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B. No tiene impacto en el modelo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C. El modelo se ajusta demasiado bien a los datos de entrenamiento, perdiendo generalidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D. Solo ocurre en modelos sin datos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">3. El "árbol de decisión" es útil para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A. Solo visualizar datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B. No tiene aplicación en minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C. Clasificar o predecir decisiones basadas en una serie de preguntas lógicas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D. Solo en análisis financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">4. Las "reglas de asociación" en minería de datos son útiles para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A. Descubrir patrones de compra, como en el análisis de cestas de mercado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B. Solo en análisis de redes sociales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C. No tienen relación con la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D. Estudios demográficos únicamente.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">5. La técnica que convierte texto (Rojo, Azul) en columnas binarias (0, 1) se llama:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A. Regresión Lineal.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B. Imputación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C. One-Hot Encoding.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D. K-Means.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">6. El principio de "Garbage In, Garbage Out" (GIGO) nos indica que:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A. Debemos borrar todos los datos antiguos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B. Si introducimos datos de mala calidad, el modelo generará predicciones inútiles.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C. El algoritmo limpiará la basura automáticamente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D. Los datos ruidosos mejoran la precisión.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">7. El K-Means pertenece a las técnicas de aprendizaje:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="A"> A. Supervisado (con etiquetas).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="B"> B. No Supervisado (agrupamiento sin etiquetas).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="C"> C. Por refuerzo profundo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="D"> D. Supervisión asociativa.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">8. En Regresión Lineal, la métrica "RMSE" sirve para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="A"> A. Agrupar clientes por similitud.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="B"> B. Crear columnas binarias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="C"> C. Contar falsos positivos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="D"> D. Medir el margen de error entre la predicción y el valor real.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">9. El "Método del Codo" se utiliza principalmente para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="A"> A. Eliminar outliers.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="B"> B. Predecir series temporales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="C"> C. Determinar el número óptimo de clusters (K) en algoritmos como K-Means.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="D"> D. Sustituir valores nulos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">10. Dividir los datos en "Train Set" y "Test Set" es vital para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="A"> A. Reducir el almacenamiento.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="B"> B. Evaluar cómo se comporta el modelo ante datos que nunca ha visto antes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="C"> C. Hacer Clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="D"> D. Cambiar la escala de los datos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">11. Normalizar una variable consiste en:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="A"> A. Escalar sus valores (ej. entre 0 y 1) para que no domine por su magnitud pura.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="B"> B. Transformar el texto en números.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="C"> C. Rellenar campos vacíos con medias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="D"> D. Borrar las columnas que no sirven.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">12. Para estimar la duración de la estancia de un paciente (valor numérico) usaremos:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="A"> A. K-Means Clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="B"> B. Reglas de Asociación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="C"> C. Regresión Lineal (o Múltiple).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="D"> D. One-Hot Encoding.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">13. Un "Outlier" (valor atípico) en una base de datos de salarios sería:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="A"> A. El salario mínimo interprofesional.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="B"> B. Un ingreso de 1 millón de euros mensuales junto a salarios normales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="C"> C. El promedio de todos los sueldos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="D"> D. Un campo en blanco (null).</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">14. Al proceso de KDD (Knowledge Discovery in Databases) le dedica la mayor parte del tiempo a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="A"> A. Calcular el RMSE.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="B"> B. Diseñar los Dashboards.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="C"> C. Elegir el algoritmo K-Means.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="D"> D. La Preparación y Limpieza de Datos (Preprocessing).</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">15. La limpieza de datos (Data Cleaning) se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="A"> A. Solo borrar datos antiguos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="B"> B. No tiene aplicación en minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="C"> C. Solo para datos numéricos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="D"> D. Corregir errores, eliminar duplicados y manejar valores faltantes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">16. Un "algoritmo de clustering" en minería de datos:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="A"> A. Solo se usa para bases de datos relacionales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="B"> B. Agrupa datos en base a similitudes sin etiquetas previas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="C"> C. No tiene relación con el análisis.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="D"> D. Solo sirve para textos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">17. La "clasificación" en minería de datos implica:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="A"> A. Solo ordenar alfabéticamente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="B"> B. Asignar categorías a datos basados en características conocidas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="C"> C. No es una técnica de minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="D"> D. Solo funciona en imágenes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">18. La "validación cruzada" (cross-validation) se usa para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="A"> A. Solo validar SQL.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="B"> B. Evaluar cómo el modelo se desempeñará en un conjunto de datos independiente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="C"> C. No tiene aplicación estadística.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="D"> D. Solo datos financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">19. Las "técnicas de reducción de dimensionalidad" ayudan a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="A"> A. Aumentar la cantidad de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="B"> B. No tienen uso.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="C"> C. Simplificar conjuntos de datos complejos manteniendo la información esencial (Ej: PCA).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="D"> D. Solo a cambiar colores.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">20. La minería de datos se define como:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="A"> A. Solo la extracción física de minerales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="B"> B. El proceso de descubrir patrones, tendencias y conocimiento a partir de grandes cantidades de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="C"> C. Comprar hardware caro.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="D"> D. Solo imprimir reportes estáticos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-violet-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            // Re-render canvases if needed
+            if(sectionId === 'sec7') {
+                if(kmPoints.length === 0) resetKMeans();
+                if(lrPoints.length === 0) initRegression();
+            }
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Toggle E2E Flow
+        function toggleE2E(stepId) {
+            document.getElementById(stepId).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // SIMULADOR A: K-MEANS CLUSTERING
+        // ==========================================
+        const kmCanvas = document.getElementById('kmeansCanvas');
+        const kmCtx = kmCanvas.getContext('2d');
+        let kmPoints = [];
+        let kmCentroids = [];
+        let kmColors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
+        let kmAnimId = null;
+
+        function generateKMPoints() {
+            kmPoints = [];
+            // Generar 3 grupos naturales ocultos
+            const centers = [{x: 80, y: 80}, {x: 320, y: 150}, {x: 200, y: 200}];
+            centers.forEach(c => {
+                for(let i=0; i<15; i++) {
+                    kmPoints.push({
+                        x: c.x + (Math.random() * 80 - 40),
+                        y: c.y + (Math.random() * 80 - 40),
+                        cluster: -1
+                    });
+                }
+            });
+            // Ruido extra
+            for(let i=0; i<5; i++) kmPoints.push({x: Math.random()*380+10, y: Math.random()*230+10, cluster:-1});
+        }
+
+        function drawKMeans() {
+            kmCtx.clearRect(0, 0, kmCanvas.width, kmCanvas.height);
+            // Draw points
+            kmPoints.forEach(p => {
+                kmCtx.beginPath();
+                kmCtx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                kmCtx.fillStyle = p.cluster === -1 ? '#94a3b8' : kmColors[p.cluster];
+                kmCtx.fill();
+                kmCtx.closePath();
+                
+                // Draw line to centroid
+                if(p.cluster !== -1 && kmCentroids[p.cluster]) {
+                    kmCtx.beginPath();
+                    kmCtx.moveTo(p.x, p.y);
+                    kmCtx.lineTo(kmCentroids[p.cluster].x, kmCentroids[p.cluster].y);
+                    kmCtx.strokeStyle = kmColors[p.cluster] + '40'; // 25% opacity
+                    kmCtx.lineWidth = 1;
+                    kmCtx.stroke();
+                }
+            });
+
+            // Draw centroids
+            kmCentroids.forEach((c, i) => {
+                kmCtx.fillStyle = kmColors[i];
+                kmCtx.fillRect(c.x - 8, c.y - 8, 16, 16);
+                kmCtx.strokeStyle = '#fff';
+                kmCtx.lineWidth = 2;
+                kmCtx.strokeRect(c.x - 8, c.y - 8, 16, 16);
+            });
+        }
+
+        function resetKMeans() {
+            if(kmAnimId) clearTimeout(kmAnimId);
+            generateKMPoints();
+            kmCentroids = [];
+            document.getElementById('kmeansStatus').innerText = "Esperando inicio";
+            document.getElementById('kmeansStatus').className = "text-xs text-yellow-400 bg-slate-800 px-2 rounded";
+            document.getElementById('kMeansLog').innerHTML = "> Generados 50 nuevos perfiles de cliente.";
+            drawKMeans();
+        }
+
+        function kMeansLog(msg) {
+            const log = document.getElementById('kMeansLog');
+            log.innerHTML += `<br>> ${msg}`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function startKMeans() {
+            if(kmAnimId) clearTimeout(kmAnimId);
+            let k = parseInt(document.getElementById('kSlider').value);
+            kmCentroids = [];
+            document.getElementById('kMeansLog').innerHTML = `> Iniciando K-Means con K=${k}`;
+            
+            // Init random centroids from points
+            let tempPoints = [...kmPoints];
+            for(let i=0; i<k; i++) {
+                let rIdx = Math.floor(Math.random() * tempPoints.length);
+                kmCentroids.push({x: tempPoints[rIdx].x, y: tempPoints[rIdx].y});
+                tempPoints.splice(rIdx, 1);
+            }
+            
+            document.getElementById('kmeansStatus').innerText = "Convergiendo...";
+            document.getElementById('kmeansStatus').className = "text-xs text-cyan-400 bg-slate-800 px-2 rounded animate-pulse";
+            
+            let iter = 0;
+            function step() {
+                iter++;
+                let moved = false;
+                
+                // Assign
+                kmPoints.forEach(p => {
+                    let minDist = Infinity;
+                    let bestK = -1;
+                    kmCentroids.forEach((c, i) => {
+                        let d = Math.hypot(p.x - c.x, p.y - c.y);
+                        if(d < minDist) { minDist = d; bestK = i; }
+                    });
+                    p.cluster = bestK;
+                });
+                
+                // Update
+                kmCentroids.forEach((c, i) => {
+                    let pts = kmPoints.filter(p => p.cluster === i);
+                    if(pts.length > 0) {
+                        let nx = pts.reduce((sum, p) => sum + p.x, 0) / pts.length;
+                        let ny = pts.reduce((sum, p) => sum + p.y, 0) / pts.length;
+                        if(Math.abs(c.x - nx) > 0.5 || Math.abs(c.y - ny) > 0.5) moved = true;
+                        c.x = nx; c.y = ny;
+                    }
+                });
+
+                drawKMeans();
+                kMeansLog(`Iteración ${iter}: Recalculando distancias...`);
+
+                if(moved && iter < 20) {
+                    kmAnimId = setTimeout(step, 800); // Animation delay
+                } else {
+                    document.getElementById('kmeansStatus').innerText = "Completado";
+                    document.getElementById('kmeansStatus').className = "text-xs text-green-400 bg-slate-800 px-2 rounded";
+                    kMeansLog(`<span class='text-white'>¡Convergencia alcanzada en ${iter} pasos!</span>`);
+                    
+                    // Draw highlight circles
+                    kmCentroids.forEach((c, i) => {
+                        kmCtx.beginPath();
+                        kmCtx.arc(c.x, c.y, 40, 0, Math.PI * 2);
+                        kmCtx.fillStyle = kmColors[i] + '20';
+                        kmCtx.fill();
+                        kmCtx.closePath();
+                    });
+                }
+            }
+            step();
+        }
+
+        // ==========================================
+        // SIMULADOR B: REGRESIÓN LINEAL
+        // ==========================================
+        const lrCanvas = document.getElementById('lrCanvas');
+        const lrCtx = lrCanvas.getContext('2d');
+        let lrPoints = [];
+        let lrModel = null; // {m, b}
+
+        function initRegression() {
+            lrPoints = [];
+            // Generate basic y = 1.2x + 50 with some noise
+            for(let x=20; x<380; x+=15) {
+                lrPoints.push({
+                    x: x,
+                    y: 200 - (0.4 * x + (Math.random()*40 - 20)) // Y inverted for canvas
+                });
+            }
+            lrModel = null;
+            document.getElementById('lrEqDisplay').innerText = "Puntos generados. Esperando cálculo...";
+            document.getElementById('lrStatus').innerText = "R²: -";
+            document.getElementById('lrPredictionRes').innerText = "";
+            drawRegression();
+        }
+
+        function drawRegression() {
+            lrCtx.clearRect(0, 0, lrCanvas.width, lrCanvas.height);
+            
+            // Draw axis
+            lrCtx.strokeStyle = '#475569';
+            lrCtx.beginPath(); lrCtx.moveTo(20, 10); lrCtx.lineTo(20, 240); lrCtx.lineTo(390, 240); lrCtx.stroke();
+
+            // Draw points
+            lrPoints.forEach(p => {
+                lrCtx.beginPath();
+                lrCtx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                lrCtx.fillStyle = '#0ea5e9'; // sky-500
+                lrCtx.fill();
+                lrCtx.closePath();
+            });
+
+            // Draw Line if model exists
+            if(lrModel) {
+                lrCtx.beginPath();
+                lrCtx.moveTo(20, lrModel.m * 20 + lrModel.b);
+                lrCtx.lineTo(390, lrModel.m * 390 + lrModel.b);
+                lrCtx.strokeStyle = '#ef4444'; // red-500
+                lrCtx.lineWidth = 2;
+                lrCtx.stroke();
+            }
+        }
+
+        function lrAddNoise() {
+            lrPoints.forEach(p => p.y += (Math.random() * 60 - 30));
+            lrModel = null;
+            drawRegression();
+            document.getElementById('lrEqDisplay').innerText = "Datos alterados. Recalcula el modelo.";
+        }
+
+        function lrAddOutlier() {
+            lrPoints.push({x: Math.random()*300+40, y: Math.random()*50+20}); // Extreme top
+            lrModel = null;
+            drawRegression();
+            document.getElementById('lrEqDisplay').innerText = "Outlier añadido. Recalcula para ver el sesgo.";
+        }
+
+        function lrCalculate() {
+            let n = lrPoints.length;
+            if(n === 0) return;
+
+            let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+            lrPoints.forEach(p => {
+                sumX += p.x;
+                sumY += p.y;
+                sumXY += p.x * p.y;
+                sumXX += p.x * p.x;
+            });
+
+            let m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            let b = (sumY - m * sumX) / n;
+            lrModel = {m: m, b: b};
+
+            // Calculate R2
+            let yMean = sumY / n;
+            let ssTot = 0, ssRes = 0;
+            lrPoints.forEach(p => {
+                let yPred = m * p.x + b;
+                ssTot += Math.pow(p.y - yMean, 2);
+                ssRes += Math.pow(p.y - yPred, 2);
+            });
+            let r2 = 1 - (ssRes / ssTot);
+            
+            drawRegression();
+            
+            // Visual feedback Math (Remembering canvas Y is inverted)
+            let visualSlope = -m; 
+            document.getElementById('lrEqDisplay').innerHTML = `Ecuación: <strong>Y = ${visualSlope.toFixed(2)}X + ${(250-b).toFixed(0)}</strong> | RMSE Minimizado`;
+            
+            let r2Color = r2 > 0.7 ? 'text-green-400' : (r2 > 0.4 ? 'text-yellow-400' : 'text-red-400');
+            document.getElementById('lrStatus').innerHTML = `<span class="${r2Color}">R²: ${r2.toFixed(2)}</span>`;
+        }
+
+        function lrPredict() {
+            if(!lrModel) return alert("Primero calcula el modelo.");
+            let xVal = parseFloat(document.getElementById('lrInputX').value);
+            if(isNaN(xVal)) return;
+
+            let yPredCanvas = lrModel.m * xVal + lrModel.b;
+            let visualY = 250 - yPredCanvas; // mock real value
+
+            document.getElementById('lrPredictionRes').innerText = `Y ≈ ${visualY.toFixed(1)}`;
+            
+            // Highlight point
+            drawRegression();
+            lrCtx.beginPath();
+            lrCtx.arc(xVal, yPredCanvas, 8, 0, Math.PI * 2);
+            lrCtx.fillStyle = '#facc15';
+            lrCtx.fill();
+            lrCtx.strokeStyle = '#fff';
+            lrCtx.stroke();
+            lrCtx.closePath();
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (SECCIÓN 9)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+        }
+
+    </script>
+</body>
+</html>
