@@ -6,6 +6,30 @@
     <title>Unidad 7 - Minería y Consenso Distribuido | Master Template</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Variables y Clases para el Tema Dinámico */
+        :root {
+            --bg-main: #020617;
+            --bg-card: #0f172a;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        /* Override para Modo Claro (Light Mode) */
+        body.light-mode {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+        }
+
+        /* Clases de utilidad que enlazan con las variables */
+        .theme-card { background-color: var(--bg-card); transition: background-color 0.3s; }
+        .theme-border { border-color: var(--border-color); transition: border-color 0.3s; }
+        .theme-text { color: var(--text-main); transition: color 0.3s; }
+        .theme-text-muted { color: var(--text-muted); transition: color 0.3s; }
+        
         /* Animaciones Core */
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -1244,6 +1268,82 @@
                 scoreTxt.className = "text-5xl font-black text-red-500 mb-2";
                 msgTxt.innerText = "DEFICIENTE. Te sugiero repasar la teoría de Hashing y Mecanismos de Consenso (PoW/PoS) antes de operar en red.";
             }
+        }
+
+        // ==========================================
+        // THEME TOGGLE (DARK/LIGHT)
+        // ==========================================
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            
+            // Cambiamos el fondo principal si es necesario
+            if (body.classList.contains('light-mode')) {
+                body.classList.replace('bg-[#020617]', 'bg-slate-50');
+                document.getElementById('mainContent').classList.replace('bg-[#020617]', 'bg-slate-50');
+            } else {
+                body.classList.replace('bg-slate-50', 'bg-[#020617]');
+                document.getElementById('mainContent').classList.replace('bg-slate-50', 'bg-[#020617]');
+            }
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (TIPO BATALLA UD6)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Reset styles
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-900/20');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-900/20');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La respuesta correcta era la opción ${correctAns}.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500', 'bg-red-900/20');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No has respondido. La respuesta correcta era la opción ${correctAns}.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-400', 'text-red-400', 'text-yellow-400');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-400');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-400');
+                resDiv.innerHTML = `⚖️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas un 80% para la excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-400');
+                resDiv.innerHTML = `🛑 NO SUPERADO (${score}/${questions.length}) - ${percent}%. Repasa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
         }
 
         // INIT
