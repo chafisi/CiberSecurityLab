@@ -207,19 +207,35 @@
                         </ul>
                     </div>
 
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-indigo-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Clustering K-Means</h4>
+                    <!-- ESQUEMA Y PLACEHOLDER CASO 15 -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-indigo-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Clustering K-Means para Segmentación</h4>
                         
-                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-indigo-500 transition cursor-pointer">
-                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Espacio para esquema visual: Gráfico de Dispersión (Frecuencia vs Gasto) mostrando Puntos agrupados y coloreados según su cluster]</span>
-                        </div>
+                        
 
-                        <div class="flex items-center justify-between text-xs text-slate-600 font-bold bg-white p-3 rounded border border-slate-200 overflow-x-auto">
-                            <span>Datos Brutos</span> ➔ 
-                            <span class="text-blue-500">Normalización</span> ➔ 
-                            <span class="text-orange-500">Iteración K-Means</span> ➔ 
-                            <span class="text-green-500">Grupos Definidos</span> ➔ 
-                            <span class="text-purple-600">Campaña Marketing</span>
+                        <!-- Esquema en pasos -->
+                        <ul class="space-y-4 text-sm text-slate-700 font-mono">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">📊</span> 
+                                <div><strong class="text-slate-900 block mb-1">PREPARACIÓN Y ESCALADO:</strong> Recolección del historial de compras y normalización de métricas (ej. Gasto vs Frecuencia) a una misma escala.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">⚙️</span> 
+                                <div><strong class="text-slate-900 block mb-1">ITERACIÓN K-MEANS:</strong> Definición del número de grupos (K) y asignación iterativa de cada cliente al centroide matemático más cercano.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">🧠</span> 
+                                <div><strong class="text-slate-900 block mb-1">INTERPRETACIÓN DE CLUSTERS:</strong> Perfilado de los grupos resultantes (ej. "Clientes de Alto Valor", "Cazadores de Ofertas", "Compradores Ocasionales").</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">🚀</span> 
+                                <div><strong class="text-slate-900 block mb-1">ACCIÓN COMERCIAL:</strong> Ejecución de campañas de marketing hiperpersonalizadas y gestión de inventario basada en el segmento.</div>
+                            </li>
+                        </ul>
+
+                        <!-- Hueco para la imagen -->
+                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-indigo-500 transition cursor-pointer">
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Generar imagen: Gráfico de Dispersión (Frecuencia vs Gasto) mostrando puntos agrupados en 3 clusters definidos, con sus respectivos centroides geométricos resaltados]</span>
                         </div>
                     </div>
                 </div>
