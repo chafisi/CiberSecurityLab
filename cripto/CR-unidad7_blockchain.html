@@ -43,6 +43,11 @@
         [MENU]
     </button>
 
+    <!-- Theme Toggle Button -->
+    <button onclick="toggleTheme()" class="fixed bottom-4 right-4 z-50 bg-slate-800 text-white p-3 rounded-full shadow-2xl border-2 border-orange-500 hover:bg-orange-500 hover:scale-110 transition-all duration-300 flex items-center justify-center text-xl" title="Cambiar Tema">
+        🌓
+    </button>
+
     <aside id="sidebar" class="w-72 bg-slate-900 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative border-r border-slate-800">
         <div class="p-6 border-b border-slate-800 bg-black flex justify-between items-center">
             <div>
@@ -517,48 +522,285 @@
             </div>
         </section>
 
-        <section id="sec9" class="main-section hidden fade-in h-full flex flex-col">
-            <div class="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4 shrink-0">
+        <!-- SECCIÓN 9: Test de Evaluación (Formato Batalla) -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <div class="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
                 <span class="text-4xl">📝</span>
-                <h2 class="text-3xl font-black text-white">9. Evaluación Técnica UD7</h2>
+                <h2 class="text-3xl font-black theme-text">9. Test de Evaluación (Simulador Examen)</h2>
             </div>
+            <p class="theme-text-muted mb-8">Preguntas extraídas exactamente del documento oficial. Evalúa tus conocimientos[cite: 24].</p>
             
-            <div class="bg-slate-900 rounded-xl shadow-2xl border border-slate-700 flex-1 flex flex-col overflow-hidden max-w-4xl mx-auto w-full">
-                <div class="bg-black border-b border-slate-800 p-4 shrink-0">
-                    <div class="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">
-                        <span>Tests Pasados:</span>
-                        <span id="quizProgressText" class="text-green-500">0 / 20</span>
+            <form id="quizForm" class="space-y-6">
+                
+                <!-- Q1 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="C">
+                    <h4 class="font-bold theme-text mb-3">1. Un "pool de minería" es:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q1" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q1" value="A"> A. Solo para grandes corporaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q1" value="B"> B. No existe tal concepto en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q1" value="C"> C. Un grupo de mineros que combinan sus recursos computacionales para aumentar sus probabilidades de minar un bloque.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q1" value="D"> D. Solo para la minería de metales.</label>
                     </div>
-                    <div class="w-full bg-slate-800 rounded-full h-1">
-                        <div id="quizProgressBar" class="bg-green-500 h-1 rounded-full transition-all duration-300" style="width: 0%"></div>
-                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
                 </div>
 
-                <div class="p-6 md:p-10 flex-1 overflow-y-auto bg-[#0f172a] relative">
-                    <div id="quizResultScreen" class="hidden absolute inset-0 bg-[#0f172a] z-10 flex flex-col items-center justify-center p-8 text-center fade-in">
-                        <span id="quizResultIcon" class="text-6xl mb-4">🏆</span>
-                        <h2 class="text-4xl font-black text-white mb-2" id="quizFinalScore">--/--</h2>
-                        <p id="quizFinalMsg" class="text-slate-400 mb-8 max-w-md"></p>
-                        <button onclick="quizInit()" class="bg-orange-600 hover:bg-orange-500 text-white px-8 py-3 rounded font-bold uppercase transition tracking-widest shadow-lg">Reiniciar Sistema de Test</button>
+                <!-- Q2 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">2. La "dificultad" de minería en blockchain:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q2" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q2" value="A"> A. Es constante y no cambia.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q2" value="B"> B. Ajusta automáticamente para mantener un intervalo constante entre los bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q2" value="C"> C. Solo se aplica a sistemas antiguos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q2" value="D"> D. No tiene impacto en la minería.</label>
                     </div>
-
-                    <div id="questionContainer" class="max-w-2xl mx-auto">
-                        <div class="text-orange-500 font-bold mb-2 text-sm font-mono">> Q_<span id="qNumberDisplay">1</span></div>
-                        <h3 id="qText" class="text-xl font-bold text-white mb-6 leading-relaxed">Cargando datos del protocolo...</h3>
-                        
-                        <div id="qOptions" class="space-y-3 font-sans">
-                            </div>
-
-                        <div id="qFeedback" class="hidden mt-6 p-4 rounded-lg border text-sm font-bold fade-in font-sans">
-                            </div>
-                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
                 </div>
 
-                <div class="bg-black border-t border-slate-800 p-4 flex justify-between items-center shrink-0">
-                    <button onclick="quizInit()" class="text-slate-600 hover:text-white text-xs font-bold uppercase tracking-wider transition">Reset</button>
-                    <button id="btnNextQuestion" onclick="quizNext()" class="bg-slate-800 text-slate-500 px-8 py-3 rounded font-bold transition uppercase tracking-wider cursor-not-allowed border border-slate-700" disabled>Validar & Siguiente >></button>
+                <!-- Q3 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="A">
+                    <h4 class="font-bold theme-text mb-3">3. El "nonce" en minería es:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q3" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q3" value="A"> A. Un valor que los mineros ajustan para encontrar un hash válido.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q3" value="B"> B. Solo un tipo de criptomoneda.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q3" value="C"> C. No tiene función en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q3" value="D"> D. Solo para transacciones financieras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
                 </div>
-            </div>
+
+                <!-- Q4 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">4. El "hash" en el contexto de la minería es:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q4" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q4" value="A"> A. Un número aleatorio.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q4" value="B"> B. El resultado de una función hash aplicada a las transacciones y al nonce, que debe cumplir ciertos criterios para que el bloque sea válido.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q4" value="C"> C. Solo para cifrar mensajes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q4" value="D"> D. No tiene importancia en la minería.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">5. La "prueba de participación" (Proof of Stake, PoS) es una alternativa a PoW donde:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q5" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q5" value="A"> A. Solo los mineros con más poder computacional validan transacciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q5" value="B"> B. Los validadores son elegidos según la cantidad de criptomonedas que poseen y "apuestan".</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q5" value="C"> C. No se usa en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q5" value="D"> D. Solo se aplica a transacciones financieras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">6. La "sostenibilidad" de la minería es un tema actual debido a:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q6" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q6" value="A"> A. Solo la eficiencia de los algoritmos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q6" value="B"> B. El alto consumo de energía y su impacto ambiental, promoviendo el desarrollo de métodos más eficientes como PoS.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q6" value="C"> C. No es un problema para blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q6" value="D"> D. Solo en países desarrollados.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q7 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="C">
+                    <h4 class="font-bold theme-text mb-3">7. La "centralización" de la minería puede ocurrir debido a:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q7" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q7" value="A"> A. Solo el número de usuarios en la red.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q7" value="B"> B. No es un problema en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q7" value="C"> C. La concentración del poder de hash en unas pocas entidades, lo que puede amenazar la descentralización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q7" value="D"> D. Solo en sistemas de pago tradicionales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q8 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">8. El "Proof of Stake" consume menos energía que "Proof of Work" porque:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q8" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q8" value="A"> A. No requiere validación de transacciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q8" value="B"> B. No depende del poder computacional para validar bloques, sino de la tenencia de criptomonedas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q8" value="C"> C. Es más eficiente solo en sistemas centralizados.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q8" value="D"> D. No tiene relación con el consumo de energía.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q9 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="C">
+                    <h4 class="font-bold theme-text mb-3">9. La "escalabilidad" en minería es un problema porque:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q9" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q9" value="A"> A. Aumenta la seguridad de la red.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q9" value="B"> B. No es un problema en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q9" value="C"> C. El consumo de energía y recursos computacionales puede crecer exponencialmente con el tamaño de la red.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q9" value="D"> D. Solo afecta a las criptomonedas menos conocidas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q10 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">10. El principal objetivo de la minería es:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q10" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q10" value="A"> A. Solo ganar dinero.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q10" value="B"> B. Asegurar la red blockchain, validar transacciones y emitir nuevas criptomonedas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q10" value="C"> C. Reducir el tamaño de la blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q10" value="D"> D. No tiene objetivos específicos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q11 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">11. El "ataque del 51%" en el contexto de minería implica:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q11" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q11" value="A"> A. Que el 51% de los usuarios pueden alterar la blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q11" value="B"> B. Que un grupo controla más del 50% del poder de hash, pudiendo potencialmente alterar la cadena de bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q11" value="C"> C. No tiene efectos perjudiciales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q11" value="D"> D. Solo es posible en sistemas centralizados.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q12 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">12. Un "fork" en la minería puede suceder cuando:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q12" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q12" value="A"> A. Solo se añade un nuevo bloque.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q12" value="B"> B. Hay un desacuerdo sobre cambios en el protocolo, resultando en dos cadenas paralelas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q12" value="C"> C. No tiene relación con la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q12" value="D"> D. Solo para actualizaciones menores.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q13 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="A">
+                    <h4 class="font-bold theme-text mb-3">13. El "Proof of Work" (PoW) en minería implica:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q13" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q13" value="A"> A. Que los mineros resuelvan problemas matemáticos complejos para validar bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q13" value="B"> B. Solo la aprobación de transacciones por una autoridad central.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q13" value="C"> C. No tiene relación con la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q13" value="D"> D. Solo aplicarse a contratos inteligentes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q14 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="A">
+                    <h4 class="font-bold theme-text mb-3">14. El "hashing power" o poder de hash en minería:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q14" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q14" value="A"> A. Es la capacidad computacional total que los mineros aportan a la red para resolver problemas de hash.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q14" value="B"> B. Solo se refiere a la cantidad de energía eléctrica.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q14" value="C"> C. No tiene impacto en la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q14" value="D"> D. Solo afecta a las transacciones.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q15 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">15. La "minería" en blockchain se refiere a:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q15" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q15" value="A"> A. La extracción de datos personales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q15" value="B"> B. El proceso de validar transacciones y agregarlas a la blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q15" value="C"> C. Solo la creación de monedas físicas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q15" value="D"> D. No tiene relación con blockchain.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q16 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="A">
+                    <h4 class="font-bold theme-text mb-3">16. El "halving" o reducción a la mitad en minería se refiere a:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q16" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q16" value="A"> A. La reducción de la recompensa por bloque que los mineros reciben, lo cual ocurre a intervalos regulares.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q16" value="B"> B. La reducción del tamaño de los bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q16" value="C"> C. No tiene impacto en la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q16" value="D"> D. Solo a la bifurcación de la cadena.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q17 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="D">
+                    <h4 class="font-bold theme-text mb-3">17. La "minería en la nube" implica:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q17" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q17" value="A"> A. Que los mineros físicamente se reúnen en la nube.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q17" value="B"> B. No es una práctica en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q17" value="C"> C. Solo aplicable a Bitcoin.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q17" value="D"> D. Alquilar poder de hash de proveedores de servicios en la nube para minar criptomonedas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q18 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="C">
+                    <h4 class="font-bold theme-text mb-3">18. El "hardware" especializado para la minería es conocido como:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q18" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q18" value="A"> A. Solo computadoras personales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q18" value="B"> B. No se usa en minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q18" value="C"> C. ASICS (Application-Specific Integrated Circuits).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q18" value="D"> D. Solo tarjetas gráficas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q19 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="B">
+                    <h4 class="font-bold theme-text mb-3">19. La "recompensa por bloque" se refiere a:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q19" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q19" value="A"> A. Solo los impuestos sobre las transacciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q19" value="B"> B. La cantidad de criptomonedas que un minero recibe por añadir un bloque a la blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q19" value="C"> C. No tiene relación con la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q19" value="D"> D. Solo aplicable a Bitcoin.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Q20 -->
+                <div class="theme-card p-6 rounded-xl shadow-sm border theme-border quiz-question" data-correct="A">
+                    <h4 class="font-bold theme-text mb-3">20. La "seguridad" de una blockchain mediante minería se basa en:[cite: 24]</h4>
+                    <div class="space-y-2 text-sm theme-text-muted">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q20" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q20" value="A"> A. La dificultad de revertir transacciones y la distribución del poder de hash entre los mineros.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q20" value="B"> B. Solo la cantidad de usuarios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q20" value="C"> C. No tiene relación con la seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-800 transition"><input type="radio" name="q20" value="D"> D. Solo la longitud de las claves.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Botones de Control de Test -->
+                <div class="sticky bottom-4 theme-card p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border theme-border shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="theme-text font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-orange-600 hover:bg-orange-500 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
         </section>
 
     </main>
