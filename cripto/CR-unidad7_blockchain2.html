@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 7 - Minería y Consenso | Master Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Animaciones para flujo E2E */
+        @keyframes pulse-border { 0% { border-color: #8b5cf6; } 50% { border-color: #c4b5fd; } 100% { border-color: #8b5cf6; } }
+        .animate-pulse-border { animation: pulse-border 2s infinite; }
+
+        /* Efecto Hashing Simulator */
+        @keyframes pulse-energy { 0% { border-color: #f97316; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); } 70% { border-color: #fdba74; box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); } 100% { border-color: #f97316; box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); } }
+        .animate-energy { animation: pulse-energy 2s infinite; }
+
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; }
+        
+        /* Scrollbars */
+        .terminal-scroll::-webkit-scrollbar { width: 8px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #0f172a; border-radius: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #6d28d9; border-radius: 4px; }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">UD 7: Minería & Consenso</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. La Mecánica de Minería</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Algoritmos Consenso</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Escalabilidad e Impacto</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos 13 y 14</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400 font-bold">7. Simuladores (PoW/PoS)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 9. Test Oficial (20 Preguntas)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. La Mecánica de Minería</h2>
+            <p class="text-slate-600 mb-6">El proceso físico-matemático mediante el cual las transacciones se verifican y se añaden al libro mayor público, asegurando la inmutabilidad mediante fuerza bruta computacional.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-4">La Carrera por el Nonce (Hash Target)</h3>
+                
+                <p class="text-sm text-slate-600 mt-4 mb-6">La minería no es resolver "ecuaciones matemáticas", sino aplicar fuerza bruta a una función criptográfica (SHA-256) hasta encontrar un resultado raro.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
+                    <div class="bg-slate-50 border-t-4 border-slate-400 p-4 rounded text-center shadow-sm">
+                        <span class="text-2xl block mb-2 text-slate-500">1</span>
+                        <h4 class="text-xs font-bold text-slate-800 mb-1">Transacción</h4>
+                        <p class="text-[10px] text-slate-600">Alice firma y envía Tx a la red P2P.</p>
+                    </div>
+                    <div class="bg-slate-50 border-t-4 border-blue-400 p-4 rounded text-center shadow-sm">
+                        <span class="text-2xl block mb-2 text-blue-500">2</span>
+                        <h4 class="text-xs font-bold text-slate-800 mb-1">Mempool</h4>
+                        <p class="text-[10px] text-slate-600">Nodos guardan la Tx pendiente. Mineros seleccionan.</p>
+                    </div>
+                    <div class="bg-slate-50 border-t-4 border-yellow-400 p-4 rounded text-center shadow-sm">
+                        <span class="text-2xl block mb-2 text-yellow-500">3</span>
+                        <h4 class="text-xs font-bold text-slate-800 mb-1">Block Header</h4>
+                        <p class="text-[10px] text-slate-600">Se empaquetan Txs + PrevHash + Merkle Root.</p>
+                    </div>
+                    <div class="bg-orange-50 border-t-4 border-orange-500 p-4 rounded text-center shadow-md animate-pulse-border">
+                        <span class="text-2xl block mb-2 text-orange-500">4</span>
+                        <h4 class="text-xs font-bold text-orange-800 mb-1">Hashing (Nonce)</h4>
+                        <p class="text-[10px] text-orange-700">Iteración brutal del número de un solo uso (Nonce).</p>
+                    </div>
+                    <div class="bg-slate-50 border-t-4 border-green-400 p-4 rounded text-center shadow-sm">
+                        <span class="text-2xl block mb-2 text-green-500">5</span>
+                        <h4 class="text-xs font-bold text-slate-800 mb-1">Validación</h4>
+                        <p class="text-[10px] text-slate-600">El ganador propaga y la red verifica.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Algoritmos de Consenso Distribuido</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm border-t-4 border-t-orange-500 hover:shadow-md transition relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl">🔥</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Proof of Work (PoW)</h3>
+                    <p class="text-xs font-bold text-orange-700 bg-orange-100 inline-block px-2 py-1 rounded mb-4">Consenso Termodinámico</p>
+                    <ul class="text-sm text-slate-600 space-y-3 relative z-10 list-disc pl-5">
+                        <li><strong>Mecánica:</strong> Requiere poder computacional (Hash Rate) generado por equipos especializados (ASICs).</li>
+                        <li><strong>Dificultad (Target):</strong> El protocolo ajusta dinámicamente la dificultad para que el tiempo promedio de bloque sea 10 min.</li>
+                        <li><strong>Seguridad:</strong> Para atacar la red (Ataque 51%), se requiere poseer más hardware y energía que toda la red honesta combinada. Coste astronómico.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm border-t-4 border-t-blue-500 hover:shadow-md transition relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl">🏦</div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">Proof of Stake (PoS)</h3>
+                    <p class="text-xs font-bold text-blue-700 bg-blue-100 inline-block px-2 py-1 rounded mb-4">Consenso Criptoeconómico</p>
+                    <ul class="text-sm text-slate-600 space-y-3 relative z-10 list-disc pl-5">
+                        <li><strong>Mecánica:</strong> No hay "mineros", sino "Validadores" que bloquean fondos (Stake) en un Smart Contract.</li>
+                        <li><strong>Selección:</strong> Elegidos mediante una lotería seudoaleatoria ponderada por la cantidad de fondos bloqueados.</li>
+                        <li><strong>Seguridad (Slashing):</strong> Si el validador aprueba transacciones falsas, la red ejecuta su contrato y <strong>quema</strong> sus fondos. Castigo económico.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h4 class="text-slate-800 font-bold mb-4">Otros Mecanismos Relevantes</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm"><span class="text-yellow-500 mr-2">🗳️</span><strong class="text-slate-800 text-sm">DPoS (Delegated):</strong> Usuarios votan a delegados para que validen (mayor velocidad).</div>
+                <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm"><span class="text-purple-500 mr-2">📜</span><strong class="text-slate-800 text-sm">PoA (Authority):</strong> Nodos validadores son entidades conocidas (consorcios).</div>
+                <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm"><span class="text-red-500 mr-2">🗑️</span><strong class="text-slate-800 text-sm">PoB (Burn):</strong> Los mineros queman monedas para ganar el derecho a minar.</div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Escalabilidad e Impacto Energético</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">El Problema de la Escalabilidad</h3>
+                    <p class="text-sm text-slate-600 mb-4">El diseño P2P requiere que todos los Full Nodes procesen cada transacción. Esto limita el TPS (Transacciones Por Segundo). Visa: ~24,000 TPS. Bitcoin: ~7 TPS.</p>
+                    <div class="space-y-4">
+                        <div class="bg-slate-50 border-l-4 border-yellow-500 p-4 rounded shadow-sm">
+                            <h4 class="text-slate-800 font-bold text-sm mb-1">Layer 1 (Capa Base)</h4>
+                            <p class="text-xs text-slate-600">Modificar el protocolo principal. Ej: <strong>Sharding</strong> (dividir la red en particiones o "shards").</p>
+                        </div>
+                        <div class="bg-slate-50 border-l-4 border-blue-500 p-4 rounded shadow-sm">
+                            <h4 class="text-slate-800 font-bold text-sm mb-1">Layer 2 (Off-Chain)</h4>
+                            <p class="text-xs text-slate-600">Construir redes sobre la L1. Ej: <strong>Lightning Network</strong> y <strong>Rollups</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-center">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Impacto Energético y Transición</h3>
+                    <div class="flex justify-between text-xs text-slate-600 mb-2 font-bold">
+                        <span>Consumo BTC Estimado</span>
+                        <span>~130 TWh/año</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2 mb-6">
+                        <div class="bg-orange-500 h-2 rounded-full" style="width: 85%"></div>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">El diseño PoW incentiva la búsqueda de la energía más barata (muchas veces renovable excedente), pero el gasto total iguala al de países medianos.</p>
+                    <p class="text-sm text-slate-600">La transición de Ethereum a PoS (The Merge) demostró que es posible mantener seguridad a nivel estatal reduciendo el consumo eléctrico en un <strong>99.95%</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas de la plataforma oficial, estructuradas para el estudio de Minería y Consenso.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⛏️</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 13: Minería Bitcoin y Seguridad</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere entender cómo se asegura la integridad de las transacciones en la red Bitcoin. Describe el proceso de minería de Bitcoin y cómo contribuye a la seguridad de la red.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Transacciones:</strong> Cuando Alice envía Bitcoin a Bob, su transacción se propaga a la red de Bitcoin.</li>
+                            <li><strong>Verificación:</strong> Los mineros recogen estas transacciones y las verifican para asegurarse de que no haya doble gasto y que los fondos estén disponibles.</li>
+                            <li><strong>Creación de Bloques:</strong> Las transacciones verificadas se agrupan en un bloque junto con un hash del bloque anterior, un timestamp y un nonce.</li>
+                            <li><strong>Proof of Work (PoW):</strong> Los mineros compiten para encontrar un hash que cumpla con ciertos criterios de dificultad (comienza con un número específico de ceros). Esto requiere inmenso poder de cálculo.</li>
+                            <li><strong>Agregar Bloque:</strong> El primer minero que encuentra el hash correcto lo añade a la cadena de bloques, ganando una recompensa.</li>
+                            <li><strong>Consenso e Inmutabilidad:</strong> La red acepta el bloque válido minado. Cada bloque incluye el hash del anterior, haciendo que cualquier alteración requiera rehacer todos los bloques siguientes (computacionalmente imposible).</li>
+                            <li><strong>Prevención de Ataques:</strong> La dificultad del PoW asegura que cualquier intento de alterar la cadena (ataque 51%) sería extremadamente costoso.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-indigo-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Flujo de Minería y Seguridad</h4>
+                        
+                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-violet-500 transition cursor-pointer">
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Generar imagen: Diagrama de flujo del proceso de minería de Bitcoin mostrando la mempool, el cálculo PoW y la inmutabilidad de la cadena]</span>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-slate-700 font-mono">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">1️⃣</span> 
+                                <div><strong class="text-slate-900 block mb-1">TRANSACCIÓN Y MEMPOOL:</strong> Alice envía BTC, los mineros recogen la Tx y verifican firmas y fondos.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">2️⃣</span> 
+                                <div><strong class="text-slate-900 block mb-1">CREACIÓN Y POW:</strong> Agrupación en bloque (PrevHash + Tx + Nonce) y fuerza bruta para cumplir la dificultad matemática.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">3️⃣</span> 
+                                <div><strong class="text-slate-900 block mb-1">CONSENSO E INMUTABILIDAD:</strong> El bloque se añade. Alterarlo requiere rehacer todos los hashes siguientes (imposible a gran escala).</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-red-100 text-red-600 p-2 rounded text-lg leading-none">🛡️</span> 
+                                <div><strong class="text-slate-900 block mb-1">PROTECCIÓN 51%:</strong> El inmenso coste computacional y eléctrico hace que un ataque a la red sea económicamente inviable.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🌱</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 14: Ethereum PoS vs Bitcoin PoW</h3>
+                    </div>
+                    <span class="bg-green-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-violet-300 pl-4">Enunciado: Bob está interesado en la transición de Ethereum a PoS. Explica cómo opera la validación con PoS y qué ventajas ofrece sobre PoW en términos de eficiencia y seguridad.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="list-disc pl-5 text-sm text-slate-700 space-y-3">
+                            <li><strong>Validadores:</strong> En lugar de mineros, Ethereum usa validadores que "apuestan" sus Ethers para participar en el proceso de validación.</li>
+                            <li><strong>Selección de Bloques:</strong> Los validadores son elegidos aleatoriamente para crear bloques basados en la cantidad apostada (stake).</li>
+                            <li><strong>Validación y Adición:</strong> Un validador propone un bloque, otros lo verifican. Si es válido, se añade y reciben recompensas.</li>
+                            <li><strong>Energía:</strong> PoS es mucho más eficiente energéticamente, no requiere capacidad computacional masiva.</li>
+                            <li><strong>Seguridad:</strong> Reduce el riesgo de ataques 51% porque requiere poseer la mayoría de los Ethers apostados (extremadamente caro y visible).</li>
+                            <li><strong>Centralización:</strong> PoW tiende a centralizar en quienes pueden pagar hardware potente; PoS da oportunidad según inversión (aunque puede llevar a concentración si no se diseña bien).</li>
+                            <li><strong>Ventajas Adicionales:</strong> Mayor escalabilidad e incentiva la retención (holding) de la moneda.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-indigo-900 mb-4 uppercase text-xs tracking-widest">> Esquema Visual: Transición a Proof of Stake</h4>
+                        
+                        <div class="w-full h-48 bg-white border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center mb-6 hover:border-violet-500 transition cursor-pointer">
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[Generar imagen: Diagrama comparativo ilustrando mineros con ASICs consumiendo energía (PoW) versus validadores bloqueando monedas en un Smart Contract (PoS)]</span>
+                        </div>
+
+                        <ul class="space-y-4 text-sm text-slate-700 font-mono">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-100 text-blue-600 p-2 rounded text-lg leading-none">🏦</span> 
+                                <div><strong class="text-slate-900 block mb-1">STAKING (Fianza):</strong> Los validadores bloquean ETH en un contrato inteligente en lugar de comprar hardware de minería.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-blue-100 text-blue-600 p-2 rounded text-lg leading-none">🎲</span> 
+                                <div><strong class="text-slate-900 block mb-1">SELECCIÓN ESTOCÁSTICA:</strong> Sorteo ponderado por la cantidad apostada para proponer el bloque. El resto verifica.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-green-100 text-green-600 p-2 rounded text-lg leading-none">🌱</span> 
+                                <div><strong class="text-slate-900 block mb-1">EFICIENCIA ENERGÉTICA:</strong> Al eliminar la competencia de fuerza bruta criptográfica, se logra una red casi 100% sostenible.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-red-100 text-red-600 p-2 rounded text-lg leading-none">⚔️</span> 
+                                <div><strong class="text-slate-900 block mb-1">SEGURIDAD (Slashing):</strong> El fraude se castiga quemando (destruyendo) los fondos del atacante.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Avanzados)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🔢</span><h3 class="font-bold text-lg">Nonce</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Number Used Once</h4><p class="text-sm">Variable de 32-bits que los mineros cambian constantemente para generar un Hash nuevo en cada iteración.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">⚙️</span><h3 class="font-bold text-lg">Difficulty Adj.</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Ajuste Dificultad</h4><p class="text-sm">Mecanismo automático que hace más difícil o fácil encontrar el Target para mantener el tiempo de bloque estable.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🗡️</span><h3 class="font-bold text-lg">Slashing</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Castigo PoS</h4><p class="text-sm">Regla donde parte de los fondos de un validador son destruidos si actúa de forma maliciosa.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🔒</span><h3 class="font-bold text-lg">Staking</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Depósito Fianza</h4><p class="text-sm">Acción de bloquear criptomonedas en un smart contract para obtener el derecho de validar bloques.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🧩</span><h3 class="font-bold text-lg">Sharding</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Fragmentación L1</h4><p class="text-sm">Solución que divide la red en partes más pequeñas que procesan Txs en paralelo.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">📥</span><h3 class="font-bold text-lg">Mempool</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Memory Pool</h4><p class="text-sm">La "sala de espera" local donde residen transacciones válidas que aún no están en un bloque.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">🏴‍☠️</span><h3 class="font-bold text-lg">51% Attack</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Ataque Mayoría</h4><p class="text-sm">Situación donde alguien controla >50% del Hash Rate, permitiéndole realizar doble gasto.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><span class="text-3xl mb-3">📈</span><h3 class="font-bold text-lg">Hash Rate</h3></div>
+                        <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Poder Cómputo</h4><p class="text-sm">Velocidad a la que una red completa operaciones de hashing. Métrica clave en PoW.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Técnico Extendido</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">ASIC</h4>
+                    <p class="text-sm text-slate-600 mt-1">Application-Specific Integrated Circuit. Hardware diseñado exclusivamente para ejecutar un algoritmo hash a máxima velocidad.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Halving</h4>
+                    <p class="text-sm text-slate-600 mt-1">Evento programado en Bitcoin que reduce a la mitad la recompensa base por bloque minado, controlando la inflación.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-green-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Mining Pool</h4>
+                    <p class="text-sm text-slate-600 mt-1">Grupo de mineros que combinan su Hash Rate para aumentar la probabilidad de ganar un bloque, repartiéndose ganancias.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-yellow-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Target (Objetivo)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Valor numérico por debajo del cual debe quedar el Hash del minero para que la red lo acepte como válido.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-red-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Epoch (Época)</h4>
+                    <p class="text-sm text-slate-600 mt-1">En redes PoS, periodo compuesto por "slots" donde el protocolo selecciona validadores y finaliza grupos de bloques.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-blue-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Cloud Mining</h4>
+                    <p class="text-sm text-slate-600 mt-1">Práctica de alquilar poder de hash a un proveedor en lugar de comprar hardware propio.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[700px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Simuladores Interactivos (JavaScript Real)</h2>
+            <p class="text-slate-600 mb-6">Experimenta con el funcionamiento de los Mecanismos de Consenso.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 pb-10">
+                
+                <div class="bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col font-mono relative text-white">
+                    <div id="powSuccessOverlay" class="hidden absolute inset-0 bg-green-900/95 z-20 flex flex-col items-center justify-center text-center p-6 fade-in border-4 border-green-500">
+                        <span class="text-6xl mb-4">💎</span>
+                        <h3 class="text-2xl font-black text-white mb-2">¡BLOQUE SELLADO!</h3>
+                        <p id="powStats" class="text-green-300 text-sm mb-6 bg-black p-4 rounded border border-green-700"></p>
+                        <button onclick="resetPoW()" class="bg-black text-green-400 px-6 py-2 rounded font-bold border border-green-500 hover:bg-green-800 hover:text-white transition uppercase">INICIAR NUEVA BÚSQUEDA</button>
+                    </div>
+
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center shrink-0">
+                        <span class="text-xs text-orange-400 font-bold">> PoW_MINING_RIG_v1.0</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full text-sm">
+                        <div class="bg-slate-800 p-4 rounded border border-slate-700 mb-4 shrink-0">
+                            <label class="text-slate-400 text-xs font-bold uppercase mb-2 block tracking-widest">Ajuste de Dificultad (Ceros Target)</label>
+                            <div class="flex items-center gap-4 mb-4">
+                                <input type="range" id="diffSlider" min="1" max="4" value="2" class="w-full accent-orange-500" oninput="updateDiffLabel()">
+                                <span id="diffLabel" class="text-orange-400 font-bold bg-black px-3 py-1 border border-slate-700 rounded w-12 text-center">2</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="startMining()" id="btnStartMine" class="w-full bg-orange-600 hover:bg-orange-500 text-white py-2 rounded font-bold transition uppercase">Ejecutar Fuerza Bruta</button>
+                                <button onclick="stopMining()" id="btnStopMine" class="w-full bg-slate-700 text-slate-400 py-2 rounded font-bold transition uppercase cursor-not-allowed" disabled>Abortar</button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mb-4 text-xs shrink-0">
+                            <div class="bg-black p-3 rounded border border-slate-800">
+                                <span class="text-slate-500 block mb-1 uppercase">Hash Rate</span>
+                                <span class="text-orange-400 font-bold text-lg">~15k H/s</span>
+                            </div>
+                            <div class="bg-black p-3 rounded border border-slate-800">
+                                <span class="text-slate-500 block mb-1 uppercase">Nonce Actual</span>
+                                <span id="nonceDisplay" class="text-white font-bold text-lg">0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-black rounded border border-slate-800 flex-1 overflow-hidden flex flex-col relative h-32 md:h-auto">
+                            <div class="bg-slate-900 px-3 py-1 border-b border-slate-800 text-[10px] text-slate-500 flex justify-between">
+                                <span>hashing_log.sh</span>
+                                <span id="powSpinner" class="text-orange-500 hidden">⠋ Computing...</span>
+                            </div>
+                            <div id="miningTerminal" class="p-3 text-[10px] text-green-500/70 overflow-y-auto flex-1 custom-scrollbar leading-none">
+                                > Sistema Inicializado.<br>
+                                > Configure Dificultad y presione Ejecutar.<br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 rounded-xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col font-mono relative text-white">
+                    <div id="slashingOverlay" class="hidden absolute inset-0 bg-red-950/95 z-20 flex flex-col items-center justify-center text-center p-6 fade-in border-4 border-red-600">
+                        <span class="text-6xl mb-4">🚨</span>
+                        <h3 class="text-2xl font-black text-red-500 mb-2">¡SLASHING DETECTADO!</h3>
+                        <p id="slashStats" class="text-red-200 text-sm mb-6 bg-black p-4 rounded border border-red-800"></p>
+                        <button onclick="dismissSlashing()" class="bg-black text-red-500 px-6 py-2 rounded font-bold border border-red-600 hover:bg-red-900 hover:text-white transition uppercase">ACEPTAR PENALIZACIÓN</button>
+                    </div>
+
+                    <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex justify-between items-center shrink-0">
+                        <span class="text-xs text-blue-400 font-bold">> PoS_STAKE_CONTRACT_v2</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full text-sm">
+                        <div class="space-y-4 mb-6 shrink-0" id="validatorsList">
+                            </div>
+
+                        <div class="bg-slate-800 p-4 rounded border border-slate-700 mb-4 flex gap-3 shrink-0">
+                            <button onclick="selectValidator()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded font-bold transition uppercase">Sortear Época</button>
+                            <button onclick="triggerSlashing()" class="bg-slate-700 hover:bg-red-900 text-red-400 px-4 rounded font-bold transition border border-slate-600 hover:border-red-500 flex flex-col justify-center items-center" title="Simular ataque/offline">
+                                <span class="text-lg leading-none mb-1">👿</span>
+                            </button>
+                        </div>
+                        
+                        <div class="bg-black rounded border border-slate-800 flex-1 overflow-hidden flex flex-col h-32 md:h-auto">
+                            <div class="bg-slate-900 px-3 py-1 border-b border-slate-800 text-[10px] text-slate-500">consensus_events.log</div>
+                            <div id="posTerminal" class="p-3 text-[10px] text-slate-400 overflow-y-auto flex-1 custom-scrollbar leading-snug">
+                                > Beacon Chain sincronizada.<br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E (Ciclo Transaccional)</h2>
+            <p class="text-slate-600 mb-8">Haz clic en cada paso para comprender qué ocurre internamente durante el ciclo de vida de una transacción.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-violet-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-violet-100 w-12 h-12 flex justify-center items-center rounded-full">📝</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">1. Creación de Transacción</h4>
+                                <span class="text-xs font-bold text-violet-500 uppercase">Estado: Pending ⏳</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-1" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">El usuario define los montos y firma el payload con su Clave Privada, lo que demuestra la autorización criptográfica del movimiento sin necesidad de contraseñas.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">🌐</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">2. Propagación P2P</h4>
+                                <span class="text-xs font-bold text-blue-500 uppercase">Estado: Broadcasting 📡</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-2" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">La Tx se transmite a los nodos cercanos. Estos verifican la firma y fondos, y si es correcta, la guardan en la "Mempool" local a la espera de un minero.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-orange-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-orange-100 w-12 h-12 flex justify-center items-center rounded-full">⛏️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">3. Selección Minero/Validador</h4>
+                                <span class="text-xs font-bold text-orange-500 uppercase">Estado: Computing ⚙️</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-3" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Los mineros agrupan las transacciones en un bloque candidato y compiten mediante PoW gastando energía, o (en PoS) un validador es sorteado para proponerlo.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-slate-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-slate-200 w-12 h-12 flex justify-center items-center rounded-full">⚖️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">4. Resolución de Consenso</h4>
+                                <span class="text-xs font-bold text-slate-600 uppercase">Estado: Validating 🔍</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-4" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">El minero encuentra el Nonce válido y lo propaga. Toda la red recalcula el Hash (operación instantánea) comprobando que las matemáticas cuadran y otorgan consenso.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden animate-pulse-border group cursor-pointer" onclick="toggleE2E('e2e-5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">✅</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">5. Adición y Confirmaciones</h4>
+                                <span class="text-xs font-bold text-green-600 uppercase">Estado: Finalized 🛡️</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-5" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">La Tx entra oficialmente al historial. Cuantos más bloques se añadan detrás (confirmaciones), mayor seguridad criptográfica obtiene debido a la concatenación de Hashes.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-green-500 pb-2 inline-block">9. Test de Evaluación (Simulador Examen)</h2>
+            <p class="text-slate-600 mb-6">Preguntas extraídas exactamente del documento oficial. Evalúa tus conocimientos.</p>
+            
+            <form id="quizForm" class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">1. Un "pool de minería" es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A. Solo para grandes corporaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B. No existe tal concepto en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C. Un grupo de mineros que combinan sus recursos computacionales para aumentar sus probabilidades de minar un bloque.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D. Solo para la minería de metales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">2. La "dificultad" de minería en blockchain:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A. Es constante y no cambia.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B. Ajusta automáticamente para mantener un intervalo constante entre los bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C. Solo se aplica a sistemas antiguos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D. No tiene impacto en la minería.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">3. El "nonce" en minería es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A. Un valor que los mineros ajustan iterativamente para encontrar un hash válido.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B. Solo un tipo de criptomoneda.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C. No tiene función en blockchain.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D. Solo para transacciones financieras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">4. El "hash" en el contexto de la minería es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A. Un número completamente aleatorio.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B. El resultado de una función matemática que debe cumplir ciertos criterios de red.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C. Solo un algoritmo de cifrado asimétrico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D. Una moneda física.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">5. El proceso de validar transacciones y agregarlas a la blockchain se denomina:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A. Encriptación asimétrica.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B. Hash.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C. Minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D. Slashing.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">6. El "halving" o reducción a la mitad en minería se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A. La reducción de la recompensa por bloque que los mineros reciben.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B. La reducción del tamaño máximo de los bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C. No tiene impacto en la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D. Una bifurcación de la cadena (Fork).</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">7. La "minería en la nube" implica:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="A"> A. Que los mineros físicamente se reúnen.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="B"> B. Alquilar poder de hash de proveedores sin comprar hardware propio.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="C"> C. Solo aplicable a la nube de AWS.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="D"> D. No es una práctica real.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">8. El "hardware" diseñado exclusivamente para la minería criptográfica se conoce como:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="A"> A. Unidades de CPU.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="B"> B. Tarjetas Gráficas (GPUs) domésticas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="C"> C. ASICs (Application-Specific Integrated Circuits).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="D"> D. Mainframes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">9. La "recompensa por bloque" se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="A"> A. Solo los impuestos sobre las transacciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="B"> B. La cantidad de criptomonedas recién emitidas que un minero recibe por añadir un bloque válido.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="C"> C. No tiene relación con la minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="D"> D. Es igual en todas las blockchains.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">10. La "seguridad" de una blockchain basada en minería (PoW) radica en:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="A"> A. La dificultad computacional de revertir transacciones y la amplia distribución del poder de hash.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="B"> B. Usar contraseñas largas y complejas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="C"> C. El resguardo en servidores centrales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="D"> D. La confianza ciega en los usuarios.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">11. A diferencia de PoW, el consenso "Proof of Stake" (PoS) se basa en:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="A"> A. Mayor poder computacional resuelve el bloque.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="B"> B. Los validadores bloquean fondos económicos (Stake) para proponer bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="C"> C. Uso de servidores cuánticos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="D"> D. Firmas manuscritas digitalizadas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">12. En Proof of Stake, el término "Slashing" significa:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="A"> A. Bajar el precio de la moneda.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="B"> B. Dividir la cadena de bloques en dos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="C"> C. La confiscación y quema de los fondos de un validador como castigo por fraude.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="D"> D. Un ataque cibernético.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">13. El principal beneficio medioambiental del paso de Ethereum a PoS fue:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="A"> A. Eliminar granjas de minado visualmente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="B"> B. La reducción del consumo energético en más de un 99%.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="C"> C. Crear tokens ecológicos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="D"> D. Prohibir el uso a empresas contaminantes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">14. Un "Ataque del 51%" ocurre cuando:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="A"> A. Se roban el 51% de las claves privadas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="B"> B. Alguien controla más de la mitad del Hash Rate, pudiendo revertir operaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="C"> C. El precio cae un 51%.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="D"> D. El 51% de los nodos se apagan.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">15. En soluciones de Capa 1, "Sharding" se define como:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="A"> A. Dividir las ganancias de minería.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="B"> B. Fragmentar la red en múltiples sub-cadenas paralelas para procesar más transacciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="C"> C. Destruir hardware antiguo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="D"> D. Enviar tokens entre dos blockchains.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">16. En el ciclo de una transacción, la "Mempool" se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="A"> A. El grupo de mineros.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="B"> B. El código de un smart contract.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="C"> C. El área temporal donde residen transacciones válidas aún no incluidas en bloques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="D"> D. Una billetera fría.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">17. La función de la "Raíz de Merkle" en un bloque es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="A"> A. Resumir todas las transacciones del bloque en un único Hash.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="B"> B. Firmar el bloque con el nombre del minero.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="C"> C. Calcular el costo eléctrico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="D"> D. Conectar con Smart Contracts.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">18. El algoritmo "DPoS" se diferencia de PoS en que:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="A"> A. Requiere hardware minero.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="B"> B. Los usuarios votan por "Super Nodos" fijos para lograr más velocidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="C"> C. No reparte ganancias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="D"> D. No usa criptografía.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">19. Lightning Network (Layer 2) ayuda a la L1 mediante:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="A"> A. El reemplazo del protocolo base.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="B"> B. Procesar pagos fuera de cadena y enviar solo el saldo final a la L1.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="C"> C. Minar bloques más grandes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="D"> D. Aumentar emisión de moneda.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">20. Según el Trilema de Blockchain, es difícil maximizar:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="N"> No lo sé.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="A"> A. Privacidad, Velocidad y Costo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="B"> B. Seguridad, Descentralización y Escalabilidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="C"> C. Mineros, Validadores y Usuarios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="D"> D. PoW, PoS y DPoS.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-violet-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador original Unidad 6
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'block' : 'none';
+            });
+        });
+
+        function toggleE2E(stepId) {
+            document.getElementById(stepId).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // SIMULADOR A: POW (Fuerza Bruta)
+        // ==========================================
+        let isMining = false;
+        let animationFrameId;
+        let noncePow = 0;
+        let diffZeros = 2;
+        let tStart = 0;
+
+        function fastPseudoHash(nonceVal) {
+            let str = "block_data_" + nonceVal;
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0; 
+            }
+            return Math.abs(hash).toString(16).padStart(8, '0') + Math.random().toString(16).substr(2, 24);
+        }
+
+        function updateDiffLabel() {
+            diffZeros = parseInt(document.getElementById('diffSlider').value);
+            document.getElementById('diffLabel').innerText = diffZeros;
+        }
+
+        function appendPowLog(msg, isSuccess=false) {
+            const term = document.getElementById('miningTerminal');
+            const color = isSuccess ? 'text-white font-bold bg-green-900/50 p-1' : 'text-green-500/50';
+            term.innerHTML += `<div class="${color}">> ${msg}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function startMining() {
+            if(isMining) return;
+            isMining = true;
+            noncePow = 0;
+            tStart = performance.now();
+            
+            document.getElementById('btnStartMine').disabled = true;
+            document.getElementById('btnStartMine').classList.replace('bg-orange-600', 'bg-slate-800');
+            
+            const btnStop = document.getElementById('btnStopMine');
+            btnStop.disabled = false;
+            btnStop.classList.replace('cursor-not-allowed', 'cursor-pointer');
+
+            document.getElementById('diffSlider').disabled = true;
+            document.getElementById('powSpinner').classList.remove('hidden');
+            document.getElementById('miningTerminal').innerHTML = '';
+            appendPowLog(`Target Required: ${"0".repeat(diffZeros)}...`);
+
+            mineBatch();
+        }
+
+        function stopMining() {
+            isMining = false;
+            cancelAnimationFrame(animationFrameId);
+            document.getElementById('powSpinner').classList.add('hidden');
+            
+            document.getElementById('btnStartMine').disabled = false;
+            document.getElementById('btnStartMine').classList.replace('bg-slate-800', 'bg-orange-600');
+            
+            const btnStop = document.getElementById('btnStopMine');
+            btnStop.disabled = true;
+            btnStop.classList.replace('cursor-pointer', 'cursor-not-allowed');
+
+            document.getElementById('diffSlider').disabled = false;
+            appendPowLog(`[ABORTADO] Búsqueda detenida en Nonce ${noncePow}`);
+        }
+
+        function mineBatch() {
+            if(!isMining) return;
+            let targetPrefix = "0".repeat(diffZeros);
+            let found = false;
+            let currentHash = "";
+
+            for(let i=0; i<800; i++) {
+                noncePow++;
+                currentHash = fastPseudoHash(noncePow);
+                if(currentHash.startsWith(targetPrefix)) {
+                    found = true;
+                    break;
+                }
+            }
+
+            document.getElementById('nonceDisplay').innerText = noncePow;
+            if(noncePow % 4000 === 0) appendPowLog(`Iteración #${noncePow} | Hash: ${currentHash.substring(0,20)}...`);
+
+            if(found) {
+                const timeSec = ((performance.now() - tStart) / 1000).toFixed(2);
+                appendPowLog(`¡TARGET ALCANZADO!`, true);
+                document.getElementById('powStats').innerHTML = `
+                    <div class="mb-2"><strong>Dificultad:</strong> ${diffZeros} Ceros</div>
+                    <div class="mb-2"><strong>Nonce Final:</strong> ${noncePow}</div>
+                    <div class="mb-2"><strong>Hash Encontrado:</strong><br><span class="text-xs break-all text-white font-mono mt-1 block">${currentHash}</span></div>
+                    <div class="text-orange-400 mt-4 text-xs">> Cómputo: ${timeSec} s.</div>
+                `;
+                document.getElementById('powSuccessOverlay').classList.remove('hidden');
+                stopMining();
+            } else {
+                animationFrameId = requestAnimationFrame(mineBatch);
+            }
+        }
+
+        function resetPoW() {
+            document.getElementById('powSuccessOverlay').classList.add('hidden');
+            document.getElementById('nonceDisplay').innerText = "0";
+            document.getElementById('miningTerminal').innerHTML = "> Ready.";
+        }
+
+        // ==========================================
+        // SIMULADOR B: POS (Lotería)
+        // ==========================================
+        let validators = [
+            { id: 'v1', name: "Validador Alpha", stake: 6000, color: "bg-blue-500", rawColor: "blue" },
+            { id: 'v2', name: "Validador Beta", stake: 3000, color: "bg-green-500", rawColor: "green" },
+            { id: 'v3', name: "Nodo Independiente", stake: 1000, color: "bg-orange-500", rawColor: "orange" }
+        ];
+
+        function renderValidators() {
+            const container = document.getElementById('validatorsList');
+            const totalStake = validators.reduce((acc, v) => acc + v.stake, 0);
+            container.innerHTML = "";
+            validators.forEach(v => {
+                const pct = ((v.stake / totalStake) * 100).toFixed(1);
+                container.innerHTML += `
+                    <div class="bg-slate-950 p-3 rounded border border-slate-700">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-white font-bold text-xs">${v.name}</span>
+                            <span class="text-slate-400 text-[10px]">${v.stake} ETH</span>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-2 mb-1 border border-slate-700">
+                            <div class="${v.color} h-full rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function logPos(msg, isAlert=false) {
+            const term = document.getElementById('posTerminal');
+            const color = isAlert ? 'text-red-400' : 'text-slate-400';
+            term.innerHTML += `<div class="${color}">> ${msg}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function selectValidator() {
+            const totalStake = validators.reduce((acc, v) => acc + v.stake, 0);
+            if(totalStake <= 0) return;
+
+            let randomPointer = Math.random() * totalStake;
+            let currentSum = 0;
+            let winner = null;
+
+            for(let i=0; i<validators.length; i++) {
+                currentSum += validators[i].stake;
+                if(randomPointer <= currentSum) {
+                    winner = validators[i];
+                    break;
+                }
+            }
+
+            const reward = 10;
+            winner.stake += reward;
+            logPos(`✅ <strong class="text-${winner.rawColor}-400">${winner.name}</strong> seleccionado. Reward: +${reward} ETH.`);
+            renderValidators();
+        }
+
+        let slashingVictim = null;
+        function triggerSlashing() {
+            const activeValidators = validators.filter(v => v.stake > 0);
+            if(activeValidators.length === 0) return;
+            
+            slashingVictim = activeValidators[Math.floor(Math.random() * activeValidators.length)];
+            const penalty = Math.floor(slashingVictim.stake * 0.5);
+            
+            document.getElementById('slashStats').innerHTML = `Nodo: <strong>${slashingVictim.name}</strong><br>Pérdida: <span class="text-red-500 font-bold">-${penalty} ETH</span>.`;
+            slashingVictim.stake -= penalty;
+            
+            logPos(`🔥 Slashing Ejecutado a ${slashingVictim.name}: -${penalty} ETH.`, true);
+            document.getElementById('slashingOverlay').classList.remove('hidden');
+        }
+
+        function dismissSlashing() {
+            document.getElementById('slashingOverlay').classList.add('hidden');
+            renderValidators();
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (SECCIÓN 9)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Reset styles
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La respuesta correcta era la opción ${correctAns}.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No has respondido. La respuesta correcta era la opción ${correctAns}.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-400', 'text-red-400', 'text-yellow-400');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-400');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-400');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas un 80% para la excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-400');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Repasa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+        }
+
+        // Init functions
+        window.addEventListener('DOMContentLoaded', () => { 
+            renderValidators(); 
+        });
+    </script>
+</body>
+</html>
