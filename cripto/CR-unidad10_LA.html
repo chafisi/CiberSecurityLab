@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 10: Visualización e Interpretación de Datos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444', violet: '#8b5cf6' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; font-size: 0.9rem; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Canvas Simulators */
+        canvas { background-color: #f8fafc; border-radius: 0.5rem; border: 1px solid #e2e8f0; cursor: crosshair; touch-action: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Data<span class="text-cyan-400">Vis</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 10: Visualización Datos</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-cyan-500 bg-slate-800 text-white tab-btn">1. Introducción a la Visualización</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Tipos de Gráficos y Principios</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Herramientas (R/Python)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-cyan-400 font-semibold tab-btn">4. Casos Prácticos (19 & 20)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 Test Oficial (20 Preg.)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: INTRODUCCIÓN -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">1. Introducción a la Visualización de Datos</h2>
+            <p class="text-slate-600 mb-6 text-lg">La visualización de datos es el arte y la ciencia de transformar datos crudos en representaciones gráficas que faciliten su comprensión, análisis y comunicación efectiva.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-cyan-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">¿Por qué visualizar?</h3>
+                    <ul class="text-sm space-y-2 text-slate-700">
+                        <li><strong>Comprensión rápida:</strong> El cerebro procesa imágenes 60.000 veces más rápido que texto.</li>
+                        <li><strong>Detección de patrones:</strong> Identificar tendencias, correlaciones y anomalías ocultas en tablas.</li>
+                        <li><strong>Comunicación:</strong> Contar una historia con datos (Data Storytelling) para la toma de decisiones.</li>
+                        <li><strong>Interactividad:</strong> Permitir al usuario explorar los datos por sí mismo.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">El Proceso de Visualización</h3>
+                    <ol class="text-sm list-decimal pl-4 space-y-2 text-slate-700">
+                        <li><strong>Recolección:</strong> Obtener datos limpios y relevantes.</li>
+                        <li><strong>Procesamiento:</strong> Transformar, filtrar y agregar datos.</li>
+                        <li><strong>Mapeo:</strong> Asignar atributos de datos a variables visuales (posición, color, tamaño).</li>
+                        <li><strong>Renderizado:</strong> Generar la imagen o gráfico final.</li>
+                        <li><strong>Interacción:</strong> Añadir filtros, zoom y tooltips para exploración.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: TIPOS Y PRINCIPIOS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">2. Tipos de Gráficos y Principios de Diseño</h2>
+            
+            <div class="space-y-8">
+                <div class="bg-white border-t-4 border-t-cyan-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Selección del Gráfico Correcto</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-cyan-700">Comparación</h4>
+                            <p class="text-xs text-slate-600 mb-2">Barras, Columnas.</p>
+                            <p class="text-xs text-slate-500">Ideal para comparar categorías o valores discretos.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-cyan-700">Tendencia Temporal</h4>
+                            <p class="text-xs text-slate-600 mb-2">Líneas, Áreas.</p>
+                            <p class="text-xs text-slate-500">Mostrar cambios a lo largo del tiempo (series temporales).</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-cyan-700">Distribución/Correlación</h4>
+                            <p class="text-xs text-slate-600 mb-2">Scatter (Dispersión), Histogramas.</p>
+                            <p class="text-xs text-slate-500">Relación entre dos variables continuas o distribución de una.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border-t-4 border-t-purple-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Principios de Diseño (Tufte & Few)</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-slate-700">
+                        <li><strong>Principio de Tinta Mínima (Data-Ink Ratio):</strong> Eliminar cualquier elemento gráfico que no aporte información (rejas innecesarias, sombras 3D, bordes excesivos).</li>
+                        <li><strong>No me hagas pensar:</strong> La visualización debe ser intuitiva. El mensaje principal debe captarse en segundos sin necesidad de leer explicaciones largas.</li>
+                        <li><strong>Coherencia:</strong> Mantener un estilo uniforme (colores, fuentes, ejes) en todo el dashboard para facilitar la comparación.</li>
+                        <li><strong>Accesibilidad:</strong> Usar colores aptos para daltónicos, etiquetas claras y contrastes adecuados.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white border-t-4 border-t-orange-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Errores Comunes (Visualización Engañosa)</h3>
+                    <ul class="list-disc pl-5 space-y-2 text-sm text-slate-700">
+                        <li><strong>Eje Y truncado:</strong> Empezar en un valor distinto de 0 para exagerar diferencias pequeñas.</li>
+                        <li><strong>Gráficos 3D innecesarios:</strong> Distorcionan la percepción de volumen y dificultan la lectura precisa.</li>
+                        <li><strong>Uso incorrecto de escalas:</strong> Cambiar de escala lineal a logarítmica sin avisar.</li>
+                        <li><strong>Ausencia de leyenda:</strong> Colores sin significado definido.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: HERRAMIENTAS -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">3. Herramientas Profesionales (R/Python/BI)</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"><span>🐍</span> Python & Librerías</h3>
+                    <ul class="text-sm space-y-3 text-slate-700">
+                        <li><strong>Matplotlib:</strong> La base. Muy flexible pero requiere mucho código para gráficos complejos. Ideal para personalización total.</li>
+                        <li><strong>Seaborn:</strong> Construido sobre Matplotlib. Permite gráficos estadísticos atractivos con menos código. Ideal para distribuciones y correlaciones.</li>
+                        <li><strong>Plotly:</strong> Librería interactiva. Genera gráficos web con zoom, hover y filtrado dinámico.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"><span>R</span> R & ggplot2</h3>
+                    <ul class="text-sm space-y-3 text-slate-700">
+                        <li><strong>ggplot2:</strong> Implementa la "Gramática de Gráficos". Construye gráficos capa por capa (datos + geometría + escala). Es muy potente para reproducibilidad.</li>
+                        <li><strong>Shiny:</strong> Framework para crear aplicaciones web interactivas directamente desde R.</li>
+                        <li><strong>Advantage:</strong> Excelente para análisis estadístico profundo combinado con visualización.</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 md:col-span-2">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Business Intelligence (Power BI / Tableau)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Herramientas low-code/no-code diseñadas para usuarios de negocio. Permiten conectar múltiples fuentes de datos, limpiar datos (Power Query) y crear dashboards interactivos mediante arrastrar y soltar.</p>
+                    <ul class="text-sm space-y-2 text-slate-700">
+                        <li><strong>Power BI:</strong> Integración nativa con ecosistema Microsoft (Excel, Azure). Lenguaje DAX para cálculos avanzados.</li>
+                        <li><strong>Tableau:</strong> Reconocido por su potencia visual y capacidad de manejo de grandes volúmenes de datos.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: CASOS PRÁCTICOS (19 & 20) -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-cyan-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas directamente de la plataforma oficial.</p>
+
+            <!-- Caso 19 -->
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📉</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 19: Visualización de Datos (Horas vs Notas)</h3>
+                    </div>
+                    <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Un profesor de ingeniería desea visualizar la relación entre el número de horas de estudio y las calificaciones finales de sus estudiantes. Dispone de un conjunto de datos exportado desde la plataforma Moodle con variables: Horas de estudio, Participación en foros y Calificación final. ¿Cómo puede crear una visualización clara que muestre la tendencia general del grupo y detectar posibles anomalías?</p>
+                    
+                    <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-indigo-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="space-y-4 text-sm text-slate-700">
+                            <li><strong>Objetivo:</strong> Identificar correlaciones entre horas de estudio y rendimiento académico.</li>
+                            <li><strong>Herramientas:</strong> Python, librerías Matplotlib y Seaborn.</li>
+                            <li><strong>Pasos:</strong>
+                                <ol class="list-decimal pl-5 space-y-1 mt-2">
+                                    <li>Importar los datos desde un archivo CSV a un DataFrame con pandas.</li>
+                                    <li>Crear un gráfico de dispersión (scatterplot) con Seaborn para representar horas de estudio (X) vs calificación (Y).</li>
+                                    <li>Añadir una línea de tendencia con regplot para visualizar la correlación.</li>
+                                    <li>Destacar con color los casos extremos (outliers) que no siguen la tendencia.</li>
+                                    <li>Exportar el gráfico como imagen o incluirlo en un informe.</li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- CÓDIGO BASE DEL CASO 19 -->
+                    <div class="mt-8 bg-slate-900 p-6 rounded-xl border border-slate-700 shadow-sm">
+                        <h4 class="font-bold text-indigo-400 mb-4 uppercase text-xs tracking-widest">> CÓDIGO BASE PROPUESTO</h4>
+                        <pre class="text-sm text-green-400 font-mono overflow-x-auto">import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+
+datos = pd.read_csv("rendimiento.csv")
+sns.regplot(x='Horas_de_estudio', y='Calificacion_final', data=datos, color='blue')
+plt.title('Relación entre horas de estudio y calificación final')
+plt.xlabel('Horas de estudio por semana')
+plt.ylabel('Calificación final')
+plt.show()</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caso 20 -->
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📊</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 20: Dashboard en Power BI</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">La dirección académica de un campus virtual quiere disponer de un panel interactivo que muestre indicadores clave de rendimiento: tasa de participación, notas medias, entregas pendientes y predicción de riesgo de abandono. ¿Cómo se puede diseñar un dashboard eficaz y accesible en Power BI que ayude a la toma de decisiones docentes?</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="space-y-4 text-sm text-slate-700">
+                            <li><strong>Objetivo:</strong> Centralizar la información de rendimiento y participación de los estudiantes.</li>
+                            <li><strong>Herramientas:</strong> Power BI Desktop.</li>
+                            <li><strong>Pasos:</strong>
+                                <ol class="list-decimal pl-5 space-y-1 mt-2">
+                                    <li>Importar los datos desde Moodle o archivos Excel con la opción Obtener datos.</li>
+                                    <li>Crear gráficos de barras para comparar participación por curso y gráfico de líneas para tendencias semanales de rendimiento.</li>
+                                    <li>Añadir una tarjeta de KPI que muestre el promedio general de notas.</li>
+                                    <li>Utilizar segmentadores para filtrar por asignatura, profesor o fecha.</li>
+                                    <li>Aplicar una paleta de colores accesible (por ejemplo, azul y naranja) para usuarios con daltonismo.</li>
+                                    <li>Publicar el dashboard en Power BI Service para acceso online del profesorado.</li>
+                                </ol>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- ESQUEMA VISUAL CASO 20 -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-violet-900 mb-4 uppercase text-xs tracking-widest">> ESTRUCTURA SUGERIDA DEL DASHBOARD</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center">
+                                <div class="text-xs font-bold text-slate-500 mb-2">ZONA SUPERIOR (KPIs)</div>
+                                <div class="flex justify-center gap-4">
+                                    <div class="w-24 h-16 bg-blue-100 rounded flex items-center justify-center text-xs">Nota Media</div>
+                                    <div class="w-24 h-16 bg-green-100 rounded flex items-center justify-center text-xs">Participación %</div>
+                                    <div class="w-24 h-16 bg-red-100 rounded flex items-center justify-center text-xs">Riesgo</div>
+                                </div>
+                            </div>
+                            <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center">
+                                <div class="text-xs font-bold text-slate-500 mb-2">ZONA MEDIA (Gráficos)</div>
+                                <div class="flex justify-center gap-4">
+                                    <div class="w-24 h-16 bg-slate-200 rounded flex items-center justify-center text-xs">Barras: Curso</div>
+                                    <div class="w-24 h-16 bg-slate-200 rounded flex items-center justify-center text-xs">Línea: Tend.</div>
+                                </div>
+                            </div>
+                            <div class="border-2 border-dashed border-slate-300 rounded-lg p-4 text-center md:col-span-2">
+                                <div class="text-xs font-bold text-slate-500 mb-2">ZONA INFERIOR (Detalle)</div>
+                                <div class="w-full h-12 bg-slate-100 rounded flex items-center justify-center text-xs">Tabla de entregases pendientes + Segmentadores</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: FICHAS RÁPIDAS -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Core)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Ficha 1 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-cyan-500">📈</span><h3 class="font-bold text-lg">Scatter Plot</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Uso</h4><p class="text-sm">Gráfico de dispersión. Muestra relación/correlación entre dos variables numéricas.</p></div>
+                </div></div>
+                <!-- Ficha 2 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-purple-500">📊</span><h3 class="font-bold text-lg">Histograma</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Distribución</h4><p class="text-sm">Muestra frecuencia de datos en intervalos (bins). Útil para ver forma de distribución.</p></div>
+                </div></div>
+                <!-- Ficha 3 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-orange-500">🎨</span><h3 class="font-bold text-lg">Tinta Mínima</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Principio</h4><p class="text-sm">Maximizar la proporción de tinta dedicada a datos, eliminando adornos innecesarios.</p></div>
+                </div></div>
+                <!-- Ficha 4 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-green-500">⚡</span><h3 class="font-bold text-lg">Outlier</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Anomalía</h4><p class="text-sm">Valor atípico que se desvía significativamente del resto de observaciones.</p></div>
+                </div></div>
+                <!-- Ficha 5 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-red-500">🔄</span><h3 class="font-bold text-lg">Interactividad</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Exploración</h4><p class="text-sm">Capacidad de filtrar, hacer zoom y obtener detalles al pasar el mouse (tooltips).</p></div>
+                </div></div>
+                <!-- Ficha 6 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-cyan-500">🔗</span><h3 class="font-bold text-lg">Gramática Gráficos</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">ggplot2</h4><p class="text-sm">Enfoque de capas: Datos → Estética → Geometría → Facetas + Escalas.</p></div>
+                </div></div>
+                 <!-- Ficha 7 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-yellow-500">🏷️</span><h3 class="font-bold text-lg">Legend</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Clave</h4><p class="text-sm">Explica el significado de colores, formas o tamaños usados en el gráfico.</p></div>
+                </div></div>
+                 <!-- Ficha 8 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-pink-500">👁️</span><h3 class="font-bold text-lg">Accessibility</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Inclusión</h4><p class="text-sm">Diseño accesible para daltónicos (evitar rojo/verde solos) y alto contraste.</p></div>
+                </div></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: GLOSARIO -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">6. Glosario Operativo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Data-Ink Ratio</h4>
+                    <p class="text-sm text-slate-600 mt-1">Proporción de tinta en un gráfico dedicada a representar datos reales vs elementos decorativos. Debe ser máxima.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Correlation Matrix</h4>
+                    <p class="text-sm text-slate-600 mt-1">Tabla o mapa de calor (heatmap) que muestra coeficientes de correlación entre múltiples variables numéricas.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Faceting</h4>
+                    <p class="text-sm text-slate-600 mt-1">Dividir un gráfico en múltiples subgráficos basados en una variable categórica (ej: mostrar un gráfico por cada curso).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Tooltip</h4>
+                    <p class="text-sm text-slate-600 mt-1">Cuadro emergente que aparece al pasar el cursor sobre un elemento gráfico, mostrando detalles específicos.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Pivot Table</h4>
+                    <p class="text-sm text-slate-600 mt-1">Tabla dinámica que resume grandes conjuntos de datos, permitiendo agrupar, filtrar y reorganizar información.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Slicer</h4>
+                    <p class="text-sm text-slate-600 mt-1">Control visual en Power BI/Tableau utilizado para filtrar datos en un reporte de manera interactiva.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: LABORATORIOS (Placeholder - Código JS abajo) -->
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[850px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-600 mb-6">Simuladores de principios de visualización y detección de anomalías.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- Lab 1: Correlation Explorer -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-cyan-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">LABORATORIO 1: Explorador de Correlación</span>
+                        <span id="corrStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Listo</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <canvas id="corrCanvas" width="400" height="300" class="w-full h-auto mb-4"></canvas>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <button onclick="resetCorr()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-xs transition">🗑️ Reset Data</button>
+                            <button onclick="addNoise()" class="bg-cyan-600 hover:bg-cyan-500 px-3 py-1 rounded text-xs transition">➕ Añadir Ruido</button>
+                            <label class="text-xs self-center ml-2">Correlación Objetivo: <span id="corrValDisplay">0.0</span></label>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Haz clic para añadir puntos. Observa cómo cambia la fuerza de la relación lineal.</p>
+                    </div>
+                </div>
+
+                <!-- Lab 2: Chart Type Selector -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-cyan-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">LABORATORIO 2: Selector de Tipo de Gráfico</span>
+                        <span id="chartStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Esperando</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="flex gap-2 mb-4">
+                            <button onclick="renderBar()" class="bg-purple-600 hover:bg-purple-500 px-3 py-1 rounded text-xs transition">Barras</button>
+                            <button onclick="renderLine()" class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded text-xs transition">Línea</button>
+                            <button onclick="renderPie()" class="bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-xs transition">Circular</button>
+                        </div>
+                        <div id="chartPreview" class="bg-white rounded p-4 h-64 flex items-center justify-center text-slate-800 font-bold text-xl border border-slate-200">
+                            Selecciona un tipo de gráfico arriba
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Experimenta cómo el mismo dato cuenta historias diferentes según el tipo de gráfico.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: FLUJO E2E -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E: Creación de Visualizaciones</h2>
+            <p class="text-slate-600 mb-8">El proceso estándar desde el dato crudo hasta el dashboard publicado.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-slate-800 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-slate-100 w-12 h-12 flex justify-center items-center rounded-full">💾</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">1. Extracción de Datos</h4><span class="text-xs font-bold text-slate-500">Fuente</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-1" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Conectar a bases de datos, APIs, CSVs o LMS. Importar datos brutos a la herramienta de análisis.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">🧹</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">2. Limpieza y Transformación</h4><span class="text-xs font-bold text-blue-500">Preparación</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-2" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Manejar valores nulos, corregir formatos, crear nuevas columnas calculadas, pivotar/despivotar datos.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-purple-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-purple-100 w-12 h-12 flex justify-center items-center rounded-full">🎨</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">3. Diseño Visual</h4><span class="text-xs font-bold text-purple-500">Artefacto</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-3" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Seleccionar el tipo de gráfico adecuado (Barras/Línea/Dispersión). Aplicar principios de tinta mínima, colores y etiquetas.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">🧩</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">4. Composición Dashboard</h4><span class="text-xs font-bold text-green-500">Interfaz</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-4" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Organizar gráficos en una cuadrícula coherente. Añadir filtros, segmentadores y títulos explicativos. Validar usabilidad.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-cyan-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-cyan-100 w-12 h-12 flex justify-center items-center rounded-full">📤</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">5. Publicación y Uso</h4><span class="text-xs font-bold text-cyan-500">Impacto</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-5" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Publicar en servidor web o compartir reporte. Capacitar usuarios. Monitorear uso y refinar según feedback.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST OFICIAL (Inicio) -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-green-500 pb-2 inline-block">9. Test de Evaluación Oficial</h2>
+            <p class="text-slate-600 mb-6">Demuestra tus conocimientos en Visualización de Datos. 20 preguntas basadas en el temario de la Unidad 10.</p>
+            
+            <form id="quizForm" class="space-y-6">
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">1. Para visualizar datos en R, ggplot2 es conocido por:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A. Solo manejar datos textuales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B. No ser una herramienta de visualización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C. Su gramática de gráficos que permite crear visualizaciones complejas de manera intuitiva.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D. Solo para datos financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">2. Una gráfica de barras es especialmente útil para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A. Mostrar relaciones entre dos variables continuas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B. Comparar cantidades categóricas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C. No se usa en visualización de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D. Solo para datos temporales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">3. La "accesibilidad" en la visualización de datos significa:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A. Solo que los gráficos sean bonitos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B. No tiene relevancia en visualización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C. Solo para grandes volúmenes de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D. Que las visualizaciones sean comprensibles y accesibles para todas las personas, incluidas aquellas con discapacidades.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">4. Seaborn, en comparación con Matplotlib, ofrece:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A. Menos funcionalidades.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B. Una interfaz de alto nivel para gráficos estadísticos más atractivos y con menos código.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C. No es una herramienta de visualización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D. Solo para análisis de redes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">5. El principio de "no me hagas pensar" en la visualización de datos implica:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A. Que la información debe ser tan clara que no requiera esfuerzo para entenderla.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B. Que la visualización debe ser compleja.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C. No tiene relevancia en visualización de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D. Solo para gráficos interactivos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 6 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">6. El uso de "anotaciones" en gráficos ayuda a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A. Solo aumentar el tamaño del gráfico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B. Destacar información específica, explicar puntos de datos o tendencias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C. No tiene utilidad en visualización de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D. Solo en análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 7 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">7. Una "visualización de datos engañosas" puede resultar de:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="A"> A. Solo usar colores brillantes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="B"> B. No existe tal concepto.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="C"> C. Escalas distorsionadas o manipulación de ejes para alterar la percepción de los datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="D"> D. Solo en análisis de redes sociales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 8 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">8. Un histograma se emplea para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="A"> A. Visualizar la distribución de una variable continua.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="B"> B. Comparar categorías.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="C"> C. No es un tipo de gráfico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="D"> D. Solo para datos textuales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 9 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">9. Matplotlib es una librería de Python usada para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="A"> A. Solo análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="B"> B. Crear una amplia variedad de gráficos y visualizaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="C"> C. No es relevante para visualización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="D"> D. Solo para procesamiento de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 10 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">10. La "interactividad" en gráficos permite:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="A"> A. Solo mostrar datos estáticos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="B"> B. No tiene aplicación práctica.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="C"> C. Solo para juegos de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="D"> D. A los usuarios interactuar con la visualización, explorando datos de nuevas maneras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 11 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">11. Una "leyenda" en un gráfico o dashboard es importante para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="A"> A. Solo decorar el visual.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="B"> B. Explicar los significados de los colores y símbolos utilizados.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="C"> C. No es necesaria en visualización de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="D"> D. Solo en análisis de series temporales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 12 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">12. La "escala" en un gráfico es crucial porque:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="A"> A. No afecta la interpretación de los datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="B"> B. Influye directamente en cómo se perciben las proporciones y las tendencias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="C"> C. Solo es importante en gráficos de texto.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="D"> D. No se aplica en visualización de datos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 13 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">13. Usar el color en visualización de datos ayuda a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="A"> A. Solo decorar el gráfico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="B"> B. Distinguir entre categorías, resaltar información importante y mejorar la comprensión.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="C"> C. No tiene impacto en la visualización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="D"> D. Solo en análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 14 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">14. El "principio de la tinta mínima" en la visualización de datos aboga por:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="A"> A. Usar la mayor cantidad de colores posibles.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="B"> B. Minimizar el uso de elementos que no aporten información, maximizando la claridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="C"> C. No tiene relación con la visualización de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="D"> D. Solo para gráficos interactivos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 15 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">15. Para visualizar datos de series temporales, es común usar:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="A"> A. Solo gráficos de pastel.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="B"> B. Gráficos de líneas para observar cambios con el tiempo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="C"> C. No se visualizan datos temporales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="D"> D. Solo para análisis de redes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 16 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">16. El uso de "animaciones" en visualización de datos puede:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="A"> A. Solo distraer al usuario.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="B"> B. Mostrar cambios en los datos a lo largo del tiempo o en respuesta a la interacción del usuario.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="C"> C. No tiene aplicación en visualización de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 17 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">17. La visualización de datos se utiliza para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="A"> A. Solo almacenar datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="B"> B. No tiene aplicaciones prácticas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="C"> C. Comunicar información de manera efectiva y visual.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 18 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">18. La "coherencia" en la visualización de datos es importante para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="A"> A. Solo la estética.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="B"> B. No tiene impacto en la comprensión de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="C"> C. Solo en análisis de imágenes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="D"> D. Mantener un estilo y formato unificados a lo largo de múltiples visualizaciones para facilitar la interpretación.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 19 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">19. El gráfico de dispersión se usa para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="A"> A. Solo mostrar frecuencias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="B"> B. Identificar patrones, correlaciones o tendencias entre dos variables numéricas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="C"> C. No tiene aplicación en análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="D"> D. Solo en análisis de redes sociales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 20 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">20. Los dashboards interactivos permiten:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="A"> A. Explorar datos de manera dinámica filtrando y manipulando la visualización en tiempo real.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="B"> B. Solo ver datos estáticos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="C"> C. No tienen aplicación en análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="D"> D. Solo en presentaciones de PowerPoint.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- BOTONES DE CONTROL FINAL DEL TEST -->
+                <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-cyan-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-green-400');
+                currentBtn.classList.add('border-cyan-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            // Re-render canvases if needed
+            if(sectionId === 'sec7') {
+                initCorrCanvas();
+                // Chart preview is DOM based, no re-init needed
+            }
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Toggle E2E Flow
+        function toggleE2E(stepId) {
+            document.getElementById(stepId).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // SIMULADOR A: CORRELATION EXPLORER
+        // ==========================================
+        let corrCanvas, corrCtx, corrPoints = [];
+        
+        function initCorrCanvas() {
+            corrCanvas = document.getElementById('corrCanvas');
+            corrCtx = corrCanvas.getContext('2d');
+            resetCorr();
+        }
+
+        function resetCorr() {
+            corrPoints = [];
+            // Generar datos con una correlación positiva base (+ ruido)
+            for(let i=0; i<30; i++) {
+                const x = 50 + Math.random() * 300;
+                const noise = (Math.random() - 0.5) * 60;
+                const y = 300 - ((x - 50) * 0.8) + noise; // Relación negativa para variar visualmente
+                corrPoints.push({x, y});
+            }
+            updateCorrDisplay();
+            drawCorr();
+            corrStatus.innerText = 'Datos cargados';
+            corrStatus.className = 'text-xs text-blue-400 bg-slate-800 px-2 rounded';
+        }
+
+        function addNoise() {
+            corrPoints.forEach(pt => {
+                pt.x += (Math.random() - 0.5) * 40;
+                pt.y += (Math.random() - 0.5) * 40;
+            });
+            updateCorrDisplay();
+            drawCorr();
+            corrStatus.innerText = 'Ruido añadido';
+            setTimeout(() => {
+                corrStatus.innerText = 'Datos cargados';
+            }, 2000);
+        }
+
+        function calculateCorrelation(points) {
+            const n = points.length;
+            if(n < 2) return 0;
+            let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+            points.forEach(p => {
+                sumX += p.x; sumY += p.y;
+                sumXY += p.x * p.y;
+                sumX2 += p.x * p.x;
+                sumY2 += p.y * p.y;
+            });
+            const num = (n * sumXY) - (sumX * sumY);
+            const den = Math.sqrt(((n * sumX2) - (sumX * sumX)) * ((n * sumY2) - (sumY * sumY)));
+            return den === 0 ? 0 : num / den;
+        }
+
+        function updateCorrDisplay() {
+            const r = calculateCorrelation(corrPoints);
+            document.getElementById('corrValDisplay').innerText = r.toFixed(2);
+        }
+
+        function drawCorr() {
+            if(!corrCtx) return;
+            corrCtx.clearRect(0, 0, corrCanvas.width, corrCanvas.height);
+            
+            // Dibujar rejilla simple
+            corrCtx.strokeStyle = '#e2e8f0';
+            corrCtx.lineWidth = 1;
+            corrCtx.beginPath();
+            for(let i=0; i<corrCanvas.width; i+=40) { corrCtx.moveTo(i,0); corrCtx.lineTo(i, corrCanvas.height); }
+            for(let i=0; i<corrCanvas.height; i+=40) { corrCtx.moveTo(0,i); corrCtx.lineTo(corrCanvas.width, i); }
+            corrCtx.stroke();
+
+            // Dibujar puntos
+            corrPoints.forEach(p => {
+                corrCtx.fillStyle = '#06b6d4';
+                corrCtx.beginPath();
+                corrCtx.arc(p.x, p.y, 5, 0, 2*Math.PI);
+                corrCtx.fill();
+            });
+
+            // Dibujar línea de tendencia (simple regresión lineal visual)
+            if(corrPoints.length > 1) {
+                const n = corrPoints.length;
+                let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+                corrPoints.forEach(p => { sumX += p.x; sumY += p.y; sumXY += p.x*p.y; sumX2 += p.x*p.x; });
+                const m = ((n * sumXY) - (sumX * sumY)) / ((n * sumX2) - (sumX * sumX));
+                const b = (sumY - m * sumX) / n;
+                
+                const x1 = 0;
+                const y1 = m * x1 + b;
+                const x2 = corrCanvas.width;
+                const y2 = m * x2 + b;
+
+                corrCtx.strokeStyle = '#ef4444';
+                corrCtx.lineWidth = 2;
+                corrCtx.setLineDash([5, 5]);
+                corrCtx.beginPath();
+                corrCtx.moveTo(x1, y1);
+                corrCtx.lineTo(x2, y2);
+                corrCtx.stroke();
+                corrCtx.setLineDash([]);
+            }
+        }
+
+        // Click para añadir puntos manualmente
+        corrCanvas?.addEventListener('click', (e) => {
+            const rect = corrCanvas.getBoundingClientRect();
+            corrPoints.push({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            });
+            updateCorrDisplay();
+            drawCorr();
+        });
+
+        // ==========================================
+        // SIMULADOR B: CHART TYPE SELECTOR
+        // ==========================================
+        const chartPreview = document.getElementById('chartPreview');
+        const mockData = [
+            { label: 'Curso A', value: 45 },
+            { label: 'Curso B', value: 30 },
+            { label: 'Curso C', value: 65 },
+            { label: 'Curso D', value: 20 }
+        ];
+
+        function renderBar() {
+            chartStatus.innerText = 'Renderizando Barras';
+            chartStatus.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+            setTimeout(() => {
+                let html = '<div class="flex items-end justify-around h-48 w-full px-4">'
+                const max = Math.max(...mockData.map(d=>d.value));
+                mockData.forEach(d => {
+                    const h = (d.value / max) * 100;
+                    html += `<div class="flex flex-col items-center gap-2 group">
+                        <span class="text-xs font-bold text-slate-600 opacity-0 group-hover:opacity-100 transition">${d.value}</span>
+                        <div class="w-12 bg-cyan-500 rounded-t-lg transition-all duration-500" style="height:${h}%"></div>
+                        <span class="text-xs text-slate-500 font-bold">${d.label}</span>
+                    </div>`;
+                });
+                html += '</div>';
+                chartPreview.innerHTML = html;
+                chartStatus.innerText = 'Gráfico de Barras';
+            }, 200);
+        }
+
+        function renderLine() {
+            chartStatus.innerText = 'Renderizando Línea';
+            chartStatus.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+            setTimeout(() => {
+                let html = '<svg viewBox="0 0 300 150" class="w-full h-full">'
+                // SVG Path simple
+                const max = Math.max(...mockData.map(d=>d.value));
+                const step = 300 / (mockData.length - 1);
+                let pathD = `M ${0} ${150 - (mockData[0].value/max)*150}`;
+                mockData.forEach((d, i) => {
+                    const x = i * step;
+                    const y = 150 - (d.value/max)*150;
+                    pathD += ` L ${x} ${y}`;
+                });
+                
+                html += `<path d="${pathD}" fill="none" stroke="#10b981" stroke-width="3" />`;
+                mockData.forEach((d, i) => {
+                    const x = i * step;
+                    const y = 150 - (d.value/max)*150;
+                    html += `<circle cx="${x}" cy="${y}" r="4" fill="#fff" stroke="#10b981" stroke-width="2"/>`;
+                    html += `<text x="${x}" y="${y+20}" text-anchor="middle" font-size="10" fill="#64748b">${d.label}</text>`;
+                });
+                html += '</svg>';
+                chartPreview.innerHTML = html;
+                chartStatus.innerText = 'Gráfico de Línea';
+            }, 200);
+        }
+
+        function renderPie() {
+            chartStatus.innerText = 'Renderizando Circular';
+            chartStatus.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+            setTimeout(() => {
+                const total = mockData.reduce((a,b)=>a+b.value, 0);
+                let cumulativeAngle = 0;
+                const colors = ['#3b82f6', '#ec4899', '#f59e0b', '#8b5cf6'];
+                
+                let html = '<div class="flex gap-4 items-center">'
+                // SVG Pie
+                html += '<svg width="120" height="120" viewBox="0 0 32 32" class="transform -rotate-90">';
+                mockData.forEach((d, i) => {
+                    const angle = (d.value / total) * 360;
+                    const largeArcFlag = angle > 180 ? 1 : 0;
+                    const r = 16;
+                    const x1 = r + r * Math.cos(Math.PI * cumulativeAngle / 180);
+                    const y1 = r + r * Math.sin(Math.PI * cumulativeAngle / 180);
+                    const x2 = r + r * Math.cos(Math.PI * (cumulativeAngle + angle) / 180);
+                    const y2 = r + r * Math.sin(Math.PI * (cumulativeAngle + angle) / 180);
+                    
+                    const dPath = `M ${r} ${r} L ${x1} ${y1} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+                    html += `<path d="${dPath}" fill="${colors[i]}" />`;
+                    cumulativeAngle += angle;
+                });
+                html += '</svg>';
+                
+                // Legend
+                html += '<div class="flex flex-col gap-1 text-xs">';
+                mockData.forEach((d, i) => {
+                    html += `<div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full" style="background:${colors[i]}"></div><span>${d.label}: ${d.value}</span></div>`;
+                });
+                html += '</div></div>';
+                
+                chartPreview.innerHTML = html;
+                chartStatus.innerText = 'Gráfico Circular';
+            }, 200);
+        }
+
+        // Inicializar al cargar
+        window.addEventListener('load', () => {
+            if(document.getElementById('corrCanvas')) {
+                setTimeout(initCorrCanvas, 100);
+                renderBar(); // Por defecto barras
+            }
+        });
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (SECCIÓN 9)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estados previos
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
