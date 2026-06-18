@@ -206,11 +206,28 @@
                     <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
                         <h4 class="font-bold text-indigo-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
                         <ul class="space-y-4 text-sm text-slate-700">
-                            <li><strong>Recolección de Datos:</strong> Variables independientes (horas estudio, participación, entregas, asistencia) y Variable dependiente (calificación final).</li>
-                            <li><strong>Preprocesamiento:</strong> Normalizar valores numéricos y tratar valores faltantes (ej: imputar media en asistencia).</li>
-                            <li><strong>Modelo:</strong> Aplicar Regresión Lineal Múltiple. Dividir dataset en entrenamiento (80%) y prueba (20%).</li>
-                            <li><strong>Evaluación:</strong> Utilizar métricas R² y RMSE para medir precisión.</li>
-                            <li><strong>Aplicación:</strong> Predecir calificaciones antes del examen para ofrecer tutorías personalizadas.</li>
+                            <li>
+                                <strong>Recolección de Datos:</strong>
+                                <li><strong>Variables independientes</strong> (horas estudio, participación, entregas, asistencia)</li>
+                                <li><strong>Variable dependiente</strong> (calificación final).</li>
+                            </li>
+                            <li><strong>Preprocesamiento:</strong> 
+                                <li>Normalizar valores numéricos.</li>
+                                <li>Tratar valores faltantes (ej: imputar media en asistencia).</li>
+                            </li>
+                            <li><strong>Modelo:</strong> 
+                                <li>Aplicar Regresión Lineal Múltiple. </li>
+                                <li>Dividir dataset en entrenamiento (80%) y prueba (20%).</li>
+                            </li>
+                            <li><strong>Evaluación:</strong> 
+                                Utilizar métricas <strong>R² y RMSE para medir precisión.</strong>
+                            </li>
+                            <li><strong>Aplicación:</strong> 
+                                <li>Predecir calificaciones antes del examen para ofrecer tutorías personalizadas.</li>
+                            </li>
+                            <li><strong>Beneficios:</strong> 
+                                <li>Anticipar dificultades académicas | Optimizar asignación recursos y tutorías.</li>
+                            </li>
                         </ul>
                     </div>
 
@@ -253,11 +270,32 @@
                     <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
                         <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
                         <ul class="space-y-4 text-sm text-slate-700">
-                            <li><strong>Datos de Entrada:</strong> Accesos semanales, tiempo conexión, % tareas entregadas, participación foros.</li>
-                            <li><strong>Modelo:</strong> Crear Árbol de Decisión clasificando en "Activo" (1) o "En Riesgo" (0).</li>
-                            <li><strong>Entrenamiento:</strong> Dividir datos y evaluar con Precisión, Recall y Matriz de Confusión.</li>
-                            <li><strong>Interpretación:</strong> El árbol genera reglas claras. Ejemplo: "Si tiempo conexão < 2h/semana Y tareas < 50% → Riesgo de abandono".</li>
-                            <li><strong>Beneficios:</strong> Detección temprana, mejora retención, intervención personalizada.</li>
+                            <li><strong>Datos de Entrada:</strong>
+                                 <li>Accesos semanales</li>
+                                 <li>Tiempo conexión</li>
+                                 <li>% tareas entregadas</li>
+                                 <li>Participación foros.</li>
+                            </li>
+                            <li>
+                                <strong>Modelo:</strong>
+                                 Crear Árbol de Decisión clasificando estudiantes en:
+                                 <li>"Activo" (1) (Alta probabilidad de completar el curso) </li>
+                                 <li>"En Riesgo" (0) (Alta probabilidad de abandono).</li>
+                            </li>
+                            <li>
+                                <strong>Entrenamiento y validación:</strong>
+                                 <li>Dividir los datos en entranamiento y prueba.</li>
+                                 <li>Evaluar el modelo con Precisión, Recall y Matriz de Confusión.</li>
+                            </li>
+                            <li>
+                                <strong>Interpretación:</strong>
+                                 El árbol genera reglas claras. <br>
+                                 Ejemplo: "Si tiempo conexão < 2h/semana Y tareas < 50% → Riesgo de abandono".
+                            </li>
+                            <li>
+                                <strong>Beneficios:</strong> 
+                                Detección temprana baja compromiso, mejora retención, intervención personalizada.
+                            </li>
                         </ul>
                     </div>
 
