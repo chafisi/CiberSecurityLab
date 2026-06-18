@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 11: Learning Analytics | Minería de Datos Educativos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444', violet: '#8b5cf6' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .flip-card { perspective: 1000px; height: 180px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; font-size: 0.9rem; }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+        canvas { background-color: #f8fafc; border-radius: 0.5rem; border: 1px solid #e2e8f0; cursor: crosshair; touch-action: none; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">☰ Menú</button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Learn<span class="text-cyan-400">Analytics</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 11: LA & Intervención</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <input type="text" id="searchInput" placeholder="Buscar sección..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-slate-700">
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Teoría Core</li>
+                <li><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-cyan-500 bg-slate-800 text-white tab-btn">1. ¿Qué es Learning Analytics?</button></li>
+                <li><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Tipos de Datos & Métricas</button></li>
+                <li><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Modelos Predictivos</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-cyan-400 font-semibold tab-btn">4. Casos Prácticos (21 & 22)</button></li>
+                <li><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación</li>
+                <li><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 Test Oficial (20 Preg.)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: INTRODUCCIÓN -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">1. Introducción a Learning Analytics</h2>
+            <p class="text-slate-600 mb-6 text-lg"><strong>Learning Analytics</strong> es la medición, recopilación, análisis y reporte de datos sobre los estudiantes y sus contextos, con el propósito de comprender y optimizar el aprendizaje y los entornos donde ocurre.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-cyan-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Objetivos Principales</h3>
+                    <ul class="text-sm space-y-2 text-slate-700">
+                        <li><strong>Intervención Temprana:</strong> Identificar estudiantes en riesgo de abandono antes de que sea tarde.</li>
+                        <li><strong>Personalización:</strong> Adaptar contenidos y ritmos según necesidades individuales (Aprendizaje Adaptativo).</li>
+                        <li><strong>Toma de Decisiones:</strong> Apoyar a docentes y gestores con dashboards visuales basados en evidencia.</li>
+                        <li><strong>Evaluación Formativa:</strong> Monitorear progreso en tiempo real para ajustar la enseñanza.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">El Ciclo de Aprendizaje</h3>
+                    <ol class="text-sm list-decimal pl-4 space-y-2 text-slate-700">
+                        <li><strong>Recopilación:</strong> Datos de LMS, foros, tareas, exámenes.</li>
+                        <li><strong>Análisis:</strong> Estadística, clustering, modelos predictivos.</li>
+                        <li><strong>Visualización:</strong> Dashboards interactivos, alertas.</li>
+                        <li><strong>Acción/Feedback:</strong> Mensajes automáticos o tutorías presenciales.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: DATOS Y MÉTRICAS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">2. Tipos de Datos y Métricas en Learning Analytics</h2>
+            
+            <div class="space-y-8">
+                <div class="bg-white border-t-4 border-t-cyan-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Datos Comportamentales (Logs)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-cyan-700 mb-2">Navegación</h4>
+                            <p class="text-xs text-slate-600">Páginas vistas, tiempo por recurso, secuencia de acceso. Indica nivel de compromiso.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-cyan-700 mb-2">Interacción Social</h4>
+                            <p class="text-xs text-slate-600">Participación en foros, comentarios, colaboraciones. Muestra integración comunitaria.</p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-cyan-700 mb-2">Temporales</h4>
+                            <p class="text-xs text-slate-600">Horarios de acceso, frecuencia, puntualidad en entregas. Detecta procrastinación.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border-t-4 border-t-purple-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">KPIs Clave para Dashboards</h3>
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                            <tr><th class="px-4 py-2">KPI</th><th class="px-4 py-2">Fórmula / Concepto</th><th class="px-4 py-2">Uso Decisorio</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="px-4 py-2 font-bold">Tasa Participación</td><td class="px-4 py-2">(Accesos / Totales) × 100</td><td class="px-4 py-2">Compromiso general del alumno.</td></tr>
+                            <tr><td class="px-4 py-2 font-bold">% Entregas Tardías</td><td class="px-4 py-2">(Entregas > Fecha Límite) / Total</td><td class="px-4 py-2">Gestión del tiempo y disciplina.</td></tr>
+                            <tr><td class="px-4 py-2 font-bold">Riesgo de Abandono</td><td class="px-4 py-2">Modelo predictivo (Logístico/Árboles)</td><td class="px-4 py-2">Alerta temprana para tutorías.</td></tr>
+                            <tr><td class="px-4 py-2 font-bold">Promedio Calificaciones</td><td class="px-4 py-2">ΣNotas / n</td><td class="px-4 py-2">Rendimiento académico actual.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: MODELOS PREDICTIVOS -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">3. Modelos Predictivos y Clustering</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">🔮 Predicción de Rendimiento</h3>
+                    <p class="text-sm text-slate-600 mb-4">Algoritmos que usan datos históricos para predecir si un estudiante "no superará" o abandonará.</p>
+                    <ul class="text-sm space-y-3 text-slate-700">
+                        <li><strong>Reglas Simples:</strong> "Si Entregas% < 50 O Ausencias ≥ 5 → Riesgo".</li>
+                        <li><strong>Regresión Logística:</strong> Calcula probabilidad binaria (0/1) de superar/no superar.</li>
+                        <li><strong>Árboles de Decisión:</strong> Generan reglas claras y explicables para intervención.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">🔀 Clustering (Segmentación)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Agrupar estudiantes con comportamientos similares sin etiquetas previas.</p>
+                    <ul class="text-sm space-y-3 text-slate-700">
+                        <li><strong>K-Means:</strong> Agrupa en K clusters basado en distancia matemática.</li>
+                        <li><strong>DBSCAN:</strong> Detecta grupos por densidad y outliers (alumnos muy aislados).</li>
+                        <li><strong>Aplicación:</strong> Crear estrategias pedagógicas diferenciadas por perfil (ej: "Los que estudian de noche").</li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 md:col-span-2">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Matriz de Riesgo Simple</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                            <h4 class="font-bold text-red-800 text-xs uppercase mb-2">Riesgo ALTO (CRÍTICO)</h4>
+                            <ul class="text-xs text-slate-700 space-y-1">
+                                <li>• Entregas < 30%</li>
+                                <li>• Accesos ≤ 2 veces total</li>
+                                <li>• Ausencias ≥ 5</li>
+                                <li>• Promedio < 5</li>
+                            </ul>
+                        </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                            <h4 class="font-bold text-yellow-800 text-xs uppercase mb-2">Riesgo MEDIO</h4>
+                            <ul class="text-xs text-slate-700 space-y-1">
+                                <li>• Entregas 30-50%</li>
+                                <li>• Accesos 3-5 veces</li>
+                                <li>• Ausencias 3-4</li>
+                                <li>• Promedio 5-6.5</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: CASOS PRÁCTICOS (21 & 22) -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-cyan-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas directamente de la plataforma oficial.</p>
+
+            <!-- Caso 21 -->
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 21: Priorización de Riesgo (Regla Simple)</h3>
+                    </div>
+                    <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Se dispone de datos de 6 estudiantes. Se aplica una regla simple: Riesgo si Acceso ≤ 2 O Entregas < 40%. Se debe priorizar el contacto y generar mensajes personalizados.</p>
+                    
+                    <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-indigo-800 mb-3 text-lg">Análisis de Datos Iniciales:</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-700 mb-4">
+                                <thead class="bg-slate-100 text-xs uppercase">
+                                    <tr><th class="px-3 py-2">ID</th><th class="px-3 py-2">Accesos</th><th class="px-3 py-2">Entregas%</th><th class="px-3 py-2">¿Riesgo?</th><th class="px-3 py-2">Motivo</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b"><td class="px-3 py-2">A01</td><td class="px-3 py-2">2</td><td class="px-3 py-2">20%</td><td class="px-3 py-2 font-bold text-red-600">SÍ</td><td class="px-3 py-2 text-xs">Acceso ≤ 2</td></tr>
+                                    <tr class="border-b"><td class="px-3 py-2">A02</td><td class="px-3 py-2">5</td><td class="px-3 py-2">60%</td><td class="px-3 py-2 font-bold text-green-600">NO</td><td class="px-3 py-2 text-xs">Cumple todo</td></tr>
+                                    <tr class="border-b"><td class="px-3 py-2">A03</td><td class="px-3 py-2">1</td><td class="px-3 py-2">0%</td><td class="px-3 py-2 font-bold text-red-600">SÍ</td><td class="px-3 py-2 text-xs">Acceso ≤ 2 (Extremo)</td></tr>
+                                    <tr class="border-b"><td class="px-3 py-2">A04</td><td class="px-3 py-2">4</td><td class="px-3 py-2">50%</td><td class="px-3 py-2 font-bold text-green-600">NO</td><td class="px-3 py-2 text-xs">Cumple todo</td></tr>
+                                    <tr class="border-b"><td class="px-3 py-2">A05</td><td class="px-3 py-2">3</td><td class="px-3 py-2">30%</td><td class="px-3 py-2 font-bold text-red-600">SÍ</td><td class="px-3 py-2 text-xs">Entregas < 40%</td></tr>
+                                    <tr><td class="px-3 py-2">A06</td><td class="px-3 py-2">7</td><td class="px-3 py-2">100%</td><td class="px-3 py-2 font-bold text-green-600">NO</td><td class="px-3 py-2 text-xs">Excelencia</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <h5 class="font-bold text-indigo-900 mb-3">Tabla de Acción Priorizada (Contactar Primero):</h5>
+                        <div class="overflow-x-auto bg-slate-50 rounded-lg">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-indigo-100 text-xs uppercase text-indigo-900">
+                                    <tr><th class="px-3 py-2">Ranking</th><th class="px-3 py-2">ID</th><th class="px-3 py-2">Nivel</th><th class="px-3 py-2">Mensaje Sugerido</th></tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr class="bg-red-50"><td class="px-3 py-2 font-bold">1</td><td class="px-3 py-2 font-bold">A03</td><td class="px-3 py-2 font-bold text-red-700">CRÍTICO</td><td class="px-3 py-2 text-xs">"Te hemos detectado inactivo. Tu entrega está al 0%. Contacta urgente."</td></tr>
+                                    <tr class="bg-orange-50"><td class="px-3 py-2 font-bold">2</td><td class="px-3 py-2 font-bold">A01</td><td class="px-3 py-2 font-bold text-orange-700">ALTO</td><td class="px-3 py-2 text-xs">"Veo pocos accesos y entregas tardías. Recuerda la próxima fecha."</td></tr>
+                                    <tr class="bg-yellow-50"><td class="px-3 py-2 font-bold">3</td><td class="px-3 py-2 font-bold">A05</td><td class="px-3 py-2 font-bold text-yellow-700">MEDIO</td><td class="px-3 py-2 text-xs">"Tu porcentaje de entregas es bajo (<40%). Asegura la próxima tarea."</td></tr>
+                                    <tr><td class="px-3 py-2 font-bold">4</td><td class="px-3 py-2 font-bold">A04</td><td class="px-3 py-2 font-bold text-green-700">OK</td><td class="px-3 py-2 text-xs">"Buen ritmo, sigue así."</td></tr>
+                                    <tr><td class="px-3 py-2 font-bold">5</td><td class="px-3 py-2 font-bold">A02</td><td class="px-3 py-2 font-bold text-green-700">OK</td><td class="px-3 py-2 text-xs">"Excelente participación."</td></tr>
+                                    <tr><td class="px-3 py-2 font-bold">6</td><td class="px-3 py-2 font-bold">A06</td><td class="px-3 py-2 font-bold text-green-700">EXCELENTE</td><td class="px-3 py-2 text-xs">"Completaste todo a tiempo, gran trabajo."</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caso 22 -->
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔢</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 22: Regla de Riesgo y Aciertos</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Regla propuesta: <strong>Predigo no_supera=1 si entregas% < 50 O ausencias ≥ 5</strong>. Validar contra la realidad del dataset de 8 estudiantes.</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Validación de la Regla:</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm text-left text-slate-700">
+                                <thead class="bg-violet-100 text-xs uppercase text-violet-900">
+                                    <tr><th class="px-3 py-2">ID</th><th class="px-3 py-2">Entregas%</th><th class="px-3 py-2">Ausencias</th><th class="px-3 py-2">Realidad (1=No Supera)</th><th class="px-3 py-2">Predicción (Regla)</th><th class="px-3 py-2">¿Acierto?</th></tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S01</td><td class="px-3 py-2 text-red-600">30 (<50)</td><td class="px-3 py-2 text-red-600">5 (≥5)</td><td class="px-3 py-2 font-bold">1</td><td class="px-3 py-2 font-bold text-green-700">1 (Ambas)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S02</td><td class="px-3 py-2 text-red-600">45 (<50)</td><td class="px-3 py-2">4</td><td class="px-3 py-2 font-bold">1</td><td class="px-3 py-2 font-bold text-green-700">1 (Entregas)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S03</td><td class="px-3 py-2 text-green-600">80</td><td class="px-3 py-2">1</td><td class="px-3 py-2 font-bold">0</td><td class="px-3 py-2 font-bold text-green-700">0 (No cumple)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S04</td><td class="px-3 py-2 text-green-600">60</td><td class="px-3 py-2">2</td><td class="px-3 py-2 font-bold">0</td><td class="px-3 py-2 font-bold text-green-700">0 (No cumple)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S05</td><td class="px-3 py-2 text-red-600">20 (<50)</td><td class="px-3 py-2 text-red-600">6 (≥5)</td><td class="px-3 py-2 font-bold">1</td><td class="px-3 py-2 font-bold text-green-700">1 (Ambas)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S06</td><td class="px-3 py-2 text-green-600">55</td><td class="px-3 py-2">3</td><td class="px-3 py-2 font-bold">0</td><td class="px-3 py-2 font-bold text-green-700">0 (No cumple)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S07</td><td class="px-3 py-2 text-red-600">35 (<50)</td><td class="px-3 py-2 text-red-600">5 (≥5)</td><td class="px-3 py-2 font-bold">1</td><td class="px-3 py-2 font-bold text-green-700">1 (Ambas)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S08</td><td class="px-3 py-2 text-green-600">90</td><td class="px-3 py-2">0</td><td class="px-3 py-2 font-bold">0</td><td class="px-3 py-2 font-bold text-green-700">0 (No cumple)</td><td class="px-3 py-2 font-bold text-green-600">SÍ ✅</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="mt-6 bg-violet-100 border border-violet-300 p-4 rounded-lg text-center">
+                            <p class="text-sm text-slate-700 mb-2">Número total de aciertos:</p>
+                            <div class="text-4xl font-black text-violet-800">8 de 8 <span class="text-lg text-violet-600">(100%)</span></div>
+                        </div>
+                        
+                        <div class="mt-4 bg-green-50 border border-green-300 p-4 rounded-lg">
+                            <h5 class="font-bold text-green-900 mb-2">Conclusión:</h5>
+                            <p class="text-sm text-slate-700">Esta regla simple es extremadamente efectiva para este dataset específico. Sugiere que combinar 'entregas% < 50' con 'ausencias ≥ 5' captura perfectamente el comportamiento de estudiantes que no superarían la asignatura.</p>
+                        </div>
+                    </div>
+
+                    <!-- ESQUEMA VISUAL -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-violet-900 mb-4 uppercase text-xs tracking-widest flex items-center gap-2">📊 Diagrama de Decisión</h4>
+                        <div class="flex flex-col items-center gap-4 max-w-2xl mx-auto">
+                            <div class="bg-violet-100 border-2 border-violet-400 rounded-lg px-6 py-3 text-center"><span class="font-bold text-violet-800">Inicio: Estudiante Nuevo</span></div>
+                            <div class="text-slate-400 text-xl">↓</div>
+                            <div class="bg-slate-200 border-2 border-slate-400 rounded-lg px-6 py-3 text-center w-full"><span class="font-bold text-slate-800">¿Entregas% < 50?</span></div>
+                            <div class="flex gap-8 w-full">
+                                <div class="flex-1 flex flex-col items-center">
+                                    <div class="bg-red-100 border border-red-300 rounded px-4 py-2 font-bold text-red-700">SÍ</div>
+                                    <div class="text-slate-400 text-lg">↓</div>
+                                    <div class="bg-red-200 border-2 border-red-500 rounded-lg px-6 py-3 text-center"><span class="font-bold text-red-900">PREDICCIÓN: Riesgo (1)</span></div>
+                                </div>
+                                <div class="flex-1 flex flex-col items-center">
+                                    <div class="bg-green-100 border border-green-300 rounded px-4 py-2 font-bold text-green-700">NO</div>
+                                    <div class="text-slate-400 text-lg">↓</div>
+                                    <div class="bg-slate-200 border-2 border-slate-400 rounded-lg px-6 py-3 text-center"><span class="font-bold text-slate-800">¿Ausencias ≥ 5?</span></div>
+                                </div>
+                            </div>
+                            <div class="flex gap-12 w-full pt-4">
+                                <div class="flex-1"></div>
+                                <div class="flex-1 flex flex-col items-center">
+                                    <div class="flex gap-4">
+                                        <div class="bg-red-100 border border-red-300 rounded px-4 py-2 font-bold text-red-700">SÍ</div>
+                                        <div class="bg-green-100 border border-green-300 rounded px-4 py-2 font-bold text-green-700">NO</div>
+                                    </div>
+                                    <div class="text-slate-400 text-lg mt-2">↓ ↓</div>
+                                    <div class="flex gap-4">
+                                        <div class="bg-red-200 border-2 border-red-500 rounded-lg px-6 py-3 text-center w-32"><span class="font-bold text-red-900 text-xs">Riesgo (1)</span></div>
+                                        <div class="bg-green-200 border-2 border-green-500 rounded-lg px-6 py-3 text-center w-32"><span class="font-bold text-green-900 text-xs">Seguro (0)</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: FICHAS RÁPIDAS -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Core)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-cyan-500">📈</span><h3 class="font-bold text-lg">Learning Analytics</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4><p class="text-sm">Medición y análisis de datos sobre estudiantes para optimizar el aprendizaje.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-purple-500">⚠️</span><h3 class="font-bold text-lg">Intervención Temprana</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Objetivo</h4><p class="text-sm">Actuar rápido ante signos de dificultad para evitar el fracaso.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-orange-500">📊</span><h3 class="font-bold text-lg">Dashboard Educativo</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Función</h4><p class="text-sm">Panel visual de KPIs para toma de decisiones docentes.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-green-500">🔄</span><h3 class="font-bold text-lg">LMS Integration</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Origen Datos</h4><p class="text-sm">Logs de Moodle/Canvas: navegación, entregas, notas.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-red-500">🔮</span><h3 class="font-bold text-lg">Predicción</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Uso</h4><p class="text-sm">Algoritmos para predecir rendimiento futuro o riesgo.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-cyan-500">🔀</span><h3 class="font-bold text-lg">Clustering</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Segmentación</h4><p class="text-sm">Agrupar alumnos con comportamientos similares.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-yellow-500">💬</span><h3 class="font-bold text-lg">Feedback Auto</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Sistema</h4><p class="text-sm">Mensajes instantáneos basados en desempeño.</p></div>
+                </div></div>
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-pink-500">🔒</span><h3 class="font-bold text-lg">Privacidad</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Ética</h4><p class="text-sm">Protección de datos personales (RGPD). Esencial en educación.</p></div>
+                </div></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: GLOSARIO -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">6. Glosario Operativo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Log Data</h4>
+                    <p class="text-sm text-slate-600 mt-1">Registro de interacciones digitales (clics, tiempo, visitas).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">KPI Educativo</h4>
+                    <p class="text-sm text-slate-600 mt-1">Indicador clave (tasa participación, % entregas, notas).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Early Warning System</h4>
+                    <p class="text-sm text-slate-600 mt-1">Sistema automatizado de alertas de riesgo.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Adaptive Learning</h4>
+                    <p class="text-sm text-slate-600 mt-1">Contenido que se ajusta al nivel individual del estudiante.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Gamification</h4>
+                    <p class="text-sm text-slate-600 mt-1">Elementos de juego para motivar (insignias, puntos).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-cyan-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Formative Assessment</h4>
+                    <p class="text-sm text-slate-600 mt-1">Evaluación continua durante el proceso de aprendizaje.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: LABORATORIOS -->
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[850px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-600 mb-6">Simuladores de dashboards educativos y reglas de predicción de riesgo.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- Lab 1: Dashboard Simulator -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-cyan-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">LABORATORIO 1: Dashboard Educativo</span>
+                        <span id="dashStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Listo</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <canvas id="dashboardCanvas" width="400" height="300" class="w-full h-auto mb-4"></canvas>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <button onclick="resetDashboard()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-xs transition">🗑️ Reset Datos</button>
+                            <button onclick="addNewStudent()" class="bg-cyan-600 hover:bg-cyan-500 px-3 py-1 rounded text-xs transition">➕ Añadir Estudiante</button>
+                            <label class="text-xs self-center ml-2">Mostrar: 
+                                <select id="filterSelect" onchange="updateDashboard()" class="bg-slate-700 rounded px-1 text-xs">
+                                    <option value="all">Todos</option>
+                                    <option value="risk">Solo Riesgo</option>
+                                    <option value="ok">Solo OK</option>
+                                </select>
+                            </label>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Dashboard visualiza KPIs. Haz clic para añadir y filtrar.</p>
+                    </div>
+                </div>
+
+                <!-- Lab 2: Risk Rule Tester -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-cyan-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">LABORATORIO 2: Probador de Reglas Riesgo</span>
+                        <span id="ruleStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Esperando</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="bg-slate-700 rounded p-4 mb-4">
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="text-xs text-slate-400">Entregas %:</label>
+                                    <input type="range" id="deliveriesRange" min="0" max="100" value="50" class="w-full">
+                                    <div id="deliveriesVal" class="text-center font-bold text-cyan-400">50%</div>
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-400">Ausencias:</label>
+                                    <input type="range" id="absencesRange" min="0" max="10" value="2" class="w-full">
+                                    <div id="absencesVal" class="text-center font-bold text-cyan-400">2</div>
+                                </div>
+                            </div>
+                            <div id="predictionResult" class="text-center p-4 rounded font-bold text-lg bg-slate-800 border border-slate-600"></div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="applyRule('simple')" class="bg-violet-600 hover:bg-violet-500 px-3 py-1 rounded text-xs transition">Regla Simple (Entregas<50 OR Abs≥5)</button>
+                            <button onclick="applyRule('strict')" class="bg-red-600 hover:bg-red-500 px-3 py-1 rounded text-xs transition">Regla Estricta (Entregas<30 AND Abs≥3)</button>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Desliza los valores para simular un estudiante y probar reglas.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: FLUJO E2E -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E: Implementación Learning Analytics</h2>
+            <p class="text-slate-600 mb-8">Del problema educativo a la intervención implementada.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-slate-800 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-slate-100 w-12 h-12 flex justify-center items-center rounded-full">🎯</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">1. Definición Objetivo</h4><span class="text-xs font-bold text-slate-500">Negocio Educativo</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-1" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Identificar problema ("Altas tasas de abandono") → Traducir a objetivo analítico ("Predecir riesgo con 80% precisión").</div>
+                </div>
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">📚</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">2. Extracción LMS</h4><span class="text-xs font-bold text-blue-500">Fuente Datos</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-2" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Conectar API Moodle/Canvas. Exportar logs, entregas, calificaciones. Garantizar anonimato y RGPD.</div>
+                </div>
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-purple-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-purple-100 w-12 h-12 flex justify-center items-center rounded-full">🧹</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">3. Limpieza & Enriquecimiento</h4><span class="text-xs font-bold text-purple-500">Preparación</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-3" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Manejar nulos. Crear características derivadas (tasa accesos/semana, media entregas).</div>
+                </div>
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">📊</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">4. Visualización & Alertas</h4><span class="text-xs font-bold text-green-500">Dashboards</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-4" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Crear paneles interactivos. Configurar alertas automáticas para estudiantes de riesgo.</div>
+                </div>
+                <div class="text-center text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-cyan-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-cyan-100 w-12 h-12 flex justify-center items-center rounded-full">📤</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">5. Intervención & Feedback</h4><span class="text-xs font-bold text-cyan-500">Acción Docente</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-5" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Enviar mensajes automatizados o realizar tutorías presenciales basadas en insights detectados.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST OFICIAL -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-green-500 pb-2 inline-block">9. Test de Evaluación Oficial</h2>
+            <p class="text-slate-600 mb-6">Demuestra tus conocimientos en Learning Analytics. 20 preguntas basadas en el temario de la Unidad 11.</p>
+            
+            <form id="quizForm" class="space-y-6">
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">1. En el contexto de Learning Analytics, 'intervención temprana' significa:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A. Solo al final del semestre.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B. Actuar rápidamente para apoyar a estudiantes que muestran signos de dificultades, basado en datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C. No tiene aplicación en educación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D. Solo para casos extremos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">2. La 'personalización del aprendizaje' mediante Learning Analytics implica:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A. Proveer el mismo contenido a todos los estudiantes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B. Adaptar el contenido y la metodología al estilo y ritmo de aprendizaje de cada estudiante.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C. No tiene relación con la personalización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D. Solo para actividades extracurriculares.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">3. En Learning Analytics, 'dashboard' se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A. Solo a una página web.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B. Una interfaz que muestra visualizaciones y métricas de datos educativos para toma de decisiones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C. No tiene aplicación en educación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D. Solo para presentaciones.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">4. El 'análisis de comportamiento de los estudiantes' en Learning Analytics incluye:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A. Solo datos personales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B. Patrones de navegación, tiempo dedicado a tareas y participación en foros.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C. No se analiza el comportamiento.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D. Solo para evaluaciones finales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">5. El 'feedback' en Learning Analytics puede ayudar a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A. Solo aumentar la cantidad de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B. No tiene uso práctico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C. Proveer recomendaciones inmediatas a estudiantes y docentes para mejorar el aprendizaje.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D. Solo para sistemas de calificación.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 6 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">6. La 'privacidad' en Learning Analytics es importante porque:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A. No se usan datos personales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B. Se manejan datos sensibles que deben protegerse para cumplir con normativas y respetar la privacidad del estudiante.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C. No es un tema relevante.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 7 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">7. El uso de 'algoritmos de clustering' en Learning Analytics puede:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="A"> A. Agrupar a estudiantes con comportamientos de aprendizaje similares para estrategias pedagógicas personalizadas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="B"> B. Solo servir para clasificación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="C"> C. No tiene utilidad en este contexto.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 8 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">8. Los 'datos de log' en sistemas educativos se utilizan en Learning Analytics para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="A"> A. Solo almacenamiento.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="B"> B. Analizar la interacción del estudiante con el sistema, identificando patrones de uso.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="C"> C. No tienen aplicación en análisis.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="D"> D. Solo para sistemas antiguos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 9 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">9. Un ejemplo de aplicación de Learning Analytics es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="A"> A. Solo el monitoreo de la asistencia física.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="B"> B. Identificar estudiantes en riesgo para ofrecer intervenciones personalizadas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="C"> C. No tiene aplicaciones prácticas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="D"> D. Solo para evaluaciones finales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 10 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">10. La 'usabilidad' de sistemas educativos se puede mejorar con Learning Analytics al:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="A"> A. Solo cambiar la estética.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="B"> B. Identificar y corregir problemas de interfaz que afectan el aprendizaje.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="C"> C. No tiene impacto en la usabilidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 11 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">11. La 'retroalimentación automática' en Learning Analytics se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="A"> A. Solo comentarios manuales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="B"> B. No tiene relación con feedback.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="C"> C. Solo para evaluaciones escritas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="D"> D. Sistemas que proporcionan feedback instantáneo basado en el desempeño del estudiante.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 12 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">12. La 'visualización de datos' en Learning Analytics ayuda a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="A"> A. Solo decorar informes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="B"> B. Presentar de manera clara y efectiva los resultados del análisis para la toma de decisiones educativas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="C"> C. No tiene relación con la visualización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="D"> D. Solo para datos financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 13 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">13. La 'gamificación' en Learning Analytics se usa para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="A"> A. Solo entretenimiento.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="B"> B. No tiene relación con el aprendizaje.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="C"> C. Solo para niños pequeños.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="D"> D. Incrementar la motivación y el compromiso del estudiante mediante elementos de juego.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 14 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">14. Learning Analytics se refiere a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="A"> A. Solo a la enseñanza tradicional.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="B"> B. El análisis de datos para optimizar y entender los procesos de aprendizaje.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="C"> C. No tiene relación con la educación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="D"> D. Solo para análisis de redes sociales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 15 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">15. La 'evaluación formativa' en Learning Analytics se utiliza para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="A"> A. Monitorear el progreso del aprendizaje en tiempo real y ajustar la enseñanza.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="B"> B. Solo evaluar al final del curso.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="C"> C. No tiene relación con la evaluación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="D"> D. Solo en pruebas escritas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 16 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">16. Los 'modelos de predicción' en Learning Analytics se usan para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="A"> A. Predecir el rendimiento futuro de los estudiantes o la probabilidad de abandono.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="B"> B. Solo guardar datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="C"> C. No tienen aplicación en educación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="D"> D. Solo para análisis de mercado.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 17 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">17. Los datos utilizados en Learning Analytics pueden incluir:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="A"> A. Solo datos demográficos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="B"> B. No se utilizan datos en Learning Analytics.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="C"> C. Interacciones con el LMS, rendimiento académico, y comportamiento de estudio.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="D"> D. Solo datos de redes sociales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 18 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">18. El 'aprendizaje adaptativo' en Learning Analytics implica:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="A"> A. Sistemas que ajustan el contenido y el ritmo del aprendizaje según las necesidades individuales del estudiante.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="B"> B. Solo enseñanza tradicional.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="C"> C. No tiene aplicación en educación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="D"> D. Solo para cursos online.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 19 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">19. El 'análisis de secuencia de aprendizaje' permite:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="A"> A. Solo ver datos estáticos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="B"> B. No tiene aplicación en análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="C"> C. Solo en análisis de redes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="D"> D. Entender cómo los estudiantes avanzan a través del contenido y actividades educativas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 20 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">20. El objetivo principal de Learning Analytics es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="A"> A. Solo mejorar la velocidad de enseñanza.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="B"> B. No tiene objetivos específicos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="C"> C. Mejorar la experiencia educativa, la retención estudiantil y los resultados de aprendizaje.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="D"> D. Solo gestionar datos financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- BOTONES DE CONTROL FINAL DEL TEST -->
+                <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-cyan-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-green-400');
+                currentBtn.classList.add('border-cyan-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            if(sectionId === 'sec7') {
+                initDashboardCanvas();
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        function toggleE2E(stepId) {
+            document.getElementById(stepId).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // LABORATORIO 1: DASHBOARD SIMULATOR
+        // ==========================================
+        let dashCanvas, dashCtx, studentsData = [];
+        
+        function initDashboardCanvas() {
+            dashCanvas = document.getElementById('dashboardCanvas');
+            dashCtx = dashCanvas.getContext('2d');
+            resetDashboard();
+        }
+
+        function resetDashboard() {
+            studentsData = [
+                {id: 'S1', risk: true, color: '#ef4444'},
+                {id: 'S2', risk: false, color: '#22c55e'},
+                {id: 'S3', risk: true, color: '#ef4444'},
+                {id: 'S4', risk: false, color: '#22c55e'}
+            ];
+            dashStatus.innerText = 'Datos cargados';
+            dashStatus.className = 'text-xs text-blue-400 bg-slate-800 px-2 rounded';
+            drawDashboard();
+        }
+
+        function addNewStudent() {
+            const risk = Math.random() > 0.5;
+            studentsData.push({
+                id: 'S' + (studentsData.length + 1),
+                risk: risk,
+                color: risk ? '#ef4444' : '#22c55e'
+            });
+            updateDashboard();
+            dashStatus.innerText = 'Estudiante añadido';
+            setTimeout(() => dashStatus.innerText = 'Datos cargados', 2000);
+        }
+
+        function updateDashboard() {
+            const filter = document.getElementById('filterSelect').value;
+            let filtered = studentsData;
+            if(filter === 'risk') filtered = studentsData.filter(s => s.risk);
+            if(filter === 'ok') filtered = studentsData.filter(s => !s.risk);
+            drawDashboard(filtered);
+        }
+
+        function drawDashboard(data = studentsData) {
+            if(!dashCtx) return;
+            dashCtx.clearRect(0, 0, dashCanvas.width, dashCanvas.height);
+            
+            dashCtx.fillStyle = '#e2e8f0';
+            dashCtx.fillRect(0, 0, dashCanvas.width, dashCanvas.height);
+            
+            const barWidth = 20;
+            const spacing = 10;
+            const totalBars = data.length;
+            const startX = 50;
+            const startY = 250;
+            const maxHeight = 200;
+            
+            data.forEach((student, i) => {
+                const height = student.risk ? Math.random() * 100 + 50 : Math.random() * 80 + 100;
+                const x = startX + i * (barWidth + spacing);
+                
+                dashCtx.fillStyle = student.color;
+                dashCtx.fillRect(x, startY - height, barWidth, height);
+                
+                dashCtx.fillStyle = '#334155';
+                dashCtx.font = '10px Arial';
+                dashCtx.textAlign = 'center';
+                dashCtx.fillText(student.id, x + barWidth/2, startY + 15);
+                
+                if(student.risk) {
+                    dashCtx.fillStyle = '#ef4444';
+                    dashCtx.fillText('!', x + barWidth/2, startY - height - 5);
+                }
+            });
+        }
+
+        // ==========================================
+        // LABORATORIO 2: RISK RULE TESTER
+        // ==========================================
+        const deliveriesRange = document.getElementById('deliveriesRange');
+        const absencesRange = document.getElementById('absencesRange');
+        const deliveriesVal = document.getElementById('deliveriesVal');
+        const absencesVal = document.getElementById('absencesVal');
+        const predictionResult = document.getElementById('predictionResult');
+
+        deliveriesRange.addEventListener('input', () => {
+            deliveriesVal.innerText = deliveriesRange.value + '%';
+            applyRule('simple');
+        });
+
+        absencesRange.addEventListener('input', () => {
+            absencesVal.innerText = absencesRange.value;
+            applyRule('simple');
+        });
+
+        function applyRule(ruleType) {
+            ruleStatus.innerText = 'Probando regla...';
+            ruleStatus.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+            
+            setTimeout(() => {
+                const deliveries = parseInt(deliveriesRange.value);
+                const absences = parseInt(absencesRange.value);
+                let isRisk = false;
+                let ruleDesc = '';
+                
+                if(ruleType === 'simple') {
+                    isRisk = (deliveries < 50 || absences >= 5);
+                    ruleDesc = isRisk ? '(Entregas<50 O Abs≥5)' : '';
+                } else {
+                    isRisk = (deliveries < 30 && absences >= 3);
+                    ruleDesc = isRisk ? '(Entregas<30 Y Abs≥3)' : '';
+                }
+                
+                if(isRisk) {
+                    predictionResult.innerHTML = `<span style="color:#ef4444">⚠️ RIESGO DETECTADO ${ruleDesc}</span>`;
+                    predictionResult.className = 'text-center p-4 rounded font-bold text-lg bg-red-100 border border-red-300 text-red-800';
+                } else {
+                    predictionResult.innerHTML = `<span style="color:#22c55e">✅ SIN RIESGO ${ruleDesc}</span>`;
+                    predictionResult.className = 'text-center p-4 rounded font-bold text-lg bg-green-100 border border-green-300 text-green-800';
+                }
+                
+                ruleStatus.innerText = 'Regla aplicada';
+                ruleStatus.className = 'text-xs text-blue-400 bg-slate-800 px-2 rounded';
+            }, 200);
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (SECCIÓN 9)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+        }
+
+        window.addEventListener('load', () => {
+            console.log('🎓 Master Template UD11 cargada correctamente');
+        });
+    </script>
+</body>
+</html>
