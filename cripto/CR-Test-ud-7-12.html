@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Tests - Unidades 7 a 12</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Tests<span class="text-cyan-400">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Banco Exámenes UD7-UD12</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1 px-2">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Selectar Unidad</li>
+                
+                <li>
+                    <button onclick="loadTest('ud7')" id="btn-ud7" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">⛏️</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 7</div>
+                            <div class="text-xs text-slate-500">Minería Blockchain</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud8')" id="btn-ud8" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">📊</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 8</div>
+                            <div class="text-xs text-slate-500">Minería de Datos</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud9')" id="btn-ud9" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🤖</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 9</div>
+                            <div class="text-xs text-slate-500">ML Sup & No Sup</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud10')" id="btn-ud10" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🎨</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 10</div>
+                            <div class="text-xs text-slate-500">Visualización Datos</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud11')" id="btn-ud11" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">📈</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 11</div>
+                            <div class="text-xs text-slate-500">Learning Analytics</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud12')" id="btn-ud12" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🛠️</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 12</div>
+                            <div class="text-xs text-slate-500">Herramientas LA</div>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            © 2026 | Todos los derechos reservados
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- HEADER UNIDAD -->
+        <div class="max-w-6xl mx-auto mb-8 fade-in" id="testHeader">
+            <h1 class="text-4xl font-black text-slate-800 mb-2">Selecciona una unidad para comenzar</h1>
+            <p class="text-slate-600 text-lg">Evaluación con 20 preguntas tipo test. Se considera superado si ≥80% de aciertos.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Preguntas Totales</div>
+                    <div class="text-2xl font-black text-cyan-600" id="totalQuestions">-</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Nota Mínima</div>
+                    <div class="text-2xl font-black text-green-600">80%</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Recomendado</div>
+                    <div class="text-2xl font-black text-yellow-600">15-25 min</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEST CONTAINER -->
+        <div id="testContainer" class="max-w-6xl mx-auto hidden fade-in">
+            <form id="quizForm" class="space-y-6">
+                <!-- Las preguntas se cargarán dinámicamente aquí -->
+            </form>
+
+            <!-- BOTONES DE CONTROL -->
+            <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                <div class="flex w-full md:w-auto gap-4">
+                    <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                    <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESTADO INICIAL -->
+        <div id="emptyState" class="max-w-6xl mx-auto text-center py-20 fade-in">
+            <div class="text-8xl mb-6">📝</div>
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">Esperando selección de unidad</h2>
+            <p class="text-slate-500 max-w-md mx-auto">Haz clic en una unidad del menú lateral izquierdo para cargar las 20 preguntas correspondientes.</p>
+        </div>
+
+    </main>
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE PREGUNTAS (UNIDADES 7-12)
+        // ==========================================
+        const testsData = {
+            ud7: {
+                title: "Unidad 7: Minería Blockchain",
+                icon: "⛏️",
+                questions: [
+                    { q: "Un 'pool de minería' es:", options: ["A. Solo para grandes corporaciones", "B. No existe tal concepto en blockchain", "C. Un grupo de mineros que combinan sus recursos computacionales para aumentar sus probabilidades de minar un bloque", "D. Solo para la minería de metales"], correct: "C" },
+                    { q: "La 'dificultad' de minería en blockchain:", options: ["A. Es constante y no cambia", "B. Ajusta automáticamente para mantener un intervalo constante entre los bloques", "C. Solo se aplica a sistemas antiguos", "D. No tiene impacto en la minería"], correct: "B" },
+                    { q: "El 'nonce' en minería es:", options: ["A. Un valor que los mineros ajustan para encontrar un hash válido", "B. Solo un tipo de criptomoneda", "C. No tiene función en blockchain", "D. Solo para transacciones financieras"], correct: "A" },
+                    { q: "El 'hash' en el contexto de la minería es:", options: ["A. Un número aleatorio", "B. El resultado de una función hash aplicada a las transacciones y al nonce, que debe cumplir ciertos criterios para que el bloque sea válido", "C. Solo para cifrar mensajes", "D. No tiene importancia en la minería"], correct: "B" },
+                    { q: "La 'prueba de participación' (Proof of Stake, PoS) es una alternativa a PoW donde:", options: ["A. Solo los mineros con más poder computacional validan transacciones", "B. Los validadores son elegidos según la cantidad de criptomonedas que poseen y apostan'", "C. No se usa en blockchain", "D. Solo se aplica a transacciones financieras"], correct: "B" },
+                    { q: "La 'sostenibilidad' de la minería es un tema actual debido a:", options: ["A. Solo la eficiencia de los algoritmos", "B. El alto consumo de energía y su impacto ambiental, promoviendo el desarrollo de métodos más eficientes como PoS", "C. No es un problema para blockchain", "D. Solo en países desarrollados"], correct: "B" },
+                    { q: "La 'centralización' de la minería puede ocurrir debido a:", options: ["A. Solo el número de usuarios en la red", "B. No es un problema en blockchain", "C. La concentración del poder de hash en unas pocas entidades, lo que puede amenazar la descentralización", "D. Solo en sistemas de pago tradicionales"], correct: "C" },
+                    { q: "El 'Proof of Stake' consume menos energía que 'Proof of Work' porque:", options: ["A. No requiere validación de transacciones", "B. No depende del poder computacional para validar bloques, sino de la tenencia de criptomonedas", "C. Es más eficiente solo en sistemas centralizados", "D. No tiene relación con el consumo de energía"], correct: "B" },
+                    { q: "La 'escalabilidad' en minería es un problema porque:", options: ["A. Aumenta la seguridad de la red", "B. El consumo de energía y recursos computacionales puede crecer exponencialmente con el tamaño de la red", "C. No es un problema en blockchain", "D. Solo afecta a las criptomonedas menos conocidas"], correct: "B" },
+                    { q: "El principal objetivo de la minería es:", options: ["A. Solo ganar dinero", "B. Asegurar la red blockchain, validar transacciones y emitir nuevas criptomonedas", "C. Reducir el tamaño de la blockchain", "D. No tiene objetivos específicos"], correct: "B" },
+                    { q: "El 'ataque del 51%' en el contexto de minería implica:", options: ["A. Que el 51% de los usuarios pueden alterar la blockchain", "B. Que un grupo controla más del 50% del poder de hash, pudiendo potencialmente alterar la cadena de bloques", "C. No tiene efectos perjudiciales", "D. Solo es posible en sistemas centralizados"], correct: "B" },
+                    { q: "Un 'fork' en la minería puede suceder cuando:", options: ["A. Solo se añade un nuevo bloque", "B. Hay un desacuerdo sobre cambios en el protocolo, resultando en dos cadenas paralelas", "C. No tiene relación con la minería", "D. Solo para actualizaciones menores"], correct: "B" },
+                    { q: "El 'Proof of Work' (PoW) en minería implica:", options: ["A. Que los mineros resuelvan problemas matemáticos complejos para validar bloques", "B. Solo la aprobación de transacciones por una autoridad central", "C. No tiene relación con la minería", "D. Solo aplicarse a contratos inteligentes"], correct: "A" },
+                    { q: "El 'hashing power' o poder de hash en minería:", options: ["A. Es la capacidad computacional total que los mineros aportan a la red para resolver problemas de hash", "B. Solo se refiere a la cantidad de energía eléctrica", "C. No tiene impacto en la minería", "D. Solo afecta a las transacciones"], correct: "A" },
+                    { q: "La 'minería' en blockchain se refiere a:", options: ["A. La extracción de datos personales", "B. El proceso de validar transacciones y agregarlas a la blockchain", "C. Solo la creación de monedas físicas", "D. No tiene relación con blockchain"], correct: "B" },
+                    { q: "El 'halving' o reducción a la mitad en minería se refiere a:", options: ["A. La reducción de la recompensa por bloque que los mineros reciben, lo cual ocurre a intervalos regulares", "B. La reducción del tamaño de los bloques", "C. No tiene impacto en la minería", "D. Solo a la bifurcación de la cadena"], correct: "A" },
+                    { q: "La 'minería en la nube' implica:", options: ["A. Que los mineros físicamente se reúnan en la nube", "B. No es una práctica en blockchain", "C. Solo aplicable a Bitcoin", "D. Alquilar poder de hash de proveedores de servicios en la nube para minar criptomonedas"], correct: "D" },
+                    { q: "El 'hardware' especializado para la minería es conocido como:", options: ["A. Solo computadoras personales", "B. No se usa en minería", "C. ASICs (Application-Specific Integrated Circuits)", "D. Solo tarjetas gráficas"], correct: "C" },
+                    { q: "La 'recompensa por bloque' se refiere a:", options: ["A. Solo los impuestos sobre las transacciones", "B. La cantidad de criptomonedas que un minero recibe por añadir un bloque a la blockchain", "C. No tiene relación con la minería", "D. Solo aplicable a Bitcoin"], correct: "B" },
+                    { q: "La 'seguridad' de una blockchain mediante minería se basa en:", options: ["A. La dificultad de revertir transacciones y la distribución del poder de hash entre los mineros", "B. Solo la cantidad de usuarios", "C. No tiene relación con la seguridad", "D. Solo la longitud de las claves"], correct: "A" }
+                ]
+            },
+            ud8: {
+                title: "Unidad 8: Minería de Datos",
+                icon: "📊",
+                questions: [
+                    { q: "Un objetivo principal de la minería de datos es:", options: ["A. Solo almacenar datos", "B. Eliminar datos innecesarios", "C. Predecir comportamientos futuros, segmentar mercados y descubrir relaciones ocultas", "D. Solo para entretenimiento"], correct: "C" },
+                    { q: "El 'overfitting' en modelos de minería de datos ocurre cuando:", options: ["A. El modelo es muy simple", "B. No tiene impacto en el modelo", "C. El modelo se ajusta demasiado bien a los datos de entrenamiento, perdiendo generalidad", "D. Solo en modelos sin datos"], correct: "C" },
+                    { q: "El 'árbol de decisión' es útil para:", options: ["A. Solo visualizar datos", "B. No tiene aplicación en minería de datos", "C. Clasificar o predecir decisiones basadas en una serie de preguntas lógicas", "D. Solo en análisis financieros"], correct: "C" },
+                    { q: "Las 'reglas de asociación' en minería de datos son útiles para:", options: ["A. Descubrir patrones de compra, como en el análisis de cestas de mercado", "B. Solo en análisis de redes sociales", "C. No tienen relación con la minería de datos", "D. Solo en estudios demográficos"], correct: "A" },
+                    { q: "El 'análisis de anomalías' se usa para:", options: ["A. Solo identificar tendencias", "B. Detectar datos o eventos que se desvían significativamente del comportamiento esperado", "C. No es parte de la minería de datos", "D. Solo en análisis de redes"], correct: "B" },
+                    { q: "El 'preprocesamiento de datos' en minería de datos incluye:", options: ["A. Limpieza, transformación e integración de datos para análisis", "B. Solo la visualización de datos", "C. No es un paso en minería de datos", "D. Solo la recolección de nuevos datos"], correct: "A" },
+                    { q: "La 'privacidad' en minería de datos es una preocupación debido a:", options: ["A. La posibilidad de inferir información personal o sensible a partir de datos analizados", "B. Solo la cantidad de datos recolectados", "C. No es un tema en minería de datos", "D. Solo en análisis de datos financieros"], correct: "A" },
+                    { q: "La 'selección de características' en minería de datos consiste en:", options: ["A. Solo añadir más datos al análisis", "B. Identificar y usar solo las variables más relevantes para construir modelos", "C. No es una técnica de minería de datos", "D. Solo para datos textuales"], correct: "B" },
+                    { q: "La 'regresión' en minería de datos se utiliza para:", options: ["A. Predecir valores continuos basándose en una o más variables independientes", "B. Solo clasificar datos", "C. No tiene aplicación práctica", "D. Solo en análisis de texto"], correct: "A" },
+                    { q: "El 'análisis de texto' en minería de datos incluye:", options: ["A. Solo la traducción de textos", "B. Procesamiento y análisis de grandes cantidades de texto para extraer información útil", "C. No tiene relación con minería de datos", "D. Solo para análisis de redes sociales"], correct: "B" },
+                    { q: "El 'análisis de componentes principales' (PCA) se aplica para:", options: ["A. Reducir la dimensionalidad de los datos manteniendo la mayor parte de la variabilidad", "B. Solo reducir la cantidad de datos", "C. No se usa en minería de datos", "D. Solo en análisis temporal"], correct: "A" },
+                    { q: "El 'análisis de asociación' busca:", options: ["A. Solo correlaciones temporales", "B. Relaciones entre variables en grandes conjuntos de datos, como en reglas de asociación", "C. No se usa en minería de datos", "D. Solo en datos financieros"], correct: "B" },
+                    { q: "El 'análisis de secuencias' en minería de datos se centra en:", options: ["A. Solo datos estáticos", "B. Identificar patrones en datos que cambian con el tiempo, como comportamientos de usuarios", "C. No tiene relación con los datos", "D. Solo en análisis de texto"], correct: "B" },
+                    { q: "'Data Warehouse' en el contexto de minería de datos es:", options: ["A. Solo un tipo de software de minería", "B. Un repositorio centralizado de datos históricos y actuales para análisis", "C. No tiene relación con la minería de datos", "D. Solo para almacenar datos temporales"], correct: "B" },
+                    { q: "La 'limpieza de datos' se refiere a:", options: ["A. Solo borrar datos antiguos", "B. No tiene aplicación en minería de datos", "C. Solo para datos numéricos", "D. Corregir errores, eliminar duplicados y manejar valores faltantes"], correct: "D" },
+                    { q: "Un 'algoritmo de clustering' en minería de datos:", options: ["A. Solo se usa para bases de datos", "B. Agrupa datos en base a similitudes sin etiquetas previas", "C. No tiene relación con el análisis de datos", "D. Solo para datos textuales"], correct: "B" },
+                    { q: "La 'clasificación' en minería de datos implica:", options: ["A. Solo ordenar datos alfabéticamente", "B. Asignar categorías a datos basados en características conocidas", "C. No es una técnica de minería de datos", "D. Solo en análisis de imágenes"], correct: "B" },
+                    { q: "La 'validación cruzada' (cross-validation) se usa para:", options: ["A. Solo validar bases de datos", "B. Evaluar cómo el modelo se desempeñará en un conjunto de datos independiente", "C. No tiene aplicación en minería de datos", "D. Solo para datos financieros"], correct: "B" },
+                    { q: "Las 'técnicas de reducción de dimensionalidad' ayudan a:", options: ["A. Aumentar la cantidad de datos", "B. No tienen aplicación en minería de datos", "C. Simplificar conjuntos de datos complejos manteniendo la información esencial", "D. Solo en análisis de imágenes"], correct: "C" },
+                    { q: "La minería de datos se define como:", options: ["A. Solo la extracción de minerales", "B. El proceso de descubrir patrones y conocimiento a partir de grandes volúmenes de datos", "C. Solo la recolección de datos", "D. No tiene relación con los datos"], correct: "B" }
+                ]
+            },
+            ud9: {
+                title: "Unidad 9: ML Supervisado y No Supervisado",
+                icon: "🤖",
+                questions: [
+                    { q: "En el clustering jerárquico:", options: ["A. Se necesita saber de antemano el número de clusters", "B. Los datos se agrupan en una jerarquía de clusters sin predeterminar el número de grupos", "C. No es un método de clustering", "D. Solo se aplica a datos temporales"], correct: "B" },
+                    { q: "El 'análisis de componentes principales' (PCA) es un método:", options: ["A. Solo para datos supervisados", "B. No supervisado que reduce la dimensionalidad de los datos", "C. No tiene relación con el análisis de datos", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "El aprendizaje no supervisado puede ayudar a:", options: ["A. Solo predecir resultados específicos", "B. No tiene aplicaciones prácticas", "C. Descubrir estructuras ocultas en los datos, como segmentación de mercado", "D. Solo en sistemas de recomendación"], correct: "C" },
+                    { q: "El aprendizaje supervisado requiere:", options: ["A. Solo datos sin etiquetas", "B. Datos con etiquetas o resultados conocidos para entrenar el modelo", "C. No necesita datos", "D. Solo para aprendizaje humano"], correct: "B" },
+                    { q: "El 'SVM' (Máquinas de Vectores de Soporte) es útil para:", options: ["A. Solo clustering", "B. Clasificación y regresión, especialmente eficaz en espacios de alta dimensionalidad", "C. No tiene aplicación en aprendizaje automático", "D. Solo análisis de texto"], correct: "B" },
+                    { q: "El 'análisis de asociación' es un tipo de:", options: ["A. Aprendizaje supervisado", "B. Aprendizaje no supervisado que busca relaciones entre variables", "C. No tiene relación con el aprendizaje automático", "D. Solo aplicable a datos financieros"], correct: "B" },
+                    { q: "El 'DBSCAN' es un algoritmo de clustering que:", options: ["A. Agrupa datos basándose en densidad, identificando también datos atípicos", "B. Requiere definir el número de clusters de antemano", "C. No es un algoritmo de clustering", "D. Solo para datos temporales"], correct: "A" },
+                    { q: "El 'k-NN' (k-Vecinos más Cercanos) es un método:", options: ["A. Solo para clustering", "B. No tiene aplicación en aprendizaje supervisado", "C. Solo para análisis de series temporales", "D. De clasificación supervisada donde las etiquetas de nuevos datos se deciden basándose en la mayoría de los vecinos más cercanos"], correct: "D" },
+                    { q: "El objetivo del algoritmo de clustering (aprendizaje no supervisado) es:", options: ["A. Encontrar grupos o patrones en los datos sin etiquetas previas", "B. Predecir un resultado específico", "C. No tiene relación con el análisis de datos", "D. Solo aplicable a datos financieros"], correct: "A" },
+                    { q: "Un ejemplo de algoritmo de clasificación supervisada es:", options: ["A. K-means", "B. No se aplica a la clasificación", "C. Regresión logística", "D. Solo análisis de texto"], correct: "C" },
+                    { q: "La regresión lineal se utiliza para:", options: ["A. Clasificar datos categóricos", "B. Predecir valores continuos", "C. No tiene aplicación práctica", "D. Solo en análisis de imágenes"], correct: "B" },
+                    { q: "La 'regresión logística' se diferencia de la lineal en que:", options: ["A. Solo se aplica a datos continuos", "B. Es usada para clasificación binaria o multiclase", "C. No tiene diferencias significativas", "D. Solo es para análisis de imágenes"], correct: "B" },
+                    { q: "La 'selección de características' en aprendizaje supervisado es importante porque:", options: ["A. Aumenta la dimensionalidad", "B. No tiene impacto en el modelo", "C. Solo en análisis de imágenes", "D. Mejora la precisión del modelo al enfocarse en las variables más relevantes"], correct: "D" },
+                    { q: "Un 'árbol de decisión' puede ser utilizado para:", options: ["A. Tanto clasificación como regresión", "B. Solo análisis de texto", "C. No tiene aplicación en aprendizaje supervisado", "D. Solo en análisis de imágenes"], correct: "A" },
+                    { q: "La 'matriz de confusión' en clasificación supervisada se usa para:", options: ["A. Solo mostrar datos en una matriz", "B. Evaluar el rendimiento del modelo mostrando correctos y errores de clasificación", "C. No tiene relación con la evaluación de modelos", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "La 'curva ROC' se usa para evaluar:", options: ["A. Solo la precisión de modelos de regresión", "B. No tiene aplicación en análisis de datos", "C. La capacidad de un modelo clasificador para distinguir entre clases", "D. Solo en análisis de redes"], correct: "C" },
+                    { q: "El 'análisis de anomalías' busca:", options: ["A. Datos o eventos que se desvían significativamente de lo esperado", "B. Solo patrones comunes", "C. No es una técnica de análisis de datos", "D. Solo en análisis de redes sociales"], correct: "A" },
+                    { q: "El 'overfitting' en modelos de aprendizaje supervisado ocurre cuando:", options: ["A. El modelo es demasiado simple", "B. No tiene impacto en el modelo", "C. El modelo se ajusta demasiado bien a los datos de entrenamiento, perdiendo capacidad de generalización", "D. Solo en modelos de regresión"], correct: "C" },
+                    { q: "El algoritmo K-means se usa para:", options: ["A. Clasificar datos con etiquetas", "B. Agrupar datos en K clusters basados en sus características", "C. No es un algoritmo de clustering", "D. Solo para análisis de redes sociales"], correct: "B" },
+                    { q: "La 'validación cruzada' se utiliza en aprendizaje supervisado para:", options: ["A. Solo visualizar datos", "B. Evaluar la precisión del modelo utilizando diferentes subconjuntos de datos", "C. No se aplica en aprendizaje supervisado", "D. Solo para pruebas de hardware"], correct: "B" }
+                ]
+            },
+            ud10: {
+                title: "Unidad 10: Visualización e Interpretación de Datos",
+                icon: "🎨",
+                questions: [
+                    { q: "Para visualizar datos en R, ggplot2 es conocido por:", options: ["A. Solo manejar datos textuales", "B. No ser una herramienta de visualización", "C. Su gramática de gráficos que permite crear visualizaciones complejas de manera intuitiva", "D. Solo para datos financieros"], correct: "C" },
+                    { q: "Una gráfica de barras es especialmente útil para:", options: ["A. Mostrar relaciones entre dos variables continuas", "B. Comparar cantidades categóricas", "C. No se usa en visualización de datos", "D. Solo para datos temporales"], correct: "B" },
+                    { q: "La 'accesibilidad' en la visualización de datos significa:", options: ["A. Solo que los gráficos sean bonitos", "B. No tiene relevancia en visualización", "C. Solo para grandes volúmenes de datos", "D. Que las visualizaciones sean comprensibles y accesibles para todas las personas, incluidas aquellas con discapacidades"], correct: "D" },
+                    { q: "Seaborn, en comparación con Matplotlib, ofrece:", options: ["A. Menos funcionalidades", "B. Una interfaz de alto nivel para gráficos estadísticos más atractivos y con menos código", "C. No es una herramienta de visualización", "D. Solo para análisis de redes"], correct: "B" },
+                    { q: "El principio de 'no me hagas pensar' en la visualización de datos implica:", options: ["A. Que la información debe ser tan clara que no requiera esfuerzo para entenderla", "B. Que la visualización debe ser compleja", "C. No tiene relevancia en visualización de datos", "D. Solo para gráficos interactivos"], correct: "A" },
+                    { q: "El uso de 'anotaciones' en gráficos ayuda a:", options: ["A. Solo aumentar el tamaño del gráfico", "B. Destacar información específica, explicar puntos de datos o tendencias", "C. No tiene utilidad en visualización de datos", "D. Solo en análisis de texto"], correct: "B" },
+                    { q: "Una 'visualización de datos engañosas' puede resultar de:", options: ["A. Solo usar colores brillantes", "B. No existe tal concepto", "C. Escalas distorsionadas o manipulación de ejes para alterar la percepción de los datos", "D. Solo en análisis de redes sociales"], correct: "C" },
+                    { q: "Un histograma se emplea para:", options: ["A. Visualizar la distribución de una variable continua", "B. Comparar categorías", "C. No es un tipo de gráfico", "D. Solo para datos textuales"], correct: "A" },
+                    { q: "Matplotlib es una librería de Python usada para:", options: ["A. Solo análisis de datos", "B. Crear una amplia variedad de gráficos y visualizaciones", "C. No es relevante para visualización", "D. Solo para procesamiento de texto"], correct: "B" },
+                    { q: "La 'interactividad' en gráficos permite:", options: ["A. Solo mostrar datos estáticos", "B. No tiene aplicación práctica", "C. Solo para juegos de datos", "D. A los usuarios interactuar con la visualización, explorando datos de nuevas maneras"], correct: "D" },
+                    { q: "Una 'leyenda' en un gráfico o dashboard es importante para:", options: ["A. Solo decorar el visual", "B. Explicar los significados de los colores y símbolos utilizados", "C. No es necesaria en visualización de datos", "D. Solo en análisis de series temporales"], correct: "B" },
+                    { q: "La 'escala' en un gráfico es crucial porque:", options: ["A. No afecta la interpretación de los datos", "B. Influye directamente en cómo se perciben las proporciones y las tendencias", "C. Solo es importante en gráficos de texto", "D. No se aplica en visualización de datos"], correct: "B" },
+                    { q: "Usar el color en visualización de datos ayuda a:", options: ["A. Solo decorar el gráfico", "B. Distinguir entre categorías, resaltar información importante y mejorar la comprensión", "C. No tiene impacto en la visualización", "D. Solo en análisis de texto"], correct: "B" },
+                    { q: "El 'principio de la tinta mínima' en la visualización de datos aboga por:", options: ["A. Usar la mayor cantidad de colores posibles", "B. Minimizar el uso de elementos que no aporten información, maximizando la claridad", "C. No tiene relación con la visualización de datos", "D. Solo para gráficos interactivos"], correct: "B" },
+                    { q: "Para visualizar datos de series temporales, es común usar:", options: ["A. Solo gráficos de pastel", "B. Gráficos de líneas para observar cambios con el tiempo", "C. No se visualizan datos temporales", "D. Solo para análisis de redes"], correct: "B" },
+                    { q: "El uso de 'animaciones' en visualización de datos puede:", options: ["A. Solo distraer al usuario", "B. Mostrar cambios en los datos a lo largo del tiempo o en respuesta a la interacción del usuario", "C. No tiene aplicación en visualización de datos", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "La visualización de datos se utiliza para:", options: ["A. Solo almacenar datos", "B. No tiene aplicaciones prácticas", "C. Comunicar información de manera efectiva y visual", "D. Solo para análisis de texto"], correct: "C" },
+                    { q: "La 'coherencia' en la visualización de datos es importante para:", options: ["A. Solo la estética", "B. No tiene impacto en la comprensión de datos", "C. Solo en análisis de imágenes", "D. Mantener un estilo y formato unificados a lo largo de múltiples visualizaciones para facilitar la interpretación"], correct: "D" },
+                    { q: "El gráfico de dispersión se usa para:", options: ["A. Solo mostrar frecuencias", "B. Identificar patrones, correlaciones o tendencias entre dos variables numéricas", "C. No tiene aplicación en análisis de datos", "D. Solo en análisis de redes sociales"], correct: "B" },
+                    { q: "Los dashboards interactivos permiten:", options: ["A. Explorar datos de manera dinámica filtrando y manipulando la visualización en tiempo real", "B. Solo ver datos estáticos", "C. No tienen aplicación en análisis de datos", "D. Solo en presentaciones de PowerPoint"], correct: "A" }
+                ]
+            },
+            ud11: {
+                title: "Unidad 11: Learning Analytics",
+                icon: "📈",
+                questions: [
+                    { q: "En el contexto de Learning Analytics, 'intervención temprana' significa:", options: ["A. Solo al final del semestre", "B. Actuar rápidamente para apoyar a estudiantes que muestran signos de dificultades, basado en datos", "C. No tiene aplicación en educación", "D. Solo para casos extremos"], correct: "B" },
+                    { q: "La 'personalización del aprendizaje' mediante Learning Analytics implica:", options: ["A. Proveer el mismo contenido a todos los estudiantes", "B. Adaptar el contenido y la metodología al estilo y ritmo de aprendizaje de cada estudiante", "C. No tiene relación con la personalización", "D. Solo para actividades extracurriculares"], correct: "B" },
+                    { q: "En Learning Analytics, 'dashboard' se refiere a:", options: ["A. Solo a una página web", "B. Una interfaz que muestra visualizaciones y métricas de datos educativos para toma de decisiones", "C. No tiene aplicación en educación", "D. Solo para presentaciones"], correct: "B" },
+                    { q: "El 'análisis de comportamiento de los estudiantes' en Learning Analytics incluye:", options: ["A. Solo datos personales", "B. Patrones de navegación, tiempo dedicado a tareas y participación en foros", "C. No se analiza el comportamiento", "D. Solo para evaluaciones finales"], correct: "B" },
+                    { q: "El 'feedback' en Learning Analytics puede ayudar a:", options: ["A. Solo aumentar la cantidad de datos", "B. No tiene uso práctico", "C. Proveer recomendaciones inmediatas a estudiantes y docentes para mejorar el aprendizaje", "D. Solo para sistemas de calificación"], correct: "C" },
+                    { q: "La 'privacidad' en Learning Analytics es importante porque:", options: ["A. No se usan datos personales", "B. Se manejan datos sensibles que deben protegerse para cumplir con normativas y respetar la privacidad del estudiante", "C. No es un tema relevante", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "El uso de 'algoritmos de clustering' en Learning Analytics puede:", options: ["A. Agrupar a estudiantes con comportamientos de aprendizaje similares para estrategias pedagógicas personalizadas", "B. Solo servir para clasificación", "C. No tiene utilidad en este contexto", "D. Solo para análisis de texto"], correct: "A" },
+                    { q: "Los 'datos de log' en sistemas educativos se utilizan en Learning Analytics para:", options: ["A. Solo almacenamiento", "B. Analizar la interacción del estudiante con el sistema, identificando patrones de uso", "C. No tienen aplicación en análisis", "D. Solo para sistemas antiguos"], correct: "B" },
+                    { q: "Un ejemplo de aplicación de Learning Analytics es:", options: ["A. Solo el monitoreo de la asistencia física", "B. Identificar estudiantes en riesgo para ofrecer intervenciones personalizadas", "C. No tiene aplicaciones prácticas", "D. Solo para evaluaciones finales"], correct: "B" },
+                    { q: "La 'usabilidad' de sistemas educativos se puede mejorar con Learning Analytics al:", options: ["A. Solo cambiar la estética", "B. Identificar y corregir problemas de interfaz que afectan el aprendizaje", "C. No tiene impacto en la usabilidad", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "La 'retroalimentación automática' en Learning Analytics se refiere a:", options: ["A. Solo comentarios manuales", "B. No tiene relación con feedback", "C. Solo para evaluaciones escritas", "D. Sistemas que proporcionan feedback instantáneo basado en el desempeño del estudiante"], correct: "D" },
+                    { q: "La 'visualización de datos' en Learning Analytics ayuda a:", options: ["A. Solo decorar informes", "B. Presentar de manera clara y efectiva los resultados del análisis para la toma de decisiones educativas", "C. No tiene relación con la visualización", "D. Solo para datos financieros"], correct: "B" },
+                    { q: "La 'gamificación' en Learning Analytics se usa para:", options: ["A. Solo entretenimiento", "B. No tiene relación con el aprendizaje", "C. Solo para niños pequeños", "D. Incrementar la motivación y el compromiso del estudiante mediante elementos de juego"], correct: "D" },
+                    { q: "Learning Analytics se refiere a:", options: ["A. Solo a la enseñanza tradicional", "B. El análisis de datos para optimizar y entender los procesos de aprendizaje", "C. No tiene relación con la educación", "D. Solo para análisis de redes sociales"], correct: "B" },
+                    { q: "La 'evaluación formativa' en Learning Analytics se utiliza para:", options: ["A. Monitorear el progreso del aprendizaje en tiempo real y ajustar la enseñanza", "B. Solo evaluar al final del curso", "C. No tiene relación con la evaluación", "D. Solo en pruebas escritas"], correct: "A" },
+                    { q: "Los 'modelos de predicción' en Learning Analytics se usan para:", options: ["A. Predecir el rendimiento futuro de los estudiantes o la probabilidad de abandono", "B. Solo guardar datos", "C. No tienen aplicación en educación", "D. Solo para análisis de mercado"], correct: "A" },
+                    { q: "Los datos utilizados en Learning Analytics pueden incluir:", options: ["A. Solo datos demográficos", "B. No se utilizan datos en Learning Analytics", "C. Interacciones con el LMS, rendimiento académico, y comportamiento de estudio", "D. Solo datos de redes sociales"], correct: "C" },
+                    { q: "El 'aprendizaje adaptativo' en Learning Analytics implica:", options: ["A. Sistemas que ajustan el contenido y el ritmo del aprendizaje según las necesidades individuales del estudiante", "B. Solo enseñanza tradicional", "C. No tiene aplicación en educación", "D. Solo para cursos online"], correct: "A" },
+                    { q: "El 'análisis de secuencia de aprendizaje' permite:", options: ["A. Solo ver datos estáticos", "B. No tiene aplicación en análisis de datos", "C. Solo en análisis de redes", "D. Entender cómo los estudiantes avanzan a través del contenido y actividades educativas"], correct: "D" },
+                    { q: "El objetivo principal de Learning Analytics es:", options: ["A. Solo mejorar la velocidad de enseñanza", "B. No tiene objetivos específicos", "C. Mejorar la experiencia educativa, la retención estudiantil y los resultados de aprendizaje", "D. Solo gestionar datos financieros"], correct: "C" }
+                ]
+            },
+            ud12: {
+                title: "Unidad 12: Herramientas de Learning Analytics",
+                icon: "🛠️",
+                questions: [
+                    { q: "El 'feedback en tiempo real' en herramientas de Learning Analytics puede:", options: ["A. Ofrecer recomendaciones o correcciones inmediatas basadas en el desempeño del estudiante", "B. Solo ser manual", "C. No tiene relación con el desarrollo de herramientas", "D. Solo para evaluaciones finales"], correct: "A" },
+                    { q: "El desarrollo de herramientas de Learning Analytics implica:", options: ["A. Solo la programación de interfaces gráficas", "B. No tiene relación con la educación", "C. Crear sistemas que recopilen, analicen y visualicen datos educativos", "D. Solo para análisis de texto"], correct: "C" },
+                    { q: "Los 'algoritmos de clustering' en el contexto de Learning Analytics pueden:", options: ["A. Solo clasificar datos", "B. Agrupar estudiantes con comportamientos de aprendizaje similares para estrategias personalizadas", "C. No tienen aplicación en educación", "D. Solo para análisis de imágenes"], correct: "B" },
+                    { q: "Para el análisis de datos en Learning Analytics, es común usar:", options: ["A. Solo programas de diseño gráfico", "B. Lenguajes como Python o R para manipulación y análisis de datos", "C. No se necesitan herramientas específicas", "D. Solo para sistemas de gestión de bases de datos"], correct: "B" },
+                    { q: "El 'análisis predictivo' en herramientas de Learning Analytics se usa para:", options: ["A. Solo almacenar datos históricos", "B. No es aplicable en educación", "C. Predecir el rendimiento futuro o la probabilidad de abandono de estudiantes", "D. Solo para análisis de mercado"], correct: "C" },
+                    { q: "Un 'sistema de gestión del aprendizaje' (LMS) puede integrarse con Learning Analytics para:", options: ["A. Solo almacenar videos educativos", "B. No tiene aplicación en análisis de datos", "C. Monitorear y analizar la interacción del estudiante con el contenido educativo", "D. Solo para gestionar horarios"], correct: "C" },
+                    { q: "La 'intervención temprana' facilitada por herramientas de Learning Analytics implica:", options: ["A. Solo actuar al final del curso", "B. No tiene relación con intervenciones", "C. Identificar y apoyar a estudiantes con dificultades en etapas tempranas del aprendizaje", "D. Solo para casos extremos"], correct: "C" },
+                    { q: "El 'dashboard' en herramientas de Learning Analytics es útil para:", options: ["A. Solo mostrar datos en formato texto", "B. Proveer una visión general y dinámica de los datos educativos a docentes y estudiantes", "C. No tiene aplicación práctica", "D. Solo para análisis de mercado"], correct: "B" },
+                    { q: "La 'interactividad' en dashboards de Learning Analytics permite:", options: ["A. Solo ver datos estáticos", "B. A los usuarios explorar y filtrar datos en tiempo real para obtener insights específicos", "C. No tiene aplicación en educación", "D. Solo para juegos de datos"], correct: "B" },
+                    { q: "La 'API' en el contexto de Learning Analytics se refiere a:", options: ["A. Solo un tipo de gráfico", "B. No tiene relación con la educación", "C. Solo para análisis de redes sociales", "D. Interfaces de programación que permiten a las herramientas de análisis acceder a datos de otros sistemas"], correct: "D" },
+                    { q: "'Feedback automático' en herramientas de Learning Analytics implica:", options: ["A. Sistemas que proporcionan retroalimentación inmediata basada en acciones o desempeño estudiantil", "B. Solo corrección manual", "C. No es relevante en análisis de datos", "D. Solo para análisis de texto"], correct: "A" },
+                    { q: "Para la 'personalización del aprendizaje', las herramientas de Learning Analytics pueden:", options: ["A. Adaptar el contenido y la presentación según el perfil y necesidades de cada estudiante", "B. Solo ofrecer el mismo contenido a todos", "C. No tienen impacto en la personalización", "D. Solo para análisis de redes sociales"], correct: "A" },
+                    { q: "La 'usabilidad' de una herramienta de Learning Analytics debe considerar:", options: ["A. Solo la estética", "B. Facilidad de uso, accesibilidad y relevancia de la información presentada para educadores y estudiantes", "C. No es importante en análisis de datos", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "El 'análisis de comportamiento' en herramientas de Learning Analytics se refiere a:", options: ["A. Estudiar cómo los estudiantes interactúan con el contenido y los sistemas educativos", "B. Solo datos demográficos", "C. No tiene aplicación práctica", "D. Solo para evaluaciones finales"], correct: "A" },
+                    { q: "La 'gamificación' en el desarrollo de herramientas de Learning Analytics puede:", options: ["A. Solo aumentar la carga de trabajo", "B. No tiene aplicación educativa", "C. Solo para niños pequeños", "D. Incrementar el compromiso y la motivación de los estudiantes mediante elementos de juego"], correct: "D" },
+                    { q: "La 'visualización de datos' en Learning Analytics ayuda a:", options: ["A. Solo decorar informes", "B. Comunicar patrones, tendencias y anomalías de manera efectiva a los usuarios", "C. No tiene relevancia en el desarrollo de herramientas", "D. Solo para análisis de imágenes"], correct: "B" },
+                    { q: "El 'análisis de secuencias' en Learning Analytics permite:", options: ["A. Solo ver datos de un momento específico", "B. Entender cómo los estudiantes avanzan a través del material educativo en el tiempo", "C. No tiene relación con el análisis de datos", "D. Solo para análisis de texto"], correct: "B" },
+                    { q: "La 'integración con sistemas externos' en Learning Analytics implica:", options: ["A. Solo usar una herramienta aislada", "B. Conectar con bases de datos, sistemas de gestión estudiantil, u otras fuentes de datos para un análisis más completo", "C. No tiene aplicación práctica", "D. Solo para sistemas de pago"], correct: "B" },
+                    { q: "La 'privacidad y ética' en el desarrollo de herramientas de Learning Analytics es crucial porque:", options: ["A. No se manejan datos sensibles", "B. Los datos educativos son personales y su manejo debe cumplir con leyes de protección de datos", "C. No es un tema relevante en desarrollo de software", "D. Solo para análisis de redes sociales"], correct: "B" },
+                    { q: "El 'aprendizaje adaptativo' en herramientas de Learning Analytics se refiere a:", options: ["A. Solo contenido fijo", "B. Sistemas que ajustan el material educativo según el desempeño y necesidades del estudiante", "C. No tiene aplicación en educación", "D. Solo para cursos en línea"], correct: "B" }
+                ]
+            }
+        };
+
+        // ==========================================
+        // FUNCIONES CORE - (CONTINUAR EN PARTE 2)
+        // ==========================================
+
+         // ==========================================
+        // FUNCIONES CORE (Continuación)
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function loadTest(unitId) {
+            const data = testsData[unitId];
+            if (!data) return;
+
+            // Mostrar estado cargando
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('testHeader').classList.remove('hidden');
+            document.getElementById('testContainer').classList.remove('hidden');
+            document.getElementById('totalQuestions').innerText = data.questions.length;
+
+            // Actualizar botones de selección
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('border-cyan-500', 'bg-slate-800');
+                btn.classList.add('border-transparent');
+            });
+            document.getElementById('btn-' + unitId).classList.remove('border-transparent');
+            document.getElementById('btn-' + unitId).classList.add('border-cyan-500', 'bg-slate-800');
+
+            // Actualizar título header
+            document.querySelector('#testHeader h1').innerHTML = `Test: ${data.title}`;
+
+            // Generar preguntas dinámicamente
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+            document.getElementById('quizResultText').classList.add('hidden');
+
+            data.questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question fade-in';
+                questionDiv.setAttribute('data-correct', question.correct);
+                questionDiv.style.animationDelay = `${index * 0.05}s`;
+
+                let html = `
+                    <h4 class="font-bold text-slate-800 mb-3">${index + 1}. ${question.q}</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                `;
+
+                question.options.forEach(option => {
+                    const letter = option.split('.')[0];
+                    html += `
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50 transition">
+                            <input type="radio" name="q${index + 1}" value="${letter}" class="w-4 h-4 text-cyan-600">
+                            <span>${option}</span>
+                        </label>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                `;
+
+                questionDiv.innerHTML = html;
+                form.appendChild(questionDiv);
+            });
+
+            // Scroll al inicio
+            setTimeout(() => {
+                document.getElementById('mainContent').scrollTop = 0;
+            }, 100);
+        }
+
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estados previos
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        // Inicialización
+        window.addEventListener('load', () => {
+            console.log('🎓 Banco de Tests UD7-UD12 cargado correctamente');
+        });
+    </script>
+</body>
+</html>
