@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Tests - Unidades 1 a 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Tests<span class="text-cyan-400">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Banco Exámenes UD1-UD6</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1 px-2">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Selectar Unidad</li>
+                
+                <li>
+                    <button onclick="loadTest('ud1')" id="btn-ud1" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🔢</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 1</div>
+                            <div class="text-xs text-slate-500">Fundamentos Matemáticos</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud2')" id="btn-ud2" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🔐</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 2</div>
+                            <div class="text-xs text-slate-500">Criptografía Básica</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud3')" id="btn-ud3" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🔑</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 3</div>
+                            <div class="text-xs text-slate-500">Simétrica & Hash</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud4')" id="btn-ud4" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🔓</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 4</div>
+                            <div class="text-xs text-slate-500">Asimétrica & RSA</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud5')" id="btn-ud5" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">⛓️</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 5</div>
+                            <div class="text-xs text-slate-500">Blockchain Fundamentos</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud6')" id="btn-ud6" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">💎</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 6</div>
+                            <div class="text-xs text-slate-500">Blockchain Aplicaciones</div>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            © 2026 | Todos los derechos reservados
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- HEADER UNIDAD -->
+        <div class="max-w-6xl mx-auto mb-8 fade-in" id="testHeader">
+            <h1 class="text-4xl font-black text-slate-800 mb-2">Selecciona una unidad para comenzar</h1>
+            <p class="text-slate-600 text-lg">Evaluación con 20 preguntas tipo test. Se considera superado si ≥80% de aciertos.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Preguntas Totales</div>
+                    <div class="text-2xl font-black text-cyan-600" id="totalQuestions">-</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Nota Mínima</div>
+                    <div class="text-2xl font-black text-green-600">80%</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Recomendado</div>
+                    <div class="text-2xl font-black text-yellow-600">15-25 min</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEST CONTAINER -->
+        <div id="testContainer" class="max-w-6xl mx-auto hidden fade-in">
+            <form id="quizForm" class="space-y-6">
+                <!-- Las preguntas se cargarán dinámicamente aquí -->
+            </form>
+
+            <!-- BOTONES DE CONTROL -->
+            <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                <div class="flex w-full md:w-auto gap-4">
+                    <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                    <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESTADO INICIAL -->
+        <div id="emptyState" class="max-w-6xl mx-auto text-center py-20 fade-in">
+            <div class="text-8xl mb-6">📝</div>
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">Esperando selección de unidad</h2>
+            <p class="text-slate-500 max-w-md mx-auto">Haz clic en una unidad del menú lateral izquierdo para cargar las 20 preguntas correspondientes.</p>
+        </div>
+
+    </main>
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE PREGUNTAS (UNIDADES 1-6)
+        // ==========================================
+        const testsData = {
+            ud1: {
+                title: "Unidad 1: Fundamentos Matemáticos",
+                icon: "🔢",
+                questions: [
+                    { q: "La divisibilidad se define como:", options: ["A. Dos números que suman un tercero", "B. Un número que puede ser dividido por otro sin dejar residuo", "C. La diferencia entre dos números", "D. La suma de dos números primos"], correct: "B" },
+                    { q: "¿Qué es un inverso multiplicativo módulo n?", options: ["A. Un número que, al multiplicarse por otro, da 1 módulo n", "B. La suma de dos números módulo n", "C. Un número primo que divide a n", "D. No existe tal concepto"], correct: "A" },
+                    { q: "El algoritmo de Euclides extendido se usa para:", options: ["A. Encontrar el MCD y los coeficientes de Bézout", "B. Solo para sumas", "C. Solo para divisiones", "D. No tiene relación con el MCD"], correct: "A" },
+                    { q: "Si a ≡ b (mod n), entonces:", options: ["A. a y b son iguales", "B. a y b tienen el mismo residuo al dividirlos por n", "C. a y b son números primos", "D. n es un número primo"], correct: "B" },
+                    { q: "En criptografía, los números primos grandes se usan para:", options: ["A. Hacer que los cálculos sean más rápidos", "B. Asegurar la seguridad de las claves criptográficas", "C. Simplificar las operaciones matemáticas", "D. No tienen uso en criptografía moderna"], correct: "B" },
+                    { q: "El teorema fundamental de la aritmética establece que:", options: ["A. Todo número es primo", "B. Todo número entero mayor que 1 es un producto único de números primos", "C. Todos los números impares son primos", "D. Solo los números pares son divisibles"], correct: "B" },
+                    { q: "Para encontrar el MCD de 48 y 18, el algoritmo de Euclides indica:", options: ["A. Primero restar 18 de 48 hasta alcanzar cero", "B. Dividir 48 por 18 y luego 18 por el residuo hasta que el residuo sea cero", "C. Multiplicar ambos números", "D. Sumar ambos números"], correct: "B" },
+                    { q: "Para números grandes, la factorización en primos es:", options: ["A. Trivial y rápida", "B. Inútil en la práctica", "C. Computacionalmente difícil, lo que es ventajoso para la seguridad en criptografía", "D. Solo se aplica a números pares"], correct: "C" },
+                    { q: "La propiedad transitiva de las congruencias significa:", options: ["A. Si a ≡ b, entonces b ≡ a", "B. Si a ≡ b, entonces a + b ≡ 0", "C. Si a ≡ b y b ≡ c, entonces a ≡ c", "D. No existe tal propiedad"], correct: "C" },
+                    { q: "Un ejemplo de aplicación de teoría de números en criptografía es:", options: ["A. La generación de números aleatorios", "B. La creación de claves públicas y privadas en RSA", "C. El cálculo de promedios", "D. La simplificación de fracciones"], correct: "B" },
+                    { q: "Un número compuesto es:", options: ["A. Un número que no es primo", "B. Solo los números pares", "C. Un número con infinitos divisores", "D. No existe tal cosa"], correct: "A" },
+                    { q: "El MCD de dos números primos es:", options: ["A. 1", "B. El menor de los dos números", "C. El mayor de los dos números", "D. Cero"], correct: "A" },
+                    { q: "¿Qué es una congruencia en teoría de números?", options: ["A. Una relación que establece que dos números tienen la misma diferencia respecto a un tercero", "B. Una relación entre tres números donde uno es la suma de los otros dos", "C. La igualdad de dos números", "D. Un tipo de división sin residuo"], correct: "D" },
+                    { q: "La congruencia a ≡ b (mod n) implica que:", options: ["A. a - b = n", "B. a - b es un múltiplo de n", "C. a + b = n", "D. a x b = n"], correct: "B" },
+                    { q: "El teorema fundamental de la aritmética se aplica en criptografía para:", options: ["A. Cifrar mensajes usando solo números primos", "B. Asegurar que la factorización de números grandes sea difícil", "C. Crear claves que sean fáciles de modificar", "D. Hacer cálculos aritméticos básicos"], correct: "B" },
+                    { q: "El algoritmo de Euclides se usa para:", options: ["A. Encontrar la suma de dos números", "B. Determinar la multiplicación de dos números", "C. Calcular el máximo común divisor (MCD) de dos números", "D. Determinar si un número es primo"], correct: "C" },
+                    { q: "La seguridad de RSA se basa en:", options: ["A. La facilidad de multiplicar números grandes", "B. La suma de números primos", "C. La dificultad de factorizar el producto de dos números primos grandes", "D. La congruencia de números pequeños"], correct: "C" },
+                    { q: "Un número primo es:", options: ["A. Un número que solo es divisible por sí mismo y por 1", "B. Cualquier número par", "C. Un número con tres o más divisores", "D. Solo números mayores que 10"], correct: "A" },
+                    { q: "¿Qué significa que 'a' es congruente con 'b' módulo 'n'?", options: ["A. a + b = n", "B. a - b es divisible por n", "C. a * b = n", "D. a / b = n"], correct: "B" },
+                    { q: "En criptografía, la importancia de los números primos radica en:", options: ["A. Son fáciles de generar", "B. No tienen aplicación práctica", "C. La dificultad de factorizar grandes números primos", "D. Solo se usan en sistemas antiguos"], correct: "C" }
+                ]
+            },
+            ud2: {
+                title: "Unidad 2: Criptografía Básica",
+                icon: "🔐",
+                questions: [
+                    { q: "La 'integridad' en criptografía asegura que:", options: ["A. Los datos no han sido modificados durante la transmisión o almacenamiento", "B. Los datos pueden ser alterados por cualquier persona", "C. La información es pública", "D. No tiene importancia en la seguridad de datos"], correct: "A" },
+                    { q: "La diferencia entre cifrado simétrico y asimétrico es:", options: ["A. No existe diferencia significativa", "B. Solo el cifrado simétrico es seguro", "C. El asimétrico solo se usa para datos pequeños", "D. En simétrico, se usa una única clave para cifrar y descifrar; en asimétrico, se usan dos claves"], correct: "D" },
+                    { q: "Un ataque de fuerza bruta en criptografía implica:", options: ["A. Intentar todas las combinaciones posibles de claves", "B. Solo descifrar mensajes cortos", "C. No tiene relación con la criptografía", "D. Solo aplicarse a cifrados asimétricos"], correct: "A" },
+                    { q: "El concepto de 'criptoanálisis' se refiere a:", options: ["A. La creación de nuevos algoritmos de cifrado", "B. El estudio de cómo romper sistemas criptográficos", "C. Solo la teoría de números", "D. No tiene aplicación en la seguridad informática"], correct: "B" },
+                    { q: "Las funciones de hash son usadas para:", options: ["A. Solo cifrar largas cadenas de texto", "B. Decifrar mensajes", "C. Proveer un resumen único de datos para verificación de integridad", "D. No tienen aplicación en criptografía"], correct: "C" },
+                    { q: "La criptografía cuántica se basa en:", options: ["A. Los principios de la mecánica cuántica para asegurar la comunicación", "B. Métodos de cifrado clásicos", "C. No tiene aplicación práctica", "D. Solo para comunicación espacial"], correct: "A" },
+                    { q: "El 'cifrado de flujo' se diferencia del cifrado por bloques en que:", options: ["A. Cifra el mensaje bit por bit o byte por byte", "B. No usa claves", "C. Es menos seguro", "D. Solo se usa en aplicaciones de voz"], correct: "A" },
+                    { q: "La criptografía se utiliza para:", options: ["A. Solo decorar textos", "B. Proteger la información y las comunicaciones", "C. Aumentar la velocidad de transmisión de datos", "D. Solo en aplicaciones de entretenimiento"], correct: "B" },
+                    { q: "AES (Advanced Encryption Standard) es conocido por:", options: ["A. Ser un cifrado asimétrico", "B. Su alta seguridad y eficiencia en cifrado simétrico", "C. Solo se usa en equipos antiguos", "D. No ser utilizado en la actualidad"], correct: "B" },
+                    { q: "En criptografía, la 'confidencialidad' se refiere a:", options: ["A. La capacidad de leer datos cifrados por cualquiera", "B. Que solo las partes autorizadas puedan acceder a los datos", "C. La velocidad de procesamiento de datos", "D. La estética del texto cifrado"], correct: "B" },
+                    { q: "La criptografía moderna incluye:", options: ["A. Cifrados basados en complejos problemas matemáticos", "B. Solo cifrados simples a mano", "C. Solo el uso de contraseñas simples", "D. No tiene relación con la matemática"], correct: "A" },
+                    { q: "El cifrado por bloques opera:", options: ["A. Dividiendo el mensaje en partes de igual longitud para cifrarlas", "B. Solo cifrando el mensaje completo a la vez", "C. Sin usar claves", "D. Solo en sistemas antiguos"], correct: "A" },
+                    { q: "El algoritmo DES es:", options: ["A. Un cifrado simétrico obsoleto pero pionero", "B. Un cifrado asimétrico moderno", "C. No se usa en criptografía", "D. Solo para cifrar imágenes"], correct: "A" },
+                    { q: "La seguridad de un sistema criptográfico depende principalmente de:", options: ["A. La longitud del mensaje original", "B. La secrecía y fortaleza de las claves", "C. Solo la rapidez del algoritmo", "D. No depende de nada, todos los sistemas son seguros"], correct: "B" },
+                    { q: "La firma digital utiliza:", options: ["A. Solo el cifrado simétrico", "B. La clave privada del firmante para asegurar la autenticidad", "C. Claves públicas para cifrar mensajes", "D. No se usa en la actualidad"], correct: "B" },
+                    { q: "La criptografía de curva elíptica (ECC) se caracteriza por:", options: ["A. Requerir claves mucho más largas que RSA para el mismo nivel de seguridad", "B. Proveer seguridad con claves más cortas que RSA", "C. No ser adecuada para dispositivos móviles", "D. Solo ser teórica"], correct: "B" },
+                    { q: "La 'autenticación' en criptografía permite:", options: ["A. Que cualquier persona pueda enviar mensajes", "B. Verificar la identidad del remitente", "C. Solo cifrar datos", "D. Aumentar la velocidad de la red"], correct: "B" },
+                    { q: "El cifrado Vigenère es conocido por:", options: ["A. Ser un cifrado asimétrico", "B. Usar una clave de longitud fija", "C. Ser un cifrado polialfabético", "D. No tener aplicación en la criptografía moderna"], correct: "C" },
+                    { q: "El cifrado de César es un ejemplo de:", options: ["A. Cifrado asimétrico", "B. Cifrado simétrico", "C. Cifrado cuántico", "D. No es un tipo de cifrado"], correct: "B" },
+                    { q: "El cifrado RSA utiliza:", options: ["A. Solo claves de una sola dirección", "B. Un par de claves, una pública y una privada", "C. El mismo algoritmo que el cifrado de César", "D. No es un cifrado real"], correct: "B" }
+                ]
+            },
+            ud3: {
+                title: "Unidad 3: Simétrica & Hash",
+                icon: "🔑",
+                questions: [
+                    { q: "En la encriptación simétrica:", options: ["A. Se usa una clave pública y una privada", "B. La misma clave se usa para cifrar y descifrar", "C. No se necesita clave", "D. Solo se aplica a datos muy pequeños"], correct: "B" },
+                    { q: "SHA-256 es conocido por:", options: ["A. Ser un cifrado simétrico", "B. Producir un hash de 256 bits", "C. No tener aplicaciones en seguridad", "D. Ser reversible"], correct: "B" },
+                    { q: "En el cifrado simétrico, el mayor desafío es:", options: ["A. Generar la clave pública", "B. El intercambio seguro de la clave entre las partes", "C. La velocidad del cifrado", "D. No tiene desafíos significativos"], correct: "B" },
+                    { q: "Una función hash se caracteriza por:", options: ["A. Convertir datos grandes en datos aún más grandes", "B. Producir un resultado de longitud fija a partir de cualquier entrada", "C. Ser reversible para recuperar la información original", "D. Solo trabajar con números primos"], correct: "B" },
+                    { q: "El término 'bloque' en el cifrado por bloques se refiere a:", options: ["A. Un segmento fijo de datos que se cifra a la vez", "B. La longitud total del mensaje", "C. Solo al tamaño de la clave", "D. No existe en criptografía"], correct: "A" },
+                    { q: "El modo de cifrado ECB es menos seguro porque:", options: ["A. Cifra cada bloque de manera independiente", "B. Es muy rápido", "C. Requiere menos memoria", "D. No usa claves"], correct: "A" },
+                    { q: "AES es un ejemplo de:", options: ["A. Cifrado asimétrico", "B. Función hash", "C. Cifrado simétrico", "D. No es relevante en criptografía"], correct: "C" },
+                    { q: "CBC (Cipher Block Chaining) mejora la seguridad al:", options: ["A. No requerir una clave", "B. Solo cifrar el primer bloque", "C. Usar el bloque cifrado anterior para cifrar el siguiente", "D. Ser independiente de otros bloques"], correct: "C" },
+                    { q: "La 'avalancha' en funciones hash implica que:", options: ["A. Un pequeño cambio en la entrada produce un gran cambio en el hash", "B. El hash es siempre el mismo independientemente de la entrada", "C. No tiene relación con las funciones hash", "D. Solo ocurre en cifrado simétrico"], correct: "A" },
+                    { q: "En el cifrado simétrico, la seguridad depende en gran medida de:", options: ["A. La longitud del mensaje", "B. La secrecía de la clave", "C. La velocidad del procesamiento", "D. El tamaño de los bloques de datos"], correct: "B" },
+                    { q: "MD5 es un ejemplo de:", options: ["A. Cifrado asimétrico", "B. Algoritmo de cifrado simétrico", "C. Función hash criptográfica", "D. No se usa en criptografía"], correct: "C" },
+                    { q: "Un hash criptográfico debe ser:", options: ["A. Reversible para facilitar la recuperación de datos", "B. Solo rápido de calcular", "C. Determinista, rápido de calcular y resistente a colisiones", "D. Capaz de producir múltiples salidas para una sola entrada"], correct: "C" },
+                    { q: "El uso de funciones hash en seguridad de datos incluye:", options: ["A. Solo para almacenar contraseñas en texto claro", "B. Verificación de integridad y autenticación de datos", "C. Cifrar datos confidenciales", "D. Ninguna de las anteriores"], correct: "B" },
+                    { q: "La 'resistencia a colisiones' en una función hash significa:", options: ["A. Que dos entradas diferentes no pueden producir el mismo hash", "B. Que el hash se puede calcular muy rápidamente", "C. Que el hash es reversible", "D. No tiene importancia en la criptografía"], correct: "A" },
+                    { q: "El cifrado DES ha sido reemplazado por:", options: ["A. AES debido a su mayor seguridad y eficiencia", "B. SHA-256", "C. Un cifrado asimétrico", "D. No ha sido reemplazado"], correct: "A" },
+                    { q: "La encriptación simétrica es más adecuada para:", options: ["A. Comunicaciones donde la clave pública no sea necesaria", "B. Enviar mensajes a muchos destinatarios con diferentes claves", "C. Solo en sistemas antiguos", "D. No tiene aplicaciones prácticas en la actualidad"], correct: "A" },
+                    { q: "La clave en AES puede tener longitudes de:", options: ["A. Solo 128 bits", "B. 128, 192 o 256 bits", "C. Cualquier número de bits", "D. No usa claves"], correct: "B" },
+                    { q: "Los modos de operación en cifrado simétrico, como ECB y CBC, afectan:", options: ["A. La seguridad y cómo se cifran los bloques de datos", "B. Solo la velocidad de cifrado", "C. La generación de claves", "D. No tienen impacto significativo"], correct: "A" },
+                    { q: "Las funciones hash son útiles en blockchain para:", options: ["A. Cifrar transacciones", "B. Asegurar la integridad de los bloques y transacciones", "C. Solo para pruebas de trabajo", "D. No se utilizan en blockchain"], correct: "B" },
+                    { q: "El propósito principal de una función hash en criptografía es:", options: ["A. Aumentar la longitud del texto", "B. Comprobar la integridad de los datos", "C. Decifrar mensajes cifrados", "D. No tiene aplicación práctica"], correct: "B" }
+                ]
+            },
+            ud4: {
+                title: "Unidad 4: Asimétrica & RSA",
+                icon: "🔓",
+                questions: [
+                    { q: "La 'descifrado' en RSA se realiza:", options: ["A. Usando la misma clave que para cifrar", "B. Sin claves", "C. Con la clave privada correspondiente a la pública usada para cifrar", "D. Solo en sistemas antiguos"], correct: "C" },
+                    { q: "La clave pública en criptografía asimétrica se utiliza para:", options: ["A. Cifrar mensajes que solo la clave privada puede descifrar", "B. Decifrar mensajes cifrados por la clave privada", "C. No tiene uso práctico", "D. Solo sirve para identificación"], correct: "A" },
+                    { q: "El algoritmo RSA se basa en:", options: ["A. La facilidad de multiplicar números grandes", "B. La dificultad de factorizar el producto de dos números primos grandes", "C. Solo en cifrado simétrico", "D. No es un algoritmo de cifrado"], correct: "B" },
+                    { q: "En criptografía asimétrica, la confidencialidad se asegura:", options: ["A. Al cifrar con la clave privada", "B. Sin uso de claves", "C. Al cifrar con la clave pública del destinatario", "D. Solo en sistemas obsoletos"], correct: "C" },
+                    { q: "La revocación de certificados se realiza cuando:", options: ["A. La clave privada ha sido comprometida", "B. La clave pública ya no es necesaria", "C. No tiene aplicación práctica", "D. Solo al finalizar un contrato"], correct: "A" },
+                    { q: "La criptografía asimétrica utiliza:", options: ["A. Una sola clave para cifrar y descifrar", "B. Dos claves, una pública y una privada", "C. No usa claves", "D. Solo claves aleatorias sin estructura"], correct: "B" },
+                    { q: "La infraestructura de clave pública (PKI) es:", options: ["A. Un sistema para generar claves simétricas", "B. Un conjunto de políticas y procedimientos para manejar claves públicas", "C. Solo para aplicaciones de entretenimiento", "D. No es relevante en criptografía moderna"], correct: "B" },
+                    { q: "La 'integridad' en el contexto de criptografía asimétrica se refiere a:", options: ["A. La capacidad de cambiar datos sin que se note", "B. Asegurar que los datos no hayan sido alterados", "C. No tiene relación con la seguridad", "D. Solo para verificación de identidad"], correct: "B" },
+                    { q: "El uso principal de la criptografía asimétrica en internet es:", options: ["A. Solo para cifrar datos en tránsito", "B. Para asegurar la autenticación, confidencialidad e integridad en comunicaciones seguras", "C. No tiene uso práctico en internet", "D. Solo en aplicaciones de juegos"], correct: "B" },
+                    { q: "En RSA, la generación de claves implica:", options: ["A. Seleccionar dos números primos pequeños", "B. No necesita números primos", "C. Seleccionar dos números primos grandes y calcular su producto", "D. Solo usar una clave"], correct: "C" },
+                    { q: "La firma digital en criptografía asimétrica:", options: ["A. Usa la clave pública para firmar documentos", "B. No tiene relación con las claves", "C. Solo se usa en sistemas obsoletos", "D. Usa la clave privada para firmar, verificable con la clave pública"], correct: "D" },
+                    { q: "El proceso de 'cifrado' con RSA consiste en:", options: ["A. Multiplicar el mensaje por una clave pública", "B. Elevar el mensaje a una potencia específica y modularlo", "C. No requiere cálculo alguno", "D. Solo sumar el mensaje y la clave"], correct: "B" },
+                    { q: "La criptografía de curva elíptica (ECC) en comparación con RSA:", options: ["A. Requiere claves más largas para el mismo nivel de seguridad", "B. Provee seguridad comparable con claves más cortas", "C. No es usada en aplicaciones modernas", "D. Es menos segura"], correct: "B" },
+                    { q: "El cifrado asimétrico es preferible para:", options: ["A. Intercambio seguro de claves para cifrado simétrico", "B. Grandes volúmenes de datos debido a su rapidez", "C. No tiene aplicaciones prácticas", "D. Solo en sistemas muy antiguos"], correct: "A" },
+                    { q: "Un certificado digital incluye:", options: ["A. La clave pública y la identidad del titular, firmado por una CA", "B. Solo la clave pública del emisor", "C. No tiene relación con claves públicas", "D. Solo datos personales"], correct: "A" },
+                    { q: "El tamaño de las claves en criptografía asimétrica:", options: ["A. No afecta la seguridad", "B. Debe ser lo suficientemente grande para asegurar la dificultad de factorización", "C. Solo afecta la velocidad de cifrado", "D. Es irrelevante"], correct: "B" },
+                    { q: "Una 'autoridad de certificación' (CA) es responsable de:", options: ["A. Cifrar todos los mensajes de la red", "B. Emitir y firmar certificados digitales", "C. No tiene función en criptografía", "D. Solo en sistemas de pago"], correct: "B" },
+                    { q: "El proceso de 'verificación de firma' en RSA implica:", options: ["A. Usar la clave privada del firmante", "B. No requiere claves", "C. Usar la clave pública del firmante para comprobar la firma", "D. Solo es válido para documentos físicos"], correct: "C" },
+                    { q: "La 'autenticación' en criptografía asimétrica permite:", options: ["A. Que cualquier persona cifre mensajes", "B. Verificar la identidad del emisor de un mensaje", "C. Solo cifrar datos sin verificación", "D. No tiene uso práctico"], correct: "B" },
+                    { q: "La seguridad de RSA depende de:", options: ["A. La dificultad de resolver problemas matemáticos específicos", "B. La longitud de la clave pública", "C. Solo de la velocidad del sistema", "D. No es seguro"], correct: "A" }
+                ]
+            },
+            ud5: {
+                title: "Unidad 5: Blockchain Fundamentos",
+                icon: "⛓️",
+                questions: [
+                    { q: "Un 'nodo' en una red blockchain es:", options: ["A. Un servidor central que controla la red", "B. Un participante que mantiene una copia completa o parcial de la blockchain", "C. Solo un usuario final", "D. No existe tal concepto"], correct: "B" },
+                    { q: "La 'transparencia' en blockchain significa:", options: ["A. Que todas las transacciones son visibles a todos los participantes de la red", "B. Que los datos pueden ser alterados sin que se note", "C. Que solo los administradores ven las transacciones", "D. No tiene aplicación práctica"], correct: "A" },
+                    { q: "El 'consenso' en blockchain implica:", options: ["A. Que todos los nodos deben estar de acuerdo en cada transacción", "B. Solo se aplica a transacciones financieras", "C. Un mecanismo para que los nodos de la red lleguen a un acuerdo sobre el estado de la blockchain", "D. No es necesario en sistemas descentralizados"], correct: "C" },
+                    { q: "Ethereum introdujo en el mundo de blockchain:", options: ["A. Solo la criptomoneda Ether", "B. La capacidad de ejecutar contratos inteligentes y aplicaciones descentralizadas (DApps)", "C. La minería de bitcoins", "D. Ninguna innovación significativa"], correct: "B" },
+                    { q: "La 'prueba de trabajo' (Proof of Work) en blockchain:", options: ["A. Es un método para distribuir criptomonedas", "B. Valida transacciones y añade nuevos bloques mediante un proceso computacional complejo", "C. Solo se aplica a sistemas centralizados", "D. No tiene relación con la seguridad de la red"], correct: "B" },
+                    { q: "El 'fork' en blockchain ocurre cuando:", options: ["A. La cadena se divide en dos caminos diferentes debido a desacuerdos en el protocolo o actualizaciones", "B. Un bloque es añadido a la cadena", "C. Solo se añaden más nodos a la red", "D. No tiene relación con el funcionamiento de blockchain"], correct: "A" },
+                    { q: "El 'hash' de un bloque en blockchain es:", options: ["A. Un código secreto para acceder a la red", "B. Un valor único derivado de las transacciones y el hash del bloque anterior", "C. Solo usado para decorar los bloques", "D. No es parte de la estructura de blockchain"], correct: "B" },
+                    { q: "El concepto de 'inmutabilidad' en blockchain implica que:", options: ["A. Los datos pueden ser alterados fácilmente", "B. Solo los administradores pueden modificar los datos", "C. Una vez registrados, los datos no pueden ser cambiados", "D. No tiene importancia en blockchain"], correct: "C" },
+                    { q: "Blockchain es fundamentalmente:", options: ["A. Una base de datos centralizada", "B. Un libro mayor distribuido y descentralizado", "C. Solo para transacciones financieras", "D. Un sistema de almacenamiento en la nube"], correct: "B" },
+                    { q: "La 'anonimato' en algunas blockchains:", options: ["A. Significa que no hay transacciones registradas", "B. Proporciona privacidad transaccional, ocultando la identidad de los participantes", "C. No es posible en blockchain", "D. Solo se aplica a transacciones pequeñas"], correct: "B" },
+                    { q: "La 'minería' en el contexto de blockchain se refiere a:", options: ["A. Validar transacciones y agregarlas a la cadena de bloques", "B. Extraer datos de la red", "C. Solo a la creación de nuevas monedas físicas", "D. No tiene relación con blockchain"], correct: "A" },
+                    { q: "Smart Contracts (Contratos Inteligentes) en blockchain:", options: ["A. Son acuerdos en papel registrados en la blockchain", "B. No tienen aplicación práctica", "C. Son programas que ejecutan automáticamente acuerdos entre partes cuando se cumplen ciertas condiciones", "D. Solo se usan en sistemas financieros tradicionales"], correct: "C" },
+                    { q: "La 'criptomoneda' más conocida basada en blockchain es:", options: ["A. Bitcoin", "B. Visa", "C. PayPal", "D. No existe una criptomoneda basada en blockchain"], correct: "A" },
+                    { q: "Un 'bloque' en blockchain contiene:", options: ["A. Solo datos de un usuario específico", "B. Transacciones, hash del bloque anterior, y un timestamp", "C. Solo el hash del bloque siguiente", "D. No tiene estructura definida"], correct: "B" },
+                    { q: "La 'cadena de bloques' se asegura mediante:", options: ["A. Solo firmas digitales", "B. Criptografía y estructura de datos que vincula cada bloque al anterior", "C. Un sistema central de seguridad", "D. No tiene medidas de seguridad"], correct: "B" },
+                    { q: "Las 'sidechains' o cadenas laterales en blockchain son:", options: ["A. Solo copias de la blockchain principal", "B. Cadenas de bloques independientes que interactúan con la cadena principal para aumentar la funcionalidad y la escalabilidad", "C. Solo para almacenamiento de datos", "D. No tienen relación con la tecnología blockchain"], correct: "B" },
+                    { q: "La 'seguridad' de una blockchain se basa en:", options: ["A. Solo la complejidad de las claves públicas", "B. La criptografía, la descentralización y los mecanismos de consenso", "C. Un solo punto de fallo", "D. No tiene medidas de seguridad"], correct: "B" },
+                    { q: "La descentralización en blockchain proporciona:", options: ["A. Mayor seguridad y resistencia a fallos al no depender de una autoridad central", "B. Menor seguridad debido a la falta de control central", "C. Solo ventajas para grandes corporaciones", "D. No tiene impacto en la seguridad"], correct: "A" },
+                    { q: "La 'prueba de participación' (Proof of Stake) se diferencia de Proof of Work en que:", options: ["A. Requiere más poder computacional", "B. Los validadores son elegidos basándose en la cantidad de criptomonedas que poseen y están dispuestos a apostar", "C. No tiene relación con validar transacciones", "D. Solo se aplica a sistemas centralizados"], correct: "B" },
+                    { q: "La 'escalabilidad' en blockchain se refiere a:", options: ["A. La capacidad de manejar un número creciente de transacciones sin perder eficiencia", "B. Solo la capacidad de almacenamiento de datos", "C. La velocidad de las transacciones", "D. No es un problema en blockchain"], correct: "A" }
+                ]
+            },
+            ud6: {
+                title: "Unidad 6: Blockchain Aplicaciones",
+                icon: "💎",
+                questions: [
+                    { q: "Blockchain puede mejorar la 'transparencia' en:", options: ["A. Solo en redes sociales", "B. No tiene relación con la transparencia", "C. Procesos de votación, cadenas de suministro, y seguimiento de productos", "D. Solo en transacciones financieras"], correct: "C" },
+                    { q: "La 'seguridad' de las transacciones en blockchain se basa en:", options: ["A. Solo la longitud de las contraseñas", "B. No tiene medidas de seguridad", "C. Solo en sistemas centralizados", "D. Criptografía, consenso distribuido y la inmutabilidad de los datos"], correct: "D" },
+                    { q: "La 'seguridad alimentaria' puede beneficiarse de blockchain para:", options: ["A. Rastrear y verificar la cadena de suministro de alimentos desde el origen hasta el consumidor", "B. Solo para pagos en restaurantes", "C. No tiene aplicaciones en este sector", "D. Solo para productos importados"], correct: "A" },
+                    { q: "La 'privacidad' en aplicaciones de blockchain puede ser mejorada con:", options: ["A. Solo el uso de contraseñas", "B. Técnicas como ZK-SNARKs para transacciones privadas", "C. No tiene relación con la privacidad", "D. Solo en redes públicas"], correct: "B" },
+                    { q: "La 'inmutabilidad' de blockchain es útil para:", options: ["A. Solo para almacenar datos temporales", "B. Auditorías, registros médicos, y cualquier dato que necesite ser verificado y no alterado", "C. No tiene aplicaciones prácticas", "D. Solo para datos financieros"], correct: "B" },
+                    { q: "La 'identidad digital' en blockchain permite:", options: ["A. Solo crear perfiles sociales", "B. Verificación y control de identidad sin necesidad de intermediarios centralizados", "C. No tiene relación con la identidad", "D. Solo para transacciones monetarias"], correct: "B" },
+                    { q: "Un 'ICO' (Initial Coin Offering) es:", options: ["A. Solo para empresas financieras", "B. Una forma de recaudar fondos mediante la emisión de tokens en una blockchain", "C. No tiene relación con blockchain", "D. Solo para grandes corporaciones"], correct: "B" },
+                    { q: "En el ámbito de la salud, blockchain podría usarse para:", options: ["A. Solo almacenar imágenes médicas", "B. Gestionar registros médicos seguros, inmutables y privados", "C. No tiene aplicaciones en salud", "D. Solo para pagos de seguros médicos"], correct: "B" },
+                    { q: "En la propiedad intelectual, blockchain puede:", options: ["A. Probar la existencia y autoría de trabajos creativos con marcas de tiempo inmutables", "B. Solo proteger software", "C. No tiene aplicaciones en este campo", "D. Solo para patentes físicas"], correct: "A" },
+                    { q: "La 'interoperabilidad' entre diferentes blockchains permite:", options: ["A. Solo la transferencia de criptomonedas", "B. Comunicación y transacciones entre diferentes redes blockchain", "C. No tiene aplicaciones prácticas", "D. Solo en sistemas de pago"], correct: "B" },
+                    { q: "En el contexto de blockchain, 'contratos inteligentes' permiten:", options: ["A. Solo la compra de bienes físicos", "B. Ejecución automática de acuerdos entre partes cuando se cumplen condiciones predefinidas", "C. Solo la firma de documentos físicos", "D. No tienen aplicación real"], correct: "B" },
+                    { q: "La 'tokenización' en blockchain se refiere a:", options: ["A. La creación de monedas físicas", "B. Solo para juegos en línea", "C. Convertir activos físicos o derechos en tokens digitales que se pueden intercambiar en la blockchain", "D. No es parte de la tecnología blockchain"], correct: "C" },
+                    { q: "La 'autenticidad' de productos puede ser verificada con blockchain mediante:", options: ["A. Solo etiquetas físicas", "B. Un registro inmutable de la cadena de suministro y autenticidad del producto", "C. No tiene aplicaciones en autenticidad de productos", "D. Solo para productos digitales"], correct: "B" },
+                    { q: "Blockchain se aplica en:", options: ["A. Solo en la creación de criptomonedas", "B. Gestión de cadenas de suministro, contratos inteligentes, y más", "C. Solo para entretenimiento en línea", "D. No tiene aplicaciones prácticas"], correct: "B" },
+                    { q: "La gestión de la cadena de suministro usando blockchain puede:", options: ["A. Solo aumentar los costos", "B. No tiene aplicaciones en logística", "C. Proveer un registro inmutable de la procedencia y movimientos de productos", "D. Solo para productos digitales"], correct: "C" },
+                    { q: "La 'votación' utilizando blockchain puede:", options: ["A. Solo ser usada en elecciones locales", "B. No tiene aplicaciones en votaciones", "C. Solo para encuestas en línea", "D. Asegurar votos inalterables y transparentes, aumentando la confianza en el proceso electoral"], correct: "D" },
+                    { q: "La 'descentralización' en blockchain aplica a:", options: ["A. Solo a la distribución de software", "B. No tiene impacto en las aplicaciones", "C. Redes donde el control y la validación de datos no están en manos de una autoridad central", "D. Solo en sistemas de pago"], correct: "C" },
+                    { q: "Ethereum amplía las aplicaciones de blockchain con:", options: ["A. Solo pagos rápidos", "B. La capacidad de ejecutar contratos inteligentes y aplicaciones descentralizadas (DApps)", "C. No tiene nuevas aplicaciones", "D. Solo para juegos en línea"], correct: "B" },
+                    { q: "Bitcoin es un ejemplo de blockchain aplicado a:", options: ["A. Criptomonedas y sistemas de pago descentralizados", "B. Gestión de identidad digital", "C. No es un ejemplo de blockchain", "D. Solo para contratos legales"], correct: "A" },
+                    { q: "La 'tokenización' de activos en blockchain puede:", options: ["A. Solo aplicarse a criptomonedas", "B. Facilitar la fraccionabilidad, la liquidez y la transferencia de activos sin intermediarios", "C. No tiene aplicaciones prácticas", "D. Solo para bienes inmuebles"], correct: "B" }
+                ]
+            }
+        };
+
+        // ==========================================
+        // FUNCIONES CORE
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function loadTest(unitId) {
+            const data = testsData[unitId];
+            if (!data) return;
+
+            // Mostrar estado cargando
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('testHeader').classList.remove('hidden');
+            document.getElementById('testContainer').classList.remove('hidden');
+            document.getElementById('totalQuestions').innerText = data.questions.length;
+
+            // Actualizar botones de selección
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('border-cyan-500', 'bg-slate-800');
+                btn.classList.add('border-transparent');
+            });
+            document.getElementById('btn-' + unitId).classList.remove('border-transparent');
+            document.getElementById('btn-' + unitId).classList.add('border-cyan-500', 'bg-slate-800');
+
+            // Actualizar título header
+            document.querySelector('#testHeader h1').innerHTML = `Test: ${data.title}`;
+
+            // Generar preguntas dinámicamente
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+            document.getElementById('quizResultText').classList.add('hidden');
+
+            data.questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question fade-in';
+                questionDiv.setAttribute('data-correct', question.correct);
+                questionDiv.style.animationDelay = `${index * 0.05}s`;
+
+                let html = `
+                    <h4 class="font-bold text-slate-800 mb-3">${index + 1}. ${question.q}</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                `;
+
+                question.options.forEach(option => {
+                    const letter = option.split('.')[0];
+                    html += `
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50 transition">
+                            <input type="radio" name="q${index + 1}" value="${letter}" class="w-4 h-4 text-cyan-600">
+                            <span>${option}</span>
+                        </label>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                `;
+
+                questionDiv.innerHTML = html;
+                form.appendChild(questionDiv);
+            });
+
+            // Scroll al inicio
+            setTimeout(() => {
+                document.getElementById('mainContent').scrollTop = 0;
+            }, 100);
+        }
+
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estados previos
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        // Inicialización
+        window.addEventListener('load', () => {
+            console.log('🎓 Banco de Tests UD1-UD6 cargado correctamente');
+        });
+    </script>
+</body>
+</html>
