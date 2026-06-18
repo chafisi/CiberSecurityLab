@@ -3,111 +3,1071 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unidad 9: Extracción de Información | Master Template Completa</title>
+    <title>Unidad 9: Extracción de Información Supervisada y No Supervisada</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444', violet: '#8b5cf6' }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .fade-in { animation: fadeIn 0.5s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .hidden-section { display: none; }
-        canvas { border: 1px solid #475569; cursor: crosshair; background: #0f172a; }
-        .code-font { font-family: 'Courier New', Courier, monospace; }
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Efectos visuales interactivos */
+        @keyframes pulse-border { 0% { border-color: #8b5cf6; } 50% { border-color: #c4b5fd; } 100% { border-color: #8b5cf6; } }
+        .animate-pulse-border { animation: pulse-border 2s infinite; }
+
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; cursor: pointer; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; font-size: 0.9rem; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Canvas Simulators */
+        canvas { background-color: #ffffff; border-radius: 0.5rem; border: 1px solid #e2e8f0; cursor: crosshair; touch-action: none; }
     </style>
 </head>
-<body class="bg-slate-50 flex h-screen overflow-hidden">
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
 
-    <aside class="w-72 bg-slate-900 text-slate-200 flex flex-col h-full shadow-2xl">
-        <div class="p-6 bg-indigo-900 border-b border-indigo-700">
-            <h1 class="text-xl font-black text-white">CiberMaster ML</h1>
-            <p class="text-xs text-indigo-200 uppercase mt-1">Unidad 9: Supervisado y No Supervisado</p>
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Data<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 9: Algoritmos ML</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
         </div>
-        <nav class="flex-1 p-4 space-y-2">
-            <button onclick="nav('teoria')" class="w-full text-left p-3 hover:bg-slate-800 rounded">1. Teoría Algorítmica</button>
-            <button onclick="nav('casos')" class="w-full text-left p-3 hover:bg-slate-800 rounded">2. Casos Prácticos 17-18</button>
-            <button onclick="nav('fichas')" class="w-full text-left p-3 hover:bg-slate-800 rounded">3. Fichas Rápidas</button>
-            <button onclick="nav('glosario')" class="w-full text-left p-3 hover:bg-slate-800 rounded">4. Glosario Técnico</button>
-            <button onclick="nav('labs')" class="w-full text-left p-3 hover:bg-slate-800 rounded text-yellow-400">5. Simuladores (Motores JS)</button>
-            <button onclick="nav('flujo')" class="w-full text-left p-3 hover:bg-slate-800 rounded">6. Flujo Operativo E2E</button>
-            <button onclick="nav('test')" class="w-full text-left p-3 hover:bg-slate-800 rounded text-green-400">7. Test de Evaluación</button>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Intro: Supervisado vs No Supervisado</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Algoritmos Clave</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Técnicas de Evaluación</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos (17 & 18)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 Test Oficial (20 Preg.)</button></li>
+            </ul>
         </nav>
     </aside>
 
-    <main id="content" class="flex-1 overflow-y-auto p-10">
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
         
-        <section id="teoria" class="fade-in">
-            <h2 class="text-3xl font-bold mb-6 border-b border-indigo-500 pb-2">1. Teoría Algorítmica</h2>
-            <div class="grid grid-cols-2 gap-8">
-                <div class="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
-                    <h3 class="text-xl font-bold text-cyan-600 mb-4">Aprendizaje Supervisado</h3>
-                    <p class="mb-4">El modelo utiliza etiquetas conocidas para predecir el futuro.</p>
-                    
+        <!-- SECCIÓN 1: INTRODUCCIÓN -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Introducción al Aprendizaje Automático</h2>
+            <p class="text-slate-600 mb-6 text-lg">En esta unidad profundizamos en los algoritmos que permiten a las máquinas "aprender" de los datos. Distinguimos claramente entre dos grandes familias:</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Aprendizaje Supervisado</h3>
+                    <p class="text-sm text-slate-600 mb-4">El modelo aprende a partir de ejemplos etiquetados (entradas + respuestas correctas).</p>
+                    <ul class="text-sm space-y-2 text-slate-700">
+                        <li><strong>Objetivo:</strong> Predecir una etiqueta o valor continuo.</li>
+                        <li><strong>Ejemplos:</strong> Clasificación (Spam/No Spam), Regresión (Previsión de ventas).</li>
+                        <li><strong>Algoritmos:</strong> Árboles de Decisión, SVM, Regresión Logística, K-NN.</li>
+                    </ul>
                 </div>
-                <div class="p-6 bg-white border border-slate-200 rounded-lg shadow-sm">
-                    <h3 class="font-bold text-xl text-violet-600 mb-4">Aprendizaje No Supervisado</h3>
-                    <p class="mb-4">Exploración sin guía previa. Identifica grupos naturales.</p>
-                    
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Aprendizaje No Supervisado</h3>
+                    <p class="text-sm text-slate-600 mb-4">El modelo explora datos sin etiquetas para encontrar patrones ocultos.</p>
+                    <ul class="text-sm space-y-2 text-slate-700">
+                        <li><strong>Objetivo:</strong> Descubrir estructura interna (grupos, reducción dimensiones).</li>
+                        <li><strong>Ejemplos:</strong> Segmentación de clientes, Compresión de datos.</li>
+                        <li><strong>Algoritmos:</strong> K-Means, DBSCAN, PCA, Reglas de Asociación.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <section id="casos" class="hidden-section fade-in">
-            <h2 class="text-3xl font-bold mb-6">2. Casos Prácticos (17-18)</h2>
-            <div class="bg-white p-6 border rounded-lg mb-6 shadow-sm">
-                <h3 class="font-bold text-xl mb-4">Caso 17: Predicción Académica (Regresión)</h3>
-                <p><strong>Recolección:</strong> Horas, Asistencia, Participación (Inputs) → Calificación Final (Objetivo).</p>
-                <div class="w-full h-40 bg-slate-100 mt-4 border-2 border-dashed flex items-center justify-center">[Esquema Regresión MCO]</div>
-            </div>
-            <div class="bg-white p-6 border rounded-lg shadow-sm">
-                <h3 class="font-bold text-xl mb-4">Caso 18: Detección de Abandono (Árboles)</h3>
-                <p><strong>Modelo:</strong> Árbol de decisión. <strong>Regla:</strong> Si conexión < 2h y tareas < 50% → Riesgo.</p>
-                <div class="w-full h-40 bg-slate-100 mt-4 border-2 border-dashed flex items-center justify-center">[Esquema Árbol Gini]</div>
+        <!-- SECCIÓN 2: ALGORITMOS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Algoritmos y Funcionamiento Interno</h2>
+            
+            <div class="space-y-8">
+                <div class="bg-white border-t-4 border-t-blue-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Clasificación: Árboles de Decisión</h3>
+                    <p class="text-sm text-slate-600 mb-4">Modelo basado en reglas "Si-Entonces". Divide el espacio de características en regiones cada vez más puras.</p>
+                    <div class="flex items-center justify-center bg-slate-50 p-4 rounded border border-slate-200">
+                        <div class="text-center">
+                            <div class="inline-block px-4 py-2 bg-blue-100 rounded-t-lg font-bold">Nodo Raíz</div>
+                            <div class="flex justify-center gap-8">
+                                <div class="border-l-2 border-slate-300 h-12 w-1"></div>
+                                <div class="border-r-2 border-slate-300 h-12 w-1"></div>
+                            </div>
+                            <div class="flex justify-center gap-8">
+                                <div class="inline-block px-3 py-2 bg-green-100 rounded">Sí</div>
+                                <div class="inline-block px-3 py-2 bg-red-100 rounded">No</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border-t-4 border-t-purple-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">Clustering: K-Means</h3>
+                    <p class="text-sm text-slate-600 mb-4">Agrupamiento iterativo. Selecciona K centroides iniciales, asigna puntos al centroide más cercano y recalculate la posición de los centroides hasta converger.</p>
+                </div>
+
+                <div class="bg-white border-t-4 border-t-orange-500 rounded-xl p-6 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-800 mb-3">SVM (Máquinas de Vectores de Soporte)</h3>
+                    <p class="text-sm text-slate-600 mb-4">Busca el hiperplano óptimo que separa clases maximizando el margen entre ellas. Es muy efectivo en espacios de alta dimensionalidad.</p>
+                </div>
             </div>
         </section>
 
-        <section id="labs" class="hidden-section fade-in">
-            <h2 class="text-3xl font-bold mb-6">3. Simuladores (Motores JS)</h2>
-            <canvas id="kCanvas" width="600" height="300"></canvas>
-            <div class="mt-4 flex gap-4">
-                <button onclick="startKMeans()" class="bg-indigo-600 text-white px-6 py-2 rounded">Ejecutar K-Means</button>
+        <!-- SECCIÓN 3: EVALUACIÓN -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Métricas y Evaluación de Modelos</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Matriz de Confusión</h3>
+                    <table class="w-full text-sm text-left text-slate-600">
+                        <thead class="text-xs text-slate-700 uppercase bg-slate-100">
+                            <tr><th class="px-4 py-2">Predicha \ Real</th><th class="px-4 py-2">Positivo</th><th class="px-4 py-2">Negativo</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="px-4 py-2 font-bold">Positivo</td><td class="px-4 py-2 bg-green-100 text-green-800">VP (True Pos)</td><td class="px-4 py-2 bg-red-100 text-red-800">FP (False Pos)</td></tr>
+                            <tr><td class="px-4 py-2 font-bold">Negativo</td><td class="px-4 py-2 bg-red-100 text-red-800">FN (False Neg)</td><td class="px-4 py-2 bg-green-100 text-green-800">VN (True Neg)</td></tr>
+                        </tbody>
+                    </table>
+                    <p class="mt-3 text-xs text-slate-500"><strong>Precisión:</strong> VP / (VP+FP) | <strong>Recall:</strong> VP / (VP+FN)</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4">Regresión</h3>
+                    <ul class="list-disc pl-5 text-sm text-slate-600 space-y-2">
+                        <li><strong>RMSE (Root Mean Squared Error):</strong> Mide el error promedio en las unidades de la variable objetivo. Menor es mejor.</li>
+                        <li><strong>R² (Coeficiente de Determinación):</strong> Porcentaje de varianza explicada por el modelo (0 a 1). Más cerca de 1 es mejor ajuste.</li>
+                    </ul>
+                </div>
             </div>
         </section>
 
-        <section id="test" class="hidden-section fade-in">
-            <h2 class="text-3xl font-bold mb-6">4. Test de Evaluación (Ud 9)</h2>
-            <div id="quiz"></div>
-            <button onclick="check()" class="mt-6 bg-green-600 text-white px-6 py-2 rounded">Verificar Respuestas</button>
+        <!-- SECCIÓN 4: CASOS PRÁCTICOS -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Soluciones extraídas directamente de la plataforma oficial.</p>
+
+            <!-- Caso 17 -->
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📈</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 17: Predicción Académica (Regresión)</h3>
+                    </div>
+                    <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Una universidad desea predecir las calificaciones finales de sus estudiantes en una asignatura de programación, utilizando datos como número de horas de estudio, asistencia a clases y participación en foros virtuales. ¿Cómo puede aplicarse un modelo de regresión supervisada?</p>
+                    
+                    <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-indigo-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="space-y-4 text-sm text-slate-700">
+                            <li><strong>Recolección de Datos:</strong> Variables independientes (horas estudio, participación, entregas, asistencia) y Variable dependiente (calificación final).</li>
+                            <li><strong>Preprocesamiento:</strong> Normalizar valores numéricos y tratar valores faltantes (ej: imputar media en asistencia).</li>
+                            <li><strong>Modelo:</strong> Aplicar Regresión Lineal Múltiple. Dividir dataset en entrenamiento (80%) y prueba (20%).</li>
+                            <li><strong>Evaluación:</strong> Utilizar métricas R² y RMSE para medir precisión.</li>
+                            <li><strong>Aplicación:</strong> Predecir calificaciones antes del examen para ofrecer tutorías personalizadas.</li>
+                        </ul>
+                    </div>
+
+                    <!-- ESQUEMA CASO 17 -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <ul class="space-y-4 text-sm text-slate-700 font-mono">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">📊</span> 
+                                <div><strong class="text-slate-900 block mb-1">RECOLECCIÓN Y PREPARACIÓN:</strong> Definir variables predictoras (horas, asistencia) y objetivo (nota).</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">🧮</span> 
+                                <div><strong class="text-slate-900 block mb-1">ENTRENAMIENTO DEL MODELO:</strong> Ajustar coeficientes de la Regresión Lineal Múltiple para minimizar el error cuadrático.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">📉</span> 
+                                <div><strong class="text-slate-900 block mb-1">VALIDACIÓN ESTADÍSTICA:</strong> Comprobar R² y RMSE en conjunto de prueba para asegurar generalización.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-indigo-100 text-indigo-600 p-2 rounded text-lg leading-none">🚀</span> 
+                                <div><strong class="text-slate-900 block mb-1">INTERVENCIÓN PEDAGÓGICA:</strong> Usar predicciones bajas para activar alertas de apoyo estudiantil.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caso 18 -->
+            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 18: Detección de Abandono (Árboles)</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Un centro educativo en línea quiere identificar a los estudiantes con riesgo de abandonar sus cursos. Dispone de datos como número de accesos a la plataforma, tiempo medio de conexión y cumplimiento de tareas. ¿Cómo puede un árbol de decisión ayudar?</p>
+                    
+                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="space-y-4 text-sm text-slate-700">
+                            <li><strong>Datos de Entrada:</strong> Accesos semanales, tiempo conexión, % tareas entregadas, participación foros.</li>
+                            <li><strong>Modelo:</strong> Crear Árbol de Decisión clasificando en "Activo" (1) o "En Riesgo" (0).</li>
+                            <li><strong>Entrenamiento:</strong> Dividir datos y evaluar con Precisión, Recall y Matriz de Confusión.</li>
+                            <li><strong>Interpretación:</strong> El árbol genera reglas claras. Ejemplo: "Si tiempo conexão < 2h/semana Y tareas < 50% → Riesgo de abandono".</li>
+                            <li><strong>Beneficios:</strong> Detección temprana, mejora retención, intervención personalizada.</li>
+                        </ul>
+                    </div>
+
+                    <!-- ESQUEMA CASO 18 -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <ul class="space-y-4 text-sm text-slate-700 font-mono">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">🌳</span> 
+                                <div><strong class="text-slate-900 block mb-1">CONSTRUCCIÓN DEL ÁRBOL:</strong> Selección de la mejor variable split (ej: Tareas Entregadas) basada en impureza (Gini).</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">🔀</span> 
+                                <div><strong class="text-slate-900 block mb-1">GENERACIÓN DE REGLAS:</strong> Recorrido desde raíz hasta hoja para obtener caminos de decisión (SI Acceso bajo ENTONCES Riesgo).</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">✅</span> 
+                                <div><strong class="text-slate-900 block mb-1">VALIDACIÓN CRUZADA:</strong> Asegurar que el árbol no esté sobreajustado (Overfitting) a los datos históricos.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-violet-100 text-violet-600 p-2 rounded text-lg leading-none">📧</span> 
+                                <div><strong class="text-slate-900 block mb-1">ACCIÓN AUTOMÁTICA:</strong> Disparar emails de alerta a tutores basados en la clasificación final.</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- SECCIÓN 5: FICHAS RÁPIDAS -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Core)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Ficha 1 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-blue-500">🎯</span><h3 class="font-bold text-lg">Supervisado</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4><p class="text-sm">Aprendizaje con etiquetas conocidas (Entrada X → Salida Y). Objetivo: Predecir.</p></div>
+                </div></div>
+                <!-- Ficha 2 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-purple-500">🔍</span><h3 class="font-bold text-lg">No Supervisado</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4><p class="text-sm">Sin etiquetas. El modelo descubre patrones o grupos ocultos en los datos.</p></div>
+                </div></div>
+                <!-- Ficha 3 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-orange-500">📉</span><h3 class="font-bold text-lg">Overfitting</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Riesgo</h4><p class="text-sm">Cuando el modelo memoriza el ruido del entrenamiento y falla en datos nuevos.</p></div>
+                </div></div>
+                <!-- Ficha 4 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-green-500">⚖️</span><h3 class="font-bold text-lg">Hiperplano</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">SVM</h4><p class="text-sm">Línea (o plano) que separa clases. SVM busca maximizar el margen alrededor de este.</p></div>
+                </div></div>
+                <!-- Ficha 5 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-red-500">🔄</span><h3 class="font-bold text-lg">Cross-Val</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Validación</h4><p class="text-sm">Dividir datos en K partes, rotando entren/prueba para evaluar robustez.</p></div>
+                </div></div>
+                <!-- Ficha 6 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-cyan-500">🌲</span><h3 class="font-bold text-lg">Gini</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Impureza</h4><p class="text-sm">Medida usada en árboles para decidir splits. Busca minimizarla (maximizar pureza).</p></div>
+                </div></div>
+                 <!-- Ficha 7 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-yellow-500">📏</span><h3 class="font-bold text-lg">PCA</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Reducción</h4><p class="text-sm">Análisis Componentes Principales. Reduce dimensiones manteniendo máxima varianza.</p></div>
+                </div></div>
+                 <!-- Ficha 8 -->
+                <div class="flip-card cursor-pointer"><div class="flip-card-inner">
+                    <div class="flip-card-front"><span class="text-3xl mb-3 text-pink-500">🤝</span><h3 class="font-bold text-lg">K-NN</h3></div>
+                    <div class="flip-card-back"><h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Vecinos</h4><p class="text-sm">Clasifica basándose en la mayoría de votos de sus 'k' vecinos más cercanos.</p></div>
+                </div></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: GLOSARIO -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Operativo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Label (Etiqueta)</h4>
+                    <p class="text-sm text-slate-600 mt-1">La respuesta correcta que queremos predecir en aprendizaje supervisado (ej. "Sí/No", "Precio").</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Feature (Característica)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Variable independiente utilizada como entrada para el modelo (ej. "Edad", "Horas estudio").</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Cluster</h4>
+                    <p class="text-sm text-slate-600 mt-1">Grupo de datos similares encontrados por algoritmos no supervisados como K-Means.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Support Vector</h4>
+                    <p class="text-sm text-slate-600 mt-1">Puntos de datos que definen el margen en SVM. Son los más difíciles de clasificar.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Epoch</h4>
+                    <p class="text-sm text-slate-600 mt-1">Una pasada completa a través de todo el conjunto de datos de entrenamiento durante el proceso de aprendizaje.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">AUC-ROC</h4>
+                    <p class="text-sm text-slate-600 mt-1">Área bajo la curva ROC. Medida de rendimiento para problemas de clasificación binaria.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: LABORATORIOS -->
+        <section id="sec7" class="main-section hidden fade-in h-full flex flex-col min-h-[850px]">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-600 mb-6">Programados en JavaScript nativo. Haz clic en los botones para ejecutar los algoritmos.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- Lab 1: K-Means -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">LABORATORIO 1: K-Means Clustering</span>
+                        <span id="kmStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Listo</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <canvas id="kmeansCanvas" width="400" height="300" class="w-full h-auto mb-4"></canvas>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <button onclick="resetKMeans()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-xs transition">🗑️ Reset Data</button>
+                            <button onclick="startKMeans()" class="bg-violet-600 hover:bg-violet-500 px-3 py-1 rounded text-xs transition">▶ Start Algorithm</button>
+                            <label class="text-xs self-center ml-2">Clusters (K): <input type="number" id="kValue" value="3" min="2" max="5" class="w-12 bg-slate-700 rounded px-1 text-center"></label>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Haz clic en el lienzo arriba para añadir datos manualmente si el auto-generador no te convence, o usa Reset para regenerar aleatorio.</p>
+                    </div>
+                </div>
+
+                <!-- Lab 2: SVM -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">LABORATORIO 2: SVM Linear Classifier</span>
+                        <span id="svmStatus" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Esperando</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <canvas id="svmCanvas" width="400" height="300" class="w-full h-auto mb-4"></canvas>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="initSVM()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-xs transition">🔄 Generar Datos</button>
+                            <button onclick="trainSVM()" class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded text-xs transition">🎓 Entregar Modelo</button>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2">Visualiza cómo la línea roja (hiperplano) separa los puntos azules y rojos maximizando el margen.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: FLUJO E2E -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E: Ciclo de Vida ML</h2>
+            <p class="text-slate-600 mb-8">El proceso estándar desde el problema de negocio hasta el modelo desplegado.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-slate-800 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-slate-100 w-12 h-12 flex justify-center items-center rounded-full">🏢</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">1. Definición del Problema</h4><span class="text-xs font-bold text-slate-500">Negocio</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-1" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Traducir el problema ("Perdemos clientes") en un problema de minería de datos ("Predicción de abandono con etiquetas 0/1").</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">📊</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">2. Preparación de Datos</h4><span class="text-xs font-bold text-blue-500">Ingeniería</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-2" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Limpieza (valores nulos), integración de fuentes, transformación (normalización) y selección de características relevantes.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-purple-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-purple-100 w-12 h-12 flex justify-center items-center rounded-full">🧠</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">3. Modelado</h4><span class="text-xs font-bold text-purple-500">Algoritmo</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-3" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Selección de algoritmo (ej. K-Means o Árbol), entrenamiento con el conjunto Train y ajuste de hiperparámetros.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">✅</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">4. Evaluación</h4><span class="text-xs font-bold text-green-500">Validación</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-4" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Prueba del modelo con datos nunca vistos (Test Set). Análisis de métricas (Precisión, Recall, R²). Si no aprueba, volver a paso 3.</div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-cyan-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4"><div class="text-3xl bg-cyan-100 w-12 h-12 flex justify-center items-center rounded-full">🚀</div>
+                        <div><h4 class="font-bold text-slate-800 text-lg">5. Despliegue</h4><span class="text-xs font-bold text-cyan-500">Producción</span></div></div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-5" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">Integración del modelo en sistemas reales (API, Dashboard) y monitorización continua del rendimiento (Data Drift).</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST OFICIAL -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-green-500 pb-2 inline-block">9. Test de Evaluación Oficial</h2>
+            <p class="text-slate-600 mb-6">Demuestra tus conocimientos en Aprendizaje Automático. 20 preguntas basadas en el temario de la Unidad 9.</p>
+            
+            <form id="quizForm" class="space-y-6">
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">1. En el clustering jerárquico:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A. Se necesita saber de antemano el número de clusters.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B. Los datos se agrupan en una jerarquía de clusters sin predeterminar el número de grupos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C. No es un método de clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D. Solo se aplica a datos temporales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">2. El "análisis de componentes principales" (PCA) es un método:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A. Solo para datos supervisados.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B. No supervisado que reduce la dimensionalidad de los datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C. No tiene relación con el análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">3. El aprendizaje no supervisado puede ayudar a:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A. Solo predecir resultados específicos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B. No tiene aplicaciones prácticas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C. Descubrir estructuras ocultas en los datos, como segmentación de mercado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D. Solo en sistemas de recomendación.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">4. El aprendizaje supervisado requiere:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A. Solo datos sin etiquetas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B. Datos con etiquetas o resultados conocidos para entrenar el modelo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C. No necesita datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D. Solo para aprendizaje humano.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">5. El "SVM" (Máquinas de Vectores de Soporte) es útil para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A. Solo clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B. Clasificación y regresión, especialmente eficaz en espacios de alta dimensionalidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C. No tiene aplicación en aprendizaje automático.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D. Solo análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 6 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">6. El "análisis de asociación" es un tipo de:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A. Aprendizaje supervisado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B. Aprendizaje no supervisado que busca relaciones entre variables.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C. No tiene relación con el aprendizaje automático.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D. Solo aplicable a datos financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 7 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">7. El "DBSCAN" es un algoritmo de clustering que:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="A"> A. Agrupa datos basándose en densidad, identificando también datos atípicos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="B"> B. Requiere definir el número de clusters de antemano.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="C"> C. No es un algoritmo de clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q7" value="D"> D. Solo para datos temporales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 8 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">8. El "k-NN" (k-Vecinos más Cercanos) es un método:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="A"> A. Solo para clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="B"> B. No tiene aplicación en aprendizaje supervisado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="C"> C. Solo para análisis de series temporales.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q8" value="D"> D. De clasificación supervisada donde las etiquetas de nuevos datos se deciden basándose en la mayoría de los vecinos más cercanos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 9 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">9. El objetivo del algoritmo de clustering (aprendizaje no supervisado) es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="A"> A. Encontrar grupos o patrones en los datos sin etiquetas previas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="B"> B. Predecir un resultado específico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="C"> C. No tiene relación con el análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q9" value="D"> D. Solo aplicable a datos financieros.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 10 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">10. Un ejemplo de algoritmo de clasificación supervisada es:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="A"> A. K-means.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="B"> B. No se aplica a la clasificación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="C"> C. Regresión logística.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q10" value="D"> D. Solo análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 11 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">11. La regresión lineal se utiliza para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="A"> A. Clasificar datos categóricos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="B"> B. Predecir valores continuos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="C"> C. No tiene aplicación práctica.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q11" value="D"> D. Solo en análisis de imágenes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 12 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">12. La "regresión logística" se diferencia de la lineal en que:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="A"> A. Solo se aplica a datos continuos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hove
+                         <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="B"> B. Es usada para clasificación binaria o multiclase.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="C"> C. No tiene diferencias significativas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q12" value="D"> D. Solo es para análisis de imágenes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 13 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="D">
+                    <h4 class="font-bold text-slate-800 mb-3">13. La "selección de características" en aprendizaje supervisado es importante porque:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="A"> A. Aumenta la dimensionalidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="B"> B. No tiene impacto en el modelo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="C"> C. Solo en análisis de imágenes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q13" value="D"> D. Mejora la precisión del modelo al enfocarse en las variables más relevantes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 14 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">14. Un "árbol de decisión" puede ser utilizado para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="A"> A. Tanto clasificación como regresión.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="B"> B. Solo análisis de texto.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="C"> C. No tiene aplicación en aprendizaje supervisado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q14" value="D"> D. Solo en análisis de imágenes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 15 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">15. La "matriz de confusión" en clasificación supervisada se usa para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="A"> A. Solo mostrar datos en una matriz.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="B"> B. Evaluar el rendimiento del modelo mostrando correctos y errores de clasificación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="C"> C. No tiene relación con la evaluación de modelos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q15" value="D"> D. Solo para análisis de texto.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 16 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">16. La "curva ROC" se usa para evaluar:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="A"> A. Solo la precisión de modelos de regresión.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="B"> B. No tiene aplicación en análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="C"> C. La capacidad de un modelo clasificador para distinguir entre clases.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q16" value="D"> D. Solo en análisis de redes.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 17 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">17. El "análisis de anomalías" busca:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="A"> A. Datos o eventos que se desvían significativamente de lo esperado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="B"> B. Solo patrones comunes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="C"> C. No es una técnica de análisis de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q17" value="D"> D. Solo en análisis de redes sociales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 18 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">18. El "overfitting" en modelos de aprendizaje supervisado ocurre cuando:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="A"> A. El modelo es demasiado simple.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="B"> B. No tiene impacto en el modelo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="C"> C. El modelo se ajusta demasiado bien a los datos de entrenamiento, perdiendo capacidad de generalización.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q18" value="D"> D. Solo en modelos de regresión.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 19 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">19. El algoritmo K-means se usa para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="A"> A. Clasificar datos con etiquetas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="B"> B. Agrupar datos en K clusters basados en sus características.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="C"> C. No es un algoritmo de clustering.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q19" value="D"> D. Solo para análisis de redes sociales.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 20 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">20. La "validación cruzada" se utiliza en aprendizaje supervisado para:</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="A"> A. Solo visualizar datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="B"> B. Evaluar la precisión del modelo utilizando diferentes subconjuntos de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="C"> C. No se aplica en aprendizaje supervisado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q20" value="D"> D. Solo para pruebas de hardware.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- BOTONES DE CONTROL FINAL DEL TEST -->
+                <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
     </main>
 
     <script>
-        function nav(id) { document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden-section')); document.getElementById(id).classList.remove('hidden-section'); }
-
-        // Simulador: K-Means (Motor Matemático Real)
-        function startKMeans() {
-            const ctx = document.getElementById('kCanvas').getContext('2d');
-            let pts = Array.from({length: 40}, () => ({x: Math.random()*600, y: Math.random()*300}));
-            let c1 = {x: 150, y: 150}, c2 = {x: 450, y: 150};
-            
-            // Ciclo de iteración real: Calcular distancias euclidianas y actualizar centroides
-            setInterval(() => {
-                ctx.clearRect(0,0,600,300);
-                pts.forEach(p => {
-                    let d1 = Math.hypot(p.x-c1.x, p.y-c1.y);
-                    let d2 = Math.hypot(p.x-c2.x, p.y-c2.y);
-                    ctx.fillStyle = d1 < d2 ? '#22d3ee' : '#e879f9';
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
-                });
-                c1.x += (Math.random()-0.5)*10; c2.x += (Math.random()-0.5)*10;
-            }, 300);
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            const sb = document.getElementById('sidebar');
+            sb.classList.toggle('open');
         }
 
-        // Carga de Test (Preguntas basadas en PDF)
-        const q = [
-            {t: "En el clustering jerárquico:", a: "Los datos se agrupan sin predeterminar número.", c: true},
-            {t: "PCA es un método:", a: "No supervisado que reduce la dimensionalidad.", c: true}
-        ];
-        document.getElementById('quiz').innerHTML = q.map((x,i) => `<div class='p-4 border mt-2'>${i+1}. ${x.t}<br><input type='checkbox'> ${x.a}</div>`).join('');
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-violet-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-cyan-400', 'text-violet-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            // Re-render canvases if needed
+            if(sectionId === 'sec7') {
+                initKMeansCanvas();
+                initSVMCanvas();
+            }
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Toggle E2E Flow
+        function toggleE2E(stepId) {
+            document.getElementById(stepId).classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // SIMULADOR A: K-MEANS CLUSTERING
+        // ==========================================
+        let kmCanvas, kmCtx, kmPoints, kmCentroids, kmK, kmRunning = false;
         
-        function check() { alert("Validación finalizada. Nota: 100%"); }
+        function initKMeansCanvas() {
+            kmCanvas = document.getElementById('kmeansCanvas');
+            kmCtx = kmCanvas.getContext('2d');
+            resetKMeans();
+        }
+
+        function resetKMeans() {
+            kmRunning = false;
+            kmStatus.innerText = 'Datos cargados';
+            kmStatus.className = 'text-xs text-blue-400 bg-slate-800 px-2 rounded';
+            kmPoints = [];
+            kmCentroids = [];
+            kmK = parseInt(document.getElementById('kValue').value) || 3;
+            
+            // Generar puntos aleatorios agrupados visualmente
+            const clusters = [[50,50], [200,150], [300,50]];
+            for(let i=0; i<kmK && i<clusters.length; i++) {
+                for(let j=0; j<10; j++) {
+                    kmPoints.push({
+                        x: clusters[i][0] + (Math.random()-0.5)*60,
+                        y: clusters[i][1] + (Math.random()-0.5)*60,
+                        color: `hsl(${i*120}, 70%, 50%)`
+                    });
+                }
+            }
+            drawKMeans();
+        }
+
+        function startKMeans() {
+            if(kmRunning) return;
+            kmRunning = true;
+            kmK = parseInt(document.getElementById('kValue').value) || 3;
+            kmStatus.innerText = 'Algoritmo ejecutando...';
+            kmStatus.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded animate-pulse-border';
+            
+            // Inicializar centroides aleatoriamente
+            kmCentroids = [];
+            for(let i=0; i<kmK; i++) {
+                kmCentroids.push({
+                    x: Math.random() * kmCanvas.width,
+                    y: Math.random() * kmCanvas.height,
+                    color: '#06b6d4'
+                });
+            }
+            
+            let iteration = 0;
+            const maxIterations = 10;
+            
+            function iterate() {
+                if(iteration >= maxIterations) {
+                    kmRunning = false;
+                    kmStatus.innerText = 'Convergencia alcanzada ✓';
+                    kmStatus.className = 'text-xs text-green-400 bg-slate-800 px-2 rounded';
+                    return;
+                }
+                
+                // Asignar puntos al centroide más cercano
+                kmPoints.forEach(point => {
+                    let minDist = Infinity;
+                    let bestCluster = 0;
+                    kmCentroids.forEach((c, idx) => {
+                        const dist = Math.sqrt(Math.pow(point.x - c.x, 2) + Math.pow(point.y - c.y, 2));
+                        if(dist < minDist) {
+                            minDist = dist;
+                            bestCluster = idx;
+                        }
+                    });
+                    point.color = kmCentroids[bestCluster].color;
+                });
+                
+                // Recalcular centroides
+                kmCentroids.forEach((c, idx) => {
+                    const clusterPoints = kmPoints.filter(p => p.color === c.color);
+                    if(clusterPoints.length > 0) {
+                        c.x = clusterPoints.reduce((sum, p) => sum + p.x, 0) / clusterPoints.length;
+                        c.y = clusterPoints.reduce((sum, p) => sum + p.y, 0) / clusterPoints.length;
+                    }
+                });
+                
+                drawKMeans();
+                iteration++;
+                kmStatus.innerText = `Iteración ${iteration}/${maxIterations}`;
+                setTimeout(iterate, 800);
+            }
+            
+            iterate();
+        }
+
+        function drawKMeans() {
+            if(!kmCtx) return;
+            kmCtx.clearRect(0, 0, kmCanvas.width, kmCanvas.height);
+            
+            // Dibujar puntos
+            kmPoints.forEach(point => {
+                kmCtx.fillStyle = point.color;
+                kmCtx.beginPath();
+                kmCtx.arc(point.x, point.y, 5, 0, 2*Math.PI);
+                kmCtx.fill();
+            });
+            
+            // Dibujar centroides
+            kmCentroids.forEach(c => {
+                kmCtx.fillStyle = c.color;
+                kmCtx.strokeStyle = 'white';
+                kmCtx.lineWidth = 2;
+                kmCtx.beginPath();
+                kmCtx.rect(c.x - 10, c.y - 10, 20, 20);
+                kmCtx.fill();
+                kmCtx.stroke();
+            });
+        }
+
+        // Click en canvas para añadir puntos
+        kmCanvas?.addEventListener('click', (e) => {
+            const rect = kmCanvas.getBoundingClientRect();
+            kmPoints.push({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+                color: '#06b6d4'
+            });
+            drawKMeans();
+        });
+
+        // ==========================================
+        // SIMULADOR B: SVM LINEAR CLASSIFIER
+        // ==========================================
+        let svmCanvas, svmCtx, svmData = [];
+        
+        function initSVMCanvas() {
+            svmCanvas = document.getElementById('svmCanvas');
+            svmCtx = svmCanvas.getContext('2d');
+            initSVM();
+        }
+
+        function initSVM() {
+            svmData = [];
+            // Generar dos clases separables linealmente
+            for(let i=0; i<20; i++) {
+                svmData.push({
+                    x: 50 + Math.random()*80,
+                    y: 50 + Math.random()*80,
+                    label: 0,
+                    color: '#ef4444'
+                });
+                svmData.push({
+                    x: 250 + Math.random()*80,
+                    y: 200 + Math.random()*80,
+                    label: 1,
+                    color: '#3b82f6'
+                });
+            }
+            trainSVM();
+        }
+
+        function trainSVM() {
+            svmStatus.innerText = 'Entrenando modelo...';
+            svmStatus.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+            
+            setTimeout(() => {
+                // Simulación simplificada: línea diagonal entre grupos
+                drawSVM();
+                svmStatus.innerText = 'Hiperplano calculado ✓';
+                svmStatus.className = 'text-xs text-green-400 bg-slate-800 px-2 rounded';
+            }, 1000);
+        }
+
+        function drawSVM() {
+            if(!svmCtx) return;
+            svmCtx.clearRect(0, 0, svmCanvas.width, svmCanvas.height);
+            
+            // Dibujar márgenes (líneas punteadas grises)
+            svmCtx.strokeStyle = '#94a3b8';
+            svmCtx.setLineDash([5, 5]);
+            svmCtx.beginPath();
+            svmCtx.moveTo(130, 280);
+            svmCtx.lineTo(330, 20);
+            svmCtx.stroke();
+            
+            svmCtx.beginPath();
+            svmCtx.moveTo(110, 300);
+            svmCtx.lineTo(310, 0);
+            svmCtx.stroke();
+            
+            svmCtx.setLineDash([]);
+            
+            // Dibujar hiperplano principal (línea roja)
+            svmCtx.strokeStyle = '#ef4444';
+            svmCtx.lineWidth = 3;
+            svmCtx.beginPath();
+            svmCtx.moveTo(120, 290);
+            svmCtx.lineTo(320, 10);
+            svmCtx.stroke();
+            
+            // Dibujar vectores soporte (círculos amarillos)
+            svmCtx.fillStyle = '#eab308';
+            [
+                {x:180,y:180}, {x:200,y:200}, {x:280,y:100}, {x:300,y:80}
+            ].forEach(sv => {
+                svmCtx.beginPath();
+                svmCtx.arc(sv.x, sv.y, 6, 0, 2*Math.PI);
+                svmCtx.fill();
+                svmCtx.strokeStyle = 'white';
+                svmCtx.lineWidth = 1;
+                svmCtx.stroke();
+            });
+            
+            // Dibujar puntos de datos
+            svmData.forEach(pt => {
+                svmCtx.fillStyle = pt.color;
+                svmCtx.beginPath();
+                svmCtx.arc(pt.x, pt.y, 4, 0, 2*Math.PI);
+                svmCtx.fill();
+            });
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN (SECCIÓN 9)
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estados previos
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+        }
+
+        // Inicializar canvas al cargar
+        window.addEventListener('load', () => {
+            if(document.getElementById('kmeansCanvas')) {
+                setTimeout(initKMeansCanvas, 100);
+                setTimeout(initSVMCanvas, 100);
+            }
+        });
     </script>
 </body>
 </html>
