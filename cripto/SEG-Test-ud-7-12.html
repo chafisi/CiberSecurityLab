@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Tests - Ciberseguridad (UD7-UD12)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444', red: '#dc2626' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Sec<span class="text-red-500">urity</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Banco Exámenes UD7-UD12</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1 px-2">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Selectar Unidad</li>
+                
+                <li>
+                    <button onclick="loadTest('ud7')" id="btn-ud7" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🌐</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 7</div>
+                            <div class="text-xs text-slate-500">Segur. Capa Aplicación</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud8')" id="btn-ud8" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">📦</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 8</div>
+                            <div class="text-xs text-slate-500">Compresión y Fuente</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud9')" id="btn-ud9" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">📡</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 9</div>
+                            <div class="text-xs text-slate-500">Codificación Canal</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud10')" id="btn-ud10" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">📜</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 10</div>
+                            <div class="text-xs text-slate-500">SGSI & ISO 27001</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud11')" id="btn-ud11" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">⚖️</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 11</div>
+                            <div class="text-xs text-slate-500">Protección Datos (Andorra)</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud12')" id="btn-ud12" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🇪🇺</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 12</div>
+                            <div class="text-xs text-slate-500">Normativa EU (RGPD/NIS2)</div>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            © 2026 | Ciberseguridad Master Test
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- HEADER UNIDAD -->
+        <div class="max-w-6xl mx-auto mb-8 fade-in" id="testHeader">
+            <h1 class="text-4xl font-black text-slate-800 mb-2">Selecciona una unidad para comenzar</h1>
+            <p class="text-slate-600 text-lg">Evaluación con 20 preguntas tipo test. Se considera superado si ≥80% de aciertos.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Preguntas Totales</div>
+                    <div class="text-2xl font-black text-red-600" id="totalQuestions">-</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Nota Mínima</div>
+                    <div class="text-2xl font-black text-green-600">80%</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Recomendado</div>
+                    <div class="text-2xl font-black text-yellow-600">15-25 min</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEST CONTAINER -->
+        <div id="testContainer" class="max-w-6xl mx-auto hidden fade-in">
+            <form id="quizForm" class="space-y-6">
+                <!-- Las preguntas se cargarán dinámicamente aquí -->
+            </form>
+
+            <!-- BOTONES DE CONTROL -->
+            <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                <div class="flex w-full md:w-auto gap-4">
+                    <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                    <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESTADO INICIAL -->
+        <div id="emptyState" class="max-w-6xl mx-auto text-center py-20 fade-in">
+            <div class="text-8xl mb-6">🛡️</div>
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">Esperando selección de unidad</h2>
+            <p class="text-slate-500 max-w-md mx-auto">Haz clic en una unidad del menú lateral izquierdo para cargar las 20 preguntas correspondientes (UD7-UD12).</p>
+        </div>
+
+    </main>
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-red-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE PREGUNTAS (UNIDADES 7-12)
+        // ==========================================
+        const testsData = {
+            ud7: {
+                title: "Unidad 7: Seguridad en la Capa de Aplicación",
+                icon: "🌐",
+                questions: [
+                    { q: "¿Qué es el path traversal?", options: ["A. Interceptar tráfico TLS.", "B. Forzar acceso a archivos fuera del directorio permitido.", "C. Manipular ARP.", "D. Crear VLANs."], correct: "B" },
+                    { q: "¿Qué es el output encoding?", options: ["A. Cifrado por hardware.", "B. Codificación de salida para evitar ejecución en el navegador.", "C. Cambiar formato de logs.", "D. Reemplazar certificados."], correct: "B" },
+                    { q: "Medida eficaz contra path traversal:", options: ["A. Sanitizar rutas y restringir acceso a carpetas.", "B. Incrementar ancho de banda.", "C. Deshabilitar TLS.", "D. Forzar cookies sin protección."], correct: "A" },
+                    { q: "¿Qué implica CSRF?", options: ["A. Repetición de paquetes TCP.", "B. Forzar acciones del usuario autenticado desde un sitio externo.", "C. Inyección de rutas.", "D. Manipulación física del servidor."], correct: "B" },
+                    { q: "¿Cuál es el foco distintivo de la seguridad en la capa de aplicación?", options: ["A. Protección del direccionamiento IP.", "B. La lógica del software, validación de datos e interacción con el usuario.", "C. Exclusivamente la disponibilidad física.", "D. Multiplexación de puertos."], correct: "B" },
+                    { q: "¿Qué problema produce una validación insuficiente de entradas?", options: ["A. Fallos de hardware.", "B. Inyección de código o manipulación de lógica.", "C. Cambios de topología.", "D. Bloqueo ARP."], correct: "B" },
+                    { q: "Para mitigar CSRF se recomienda:", options: ["A. Desactivar contraseñas.", "B. Tokens anti-CSRF.", "C. VLANs dedicadas.", "D. Logs deshabilitados."], correct: "B" },
+                    { q: "¿Qué ataque consiste en manipular la lógica de negocio?", options: ["A. DNS poisoning.", "B. Business Logic Attacks.", "C. Smurf.", "D. Pivoting."], correct: "B" },
+                    { q: "¿Qué vulnerabilidad se mitiga con prepared statements?", options: ["A. DNS poisoning.", "B. Inyección SQL/NoSQL.", "C. ARP spoofing.", "D. Desbordamiento del kernel."], correct: "B" },
+                    { q: "¿Qué debilidad explotan los ataques de deserialización insegura?", options: ["A. Fallos de NAT.", "B. Manipulación de objetos antes de reconstrucción.", "C. Fragmentación IP.", "D. Errores de reloj NTP."], correct: "B" },
+                    { q: "¿Qué ayuda a mitigar ataques de fuerza bruta en autenticación?", options: ["A. Desactivar MFA.", "B. Bloqueo por intentos + MFA.", "C. Abrir puertos.", "D. Cookies sin expiración."], correct: "B" },
+                    { q: "¿Qué ataque busca secuestrar la identidad de un usuario autenticado?", options: ["A. ARP poisoning.", "B. Session hijacking.", "C. Jamming.", "D. Smurf."], correct: "B" },
+                    { q: "¿Qué técnica mitiga XSS?", options: ["A. Filtrado de MAC.", "B. Validar y sanear datos de entrada/salida.", "C. Cambiar la MTU.", "D. Desactivar logs."], correct: "B" },
+                    { q: "¿Qué protege un WAF?", options: ["A. Capa física.", "B. Aplicaciones web frente a ataques como SQLi y XSS.", "C. Rutas IP.", "D. Puertos TCP/UDP."], correct: "B" },
+                    { q: "Una vulnerabilidad típica de la capa de aplicación es:", options: ["A. MTU inconsistente.", "B. Manipulación de parámetros en formularios/URLs.", "C. Tramas Ethernet corruptas.", "D. Interferencias físicas."], correct: "B" },
+                    { q: "¿Qué ataque utiliza scripts inyectados que se ejecutan en el navegador?", options: ["A. ARP poisoning.", "B. XSS.", "C. BGP hijacking.", "D. Smurf."], correct: "B" },
+                    { q: "Mecanismo típico para gestionar sesiones seguras:", options: ["A. Cookies sin cifrar.", "B. Cookies HttpOnly + Secure.", "C. Redes abiertas.", "D. TTL bajo en DNS."], correct: "B" },
+                    { q: "¿Cuál es un control transversal para proteger aplicaciones?", options: ["A. Permitir Any–Any en firewall.", "B. Revisiones de código + escáneres SAST/DAST.", "C. Desactivar logs.", "D. Permitir cookies inseguras."], correct: "B" },
+                    { q: "¿Cuál es un principio básico de seguridad en la capa de aplicación?", options: ["A. Confiar en los datos del cliente.", "B. Validar siempre del lado del servidor.", "C. No registrar eventos.", "D. Desactivar TLS para pruebas."], correct: "B" },
+                    { q: "Diferencia clave entre seguridad de red y de aplicación:", options: ["A. La seguridad de aplicación opera solo con UDP.", "B. La red filtra tráfico; la de aplicación valida entradas, autentica y controla sesiones.", "C. La de aplicación no requiere controles.", "D. La de red solo protege capa física."], correct: "B" }
+                ]
+            },
+            ud8: {
+                title: "Unidad 8: Compresión y Codificación de Fuente",
+                icon: "📦",
+                questions: [
+                    { q: "¿Qué es un diccionario en compresión LZ?", options: ["A. Una clave criptográfica.", "B. Estructura que almacena patrones repetidos.", "C. Un certificado digital.", "D. Un balanceador."], correct: "B" },
+                    { q: "¿Qué mide la entropía de una fuente?", options: ["A. El tamaño del mensaje.", "B. La incertidumbre promedio por símbolo.", "C. La velocidad del canal.", "D. Los errores residuales."], correct: "B" },
+                    { q: "¿Qué es run-length encoding (RLE)?", options: ["A. Un método de cifrado.", "B. Codificación basada en repeticiones consecutivas.", "C. Un hash.", "D. Un sistema de detección de intrusos."], correct: "B" },
+                    { q: "¿Qué ventaja tiene la codificación aritmética frente a Huffman?", options: ["A. Es menos eficiente.", "B. Aprovecha mejor probabilidades no potencias de 2.", "C. Solo usa símbolos binarios.", "D. No requiere cálculos."], correct: "B" },
+                    { q: "¿Qué caracteriza a los métodos LZ (Lempel-Ziv)?", options: ["A. Dependen exclusivamente de árboles binarios.", "B. Detectan patrones repetidos y los reemplazan por referencias.", "C. No requieren diccionario.", "D. Se usan solo en audio."], correct: "B" },
+                    { q: "¿Qué caracteriza un código prefijo?", options: ["A. Todos los códigos tienen igual longitud.", "B. Ningún código es prefijo de otro.", "C. Usa únicamente 0s.", "D. Depende del tiempo de transmisión."], correct: "B" },
+                    { q: "¿Qué propiedad garantiza que el código de Huffman sea óptimo?", options: ["A. Ser secuencial.", "B. Minimizar longitud promedio del código.", "C. No usar árboles binarios.", "D. Depender del canal."], correct: "B" },
+                    { q: "¿Qué se espera de un buen esquema de compresión de fuente?", options: ["A. Reducir tamaño sin pérdidas innecesarias.", "B. Aumentar tráfico.", "C. No usar estadísticas.", "D. Destruir estructura del mensaje."], correct: "A" },
+                    { q: "¿Cuál es un ejemplo real de compresión basada en LZ?", options: ["A. ZIP.", "B. SSL.", "C. IPSec.", "D. NTP."], correct: "A" },
+                    { q: "¿Cuál es el objetivo de la codificación de la fuente?", options: ["A. Comprimir eliminando redundancia.", "B. Proteger frente a ruido del canal.", "C. Cifrar mensajes.", "D. Clonar estructuras de red."], correct: "A" },
+                    { q: "¿Qué es un código de longitud fija?", options: ["A. Todos los símbolos tienen el mismo número de bits.", "B. Depende del canal.", "C. Es siempre óptimo.", "D. Usado solo en vídeo."], correct: "A" },
+                    { q: "¿Qué caracteriza la codificación aritmética?", options: ["A. Agrupa símbolos en un rango real y asigna intervalos proporcionales a probabilidades.", "B. Solo usa códigos fijos.", "C. Funciona sin probabilidades.", "D. No permite compresión."], correct: "A" },
+                    { q: "En un árbol de Huffman, los símbolos más frecuentes:", options: ["A. Quedan más alejados de la raíz.", "B. Usan códigos más largos.", "C. Tienen códigos más cortos.", "D. Solo usan el bit 1."], correct: "C" },
+                    { q: "¿Qué técnica crea códigos más cortos para símbolos más probables?", options: ["A. Run-length encoding.", "B. Código Morse.", "C. Huffman.", "D. Paridad simple."], correct: "C" },
+                    { q: "¿Qué es un código de longitud variable?", options: ["A. Todos los símbolos tienen igual longitud.", "B. Símbolos frecuentes → códigos más cortos.", "C. Solo usa enteros negativos.", "D. No se usa en práctica."], correct: "B" },
+                    { q: "¿Qué se entiende por redundancia en un mensaje?", options: ["A. Información repetitiva o predecible que no aporta novedad.", "B. Tasa de errores del canal.", "C. Coste computacional del codificador.", "D. Tamaño de la tabla de códigos."], correct: "A" },
+                    { q: "¿Qué diferencia existe entre LZ77 y LZ78?", options: ["A. LZ77 usa ventana deslizante; LZ78 construye diccionario explícito.", "B. LZ78 es exclusivamente para texto.", "C. LZ77 usa códigos fijos.", "D. Ninguno usa diccionario."], correct: "A" },
+                    { q: "¿Qué es el padding en codificación?", options: ["A. Añadir bits para completar bloques.", "B. Reducir entropía.", "C. Manipular certificados.", "D. Cambiar hashes."], correct: "A" },
+                    { q: "¿Qué es una fuente de información en teoría de la información?", options: ["A. Un algoritmo de cifrado simétrico.", "B. Un canal determinista.", "C. Un proceso estocástico que genera símbolos con ciertas probabilidades.", "D. Un contenedor multimedia."], correct: "C" },
+                    { q: "¿Qué implica una entropía alta?", options: ["A. Fuente muy predecible.", "B. Mayor incertidumbre por símbolo.", "C. Mensaje comprimible fácilmente.", "D. Repeticiones frecuentes."], correct: "B" }
+                ]
+            },
+            ud9: {
+                title: "Unidad 9: Codificación de Canal y Corrección de Errores",
+                icon: "📡",
+                questions: [
+                    { q: "¿Qué diferencia hay entre codificación de fuente y codificación de canal?", options: ["A. Fuente añade redundancia; canal la elimina.", "B. Fuente reduce redundancia; canal introduce redundancia para tolerar errores.", "C. Ambas eliminan redundancia.", "D. Ambas solo detectan errores."], correct: "B" },
+                    { q: "¿Qué hace el CRC?", options: ["A. Cifra mensajes.", "B. Detecta errores mediante polinomios.", "C. Reemplaza redundancia.", "D. Garantiza recuperación."], correct: "B" },
+                    { q: "Ejemplo de modelo de canal.", options: ["A. Canal binario simétrico (BSC).", "B. Canal sin ruido.", "C. Canal de eco perfecto.", "D. Canal de memoria infinita."], correct: "A" },
+                    { q: "¿Qué implica una relación de redundancia mayor en un código de canal?", options: ["A. Mayor tasa de errores.", "B. Mejor capacidad de corrección a costa de más bits adicionales.", "C. Sin impacto en el ancho de banda.", "D. Menor capacidad de detección."], correct: "B" },
+                    { q: "¿Qué mide la tasa de error de bit (BER)?", options: ["A. Probabilidad de colisiones.", "B. Proporción de bits erróneos sobre el total transmitido.", "C. Potencia del transmisor.", "D. Entropía del mensaje."], correct: "B" },
+                    { q: "¿Qué caracteriza los códigos convolucionales?", options: ["A. No usan memoria.", "B. Generan bits de salida basados en el flujo y memoria del sistema.", "C. Son únicamente de detección.", "D. Solo se usan para redes locales."], correct: "B" },
+                    { q: "¿Qué técnica combina compresión y corrección de errores?", options: ["A. Shannon-Fano.", "B. Turbo-códigos.", "C. XOR fijo.", "D. RLE."], correct: "B" },
+                    { q: "¿Qué determina la capacidad de un canal según Shannon?", options: ["A. La entropía del usuario.", "B. El ancho de banda y la relación señal-ruido (SNR).", "C. El método de cifrado.", "D. La estructura de VLAN."], correct: "B" },
+                    { q: "¿Qué es ARQ (Automatic Repeat Request)?", options: ["A. Un método de corrección sin retransmisión.", "B. Un protocolo que solicita retransmisiones al detectar errores.", "C. Un algoritmo de enrutamiento.", "D. Una técnica de compresión."], correct: "B" },
+                    { q: "¿Qué son los LDPC (Low Density Parity Check)?", options: ["A. Códigos de corrección muy eficientes basados en matrices dispersas.", "B. Una técnica de cifrado.", "C. Compresión de imágenes.", "D. Un modo de operación AES."], correct: "A" },
+                    { q: "¿Cuál es el límite teórico máximo de eficiencia en un canal?", options: ["A. Límite de Viterbi.", "B. Límite de Shannon.", "C. Ley de Coulomb.", "D. Punto de Nyquist solo."], correct: "B" },
+                    { q: "¿Qué algoritmo se usa comúnmente para decodificar códigos convolucionales?", options: ["A. LZMA.", "B. Viterbi.", "C. RSA.", "D. HMAC."], correct: "B" },
+                    { q: "¿Qué técnica mejora la resistencia frente a errores en ráfaga?", options: ["A. Interleaving + códigos FEC.", "B. Reducción de ancho de banda.", "C. Cifrado simétrico.", "D. Cambio de MTU."], correct: "A" },
+                    { q: "¿Qué es un código de corrección de errores (FEC)?", options: ["A. Exige retransmisión siempre.", "B. Corrige errores sin necesidad de retransmitir.", "C. Solo detecta errores.", "D. Elimina redundancia."], correct: "B" },
+                    { q: "¿Qué caracterizan los códigos de bloque?", options: ["A. Trabajan sobre tramas infinitas.", "B. Operan sobre bloques fijos de bits.", "C. Solo funcionan en tiempo real.", "D. Solo sirven en audio."], correct: "B" },
+                    { q: "¿Cuál es el objetivo de la codificación de canal?", options: ["A. Ordenar paquetes por prioridad.", "B. Garantizar confidencialidad.", "C. Detectar y/o corregir errores en la transmisión.", "D. Reducir el tamaño de los datos."], correct: "C" },
+                    { q: "¿Qué es intercalado (interleaving)?", options: ["A. Un método para cifrar claves.", "B. Reordenar bits para dispersar errores en ráfagas.", "C. Un protocolo de autenticación.", "D. Una técnica de compresión."], correct: "B" },
+                    { q: "¿Cuál de los siguientes es un esquema simple de detección?", options: ["A. CRC.", "B. Huffman.", "C. AES.", "D. LZ77."], correct: "A" },
+                    { q: "¿Qué es un código de detección de errores?", options: ["A. Permite cifrado simétrico.", "B. Permite identificar si hubo errores en la transmisión.", "C. Elimina compresión.", "D. Aumenta tráfico."], correct: "B" },
+                    { q: "¿Qué implica un canal BEC (Binary Erasure Channel)?", options: ["A. Los bits erróneos se reemplazan por 0.", "B. Los bits pueden perderse ('borrarse') y detectarse esa pérdida.", "C. No puede detectar errores.", "D. Es equivalente al BSC."], correct: "B" }
+                ]
+            },
+            ud10: {
+                title: "Unidad 10: SGSI y Normativa ISO 27001",
+                icon: "📜",
+                questions: [
+                    { q: "¿Qué es el RTO?", options: ["A. Tiempo máximo aceptable para restaurar un servicio.", "B. Capacidad del firewall.", "C. Nivel de riesgo.", "D. Contrato con un proveedor."], correct: "A" },
+                    { q: "¿Qué documento establece reglas formales dentro de un SGSI?", options: ["A. Topología de red.", "B. Política de seguridad.", "C. Tarifas del proveedor.", "D. Configuración del firewall."], correct: "B" },
+                    { q: "¿Qué caracteriza una auditoría interna?", options: ["A. Se realiza siempre por un organismo externo.", "B. Evalúa cumplimiento del SGSI dentro de la organización.", "C. Sustituye auditorías externas.", "D. Solo revisa registros financieros."], correct: "B" },
+                    { q: "¿Qué requiere la declaración de aplicabilidad (SoA)?", options: ["A. Seleccionar y justificar controles del Anexo A.", "B. Describir todos los equipos informáticos.", "C. Registrar costes.", "D. Definir VLANs."], correct: "A" },
+                    { q: "¿Qué es el riesgo en un SGSI?", options: ["A. Precio de un servidor.", "B. Probabilidad × impacto de un evento adverso.", "C. Número de puertos abiertos.", "D. Nivel de ruido."], correct: "B" },
+                    { q: "¿Qué tipo de control es la videovigilancia?", options: ["A. Físico.", "B. Técnico.", "C. Legal.", "D. Financiero."], correct: "A" },
+                    { q: "¿Qué evalúa la auditoría externa ISO 27001?", options: ["A. Madurez de procesos financieros.", "B. Conformidad con los requisitos del estándar.", "C. Latencia de red.", "D. Competencias del personal TI."], correct: "B" },
+                    { q: "¿Qué tipo de control es un firewall?", options: ["A. Físico.", "B. Técnico.", "C. Organizativo.", "D. De personal."], correct: "B" },
+                    { q: "¿Qué es un incidente de seguridad?", options: ["A. Cualquier actividad rutinaria.", "B. Evento que afecta confidencialidad, integridad o disponibilidad.", "C. Actualización de software.", "D. Tareas de mantenimiento."], correct: "B" },
+                    { q: "¿Qué es un control de seguridad?", options: ["A. Un auditor externo.", "B. Una medida para reducir probabilidad o impacto de riesgos.", "C. Un reporte financiero.", "D. Un protocolo de red."], correct: "B" },
+                    { q: "Ejemplo de marco normativo internacional:", options: ["A. ISO 9001.", "B. ITIL.", "C. RGPD.", "D. ISO/IEC 27001."], correct: "D" },
+                    { q: "Un plan de continuidad de negocio (BCP) debe:", options: ["A. Evitar totalmente interrupciones.", "B. Garantizar operaciones esenciales durante incidentes graves.", "C. Reemplazar sistemas de backup.", "D. Suprimir pruebas de recuperación."], correct: "B" },
+                    { q: "¿Qué objetivos persigue un SGSI?", options: ["A. Confidencialidad, integridad, disponibilidad y mejora continua.", "B. Solo cumplimiento legal.", "C. Aumentar velocidad de red.", "D. Sustituir al departamento TI."], correct: "A" },
+                    { q: "¿Qué es un plan de respuesta a incidentes?", options: ["A. Un documento opcional.", "B. Procedimientos para detectar, contener y erradicar incidentes.", "C. Lista de auditorías financieras.", "D. Configuración de routers."], correct: "B" },
+                    { q: "¿Qué rol suele liderar el SGSI?", options: ["A. Responsable de limpieza.", "B. CISO / Responsable de seguridad.", "C. Técnico de soporte.", "D. Equipo comercial."], correct: "B" },
+                    { q: "¿Qué ciclo utiliza ISO 27001 para la mejora continua?", options: ["A. DMAIC.", "B. SDLC.", "C. PDCA (Plan–Do–Check–Act).", "D. CISSP."], correct: "C" },
+                    { q: "¿Qué es gestión de seguridad de la información?", options: ["A. Implementar únicamente firewalls y antivirus.", "B. Herramientas para hacer copias de seguridad.", "C. Conjunto de políticas, procesos y controles para proteger activos.", "D. Solo vigilancia física."], correct: "C" },
+                    { q: "¿Qué es el RPO?", options: ["A. Punto máximo tolerable de pérdida de datos.", "B. Tiempo total de operación.", "C. Límite de ancho de banda.", "D. Política de contraseñas."], correct: "A" },
+                    { q: "¿Qué se busca con la gestión de incidentes?", options: ["A. Penalizar a empleados.", "B. Minimizar impacto y restaurar operación normal.", "C. Eliminar controles preventivos.", "D. Reducir ancho de banda."], correct: "B" },
+                    { q: "¿Qué tipo de control es una política de contraseñas?", options: ["A. Técnico.", "B. Organizativo.", "C. Físico.", "D. Redundante."], correct: "B" }
+                ]
+            },
+            ud11: {
+                title: "Unidad 11: Protección de Datos (Andorra)",
+                icon: "⚖️",
+                questions: [
+                    { q: "¿Qué implica el principio de proporcionalidad?", options: ["A. Recoger más datos para más precisión.", "B. Tratar solo los datos necesarios según la finalidad.", "C. Compartir datos entre organismos sin límites.", "D. Conservar datos indefinidamente."], correct: "B" },
+                    { q: "¿Cuál es un principio clave del marco andorrano de protección de datos?", options: ["A. Minimización, proporcionalidad y finalidad del tratamiento.", "B. Conservación indefinida de datos.", "C. Transferencia libre sin garantías.", "D. Recogida obligatoria de biometría."], correct: "A" },
+                    { q: "¿Qué derecho posee un ciudadano según la normativa andorrana?", options: ["A. Acceso y rectificación únicamente.", "B. Acceso, rectificación, supresión, oposición y portabilidad.", "C. Solo derecho al olvido.", "D. Derecho a copias ilimitadas de datos sensibles."], correct: "B" },
+                    { q: "¿Qué considera la ley un dato sensible?", options: ["A. Edad y domicilio.", "B. Preferencias de compra.", "C. Origen racial, salud, orientación o religión.", "D. Contratos laborales."], correct: "C" },
+                    { q: "¿Qué obligación debe cumplir un responsable del tratamiento?", options: ["A. Registrar únicamente contraseñas.", "B. Implementar medidas técnicas y organizativas adecuadas.", "C. Publicar todos los datos en formato abierto.", "D. Conservar datos sin límite temporal."], correct: "B" },
+                    { q: "¿Qué exige la ley sobre la conservación de datos?", options: ["A. Conservar indefinidamente.", "B. Conservar mínimo 25 años.", "C. Conservar solo el tiempo necesario según la finalidad.", "D. Conservar datos sensibles sin límites."], correct: "C" },
+                    { q: "¿Qué exige la ley respecto al consentimiento?", options: ["A. Siempre tácito.", "B. Libre, informado y específico.", "C. Permanente.", "D. Irrevocable."], correct: "B" },
+                    { q: "¿Qué derechos fundamentales en materia de privacidad protege la Constitución andorrana?", options: ["A. Voto electrónico obligatorio.", "B. Portabilidad universal.", "C. Solo libertad de expresión digital.", "D. Intimidad, inviolabilidad de comunicaciones y protección de datos."], correct: "D" },
+                    { q: "¿Qué obliga a notificar una brecha de seguridad?", options: ["A. Un contrato interno.", "B. Una auditoría externa.", "C. La normativa de protección de datos.", "D. Una recomendación voluntaria."], correct: "C" },
+                    { q: "¿Qué objetivo persigue la Llei 29/2021?", options: ["A. Comercio electrónico.", "B. Administración electrónica única.", "C. Proteger derechos ciudadanos y regular el tratamiento de datos.", "D. Homologar software público."], correct: "C" },
+                    { q: "¿Qué controla la APDA durante una inspección?", options: ["A. Horarios laborales.", "B. Cumplimiento de medidas de protección de datos.", "C. Estadísticas económicas.", "D. Políticas fiscales."], correct: "B" },
+                    { q: "¿En qué año se aprobó la Constitución del Principado de Andorra?", options: ["A. 2001.", "B. 1984.", "C. 1993.", "D. 1978."], correct: "C" },
+                    { q: "¿Qué debe incluir un registro de actividades de tratamiento?", options: ["A. Contraseñas cifradas.", "B. Detalle de finalidades, categorías y destinatarios.", "C. Claves públicas de todos los usuarios.", "D. Protocolos de red."], correct: "B" },
+                    { q: "¿Qué regula la Llei 20/2014?", options: ["A. Redes sociales.", "B. Firmas electrónicas y servicios de confianza.", "C. Delitos informáticos.", "D. Contratación pública."], correct: "B" },
+                    { q: "Una transferencia internacional de datos desde Andorra requiere:", options: ["A. No informar a la APDA.", "B. Aprobación del Encargado de Gobierno.", "C. Garantías adecuadas y autorización según la ley.", "D. Solo consentimiento tácito."], correct: "C" },
+                    { q: "¿Qué papel tiene el Delegado de Protección de Datos (DPD) en Andorra?", options: ["A. Configurar firewalls.", "B. Supervisar cumplimiento y servir de punto de contacto con la APDA.", "C. Realizar auditorías financieras.", "D. Gestionar redes de telecomunicaciones."], correct: "B" },
+                    { q: "¿Qué entidad supervisa, inspecciona y sanciona incumplimientos?", options: ["A. Ministerio de Interior.", "B. Tribunal Constitucional.", "C. APDA.", "D. Gobierno parroquial."], correct: "C" },
+                    { q: "¿Qué regula el Código Penal andorrano en materia digital?", options: ["A. Solo ciberdelitos de fraude bancario.", "B. Ciberdelitos, acceso ilícito y daños informáticos.", "C. Exclusivamente delitos físicos.", "D. Multas administrativas."], correct: "B" },
+                    { q: "¿Qué norma regula la protección de datos en Andorra?", options: ["A. Ley general de telecomunicaciones.", "B. Código penal.", "C. Llei qualificada de protecció de dades personals.", "D. Ley de comercio electrónico."], correct: "C" },
+                    { q: "¿Qué es la APDA (Agència Andorrana de Protecció de Dades)?", options: ["A. Proveedor de certificación electrónica.", "B. Autoridad que vela por la protección de datos personales.", "C. Agencia de ciberdefensa militar.", "D. Ministerio de telecomunicaciones."], correct: "B" }
+                ]
+            },
+            ud12: {
+                title: "Unidad 12: Normativa Europea (RGPD, NIS2)",
+                icon: "🇪🇺",
+                questions: [
+                    { q: "¿Qué papel tienen las autoridades nacionales de protección de datos?", options: ["A. Emitir sentencias penales.", "B. Supervisar, asesorar y sancionar en materia de protección de datos.", "C. Gestionar redes troncales.", "D. Fijar tipos impositivos."], correct: "B" },
+                    { q: "¿Qué es la Directiva NIS2?", options: ["A. Norma sobre redes sociales.", "B. Directiva de la UE para un nivel común de ciberseguridad en redes y sistemas.", "C. Código penal europeo.", "D. Reglamento de comercio electrónico."], correct: "B" },
+                    { q: "¿Qué reto principal se menciona en la aplicación práctica de estas normas en Europa?", options: ["A. Falta total de marcos legales.", "B. Diferencias en recursos, madurez y capacidad de supervisión entre Estados miembros.", "C. Inexistencia de autoridades nacionales.", "D. Imposibilidad de cooperar entre países."], correct: "B" },
+                    { q: "¿Qué sanciones puede imponer el RGPD por incumplimiento grave?", options: ["A. Advertencias sin multa.", "B. Multas administrativas muy elevadas (hasta un % de la facturación global).", "C. Solo sanciones penales.", "D. Exclusivamente amonestaciones internas."], correct: "B" },
+                    { q: "¿Qué objetivo tiene la armonización legal en la UE en materia de ciberseguridad?", options: ["A. Centralizar toda la ciberseguridad en una sola agencia nacional.", "B. Garantizar un nivel común de protección en todos los Estados miembros.", "C. Sustituir todas las leyes nacionales por un único reglamento.", "D. Limitar la ciberseguridad al sector público."], correct: "B" },
+                    { q: "¿Por qué es importante para una organización conocer tanto RGPD como NIS2?", options: ["A. Porque sustituyen a todas las normas locales.", "B. Porque suelen aplicarse conjuntamente: protección de datos + ciberseguridad de servicios y redes.", "C. Solo para entidades públicas.", "D. Solo para empresas tecnológicas."], correct: "B" },
+                    { q: "¿Qué aspecto es específico de NIS2 frente al RGPD?", options: ["A. Derecho de acceso a datos.", "B. Requisitos de ciberseguridad para operadores esenciales e importantes.", "C. Limitación del tratamiento de datos personales.", "D. Designación de delegados de protección de datos."], correct: "B" },
+                    { q: "¿Qué aspecto refuerza NIS2 respecto a la NIS original?", options: ["A. Reduce obligaciones de notificación.", "B. Amplía sectores afectados y endurece requisitos de gestión de riesgos.", "C. Elimina la necesidad de CSIRTs nacionales.", "D. Limita la cooperación entre Estados."], correct: "B" },
+                    { q: "¿Qué tipo de medidas exige NIS2 a los operadores?", options: ["A. Solo uso de antivirus.", "B. Medidas técnicas, organizativas y de gestión del riesgo proporcionadas al impacto.", "C. Únicamente cifrado de disco.", "D. Solo controles físicos."], correct: "B" },
+                    { q: "¿Qué se entiende por 'accountability' en el RGPD?", options: ["A. Delegar toda la seguridad en terceros.", "B. Responsabilidad activa de demostrar cumplimiento.", "C. Igualar todas las sanciones.", "D. Garantizar anonimato absoluto."], correct: "B" },
+                    { q: "¿Qué diferencia hay entre un reglamento y una directiva de la UE?", options: ["A. Ninguna, se aplican igual.", "B. El reglamento es directamente aplicable; la directiva requiere transposición nacional.", "C. La directiva prevalece siempre sobre el reglamento.", "D. El reglamento solo es orientativo."], correct: "B" },
+                    { q: "¿Qué papel juegan los CSIRTs nacionales en el marco NIS2?", options: ["A. Gestionan únicamente redes sociales.", "B. Coordinan respuesta a incidentes y apoyo técnico a operadores.", "C. Sustituyen a las autoridades de datos.", "D. Solo emiten notas de prensa."], correct: "B" },
+                    { q: "¿Qué es el RGPD?", options: ["A. Una directiva europea sobre ciberdelincuencia.", "B. El Reglamento General de Protección de Datos de la UE.", "C. Una ley española de protección de datos.", "D. Un estándar ISO."], correct: "B" },
+                    { q: "¿Qué aspecto es específico del RGPD frente a NIS2?", options: ["A. Protección de infraestructuras críticas.", "B. Protección de datos personales y derechos de los interesados.", "C. Obligaciones de notificación de incidentes a CSIRTs.", "D. Clasificación de operadores esenciales."], correct: "B" },
+                    { q: "¿Qué papel tiene Europol EC3?", options: ["A. Vigilar cumplimiento del RGPD.", "B. Coordinar investigaciones de ciberdelincuencia en Europa.", "C. Emitir reglamentos de la UE.", "D. Aprobar sanciones administrativas."], correct: "B" },
+                    { q: "¿Qué enfoque común promueven RGPD y NIS2 en las organizaciones?", options: ["A. Seguridad puramente reactiva.", "B. Gestión de riesgos, responsabilidad proactiva y documentación.", "C. Externalización total de la seguridad.", "D. Eliminación de controles internos."], correct: "B" },
+                    { q: "¿Qué es el EDPB (European Data Protection Board)?", options: ["A. Comité que agrupa autoridades de protección de datos de la UE.", "B. Agencia de ciberdefensa militar.", "C. Tribunal europeo de justicia.", "D. Organización privada."], correct: "A" },
+                    { q: "¿Qué mecanismo permite transferir datos personales fuera del EEE bajo RGPD?", options: ["A. Falta de regulación.", "B. Decisiones de adecuación o garantías adecuadas (cláusulas tipo, etc.).", "C. Aprobación informal por correo.", "D. Consentimiento tácito siempre suficiente."], correct: "B" },
+                    { q: "¿Qué derechos otorga el RGPD a los ciudadanos?", options: ["A. Multar directamente a las empresas.", "B. Acceso, rectificación, supresión, portabilidad, oposición y limitación.", "C. Solo acceso y rectificación.", "D. Únicamente el 'derecho al olvido'."], correct: "B" },
+                    { q: "¿Qué organismo europeo coordina ciberseguridad y apoyo a los Estados miembros?", options: ["A. INTERPOL.", "B. ENISA.", "C. Europol EC3.", "D. EDPB."], correct: "B" }
+                ]
+            }
+        };
+
+        // ==========================================
+        // FUNCIONES CORE
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function loadTest(unitId) {
+            const data = testsData[unitId];
+            if (!data) return;
+
+            // Mostrar estado cargando
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('testHeader').classList.remove('hidden');
+            document.getElementById('testContainer').classList.remove('hidden');
+            document.getElementById('totalQuestions').innerText = data.questions.length;
+
+            // Actualizar botones de selección
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('border-red-500', 'bg-slate-800');
+                btn.classList.add('border-transparent');
+            });
+            document.getElementById('btn-' + unitId).classList.remove('border-transparent');
+            document.getElementById('btn-' + unitId).classList.add('border-red-500', 'bg-slate-800');
+
+            // Actualizar título header
+            document.querySelector('#testHeader h1').innerHTML = `Test: ${data.title}`;
+
+            // Generar preguntas dinámicamente
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+            document.getElementById('quizResultText').classList.add('hidden');
+
+            data.questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question fade-in';
+                questionDiv.setAttribute('data-correct', question.correct);
+                questionDiv.style.animationDelay = `${index * 0.05}s`;
+
+                let html = `
+                    <h4 class="font-bold text-slate-800 mb-3">${index + 1}. ${question.q}</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                `;
+
+                question.options.forEach(option => {
+                    const letter = option.split('.')[0];
+                    html += `
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50 transition">
+                            <input type="radio" name="q${index + 1}" value="${letter}" class="w-4 h-4 text-red-600">
+                            <span>${option}</span>
+                        </label>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                `;
+
+                questionDiv.innerHTML = html;
+                form.appendChild(questionDiv);
+            });
+
+            // Scroll al inicio
+            setTimeout(() => {
+                document.getElementById('mainContent').scrollTop = 0;
+            }, 100);
+        }
+
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estados previos
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        // Inicialización
+        window.addEventListener('load', () => {
+            console.log('🛡️ Banco de Tests Ciberseguridad UD7-UD12 cargado correctamente');
+        });
+    </script>
+</body>
+</html>
