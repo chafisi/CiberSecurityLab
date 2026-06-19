@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Tests - Ciberseguridad (UD1-UD6)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { dark: '#0f172a', mid: '#1e293b', light: '#334155', accent: '#06b6d4', success: '#22c55e', danger: '#ef4444', red: '#dc2626' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 50; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Sec<span class="text-red-500">urity</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Banco Exámenes UD1-UD6</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1 px-2">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Selectar Unidad</li>
+                
+                <li>
+                    <button onclick="loadTest('ud1')" id="btn-ud1" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🛡️</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 1</div>
+                            <div class="text-xs text-slate-500">Intro Seguridad Info.</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud2')" id="btn-ud2" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🔐</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 2</div>
+                            <div class="text-xs text-slate-500">Criptografía Básica</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud3')" id="btn-ud3" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🔑</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 3</div>
+                            <div class="text-xs text-slate-500">Cifrado Práctico</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud4')" id="btn-ud4" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🚧</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 4</div>
+                            <div class="text-xs text-slate-500">Cortafuegos</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud5')" id="btn-ud5" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🕵️</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 5</div>
+                            <div class="text-xs text-slate-500">Detección Intrusos</div>
+                        </div>
+                    </button>
+                </li>
+                
+                <li>
+                    <button onclick="loadTest('ud6')" id="btn-ud6" class="unit-btn w-full text-left px-4 py-3 rounded-lg hover:bg-slate-800 transition border-l-4 border-transparent flex items-center gap-3">
+                        <span class="text-2xl">🌐</span>
+                        <div>
+                            <div class="font-bold text-white">Unidad 6</div>
+                            <div class="text-xs text-slate-500">Segur. Capas Red</div>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-500 text-center">
+            © 2026 | Ciberseguridad Master Test
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- HEADER UNIDAD -->
+        <div class="max-w-6xl mx-auto mb-8 fade-in" id="testHeader">
+            <h1 class="text-4xl font-black text-slate-800 mb-2">Selecciona una unidad para comenzar</h1>
+            <p class="text-slate-600 text-lg">Evaluación con 20 preguntas tipo test. Se considera superado si ≥80% de aciertos.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Preguntas Totales</div>
+                    <div class="text-2xl font-black text-red-600" id="totalQuestions">-</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Nota Mínima</div>
+                    <div class="text-2xl font-black text-green-600">80%</div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Recomendado</div>
+                    <div class="text-2xl font-black text-yellow-600">15-25 min</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEST CONTAINER -->
+        <div id="testContainer" class="max-w-6xl mx-auto hidden fade-in">
+            <form id="quizForm" class="space-y-6">
+                <!-- Las preguntas se cargarán dinámicamente aquí -->
+            </form>
+
+            <!-- BOTONES DE CONTROL -->
+            <div class="sticky bottom-4 bg-slate-900 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                <div class="flex w-full md:w-auto gap-4">
+                    <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                    <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ESTADO INICIAL -->
+        <div id="emptyState" class="max-w-6xl mx-auto text-center py-20 fade-in">
+            <div class="text-8xl mb-6">🛡️</div>
+            <h2 class="text-2xl font-bold text-slate-700 mb-4">Esperando selección de unidad</h2>
+            <p class="text-slate-500 max-w-md mx-auto">Haz clic en una unidad del menú lateral izquierdo para cargar las 20 preguntas correspondientes.</p>
+        </div>
+
+    </main>
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-red-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE PREGUNTAS (UNIDADES 1-3)
+        // ==========================================
+        const testsData = {
+            ud1: {
+                title: "Unidad 1: Introducción a la Seguridad Informática",
+                icon: "🛡️",
+                questions: [
+                    { q: "Un principio clave de Zero Trust es:", options: ["A. Confiar en todo el tráfico interno.", "B. Confiar en dispositivos si están dentro del perímetro físico.", "C. No confiar por defecto y verificar continuamente.", "D. Solo cifrar el tráfico externo."], correct: "C" },
+                    { q: "¿Cuál es la mejor definición de amenaza?", options: ["A. Debilidad explotable del sistema.", "B. Medida de mitigación para reducir el riesgo.", "C. Cualquier circunstancia con potencial de causar daño a un activo.", "D. Probabilidad de que ocurra un evento adverso."], correct: "C" },
+                    { q: "Una VPN bien configurada debe:", options: ["A. Deshabilitar MFA para comodidad.", "B. Cifrar el tráfico y verificar identidad de usuario/dispositivo.", "C. Permitir accesos anónimos.", "D. Desactivar registros para privacidad."], correct: "B" },
+                    { q: "¿Cuál no es un agente de amenaza típico?", options: ["A. Empleado descontento.", "B. Delincuencia organizada.", "C. Proveedor externo.", "D. Usuario legítimo sin acceso ni privilegios."], correct: "D" },
+                    { q: "¿Qué se entiende por activo en seguridad de la información?", options: ["A. Un atacante con motivación económica.", "B. Un recurso de valor para la organización (datos, sistemas, reputación).", "C. Una debilidad que puede ser explotada.", "D. Un evento que interrumpe la disponibilidad."], correct: "B" },
+                    { q: "La valoración de riesgos combina:", options: ["A. Confidencialidad y disponibilidad.", "B. Probabilidad e impacto.", "C. Amenazas y controles.", "D. Coste y rendimiento."], correct: "B" },
+                    { q: "El modelo Biba prioriza:", options: ["A. Confidencialidad.", "B. Disponibilidad.", "C. Integridad.", "D. Trazabilidad."], correct: "C" },
+                    { q: "La defensa en profundidad se basa en:", options: ["A. Un único control muy robusto.", "B. Varias capas complementarias de controles.", "C. Evitar el uso de cifrado.", "D. Delegar toda la seguridad en el proveedor de Internet."], correct: "B" },
+                    { q: "¿Cuál de los siguientes principios complementarios favorece la responsabilidad del usuario?", options: ["A. Disponibilidad.", "B. Autenticidad.", "C. Redundancia.", "D. Ofuscación."], correct: "B" },
+                    { q: "¿Qué técnica se asocia principalmente a integridad?", options: ["A. Cifrado simétrico.", "B. Funciones hash y firmas digitales.", "C. Balanceadores de carga.", "D. Sistemas de refrigeración redundante."], correct: "B" },
+                    { q: "Un objetivo del SIEM es:", options: ["A. Fragmentar los registros en múltiples formatos incompatibles.", "B. Correlacionar eventos y alertas para detectar incidentes.", "C. Desactivar los logs para ahorrar espacio.", "D. Sustituir todos los demás controles de seguridad."], correct: "B" },
+                    { q: "Un rasgo distintivo de las APT es:", options: ["A. Ataques muy ruidosos y breves.", "B. Campañas de corto plazo sin objetivos definidos.", "C. Permanencia prolongada y sigilosa en el sistema comprometido.", "D. Exclusivamente ataques físicos."], correct: "C" },
+                    { q: "¿Qué propiedad garantiza la confidencialidad?", options: ["A. Que los datos estén completos.", "B. Que los datos estén disponibles cuando se necesiten.", "C. Que solo accedan sujetos autorizados.", "D. Que exista registro de todas las acciones."], correct: "C" },
+                    { q: "La matriz de riesgos sirve para:", options: ["A. Calcular el número exacto de incidentes.", "B. Clasificar y priorizar los riesgos según su nivel.", "C. Sustituir la necesidad de controles.", "D. Auditar redes perimetrales."], correct: "B" },
+                    { q: "La segmentación de redes busca:", options: ["A. Aumentar la superficie de ataque.", "B. Separar y aislar segmentos para limitar el impacto de incidentes.", "C. Eliminar la necesidad de firewalls.", "D. Exponer todos los servicios a Internet."], correct: "B" },
+                    { q: "Mitigar un riesgo implica:", options: ["A. Aceptarlo sin cambios.", "B. Transferirlo siempre a un tercero.", "C. Implementar controles para reducir probabilidad y/o impacto.", "D. Ignorarlo si es de baja probabilidad."], correct: "C" },
+                    { q: "¿Cuál de los siguientes es un control organizativo en seguridad?", options: ["A. Firewall perimetral.", "B. Política de contraseñas y formación del personal.", "C. Cerradura biométrica.", "D. Sistema EDR."], correct: "B" },
+                    { q: "El hardening consiste en:", options: ["A. Añadir servicios por defecto.", "B. Deshabilitar servicios innecesarios y endurecer configuraciones.", "C. Quitar el cifrado de disco.", "D. Evitar la segmentación de redes."], correct: "B" },
+                    { q: "La superficie de ataque incluye:", options: ["A. Únicamente los puertos físicos del servidor.", "B. Todos los puntos de interacción que pueden ser explotados.", "C. Solo las vulnerabilidades conocidas.", "D. Exclusivamente los servicios expuestos a Internet."], correct: "B" },
+                    { q: "Un control detectivo es:", options: ["A. Autenticación multifactor.", "B. Sistema IDS/SIEM.", "C. Plan de recuperación.", "D. Mensajes de advertencia legal."], correct: "B" }
+                ]
+            },
+            ud2: {
+                title: "Unidad 2: Criptografía y Seguridad",
+                icon: "🔐",
+                questions: [
+                    { q: "¿Qué función tiene un hash criptográfico?", options: ["A. Cifrar mensajes confidenciales.", "B. Generar un resumen único y no reversible del mensaje.", "C. Aumentar la disponibilidad del sistema.", "D. Mejorar la velocidad de transmisión."], correct: "B" },
+                    { q: "¿Qué mecanismo garantiza autenticación y cifrado simultáneamente?", options: ["A. Hash simple.", "B. ECB.", "C. AEAD (Authenticated Encryption with Associated Data).", "D. ROT13."], correct: "C" },
+                    { q: "Un ataque 'man-in-the-middle' busca:", options: ["A. Romper hashes criptográficos.", "B. Interceptar y modificar comunicaciones sin ser detectado.", "C. Eliminar claves de los certificados digitales.", "D. Reducir la latencia de red."], correct: "B" },
+                    { q: "¿Qué es la entropía en criptografía?", options: ["A. Un tipo de clave simétrica.", "B. Medida del nivel de aleatoriedad.", "C. Un algoritmo de compresión.", "D. Una firma digital."], correct: "B" },
+                    { q: "El cifrado de flujo se caracteriza por:", options: ["A. Procesar bloques de datos fijos.", "B. Cifrar bit a bit o byte a byte.", "C. Requerir claves públicas.", "D. No usar inicialización."], correct: "B" },
+                    { q: "¿Qué objetivos persigue la criptografía?", options: ["A. Reducir el tamaño de los datos para mejorar el almacenamiento.", "B. Confidencialidad, integridad, autenticación y no repudio.", "C. Aumentar la velocidad de transmisión en redes.", "D. Garantizar únicamente la disponibilidad de los sistemas."], correct: "B" },
+                    { q: "¿Qué función cumple el intercambio de claves Diffie–Hellman?", options: ["A. Cifrar mensajes largos.", "B. Permitir a dos partes acordar una clave secreta en canal inseguro.", "C. Validar certificados TLS.", "D. Firmar digitalmente documentos."], correct: "B" },
+                    { q: "En un sistema RSA, ¿qué clave se utiliza para verificar una firma digital?", options: ["A. Clave privada del firmante.", "B. Clave pública del firmante.", "C. Clave simétrica compartida.", "D. Una clave derivada del hash."], correct: "B" },
+                    { q: "¿Qué algoritmo es un estándar moderno de cifrado simétrico?", options: ["A. DES.", "B. AES.", "C. César.", "D. XOR básico."], correct: "B" },
+                    { q: "¿Qué caracteriza al cifrado simétrico?", options: ["A. Usa una clave pública para cifrar y una privada para descifrar.", "B. Emplea la misma clave para cifrar y descifrar.", "C. Solo se usa para firmas digitales.", "D. No requiere gestión de claves."], correct: "B" },
+                    { q: "¿Cuál es la principal ventaja del cifrado asimétrico?", options: ["A. Es más rápido que el simétrico.", "B. Permite intercambio seguro de claves sin canal confiable.", "C. Evita totalmente ataques MITM.", "D. No requiere autenticación."], correct: "B" },
+                    { q: "¿Qué garantiza una firma digital?", options: ["A. Exclusivamente confidencialidad.", "B. Autenticidad e integridad del mensaje.", "C. Ocultación total del contenido.", "D. Eliminación de metadatos."], correct: "B" },
+                    { q: "¿Qué es el 'nonce' en criptografía?", options: ["A. Un identificador del usuario.", "B. Un número aleatorio usado una sola vez.", "C. Una clave simétrica pública.", "D. Un algoritmo de integridad."], correct: "B" },
+                    { q: "El modo ECB no se recomienda porque:", options: ["A. Es demasiado lento.", "B. No usa clave.", "C. Revela patrones del texto plano.", "D. No admite padding."], correct: "C" },
+                    { q: "¿Qué es el ataque de 'fuerza bruta'?", options: ["A. Insertar malware en un sistema.", "B. Probar todas las combinaciones posibles hasta encontrar la clave.", "C. Interceptar físicamente el dispositivo.", "D. Suspender el sistema con peticiones masivas."], correct: "B" },
+                    { q: "La autenticación multifactor (MFA) requiere:", options: ["A. Una sola contraseña fuerte.", "B. Dos o más factores independientes.", "C. Un certificado caducado.", "D. Dirección IP estática."], correct: "B" },
+                    { q: "¿Qué es una Autoridad Certificadora (CA)?", options: ["A. Un sistema que genera hashes de seguridad.", "B. Una entidad que emite y valida certificados digitales.", "C. Un firewall orientado a aplicaciones.", "D. Un sistema para anonimizar redes."], correct: "B" },
+                    { q: "¿Qué papel cumple el certificado digital?", options: ["A. Guardar contraseñas de usuarios.", "B. Vincular una clave pública con una identidad verificada.", "C. Sustituir la autenticación multifactor.", "D. Cifrar bases de datos completas."], correct: "B" },
+                    { q: "¿Qué vulnerabilidad aprovecha un ataque de diccionario?", options: ["A. Fallos de hardware.", "B. Contraseñas débiles o comunes.", "C. Algoritmos hash reversibles.", "D. Saturación de puertos abiertos."], correct: "B" },
+                    { q: "¿Qué propiedad debe cumplir una función hash segura?", options: ["A. Ser reversible.", "B. Ser vulnerable a colisiones.", "C. Ser resistente a colisiones.", "D. Ser dependiente del sistema operativo."], correct: "C" }
+                ]
+            },
+            ud3: {
+                title: "Unidad 3: Cifrado y Autenticación en la Práctica",
+                icon: "🔑",
+                questions: [
+                    { q: "¿Qué es un certificado digital?", options: ["A. Un archivo que contiene contraseñas.", "B. Un documento que vincula una clave pública con una identidad.", "C. Un hash del sistema operativo.", "D. Un protocolo de red."], correct: "B" },
+                    { q: "¿Qué es una firma digital?", options: ["A. Un cifrado reversible.", "B. Un mecanismo para verificar autenticidad e integridad.", "C. Un método para comprimir datos.", "D. Una copia de seguridad."], correct: "B" },
+                    { q: "¿Qué técnica permite acordar una clave secreta en un canal inseguro?", options: ["A. RSA directo.", "B. Diffie–Hellman.", "C. AES-GCM.", "D. HMAC."], correct: "B" },
+                    { q: "¿Qué representa la clave pública?", options: ["A. Una clave secreta compartida.", "B. Un dato que puede distribuirse sin comprometer seguridad.", "C. Una contraseña cifrada.", "D. Un hash no reversible."], correct: "B" },
+                    { q: "¿Qué función tiene el IV (vector de inicialización)?", options: ["A. Reemplazar la clave.", "B. Aportar aleatoriedad inicial a un cifrado.", "C. Actuar como sala de servidores.", "D. Comprimir el texto cifrado."], correct: "B" },
+                    { q: "¿Qué papel cumple un hash en una firma digital?", options: ["A. Aumenta la disponibilidad.", "B. Produce un resumen único del mensaje.", "C. Descifra claves públicas.", "D. Actúa como certificado."], correct: "B" },
+                    { q: "¿Qué es autenticación mutua?", options: ["A. El usuario verifica al servidor.", "B. Ambas partes verifican su identidad entre sí.", "C. El servidor verifica a un tercero.", "D. Ninguna entidad se autentica."], correct: "B" },
+                    { q: "¿Qué aporta el uso de HMAC?", options: ["A. Cifrado del contenido.", "B. Integridad autenticada del mensaje.", "C. Reducción de tamaño de los datos.", "D. Reemplazo del cifrado simétrico."], correct: "B" },
+                    { q: "¿Qué son el texto en claro y el texto cifrado?", options: ["A. Texto en claro es un archivo comprimido; texto cifrado es su versión expandida.", "B. Texto en claro es el mensaje original; texto cifrado es el mensaje transformado.", "C. Son sinónimos.", "D. Texto cifrado se refiere solo a datos comprimidos."], correct: "B" },
+                    { q: "¿Qué garantiza la autenticación?", options: ["A. Que los datos no se pierdan.", "B. Verificar la identidad de usuarios o sistemas.", "C. Cifrar todos los datos automáticamente.", "D. Rechazar conexiones desde cualquier red."], correct: "B" },
+                    { q: "¿Qué caracteriza al cifrado asimétrico?", options: ["A. Usar solo una clave.", "B. Utilizar un par de claves pública/privada.", "C. Funcionar sin autenticación.", "D. Depender de contraseñas débiles."], correct: "B" },
+                    { q: "¿Qué diferencia hay entre cifrado simétrico y asimétrico?", options: ["A. El simétrico utiliza una sola clave; el asimétrico usa un par público/privado.", "B. El asimétrico es más rápido y consume menos recursos que el simétrico.", "C. Ambos emplean únicamente claves públicas.", "D. El simétrico usa certificados digitales emitidos por una CA."], correct: "A" },
+                    { q: "¿Qué es el 'salting'?", options: ["A. Reforzar contraseñas añadiendo datos aleatorios.", "B. Repetir una clave hasta formar un hash.", "C. Ocultar archivos del sistema.", "D. Separar claves privadas del sistema operativo."], correct: "A" },
+                    { q: "¿Qué es una CA (Autoridad Certificadora)?", options: ["A. Un sistema de cifrado de archivos.", "B. Una entidad que emite certificados digitales.", "C. Un protocolo de intercambio de claves.", "D. Un servidor de autenticación interna."], correct: "B" },
+                    { q: "Ejemplo de algoritmo simétrico.", options: ["A. AES.", "B. RSA.", "C. Diffie–Hellman.", "D. ECC."], correct: "A" },
+                    { q: "¿Qué es un modo de operación en cifrado?", options: ["A. Una forma de encadenar bloques en cifrado simétrico (CBC, GCM, etc.).", "B. Un método de firma digital.", "C. Un protocolo de autenticación.", "D. Un sistema de compresión."], correct: "A" },
+                    { q: "¿Por qué no se debe usar ECB?", options: ["A. Produce hash débiles.", "B. Revela patrones del texto original.", "C. No funciona con claves largas.", "D. Impide la autenticación."], correct: "B" },
+                    { q: "¿Qué característica debe tener un hash seguro?", options: ["A. Ser reversible.", "B. Ser resistente a colisiones.", "C. Depender del usuario.", "D. No necesitar aleatoriedad."], correct: "B" },
+                    { q: "¿Qué es 2FA/MFA?", options: ["A. Un método de compresión.", "B. Autenticación con múltiples factores.", "C. Un tipo de firewall.", "D. Un algoritmo hash."], correct: "B" },
+                    { q: "¿Cuál es la finalidad del cifrado?", options: ["A. Garantizar confidencialidad del mensaje.", "B. Convertir datos en hashes.", "C. Comprimir el mensaje.", "D. Firmar documentos."], correct: "A" }
+                ]
+            }
+        };
+
+        // Continuación en la PARTE 2 con UD4-UD6 y funciones JS
+                    ud4: {
+                title: "Unidad 4: Sistemas Cortafuegos",
+                icon: "🚧",
+                questions: [
+                    { q: "¿Qué caracteriza a un firewall de filtrado estático?", options: ["A. Analiza contenido completo del paquete.", "B. Evalúa solo cabeceras según reglas predefinidas.", "C. Realiza inspección profunda de aplicaciones.", "D. Reescribe tráfico cifrado."], correct: "B" },
+                    { q: "¿Cuál es un ejemplo de política débil en un firewall?", options: ["A. Permitir solo puertos requeridos.", "B. Abrir puertos innecesarios.", "C. Utilizar listas blancas.", "D. Registrar eventos críticos."], correct: "B" },
+                    { q: "¿Qué tipo de tráfico debe permitirse siempre con cautela?", options: ["A. Saliente HTTP.", "B. Entrante desde Internet hacia la LAN.", "C. DNS interno.", "D. Tráfico interno entre VLANs seguras."], correct: "B" },
+                    { q: "¿Qué es un firewall basado en proxy?", options: ["A. Un repetidor de señal.", "B. Un intermediario que inspecciona tráfico a nivel aplicación.", "C. Un dispositivo que solo analiza cabeceras.", "D. Un servidor de logs."], correct: "B" },
+                    { q: "¿Qué hace un firewall de próxima generación (NGFW)?", options: ["A. Se limita a bloquear puertos.", "B. Añade inspección de aplicaciones, IPS y control de usuarios.", "C. Solo funciona en capa física.", "D. Es exclusivo para IoT."], correct: "B" },
+                    { q: "Una ventaja del filtrado por MAC es:", options: ["A. Alta seguridad criptográfica.", "B. Permite controlar acceso por dispositivos físicos.", "C. Controla tráfico a nivel aplicación.", "D. Funciona únicamente en redes IPv6."], correct: "B" },
+                    { q: "¿Qué es NAT en un firewall?", options: ["A. Un método de cifrado simétrico.", "B. Traducción de direcciones internas a externas.", "C. Un protocolo de autenticación.", "D. Un IDS embebido."], correct: "B" },
+                    { q: "¿Qué es un cortafuegos y cuál es su propósito principal?", options: ["A. Dispositivo o software que controla el tráfico de red según reglas de seguridad.", "B. Mecanismo de balanceo de carga.", "C. Sistema de copias de seguridad.", "D. Herramienta de auditoría de aplicaciones."], correct: "A" },
+                    { q: "Diferencie cortafuegos de red y de host.", options: ["A. El de red protege múltiples sistemas; el de host protege un dispositivo individual.", "B. Ambos solo protegen aplicaciones web.", "C. El de host inspecciona solo tráfico saliente.", "D. El de red requiere modo proxy siempre."], correct: "A" },
+                    { q: "La inspección con estado (stateful) permite:", options: ["A. Registrar únicamente paquetes UDP.", "B. Mantener información de conexiones activas.", "C. Deshabilitar NAT.", "D. Ignorar tráfico fragmentado."], correct: "B" },
+                    { q: "¿Cuál es un riesgo de permitir 'Any–Any'?", options: ["A. Optimiza el rendimiento.", "B. Abre toda la superficie de ataque.", "C. Facilita auditorías.", "D. Requiere menos memoria."], correct: "B" },
+                    { q: "¿Qué debe revisarse periódicamente en un firewall?", options: ["A. Únicamente el consumo eléctrico.", "B. Reglas, registros y actualizaciones.", "C. Estado de la pintura del chasis.", "D. El número de cables conectados."], correct: "B" },
+                    { q: "¿Qué firewall trabaja en capa 7?", options: ["A. Filtrado estático.", "B. Cortafuegos de aplicación (WAF).", "C. NAT clásico.", "D. Filtrado MAC."], correct: "B" },
+                    { q: "¿Qué permite un firewall con IDS/IPS integrado?", options: ["A. Cifrado extremo a extremo.", "B. Detección y bloqueo de ataques en tiempo real.", "C. Balancear servidores.", "D. Garantizar redundancia física."], correct: "B" },
+                    { q: "¿Cuál es un indicador de mala configuración?", options: ["A. Reglas precisas y minimalistas.", "B. Gran cantidad de reglas redundantes o contradictorias.", "C. Uso de listas negras y blancas.", "D. Segmentación adecuada."], correct: "B" },
+                    { q: "¿Qué implica el principio 'deny by default'?", options: ["A. Permitir todo salvo reglas específicas.", "B. Bloquear todo y permitir solo lo explícitamente autorizado.", "C. Ignorar tráfico saliente.", "D. Forzar uso de VLANs."], correct: "B" },
+                    { q: "¿Cuál es la función principal de un firewall perimetral?", options: ["A. Aumentar la velocidad de navegación.", "B. Proteger la frontera entre redes internas y externas.", "C. Reemplazar políticas de seguridad.", "D. Sustituir la autenticación de usuarios."], correct: "B" },
+                    { q: "¿Cuál es el objetivo del 'port forwarding'?", options: ["A. Ocultar puertos internos sin exponer servicios.", "B. Redirigir tráfico externo hacia un servicio interno específico.", "C. Deshabilitar UPnP.", "D. Crear túneles VPN."], correct: "B" },
+                    { q: "¿Qué es una DMZ?", options: ["A. Una red interna sin seguridad.", "B. Zona aislada donde se colocan servicios expuestos al exterior.", "C. Red de respaldo para bases de datos.", "D. Un túnel VPN."], correct: "B" },
+                    { q: "¿Para qué se usa un firewall personal?", options: ["A. Proteger un solo equipo contra accesos no autorizados.", "B. Gestionar VLANs.", "C. Monitorear routers en la nube.", "D. Filtrar tráfico entre sedes corporativas."], correct: "A" }
+                ]
+            },
+            ud5: {
+                title: "Unidad 5: Sistemas para la Detección de Intrusos",
+                icon: "🕵️",
+                questions: [
+                    { q: "¿Qué es un IDS?", options: ["A. Un firewall perimetral avanzado.", "B. Un sistema que detecta actividades sospechosas en la red o en el host.", "C. Un protocolo de autenticación.", "D. Un analizador de logs sin alertas."], correct: "B" },
+                    { q: "¿Cuál es una función clave del SIEM?", options: ["A. Cifrar comunicaciones.", "B. Correlacionar eventos de múltiples sistemas.", "C. Realizar copias de seguridad.", "D. Configurar VLANs."], correct: "B" },
+                    { q: "¿Dónde se instala un IDS de red (NIDS)?", options: ["A. En cada dispositivo final.", "B. En un punto estratégico de la red para analizar tráfico.", "C. En un servidor aislado sin conexión.", "D. En un firewall personal."], correct: "B" },
+                    { q: "Zeek (antes Bro) se caracteriza por:", options: ["A. Ser exclusivamente un proxy.", "B. Hacer análisis profundo y contextual de tráfico.", "C. Ser un firewall tradicional.", "D. No generar logs."], correct: "B" },
+                    { q: "¿Qué caracteriza a un IDS de host (HIDS)?", options: ["A. Analiza solo tráfico de Internet.", "B. Monitorea actividad interna del sistema, archivos y logs.", "C. Requiere VLANs dedicadas.", "D. No detecta cambios en archivos críticos."], correct: "B" },
+                    { q: "¿Cuál es la ventaja de un IDS basado en anomalías?", options: ["A. Requiere reglas de ataque conocidas.", "B. Detecta desviaciones respecto al comportamiento normal.", "C. Funciona sin aprendizaje previo.", "D. Solo supervisa tráfico HTTP."], correct: "B" },
+                    { q: "¿Qué es un honeypot?", options: ["A. Un servidor oculto para auditorías.", "B. Un sistema diseñado para atraer y estudiar atacantes.", "C. Un firewall de aplicación.", "D. Un IDS basado en firmas."], correct: "B" },
+                    { q: "¿Qué es un falso positivo en un IDS?", options: ["A. Un ataque real que no se detecta.", "B. Un ataque bloqueado correctamente.", "C. Una alerta errónea sobre tráfico legítimo.", "D. Un registro eliminado."], correct: "C" },
+                    { q: "¿Qué es SPAN/port mirroring?", options: ["A. Tecnología para ocultar dispositivos.", "B. Técnica para duplicar tráfico hacia un IDS.", "C. Método de cifrado TLS.", "D. Protocolo de autenticación."], correct: "B" },
+                    { q: "¿Qué ventaja aporta un honeynet frente a un honeypot?", options: ["A. Requiere menos recursos.", "B. Simula múltiples sistemas y escenarios de ataque.", "C. No necesita monitoreo.", "D. Funciona sin red."], correct: "B" },
+                    { q: "¿Qué analiza un IDS basado en firmas?", options: ["A. Patrones conocidos de ataques.", "B. Comportamientos anómalos desconocidos.", "C. Solo tráfico cifrado.", "D. Parámetros de hardware."], correct: "A" },
+                    { q: "¿Qué es un IDS híbrido?", options: ["A. Un HIDS instalado dentro de un NIDS.", "B. Combina análisis por firmas y por anomalías.", "C. Solo detecta ataques físicos.", "D. Exclusivo para IoT."], correct: "B" },
+                    { q: "¿Qué hace Suricata?", options: ["A. Es un antivirus corporativo.", "B. IDS/IPS de alto rendimiento multinúcleo.", "C. Gestor de contraseñas.", "D. Sistema de copias de seguridad."], correct: "B" },
+                    { q: "¿Qué es un falso negativo?", options: ["A. Una alerta excesiva.", "B. Un ataque real que el IDS no detecta.", "C. Un fallo del firewall.", "D. Un error en el cifrado."], correct: "B" },
+                    { q: "¿Qué diferencia a un IDS de un IPS?", options: ["A. El IDS bloquea automáticamente ataques, el IPS solo alerta.", "B. El IDS analiza tráfico; el IPS únicamente lo cifra.", "C. El IDS alerta; el IPS puede bloquear en tiempo real.", "D. Ambos funcionan únicamente en capa física."], correct: "C" },
+                    { q: "¿Cuál es un límite habitual de un IDS tradicional?", options: ["A. Detecta demasiado rápido.", "B. No puede bloquear tráfico por sí mismo.", "C. No genera logs.", "D. Requiere redes 10Gbps."], correct: "B" },
+                    { q: "Ejemplo típico de IDS de host.", options: ["A. Suricata.", "B. OSSEC.", "C. HAProxy.", "D. Bro/Zeek."], correct: "B" },
+                    { q: "¿Qué es un análisis de comportamiento (UBA/UEBA)?", options: ["A. Identifica ataques comparando solo IPs.", "B. Analiza patrones de usuario y detecta anomalías.", "C. Verifica integridad de hashes.", "D. Cifra logs en tiempo real."], correct: "B" },
+                    { q: "Ejemplo típico de IDS de red.", options: ["A. OSSEC.", "B. Snort.", "C. ClamAV.", "D. Wireshark."], correct: "B" },
+                    { q: "¿Qué técnica ayuda a reducir falsos positivos?", options: ["A. Eliminar alertas bajas.", "B. Ajustar reglas y normalizar tráfico.", "C. Desactivar firmas.", "D. Permitir Any–Any."], correct: "B" }
+                ]
+            },
+            ud6: {
+                title: "Unidad 6: Seguridad en las Capas de Comunicación",
+                icon: "🌐",
+                questions: [
+                    { q: "¿Qué modelo se utiliza para estructurar las capas de comunicación y analizar su seguridad?", options: ["A. Modelo DARPA.", "B. Modelo OSI de 7 capas.", "C. Modelo TCP/UDP híbrido.", "D. Modelo IEEE 802.11."], correct: "B" },
+                    { q: "La seguridad en la capa física se centra en:", options: ["A. Cifrado extremo a extremo.", "B. Protección contra interferencias, sabotaje físico y acceso no autorizado.", "C. Filtrado de puertos TCP.", "D. Protección de cookies."], correct: "B" },
+                    { q: "¿Cuál es la función de TLS?", options: ["A. Proteger bases de datos.", "B. Asegurar comunicaciones mediante cifrado y autenticación en tránsito.", "C. Generar hashes.", "D. Firmar digitalmente certificados."], correct: "B" },
+                    { q: "Una amenaza típica en la capa de enlace es:", options: ["A. Ataques de fuerza bruta.", "B. ATAQUES ARP SPOOFING/POISONING.", "C. DNS hijacking.", "D. Inyecciones SQL."], correct: "B" },
+                    { q: "¿Cuál de los siguientes protocolos opera en la capa de aplicación?", options: ["A. ICMP.", "B. HTTPS.", "C. ARP.", "D. EAPOL."], correct: "B" },
+                    { q: "Una amenaza típica en la capa de transporte es:", options: ["A. ARP Cache Poisoning.", "B. SYN Flood.", "C. Cross-site scripting.", "D. Rogue AP."], correct: "B" },
+                    { q: "El uso de WAF está orientado a proteger:", options: ["A. Capa física.", "B. Aplicaciones web frente a ataques como XSS y SQLi.", "C. Capa de transporte.", "D. Rutas IP."], correct: "B" },
+                    { q: "¿Qué es el 'man-in-the-middle'?", options: ["A. Un error en la compresión.", "B. Interceptar y alterar comunicaciones entre dos extremos.", "C. Un conflicto en ARP.", "D. Un exploit para servidores DNS."], correct: "B" },
+                    { q: "Una amenaza típica en la capa de aplicación es:", options: ["A. SYN Flood.", "B. SQL Injection.", "C. MAC spoofing.", "D. Jamming RF."], correct: "B" },
+                    { q: "¿Qué protocolo ofrece seguridad en la capa de transporte?", options: ["A. ARP.", "B. TLS.", "C. OSPF.", "D. SMTP."], correct: "B" },
+                    { q: "Un ataque DNS spoofing afecta principalmente a la capa:", options: ["A. Física.", "B. Aplicación.", "C. Enlace.", "D. Transporte."], correct: "B" },
+                    { q: "La capa de presentación se encarga de:", options: ["A. Seleccionar rutas.", "B. Formato de datos (codificación, compresión y cifrado).", "C. Filtrar tráfico.", "D. Validar usuarios."], correct: "B" },
+                    { q: "Para proteger la capa de red, suele emplearse:", options: ["A. IPSec.", "B. Cookies HttpOnly.", "C. Firewall WAF.", "D. Filtros de contenido web."], correct: "A" },
+                    { q: "¿Qué función cumple un proxy seguro?", options: ["A. Corromper paquetes.", "B. Inspeccionar y filtrar tráfico a nivel aplicación.", "C. Generar ARP dinámicos.", "D. Balancear red inalámbrica."], correct: "B" },
+                    { q: "La capa de sesión se ocupa de:", options: ["A. Crear sesiones de comunicación estables y gestionar estados.", "B. Definir estructuras de datos.", "C. Rutas de red.", "D. Interacciones físicas."], correct: "A" },
+                    { q: "¿Qué medida transversal es útil en todas las capas?", options: ["A. Desactivar logs para mejorar rendimiento.", "B. Principio de mínimo privilegio y segmentación.", "C. Permitir tráfico Any-Any.", "D. Clonar direcciones MAC."], correct: "B" },
+                    { q: "En la capa de red, una amenaza común es:", options: ["A. Jamming RF.", "B. IP spoofing.", "C. XSS.", "D. Manipulación de certificados."], correct: "B" },
+                    { q: "¿Qué medida mejora la seguridad en la capa de enlace?", options: ["A. Spanning Tree desactivado.", "B. Uso de VLANs y port-security.", "C. Filtrado a nivel aplicación.", "D. Quitar logs."], correct: "B" },
+                    { q: "Una amenaza en la capa de sesión es:", options: ["A. Hijacking de sesión.", "B. ARP poisoning.", "C. Ataques de diccionario.", "D. Inyección XML."], correct: "A" },
+                    { q: "¿Qué técnica reduce riesgos en redes inalámbricas?", options: ["A. Desactivar autenticación.", "B. WPA3 y segmentación.", "C. Permitir SSID abierto.", "D. Crear una única VLAN."], correct: "B" }
+                ]
+            }
+        };
+
+        // ==========================================
+        // FUNCIONES CORE
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function loadTest(unitId) {
+            const data = testsData[unitId];
+            if (!data) return;
+
+            // Mostrar estado cargando
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('testHeader').classList.remove('hidden');
+            document.getElementById('testContainer').classList.remove('hidden');
+            document.getElementById('totalQuestions').innerText = data.questions.length;
+
+            // Actualizar botones de selección
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.remove('border-red-500', 'bg-slate-800');
+                btn.classList.add('border-transparent');
+            });
+            document.getElementById('btn-' + unitId).classList.remove('border-transparent');
+            document.getElementById('btn-' + unitId).classList.add('border-red-500', 'bg-slate-800');
+
+            // Actualizar título header
+            document.querySelector('#testHeader h1').innerHTML = `Test: ${data.title}`;
+
+            // Generar preguntas dinámicamente
+            const form = document.getElementById('quizForm');
+            form.innerHTML = '';
+            document.getElementById('quizResultText').classList.add('hidden');
+
+            data.questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question fade-in';
+                questionDiv.setAttribute('data-correct', question.correct);
+                questionDiv.style.animationDelay = `${index * 0.05}s`;
+
+                let html = `
+                    <h4 class="font-bold text-slate-800 mb-3">${index + 1}. ${question.q}</h4>
+                    <div class="space-y-2 text-sm text-slate-700">
+                `;
+
+                question.options.forEach(option => {
+                    const letter = option.split('.')[0];
+                    html += `
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50 transition">
+                            <input type="radio" name="q${index + 1}" value="${letter}" class="w-4 h-4 text-red-600">
+                            <span>${option}</span>
+                        </label>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                `;
+
+                questionDiv.innerHTML = html;
+                form.appendChild(questionDiv);
+            });
+
+            // Scroll al inicio
+            setTimeout(() => {
+                document.getElementById('mainContent').scrollTop = 0;
+            }, 100);
+        }
+
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estados previos
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.classList.add('border-slate-200');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+        }
+
+        // Inicialización
+        window.addEventListener('load', () => {
+            console.log('🛡️ Banco de Tests Ciberseguridad UD1-UD6 cargado correctamente');
+        });
+    </script>
+</body>
+</html>
