@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 7 - Laboratorios Interactivos | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Canvas containers */
+        .lab-container { min-height: 400px; display: flex; flex-direction: column; }
+        canvas { background-color: #1e293b; border-radius: 0.5rem; cursor: crosshair; }
+        
+        /* Result boxes */
+        .result-box { padding: 1rem; border-radius: 0.5rem; font-family: monospace; text-align: center; font-weight: bold; }
+        .result-safe { background-color: #dcfce7; color: #166534; }
+        .result-warning { background-color: #fef3c7; color: #92400e; }
+        .result-danger { background-color: #fee2e2; color: #991b1b; }
+        
+        /* Slider styles */
+        input[type="range"] { -webkit-appearance: none; appearance: none; height: 8px; background: #334155; border-radius: 4px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: #8b5cf6; border-radius: 50%; cursor: pointer; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-950 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 7: Laboratorios</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-yellow-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Información</li>
+                <li class="nav-item"><button onclick="window.open('ud7-teorica-practica.html', '_blank')" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400">← Volver a Teoría</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 7: LABORATORIOS INTERACTIVOS -->
+        <section id="sec7" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-400 mb-8">Entornos seguros para practicar conceptos de seguridad en aplicaciones web. Todos los ataques aquí son simulados.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- LABORATORIO 1: Validador de Inyecciones -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">🛡️ Laboratorio 1: Validador de Inyecciones</span>
+                        <span id="lab1Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Esperando input</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-cyan-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Introduce diferentes inputs para ver cómo el sistema detecta posibles ataques SQLi, XSS y Path Traversal.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2">Input del Usuario:</label>
+                            <input type="text" id="validationInput" placeholder='Ej: OR 1=1, <script>alert(1)</script>, ../../../etc/passwd' 
+                                class="w-full bg-slate-900 text-white rounded-lg px-4 py-3 border-2 border-slate-600 focus:border-violet-500 focus:outline-none font-mono text-sm"
+                                onkeyup="analyzeInput()">
+                        </div>
+
+                        <div class="mb-4 grid grid-cols-3 gap-2">
+                            <div id="sqliBadge" class="result-box result-safe text-xs">SQL: ⚪ Seguro</div>
+                            <div id="xssBadge" class="result-box result-safe text-xs">XSS: ⚪ Seguro</div>
+                            <div id="traversalBadge" class="result-box result-safe text-xs">Path: ⚪ Seguro</div>
+                        </div>
+
+                        <div class="mb-4 flex-1 bg-slate-900 rounded-lg p-4 overflow-y-auto custom-scrollbar max-h-48">
+                            <h5 class="font-bold text-violet-400 text-sm mb-2">📋 Registro de Análisis:</h5>
+                            <div id="analysisLog" class="text-xs space-y-1 font-mono"></div>
+                        </div>
+
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="clearValidation()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Limpiar</button>
+                            <button onclick="testExamples()" class="flex-1 bg-violet-600 hover:bg-violet-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Probar Ejemplos</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LABORATORIO 2: Calculadora de Fuerza de Contraseña -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-emerald-400 font-bold">🔐 Laboratorio 2: Entropía de Contraseñas</span>
+                        <span id="lab2Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Esperando contraseña</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-emerald-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Calcula la entropía y tiempo estimado para crackear contraseñas según su complejidad.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2">Contraseña (simulada):</label>
+                            <input type="password" id="passwordInput" placeholder='Escribe tu contraseña...' 
+                                class="w-full bg-slate-900 text-white rounded-lg px-4 py-3 border-2 border-slate-600 focus:border-violet-500 focus:outline-none font-mono text-sm"
+                                onkeyup="calculatePasswordStrength()"/>
+                            <p class="text-xs text-slate-500 mt-1">⚠️ Esta información nunca sale de tu navegador</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span>Fuerza</span>
+                                <span id="strengthText" class="font-bold">N/A</span>
+                            </div>
+                            <div class="h-3 bg-slate-700 rounded-full overflow-hidden">
+                                <div id="strengthBar" class="h-full w-0 transition-all duration-500" style="background-color: #334155;"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 grid grid-cols-2 gap-3 text-sm">
+                            <div class="bg-slate-700 p-3 rounded">
+                                <span class="text-xs text-slate-400 block">Longitud</span>
+                                <span id="passLength" class="font-bold text-lg">0</span>
+                            </div>
+                            <div class="bg-slate-700 p-3 rounded">
+                                <span class="text-xs text-slate-400 block">Entropía (bits)</span>
+                                <span id="entropy" class="font-bold text-lg">0</span>
+                            </div>
+                            <div class="bg-slate-700 p-3 rounded col-span-2">
+                                <span class="text-xs text-slate-400 block">Tiempo estimado de crackeo</span>
+                                <span id="crackTime" class="font-bold text-base">N/A</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 flex-1 bg-slate-900 rounded-lg p-3 overflow-y-auto custom-scrollbar max-h-48">
+                            <h5 class="font-bold text-violet-400 text-sm mb-2">✅ Características Detectadas:</h5>
+                            <div id="passFeatures" class="text-xs space-y-1"></div>
+                        </div>
+
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="resetPassword()" class="flex-1 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Reset</button>
+                            <button onclick="generateStrong()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Generar Fuerte</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- INFORMACIÓN ADICIONAL -->
+            <div class="mt-8 bg-slate-800 rounded-xl p-6 border border-slate-700">
+                <h3 class="font-bold text-white mb-4">ℹ️ Sobre estos Laboratorios</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-300">
+                    <div>
+                        <h4 class="font-bold text-cyan-400 mb-2">Validador de Inyecciones</h4>
+                        <p class="text-xs">Utiliza expresiones regulares y análisis de patrones para identificar comportamientos maliciosos comunes. Las combinaciones que detectan ataques SQL, XSS y Path Traversal están marcadas según su riesgo.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-emerald-400 mb-2">Calculadora de Entropía</h4>
+                        <p class="text-xs">La fórmula utilizada es E = L × log₂(N), donde L es la longitud y N es el tamaño del alfabeto (caracteres disponibles). El tiempo de crackeo asume 10 mil millones de intentos por segundo (GPUs modernas).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white'));
+        }
+
+        // ==========================================
+        // LABORATORIO 1: VALIDADOR DE INYECCIONES
+        // ==========================================
+        
+        const patterns = {
+            sqli: [
+                /('|")?\s*(OR|AND)\s+['"]?(\d+|true)['"]?\s*=\s*['"]?(\d+|true)['"]?/i,
+                /\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION)\b/i,
+                /--\s*$/i,
+                /;\s*(SELECT|INSERT|UPDATE|DELETE)/i,
+                /xp_cmdshell/i,
+                /WAITFOR\s+DELAY/i
+            ],
+            xss: [
+                /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+                /javascript:/i,
+                /on(load|error|click|mouse|focus|blur)\s*=/i,
+                /<iframe/i,
+                /<img[^>]+onerror/i,
+                /expression\(/i
+            ],
+            traversal: [
+                /\.\.\//g,
+                /\.\.\\/g,
+                /\/etc\/passwd/i,
+                /\/windows\/system32/i,
+                /%2e%2e[%2f\\/]/gi,
+                /\.\.%2f/gi
+            ]
+        };
+
+        const safeInputs = ['hola', 'usuario123', 'nombre.apellido', 'user@example.com'];
+
+        function analyzeInput() {
+            const input = document.getElementById('validationInput').value.trim();
+            const status = document.getElementById('lab1Status');
+            const log = document.getElementById('analysisLog');
+            
+            if (!input) {
+                resetBadges();
+                status.innerHTML = 'Esperando input';
+                return;
+            }
+
+            let sqlRisk = false, xssRisk = false, travRisk = false;
+            let logs = [];
+
+            // Analizar SQL Injection
+            for (let pattern of patterns.sqli) {
+                if (pattern.test(input)) {
+                    sqlRisk = true;
+                    logs.push(`⚠️ Patrón SQL detectado: ${pattern.toString().substring(1, 40)}...`);
+                    break;
+                }
+            }
+            document.getElementById('sqliBadge').className = `result-box text-xs ${sqlRisk ? 'result-danger' : 'result-safe'}`;
+            document.getElementById('sqliBadge').innerHTML = `SQL: ${sqlRisk ? '🔴 PELIGROSO' : '⚪ Seguro'}`;
+
+            // Analizar XSS
+            for (let pattern of patterns.xss) {
+                if (pattern.test(input)) {
+                    xssRisk = true;
+                    logs.push(`⚠️ Script/XSS detectado: ${pattern.toString().substring(1, 40)}...`);
+                    break;
+                }
+            }
+            document.getElementById('xssBadge').className = `result-box text-xs ${xssRisk ? 'result-danger' : 'result-safe'}`;
+            document.getElementById('xssBadge').innerHTML = `XSS: ${xssRisk ? '🔴 PELIGROSO' : '⚪ Seguro'}`;
+
+            // Analizar Path Traversal
+            for (let pattern of patterns.traversal) {
+                if (pattern.test(input)) {
+                    travRisk = true;
+                    logs.push(`⚠️ Path Traversal detectado: ${pattern.toString().substring(1, 40)}...`);
+                    break;
+                }
+            }
+            document.getElementById('traversalBadge').className = `result-box text-xs ${travRisk ? 'result-danger' : 'result-safe'}`;
+            document.getElementById('traversalBadge').innerHTML = `Path: ${travRisk ? '🔴 PELIGROSO' : '⚪ Seguro'}`;
+
+            // Actualizar estado
+            if (sqlRisk || xssRisk || travRisk) {
+                status.innerHTML = '⚠️ Riesgo Detectado';
+                status.className = 'text-xs text-red-400 bg-red-900 px-2 rounded animate-pulse-border';
+            } else {
+                status.innerHTML = '✅ Verificado';
+                status.className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+            }
+
+            // Log
+            if (logs.length > 0) {
+                log.innerHTML = logs.map(l => `<div class="text-red-400">${l}</div>`).join('') + '<div class="text-slate-500 mt-2">──────────</div>' + log.innerHTML.substring(0, 2000);
+            } else if (safeInputs.some(s => input.toLowerCase().includes(s))) {
+                log.innerHTML = `<div class="text-green-400">✅ Input benigno: "${input.substring(0, 20)}..."</div><div class="text-slate-500 mt-2">──────────</div>` + log.innerHTML.substring(0, 2000);
+            }
+        }
+
+        function resetBadges() {
+            ['sqliBadge', 'xssBadge', 'traversalBadge'].forEach(id => {
+                const el = document.getElementById(id);
+                el.className = 'result-box result-safe text-xs';
+                const labels = { sqliBadge: 'SQL', xssBadge: 'XSS', traversalBadge: 'Path' };
+                el.innerHTML = `${labels[id]}: ⚪ Seguro`;
+            });
+        }
+
+        function clearValidation() {
+            document.getElementById('validationInput').value = '';
+            resetBadges();
+            document.getElementById('lab1Status').innerHTML = 'Esperando input';
+            document.getElementById('lab1Status').className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+            document.getElementById('analysisLog').innerHTML = '';
+        }
+
+        function testExamples() {
+            const examples = [
+                "' OR '1'='1",
+                "<script>alert('XSS')</script>",
+                "../../../etc/passwd",
+                "admin@proton.me",
+                "SELECT * FROM users"
+            ];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < examples.length) {
+                    document.getElementById('validationInput').value = examples[i];
+                    analyzeInput();
+                    i++;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 800);
+        }
+
+        // ==========================================
+        // LABORATORIO 2: CALCULADORA ENTROPÍA
+        // ==========================================
+
+        function calculatePasswordStrength() {
+            const password = document.getElementById('passwordInput').value;
+            const status = document.getElementById('lab2Status');
+            
+            if (!password) {
+                resetPasswordDisplay();
+                return;
+            }
+
+            const length = password.length;
+            let charsetSize = 0;
+            let hasLower = /[a-z]/.test(password);
+            let hasUpper = /[A-Z]/.test(password);
+            let hasNumber = /[0-9]/.test(password);
+            let hasSpecial = /[^a-zA-Z0-9]/.test(password);
+
+            if (hasLower) charsetSize += 26;
+            if (hasUpper) charsetSize += 26;
+            if (hasNumber) charsetSize += 10;
+            if (hasSpecial) charsetSize += 33;
+
+            const entropy = Math.round(length * Math.log2(charsetSize || 1));
+            const combinations = Math.pow(charsetSize || 1, length);
+            const attemptsPerSecond = 10000000000; // 10 mil millones
+            const secondsToCrack = combinations / attemptsPerSecond;
+
+            // Calcular tiempo legible
+            let timeString = '';
+            if (secondsToCrack < 1) timeString = '< 1 segundo';
+            else if (secondsToCrack < 60) timeString = Math.round(secondsToCrack) + ' seg';
+            else if (secondsToCrack < 3600) timeString = Math.round(secondsToCrack / 60) + ' min';
+            else if (secondsToCrack < 86400) timeString = Math.round(secondsToCrack / 3600) + ' horas';
+            else if (secondsToCrack < 31536000) timeString = Math.round(secondsToCrack / 86400) + ' días';
+            else if (secondsToCrack < 3153600000) timeString = Math.round(secondsToCrack / 31536000) + ' años';
+            else timeString = 'milenios+';
+
+            // Determinar fuerza
+            let strength = 0, color = '#334155';
+            if (entropy < 28) { strength = 1; color = '#ef4444'; }
+            else if (entropy < 36) { strength = 2; color = '#f97316'; }
+            else if (entropy < 60) { strength = 3; color = '#eab308'; }
+            else if (entropy < 80) { strength = 4; color = '#84cc16'; }
+            else { strength = 5; color = '#22c55e'; }
+
+            // Mostrar resultados
+            document.getElementById('passLength').innerText = length;
+            document.getElementById('entropy').innerText = entropy;
+            document.getElementById('crackTime').innerText = timeString;
+            
+            const strengthLabels = ['Muy Débil', 'Débil', 'Media', 'Fuerte', 'Muy Fuerte'];
+            document.getElementById('strengthText').innerText = strengthLabels[strength - 1];
+            document.getElementById('strengthText').className = `font-bold ${strength >= 3 ? 'text-green-400' : strength === 2 ? 'text-yellow-400' : 'text-red-400'}`;
+            
+            document.getElementById('strengthBar').style.width = `${strength * 20}%`;
+            document.getElementById('strengthBar').style.backgroundColor = color;
+
+            // Features
+            const features = [];
+            if (length >= 12) features.push('✅ Longitud adecuada (≥12)');
+            else features.push('❌ Añadir más caracteres (mínimo 12)');
+            if (hasLower) features.push('✅ Minúsculas'); else features.push('❌ Añadir minúsculas');
+            if (hasUpper) features.push('✅ Mayúsculas'); else features.push('❌ Añadir mayúsculas');
+            if (hasNumber) features.push('✅ Números'); else features.push('❌ Añadir números');
+            if (hasSpecial) features.push('✅ Símbolos especiales'); else features.push('❌ Añadir símbolos !@#$');
+            if (entropy >= 60) features.push('✅ Entropía segura'); else features.push('❌ Aumentar entropía');
+
+            document.getElementById('passFeatures').innerHTML = features.map(f => 
+                `<div class="${f.startsWith('✅') ? 'text-green-400' : 'text-red-400'}">${f}</div>`
+            ).join('');
+
+            // Status badge
+            status.innerHTML = strength >= 3 ? '✅ Contraseña Segura' : '⚠️ Mejorar Contraseña';
+            status.className = `text-xs px-2 rounded ${strength >= 3 ? 'text-green-400 bg-green-900' : 'text-yellow-400 bg-yellow-900'}`;
+        }
+
+        function resetPasswordDisplay() {
+            document.getElementById('passLength').innerText = '0';
+            document.getElementById('entropy').innerText = '0';
+            document.getElementById('crackTime').innerText = 'N/A';
+            document.getElementById('strengthText').innerText = 'N/A';
+            document.getElementById('strengthBar').style.width = '0%';
+            document.getElementById('strengthBar').style.backgroundColor = '#334155';
+            document.getElementById('passFeatures').innerHTML = '';
+            document.getElementById('lab2Status').innerHTML = 'Esperando contraseña';
+            document.getElementById('lab2Status').className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+        }
+
+        function resetPassword() {
+            document.getElementById('passwordInput').value = '';
+            resetPasswordDisplay();
+        }
+
+        function generateStrong() {
+            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let password = '';
+            const length = 16;
+            
+            for (let i = 0; i < length; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            document.getElementById('passwordInput').value = password;
+            calculatePasswordStrength();
+            
+            // Mostrar temporalmente
+            setTimeout(() => {
+                document.getElementById('passwordInput').type = 'text';
+                setTimeout(() => {
+                    document.getElementById('passwordInput').type = 'password';
+                }, 3000);
+            }, 100);
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec7');
+        };
+    </script>
+</body>
+</html>
