@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 9 - Laboratorios Prácticos | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Canvas Simulaciones */
+        canvas { border: 2px solid #cbd5e1; border-radius: 8px; background: #f8fafc; cursor: crosshair; }
+        
+        /* Lab Header */
+        .lab-header { background: linear-gradient(to right, #059669, #10b981); }
+
+        /* Animaciones personalizadas */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .pulse-danger { animation: pulse-red 2s infinite; }
+        
+        @keyframes scan-line {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        .scan-bar { position: absolute; width: 100%; height: 2px; background: #ef4444; box-shadow: 0 0 4px #ef4444; z-index: 10; animation: scan-line 2s linear infinite; pointer-events: none; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-emerald-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-emerald-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 9: Labs</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Laboratorios de Canal</li>
+                <li class="nav-item"><button onclick="switchSection('sec10')" id="btn-sec10" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-emerald-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">1. CRC & Detección de Errores</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec11')" id="btn-sec11" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-red-400 font-bold">2. Reparación CD (Reed-Solomon)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec12')" id="btn-sec12" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-blue-400 font-bold">3. LDPC & Resistencia al Jamming</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Navegación</li>
+                <li class="nav-item"><button onclick="window.location.href='ud9-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400">← Volver a Teoría y Casos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 10: LABORATORIO CRC -->
+        <section id="sec10" class="main-section fade-in">
+            <div class="lab-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">1. Laboratorio: CRC y Detección de Errores</h2>
+                <p class="opacity-90">Simula la transmisión de datos a través de un canal ruidoso. Observa cómo el CRC detecta errores pero no los corrige.</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Nivel de Ruido / Interferencia (%)</label>
+                        <input type="range" id="noiseRange" min="0" max="30" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600">
+                        <div class="flex justify-between text-xs text-slate-500 mt-1">
+                            <span>Limpio (0%)</span>
+                            <span>Moderado (15%)</span>
+                            <span>Jamming Intenso (30%)</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button onclick="runTransmission()" class="px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold shadow-lg hover:bg-emerald-700 transition">🚀 Iniciar Transmisión</button>
+                    </div>
+                </div>
+
+                <!-- Visualización -->
+                <div class="relative h-40 bg-slate-50 border border-slate-200 rounded-lg overflow-hidden mb-4">
+                    <div id="packetFlow" class="absolute top-1/2 left-0 w-full h-1 bg-slate-300 transform -translate-y-1/2"></div>
+                    <div id="transmittingData" class="absolute flex gap-2 left-0 top-1/2 transform -translate-y-1/2 transition-all duration-1000">
+                        <!-- Bits se generan dinámicamente -->
+                    </div>
+                    <div id="errorZone" class="absolute inset-0 bg-red-100/20 hidden flex items-center justify-center text-red-600 font-bold text-lg z-10">⚠️ ZONA DE ERRORES</div>
+                </div>
+
+                <!-- Resultados -->
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">Resultados de la Transmisión</h4>
+                    <div id="crcResults" class="space-y-2 text-sm">
+                        <p class="text-slate-600">Envía datos para ver cómo el CRC detecta corrupción.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 11: LABORATORIO REED-SOLOMON -->
+        <section id="sec11" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-red-600 to-orange-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">2. Laboratorio: Recuperación con Reed-Solomon</h2>
+                <p class="opacity-90">Rayas un CD/DVD digitalmente. El sistema intenta reparar los datos usando redundancia.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Área del Disco -->
+                    <div class="flex-1 text-center">
+                        <div class="relative w-48 h-48 mx-auto bg-gray-200 rounded-full border-4 border-gray-300 shadow-inner overflow-hidden cursor-crosshair group">
+                            <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PGNpcmNsZSBjeD0iNSIgY3k9IjUiIHI9IjQiIGZpbGw9IiNmZmYiIC8+PC9zdmc+')] opacity-20"></div>
+                            <div class="absolute inset-0 flex items-center justify-center font-bold text-gray-400 text-xs group-hover:text-red-500 transition">Haz clic para rayar</div>
+                            <!-- Las líneas de daño se añadirán aquí -->
+                            <div id="cdDamageLayer" class="absolute inset-0 pointer-events-none"></div>
+                            <div class="absolute bottom-2 text-[10px] text-gray-600">Bloque Activo</div>
+                        </div>
+                        <div class="mt-4">
+                            <button onclick="scratchCD()" class="px-4 py-2 bg-red-500 text-white rounded text-sm font-bold hover:bg-red-600">💥 Rayar Superficie</button>
+                            <button onclick="repairCD()" class="ml-2 px-4 py-2 bg-green-500 text-white rounded text-sm font-bold hover:bg-green-600">🛠️ Intentar Reparar</button>
+                            <button onclick="resetCD()" class="ml-2 px-4 py-2 bg-gray-400 text-white rounded text-sm font-bold hover:bg-gray-500">🔄 Reiniciar</button>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Datos -->
+                    <div class="flex-1">
+                        <h4 class="font-bold text-slate-800 mb-2">Estado del Bloque de Datos</h4>
+                        <div class="grid grid-cols-8 gap-1 mb-4" id="dataGrid">
+                            <!-- 64 celdas (8x8) representando bytes -->
+                        </div>
+                        
+                        <div class="bg-blue-50 p-4 rounded border border-blue-200 text-sm">
+                            <p class="font-bold text-blue-900 mb-1">ℹ️ Explicación:</p>
+                            <p>Los cuadrados rojos son datos corruptos. Los verdes son datos recuperados por Reed-Solomon. Si hay demasiados rojos (> capacidad de corrección), el dato se pierde definitivamente.</p>
+                        </div>
+                        
+                        <div id="rsStatus" class="mt-4 p-3 bg-slate-100 rounded text-center font-bold text-slate-700">
+                            Estado: Esperando...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 12: LABORATORIO LDPC & JAMMING -->
+        <section id="sec12" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">3. Laboratorio: LDPC bajo Jamming</h2>
+                <p class="opacity-90">Mantén vivo un enlace 5G/Wi-Fi 6 contra interferencias deliberadas ajustando la decodificación.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Controles -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                            <h4 class="font-bold text-slate-800 mb-3">🎛️ Controles del Sistema</h4>
+                            
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Intensidad del Jamming (Ataque)</label>
+                            <input type="range" id="jammingLevel" min="0" max="100" value="20" class="w-full h-2 bg-red-200 rounded-lg appearance-none cursor-pointer accent-red-600">
+                            <div class="flex justify-between text-xs text-red-600 font-bold">
+                                <span>Bajo</span>
+                                <span>Medio</span>
+                                <span>Kill Switch</span>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Modo Decodificador LDPC</label>
+                                <select id="ldpcMode" class="w-full p-2 border rounded bg-white text-sm">
+                                    <option value="basic">Básico (Rápido, Poca Corrección)</option>
+                                    <option value="iterative">Iterativo Estándar (Equilibrado)</option>
+                                    <option value="aggressive">Agresivo (Alta CPU, Máxima Corrección)</option>
+                                </select>
+                                <p class="text-[10px] text-slate-500 mt-1">* Modos avanzados consumen más recursos y latencia.</p>
+                            </div>
+
+                            <button onclick="startSimulation()" class="w-full mt-4 py-2 bg-indigo-600 text-white rounded font-bold hover:bg-indigo-700 transition">📡 Iniciar Enlace</button>
+                        </div>
+
+                        <div class="bg-green-50 p-4 rounded border border-green-200">
+                            <h4 class="font-bold text-green-900 mb-2">📊 Métricas en Tiempo Real</h4>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>SNR (Relación Señal/Ruido):</span>
+                                <span id="snrDisplay" class="font-mono font-bold">-- dB</span>
+                            </div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>BER (Tasa Error Bit):</span>
+                                <span id="berDisplay" class="font-mono font-bold">--%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>CPU Usage:</span>
+                                <span id="cpuDisplay" class="font-mono font-bold text-orange-600">--%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualizador de Ondas -->
+                    <div class="lg:col-span-2 relative h-64 bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
+                        <canvas id="waveCanvas" class="w-full h-full"></canvas>
+                        <div id="linkStatusOverlay" class="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded text-sm font-bold">
+                            ENLACE: <span id="linkStateText" class="text-yellow-500">ESTABLE</span>
+                        </div>
+                        <div id="warningBox" class="absolute top-4 right-4 bg-red-600/90 text-white px-3 py-1 rounded text-sm font-bold hidden">
+                            ⚠️ PÉRDIDA DE PAQUETES
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec10' && sectionId !== 'sec10') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec11' && sectionId !== 'sec11') btn.classList.add('text-red-400');
+                if(btn.id === 'btn-sec12' && sectionId !== 'sec12') btn.classList.add('text-blue-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-red-400', 'text-blue-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            if(sectionId === 'sec12') initWaveCanvas();
+        }
+
+        // ==========================================
+        // LABORATORIO 1: CRC SIMULATION
+        // ==========================================
+        let crcInterval = null;
+        const packetContainer = document.getElementById('transmittingData');
+        const errorZone = document.getElementById('errorZone');
+        const noiseRange = document.getElementById('noiseRange');
+        const resultsDiv = document.getElementById('crcResults');
+
+        function runTransmission() {
+            if(crcInterval) clearInterval(crcInterval);
+            packetContainer.innerHTML = '';
+            resultsDiv.innerHTML = '<p class="text-slate-600">Transmitiendo...</p>';
+            
+            const noiseLevel = parseInt(noiseRange.value);
+            const isDirty = noiseLevel > 5;
+            
+            if(isDirty) {
+                errorZone.classList.remove('hidden');
+                errorZone.style.width = `${Math.min(noiseLevel * 3, 80)}%`;
+                errorZone.style.left = `calc(50% - ${Math.min(noiseLevel * 1.5, 40)}%)`;
+            } else {
+                errorZone.classList.add('hidden');
+            }
+
+            let bitCount = 0;
+            const totalBits = 32;
+            
+            crcInterval = setInterval(() => {
+                if(bitCount >= totalBits) {
+                    clearInterval(crcInterval);
+                    errorZone.classList.add('hidden');
+                    analyzeCRC(noiseLevel);
+                    return;
+                }
+
+                const bit = document.createElement('div');
+                bit.className = 'w-3 h-3 bg-emerald-500 rounded-full animate-pulse';
+                bit.id = `bit-${bitCount}`;
+                packetContainer.appendChild(bit);
+
+                // Mover el paquete visualmente
+                packetContainer.style.transition = 'none';
+                packetContainer.style.transform = `translateX(${bitCount * 12}px)`;
+                
+                // Simular error en medio del camino
+                if(noiseLevel > 0 && Math.random() * 100 < noiseLevel) {
+                    setTimeout(() => {
+                        const errBit = document.getElementById(`bit-${Math.floor(totalBits/2)}`);
+                        if(errBit) {
+                            errBit.className = 'w-3 h-3 bg-red-500 rounded-full';
+                            errBit.title = "Corrupto";
+                        }
+                    }, 500 + (bitCount * 50));
+                }
+
+                bitCount++;
+            }, 100);
+        }
+
+        function analyzeCRC(noise) {
+            if(noise === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="text-green-700 font-bold">✅ ÉXITO TOTAL</div>
+                    <p>Datos recibidos intactos. CRC válido.</p>
+                `;
+            } else {
+                const errorsFound = Math.floor((noise * Math.random()) + 1);
+                const canDetect = true; // CRC siempre detecta (a menos que sea múltiplo exacto del polinomio, raro)
+                
+                resultsDiv.innerHTML = `
+                    <div class="${canDetect ? 'text-green-700' : 'text-red-700'} font-bold">
+                        ${canDetect ? '✅ ERROR DETECTADO' : '❌ ERROR NO DETECTADO'}
+                    </div>
+                    <p><strong>Ruido aplicado:</strong> ${noise}%</p>
+                    <p><strong>Errores en tránsito:</strong> ${errorsFound} bits alterados.</p>
+                    <p><strong>Acción:</strong> ${canDetect ? 'El receptor pidió retransmisión. El CRC funcionó.' : 'La corrupción pasó desapercibida (probabilidad baja).'}</p>
+                    <p class="text-xs text-slate-500 mt-2">Nota: El CRC solo detecta. Para corregir necesitarías Reed-Solomon o LDPC.</p>
+                `;
+            }
+        }
+
+        // ==========================================
+        // LABORATORIO 2: REED SOLOMON CD
+        // ==========================================
+        let cdDamaged = false;
+        let cdRepaired = false;
+        const dataGrid = document.getElementById('dataGrid');
+        const rsStatus = document.getElementById('rsStatus');
+        const cdDamageLayer = document.getElementById('cdDamageLayer');
+
+        function initGrid() {
+            dataGrid.innerHTML = '';
+            for(let i=0; i<64; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'w-6 h-6 bg-blue-200 border border-blue-300 rounded-sm';
+                cell.dataset.status = 'ok';
+                dataGrid.appendChild(cell);
+            }
+            cdDamageLayer.innerHTML = '';
+            rsStatus.innerHTML = 'Estado: Lista (0% dañada)';
+            cdDamaged = false;
+            cdRepaired = false;
+        }
+
+        function scratchCD() {
+            if(cdRepaired) resetCD();
+            cdDamaged = true;
+            cdRepaired = false;
+            
+            // Crear líneas de daño visual
+            const line = document.createElement('div');
+            line.className = 'absolute h-1 bg-red-500/80 rotate-12';
+            const angle = Math.random() * 360;
+            const length = 60 + Math.random() * 60;
+            const startX = Math.random() * 100;
+            const startY = Math.random() * 100;
+            
+            line.style.transform = `rotate(${angle}deg)`;
+            line.style.width = `${length}px`;
+            line.style.left = `${startX}%`;
+            line.style.top = `${startY}%`;
+            cdDamageLayer.appendChild(line);
+
+            // Corromper datos aleatorios (simulando impacto)
+            const cells = document.querySelectorAll('#dataGrid > div');
+            let damagedCount = 0;
+            // Dañar entre 10 y 20 celdas
+            const damageAmount = 10 + Math.floor(Math.random() * 10);
+            
+            for(let i=0; i<damageAmount; i++) {
+                const idx = Math.floor(Math.random() * 64);
+                if(cells[idx].dataset.status !== 'damaged') {
+                    cells[idx].className = 'w-6 h-6 bg-red-500 border border-red-700 rounded-sm animate-pulse';
+                    cells[idx].dataset.status = 'damaged';
+                    damagedCount++;
+                }
+            }
+
+            rsStatus.innerHTML = `Estado: DAÑADA (${damagedCount} bytes corruptos). Capacidad RS: 20 bytes.`;
+            rsStatus.className = 'mt-4 p-3 bg-red-100 rounded text-center font-bold text-red-700';
+        }
+
+        function repairCD() {
+            if(!cdDamaged) {
+                alert("No hay daños que reparar.");
+                return;
+            }
+            if(cdRepaired) return;
+
+            const cells = document.querySelectorAll('#dataGrid > div');
+            let repairedCount = 0;
+            let failedCount = 0;
+            const limit = 20; // Capacidad de corrección del ejemplo
+
+            cells.forEach(cell => {
+                if(cell.dataset.status === 'damaged') {
+                    if(repairedCount < limit) {
+                        // Éxito de reparación
+                        cell.className = 'w-6 h-6 bg-green-400 border border-green-600 rounded-sm animate-bounce';
+                        cell.dataset.status = 'repaired';
+                        repairedCount++;
+                    } else {
+                        // Exceso de daño
+                        cell.className = 'w-6 h-6 bg-black border border-gray-600 rounded-sm grayscale opacity-50';
+                        cell.dataset.status = 'lost';
+                        failedCount++;
+                    }
+                }
+            });
+
+            cdRepaired = true;
+            if(failedCount === 0) {
+                rsStatus.innerHTML = `✅ RECUPERACIÓN COMPLETA.<br>Todos los datos reconstruidos mediante Reed-Solomon.`;
+                rsStatus.className = 'mt-4 p-3 bg-green-100 rounded text-center font-bold text-green-700';
+            } else {
+                rsStatus.innerHTML = `⚠️ RECUPERACIÓN PARCIAL.<br>${repairedCount} bytes recuperados.<br><span class="text-red-600">${failedCount} bytes perdidos definitivamente (Error no corregible).</span>`;
+                rsStatus.className = 'mt-4 p-3 bg-yellow-100 rounded text-center font-bold text-yellow-800';
+            }
+        }
+
+        function resetCD() {
+            initGrid();
+        }
+
+        // ==========================================
+        // LABORATORIO 3: LDPC & WAVE CANVAS
+        // ==========================================
+        let waveAnimId = null;
+        let simulationRunning = false;
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function initWaveCanvas() {
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            if(!simulationRunning) startSimulation();
+        }
+
+        function startSimulation() {
+            simulationRunning = true;
+            if(waveAnimId) cancelAnimationFrame(waveAnimId);
+            loopSimulation();
+        }
+
+        function loopSimulation() {
+            if(!simulationRunning) return;
+
+            const jamming = parseInt(document.getElementById('jammingLevel').value);
+            const mode = document.getElementById('ldpcMode').value;
+            
+            // Calcular métricas simuladas
+            let baseNoise = jamming / 10; // 0-10
+            let correctionPower = 0;
+            let cpuCost = 0;
+
+            if(mode === 'basic') { correctionPower = 2; cpuCost = 5; }
+            else if(mode === 'iterative') { correctionPower = 8; cpuCost = 30; }
+            else { correctionPower = 15; cpuCost = 85; }
+
+            const effectiveSNR = 20 - baseNoise + correctionPower; // SNR ideal 20dB
+            const ber = effectiveSNR < 5 ? (10 - effectiveSNR) : (effectiveSNR > 15 ? 0 : (15-effectiveSNR)/10);
+            const linkStable = effectiveSNR > 4;
+
+            // Actualizar UI
+            document.getElementById('snrDisplay').innerText = `${effectiveSNR.toFixed(1)} dB`;
+            document.getElementById('snrDisplay').className = `font-mono font-bold ${effectiveSNR < 5 ? 'text-red-500' : 'text-green-500'}`;
+            
+            document.getElementById('berDisplay').innerText = `${(ber * 100).toFixed(2)}%`;
+            document.getElementById('berDisplay').className = `font-mono font-bold ${ber > 0.1 ? 'text-red-500' : 'text-green-500'}`;
+
+            document.getElementById('cpuDisplay').innerText = `${cpuCost + Math.floor(jamming/5)}%`;
+
+            const statusText = document.getElementById('linkStateText');
+            const warningBox = document.getElementById('warningBox');
+            
+            if(linkStable) {
+                statusText.innerText = "ESTABLE";
+                statusText.className = "text-green-400";
+                warningBox.classList.add('hidden');
+            } else {
+                statusText.innerText = "INSEGURO / PERDIDA";
+                statusText.className = "text-red-500 pulse-danger";
+                warningBox.classList.remove('hidden');
+            }
+
+            drawWave(baseNoise, correctionPower, mode);
+            
+            waveAnimId = requestAnimationFrame(loopSimulation);
+        }
+
+        function drawWave(noiseLevel, correction, mode) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            
+            const centerY = canvas.height / 2;
+            const amplitude = 30 + (correction * 2); // La corrección "limpia" la onda aumentando amplitud aparente
+            const frequency = 0.02;
+            
+            // Color basado en estado
+            const isGood = noiseLevel < correction + 10;
+            ctx.strokeStyle = isGood ? '#10b981' : '#ef4444';
+            ctx.lineWidth = 3;
+
+            for(let x = 0; x < canvas.width; x+=2) {
+                // Onda seno base
+                let y = Math.sin(x * frequency + Date.now() * 0.01) * amplitude;
+                
+                // Añadir ruido
+                const jitter = (Math.random() - 0.5) * (noiseLevel * 3);
+                y += jitter;
+
+                ctx.lineTo(x, centerY + y);
+            }
+            
+            ctx.stroke();
+
+            // Dibujar línea base
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        // Inicializar
+        window.onload = function() {
+            initGrid();
+            switchSection('sec10');
+        };
+    </script>
+</body>
+</html>
