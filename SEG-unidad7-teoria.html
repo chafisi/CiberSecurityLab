@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 7 - Seguridad Capa Aplicación | Teoría</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .flip-card { perspective: 1000px; height: 220px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #9a3412; color: white; transform: rotateY(180deg); overflow-y: auto; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #fdba74; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <aside class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-20 shrink-0">
+        <div class="p-6 border-b border-slate-800 bg-slate-950">
+            <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-orange-500">Master</span></h1>
+            <p class="text-xs text-slate-500 mt-1 uppercase tracking-widest">Unidad 7: Teoría (App)</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider">Base Teórica</li>
+                <li><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-orange-500 bg-slate-800 text-white tab-btn">1. Amenazas OWASP</button></li>
+                <li><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Sesiones y DevSecOps</button></li>
+                <li><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Perspectiva Auditoría</button></li>
+                <li><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Fichas Rápidas</button></li>
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4">Herramientas Teóricas</li>
+                <li><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Técnico</button></li>
+            </ul>
+        </nav>
+        <div class="p-4 bg-slate-950 border-t border-slate-800 text-xs text-center text-slate-500">
+            <a href="unidad7-practica.html" class="text-orange-400 hover:text-orange-300 font-bold flex items-center justify-center gap-2">
+                Ir a Práctica y Labs &rarr;
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 md:p-12" id="mainContent">
+        
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-orange-500 pb-2 inline-block">1. Capa de Aplicación y OWASP</h2>
+            <p class="text-slate-600 mb-6">La Capa 7 es crítica porque expone la lógica de negocio a Internet y a la interacción humana. Un firewall perimetral tradicional está ciego ante peticiones HTTP "legítimas" que contienen comandos destructivos.</p>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="font-bold text-xl text-slate-800 mb-4">La Tríada de Inyecciones y Manipulaciones</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-700">
+                        <thead class="bg-orange-100 text-orange-900">
+                            <tr>
+                                <th class="p-3 rounded-tl-lg">Ataque</th>
+                                <th class="p-3">¿Qué se rompe?</th>
+                                <th class="p-3">Objetivo Principal</th>
+                                <th class="p-3 rounded-tr-lg">Gravedad (Impacto)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-slate-100">
+                                <td class="p-3 font-bold text-red-600">SQLi (Inyección SQL)</td>
+                                <td class="p-3">El Servidor / Base de Datos</td>
+                                <td class="p-3">Robar, modificar o borrar datos masivos corporativos.</td>
+                                <td class="p-3 font-bold text-red-600">Crítica (Máxima)</td>
+                            </tr>
+                            <tr class="border-b border-slate-100">
+                                <td class="p-3 font-bold text-orange-600">XSS (Cross-Site Scripting)</td>
+                                <td class="p-3">El Usuario (Cliente/Navegador)</td>
+                                <td class="p-3">Robar sesiones (cookies) o espiar inyectando JavaScript.</td>
+                                <td class="p-3 font-bold text-orange-600">Alta</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-yellow-600">CSRF (Cross-Site Request Forgery)</td>
+                                <td class="p-3">La Acción (Lógica)</td>
+                                <td class="p-3">Obligar al usuario autenticado a realizar transacciones falsas.</td>
+                                <td class="p-3 font-bold text-yellow-600">Media/Alta</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-xs text-slate-500 italic">* Nota de auditoría: Mientras el WAF mitiga SQLi y XSS basándose en firmas, el CSRF requiere protecciones nativas en el código de la aplicación (Tokens Anti-CSRF).</p>
+            </div>
+        </section>
+
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-orange-500 pb-2 inline-block">2. Identidad, Sesiones y DevSecOps</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl text-orange-800 mb-3">Gestión de Identidad y Sesión</h3>
+                    <p class="text-sm text-slate-600 mb-4">"No hackean el cifrado: roban credenciales o secuestran sesiones". Una cookie robada equivale a un *bypass* completo del login.</p>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>Autenticar (Quién eres):</strong> Fomentar MFA robusto (FIDO2) frente a OTPs por SMS.</li>
+                        <li><strong>Autorizar (Qué puedes hacer):</strong> Implementar controles RBAC estrictos.</li>
+                        <li><strong>Sesión (Estado):</strong> Prevenir <em>Session Hijacking</em> configurando banderas <code>Secure</code> y <code>HttpOnly</code> en cookies, forzando expiración y rotando el ID tras cada login.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                    <h3 class="font-bold text-xl text-emerald-800 mb-3">DevSecOps: Seguridad en el Código</h3>
+                    <p class="text-sm text-slate-600 mb-4">La seguridad no se aplica al final; se automatiza en el pipeline CI/CD (Continuous Integration / Continuous Deployment).</p>
+                    <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>SAST (Static Application Security Testing):</strong> Analiza el código fuente ("caja blanca") antes de compilar buscando variables no saneadas.</li>
+                        <li><strong>DAST (Dynamic Application Security Testing):</strong> Ataca la aplicación en ejecución ("caja negra") simulando XSS/SQLi.</li>
+                        <li><strong>SCA (Software Composition Analysis):</strong> Inventaría dependencias de terceros para evitar librerías vulnerables heredadas.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-orange-500 pb-2 inline-block">3. Perspectiva de Auditoría</h2>
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 space-y-6">
+                <div class="flex gap-4">
+                    <div class="text-4xl">🎭</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800">El Factor Humano (Phishing y Sesiones)</h3>
+                        <p class="text-sm text-slate-600 mt-1">El perímetro más débil en la Capa 7 es el ser humano. Un auditor no solo revisa configuraciones, sino procesos. Si un ataque de <em>Phishing</em> logra evadir el MFA (ej. ataques <em>AitM - Adversary in the Middle</em>), se evidencia la necesidad de transicionar a estándares criptográficos ligados al hardware como <strong>WebAuthn/FIDO2</strong>, donde la clave privada nunca abandona el dispositivo del empleado.</p>
+                    </div>
+                </div>
+                <hr class="border-slate-100">
+                <div class="flex gap-4">
+                    <div class="text-4xl">⏳</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-slate-800">Caducidad de Criptografía vs. Disponibilidad</h3>
+                        <p class="text-sm text-slate-600 mt-1">Implementar TLS no termina al instalar el certificado. La auditoría exige herramientas automatizadas (como el protocolo <strong>ACME</strong>) y escaneos de monitorización continuos. Un certificado expirado no es solo una "alerta de navegador", es una interrupción directa (Caída de Disponibilidad) de servicios críticos, APIs y pasarelas de pago.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-orange-500 pb-2 inline-block">4. Fichas Rápidas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg">CSRF</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Cross-Site Request Forgery. Ataque que fuerza al navegador de un usuario autenticado a ejecutar acciones no deseadas en una aplicación de confianza.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg">FIDO2 / WebAuthn</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Estándar de MFA sin contraseñas basado en criptografía de clave pública. Inmune al phishing tradicional porque el "secreto" se queda en el hardware local.</p></div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg">ACME</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Automated Certificate Management Environment. Protocolo utilizado para automatizar la solicitud, validación y renovación de certificados TLS/SSL (ej. Let's Encrypt).</p></div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front"><h3 class="font-bold text-lg">HttpOnly</h3></div>
+                        <div class="flip-card-back"><p class="text-sm">Bandera de seguridad configurada en una Cookie que impide que los scripts del lado del cliente (JavaScript) puedan leerla, mitigando drásticamente los ataques XSS.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-orange-500 pb-2 inline-block">6. Glosario Técnico</h2>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-orange-700 text-sm">WAF (Web Application Firewall)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Firewall específico de Capa 7 diseñado para proteger servidores web interceptando peticiones maliciosas (XSS, SQLi) analizando el tráfico HTTP/HTTPS.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-orange-700 text-sm">SAST / DAST</h4>
+                        <p class="text-xs text-slate-600 mt-1">Mecanismos de DevSecOps. SAST revisa vulnerabilidades en el código fuente (caja blanca). DAST ataca la aplicación en ejecución (caja negra).</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-orange-700 text-sm">PKI (Public Key Infrastructure)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Marco tecnológico e institucional (Autoridades de Certificación) que gestiona la creación, almacenamiento y revocación de certificados digitales.</p>
+                    </div>
+                    <div class="border-b border-slate-100 pb-3">
+                        <h4 class="font-bold text-orange-700 text-sm">Token Anti-CSRF</h4>
+                        <p class="text-xs text-slate-600 mt-1">Cadena alfanumérica única y aleatoria generada por el servidor e incrustada en formularios web. El servidor rechaza la petición si este token no coincide.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function switchSection(secId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-orange-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent', 'text-slate-500');
+            });
+            document.getElementById(secId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + secId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-500');
+            activeBtn.classList.add('border-orange-500', 'bg-slate-800', 'text-white');
+        }
+        switchSection('sec1');
+    </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 7 - Seguridad en la Capa de Aplicación | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Efectos visuales interactivos */
+        @keyframes pulse-border { 0% { border-color: #8b5cf6; } 50% { border-color: #c4b5fd; } 100% { border-color: #8b5cf6; } }
+        .animate-pulse-border { animation: pulse-border 2s infinite; }
+
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 7: Seguridad en Capa de Aplicación</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Introducción a la Capa de Aplicación</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Principales Vulnerabilidades Web</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Técnicas de Protección y Mitigación</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos Resueltos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 TEST EVALUACIÓN (Laboratorio 2)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: INTRODUCCIÓN -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Introducción a la Seguridad en la Capa de Aplicación</h2>
+            <p class="text-slate-600 mb-6">La seguridad en la capa de aplicación es uno de los pilares fundamentales de la ciberseguridad contemporánea. Mientras que las capas inferiores del modelo OSI se centran en proteger la transmisión y el enrutamiento de datos, la capa de aplicación es el nivel donde interactúan los usuarios finales y donde se ejecutan los servicios críticos de las organizaciones.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Diferencias entre Seguridad de Red y de Aplicación</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="font-bold text-blue-800 mb-2">🔒 Seguridad de Red</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Filtrado de tráfico y control de puerto</li>
+                            <li>Enfoque en protocolos de comunicación (IP, TCP, UDP)</li>
+                            <li>Herramientas: firewalls, IDS/IPS</li>
+                            <li>Garantiza disponibilidad e integridad del flujo</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-violet-500 pl-4">
+                        <h4 class="font-bold text-violet-800 mb-2">🛡️ Seguridad de Aplicación</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Validación de entradas, autenticación y control de sesiones</li>
+                            <li>Enfoque en la lógica del software y APIs</li>
+                            <li>Herramientas: WAF, pruebas de penetración, análisis estático</li>
+                            <li>Evita inyección, XSS, CSRF y abuso de APIs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 mb-8">
+                <h3 class="font-bold text-indigo-900 mb-3">📊 Estadísticas Relevantes</h3>
+                <p class="text-sm text-slate-700 mb-3">Según el informe <strong>Verizon Data Breach Investigations Report 2023</strong>:</p>
+                <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                    <li>Más del <strong>70%</strong> de los incidentes confirmados en aplicaciones web estuvieron vinculados a la explotación de credenciales robadas o vulnerabilidades conocidas sin parchear</li>
+                    <li>Los incidentes más mediáticos en ciberseguridad suelen tener origen en <strong>vulnerabilidades de software</strong> y no en fallos de infraestructura</li>
+                </ul>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-900 mb-3">⚠️ Riesgos Más Comunes en Aplicaciones</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">🔓</span><strong>Exposición de datos sensibles</strong>
+                        <p class="text-xs text-slate-600 mt-1">Fallos en cifrado o almacenamiento inseguro</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">👤</span><strong>Falsificación de identidad</strong>
+                        <p class="text-xs text-slate-600 mt-1">Secuestro de sesión o suplantación de credenciales</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">🔄</span><strong>Abuso de funcionalidades</strong>
+                        <p class="text-xs text-slate-600 mt-1">Uso indebido de APIs para scraping masivo</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">⚙️</span><strong>Errores de lógica de negocio</strong>
+                        <p class="text-xs text-slate-600 mt-1">Operaciones indebidas sin vulnerabilidad técnica evidente</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: VULNERABILIDADES -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Principales Vulnerabilidades Web</h2>
+            <p class="text-slate-600 mb-8">Las vulnerabilidades en la capa de aplicación son especialmente críticas porque permiten a los atacantes comprometer de forma directa los datos y servicios más sensibles. Según el OWASP Top 10, la mayoría de las brechas se concentran en un conjunto recurrente de debilidades.</p>
+
+            <!-- SQLi -->
+            <div class="bg-white border-t-4 border-t-red-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-red-800 mb-4 flex items-center">
+                    <span class="text-3xl mr-3">💉</span>Inyección SQL y NoSQL
+                </h3>
+                <p class="text-slate-700 mb-4">Consiste en introducir código malicioso en una consulta o instrucción que el servidor ejecuta de manera imprevista. En sistemas basados en SQL, un atacante puede manipular formularios o parámetros de URL para alterar consultas.</p>
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-400 mb-4">
+                    <p class="text-sm text-red-900 font-mono"><strong>Ejemplo clásico:</strong> OR '1'='1 en un campo de autenticación que provoca que la condición sea siempre verdadera</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-green-800 mb-2 text-sm">✅ Medidas de Mitigación:</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                        <li>Uso de prepared statements (consultas parametrizadas)</li>
+                        <li>Procedimientos almacenados</li>
+                        <li>Validación estricta de entradas</li>
+                        <li>Herramientas de monitorización de anomalías en consultas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- XSS -->
+            <div class="bg-white border-t-4 border-t-orange-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-orange-800 mb-4 flex items-center">
+                    <span class="text-3xl mr-3">🕷️</span>Cross-Site Scripting (XSS)
+                </h3>
+                <p class="text-slate-700 mb-4">Permite a un atacante inyectar código malicioso en páginas web vistas por otros usuarios. Las consecuencias van desde el robo de cookies de sesión hasta la redirección a sitios maliciosos.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div class="bg-orange-50 p-3 rounded-lg">
+                        <h4 class="font-bold text-orange-900 text-sm mb-1">Reflejado</h4>
+                        <p class="text-xs text-slate-600">El código se incluye en petición HTTP y se refleja inmediatamente</p>
+                    </div>
+                    <div class="bg-orange-50 p-3 rounded-lg">
+                        <h4 class="font-bold text-orange-900 text-sm mb-1">Almacenado</h4>
+                        <p class="text-xs text-slate-600">El script se guarda en servidor y se ejecuta cada vez que víctima accede</p>
+                    </div>
+                    <div class="bg-orange-50 p-3 rounded-lg">
+                        <h4 class="font-bold text-orange-900 text-sm mb-1">Basado en DOM</h4>
+                        <p class="text-xs text-slate-600">Manipula el Document Object Model en navegador sin interacción servidor</p>
+                    </div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-green-800 mb-2 text-sm">✅ Medidas de Mitigación:</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                        <li>Políticas de seguridad de contenidos (CSP)</li>
+                        <li>Codificación/escapado de caracteres en salida HTML</li>
+                        <li>Pruebas dinámicas con herramientas como OWASP ZAP o Burp Suite</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CSRF -->
+            <div class="bg-white border-t-4 border-t-purple-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-purple-800 mb-4 flex items-center">
+                    <span class="text-3xl mr-3">🎭</span>Cross-Site Request Forgery (CSRF)
+                </h3>
+                <p class="text-slate-700 mb-4">Consiste en inducir a un usuario autenticado a ejecutar acciones no deseadas en una aplicación en la que ya tiene sesión iniciada. Mediante peticiones ocultas en páginas maliciosas, el atacante aprovecha la confianza que el servidor tiene en el navegador.</p>
+                <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400 mb-4">
+                    <p class="text-sm text-purple-900"><strong>Ejemplo real:</strong> Gmail en 2007 permitía modificar configuraciones de reenvío mediante un simple enlace</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-green-800 mb-2 text-sm">✅ Medidas de Mitigación:</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                        <li>Tokens anti-CSRF únicos por sesión o petición</li>
+                        <li>Validación del encabezado Origin o Referer</li>
+                        <li>Uso de autenticación multifactor para operaciones sensibles</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Otras vulnerabilidades del test -->
+            <div class="bg-slate-100 p-6 rounded-xl border border-slate-200">
