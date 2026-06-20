@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 11 - Sistema Legislativo de Andorra | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Estilos específicos para casos prácticos */
+        .case-header { background: linear-gradient(to right, #7c3aed, #4f46e5); }
+        .visual-box { box-shadow: inset 0 0 20px rgba(0,0,0,0.05); }
+        
+        /* Diagram Flow Arrows */
+        .flow-arrow::after {
+            content: '➜';
+            display: inline-block;
+            margin: 0 8px;
+            color: #64748b;
+        }
+        .flow-arrow:last-child::after { content: ''; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 11: Leyes AD</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar ley o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Fundamentos Legales</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Constitución & Marco Legal</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Llei 29/2021 & Protección Datos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Ciberdelincuencia & Budapest</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Instituciones & Cooperación</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Casos Prácticos</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-pink-400 font-semibold tab-btn">5. Caso 21: Sanción APDA (Vigilancia)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-cyan-400 font-semibold tab-btn">6. Caso 22: Europol & Budapest</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="window.location.href='ud11-labs.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-green-400 font-bold">🎯 Laboratorios Interactivos (Próximamente)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: CONSTITUCIÓN -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Fundamentos: Constitución & Marco Legal</h2>
+            <p class="text-slate-600 mb-6">El sistema legislativo andorrano se basa en la <strong>Constitución de 1993</strong>, que reconoce derechos fundamentales aplicables al mundo digital.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Derechos -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
+                    <h3 class="font-bold text-lg text-indigo-900 mb-3">🛡️ Derechos Constitucionales Clave</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Art. 14:</strong> Derecho a la intimidad, honor y propia imagen.</li>
+                        <li><strong>Art. 15:</strong> Inviolabilidad del domicilio y comunicaciones (incluye transmisión de datos).</li>
+                        <li><strong>Art. 21:</strong> Libertad de expresión e información (con límites de respeto a otros).</li>
+                    </ul>
+                    <p class="text-xs text-slate-500 mt-3 italic">* Cualquier medida técnica (monitorización, videovigilancia) debe respetar estos principios de proporcionalidad y necesidad.</p>
+                </div>
+                <!-- Evolución -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-emerald-500">
+                    <h3 class="font-bold text-lg text-emerald-900 mb-3">⚖️ Evolución Legislativa</h3>
+                    <p class="text-sm text-slate-700 mb-3">De un Estado tradicional a una sociedad digital regulada:</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Llei 15/2003:</strong> Creación inicial de la APDA.</li>
+                        <li><strong>Llei 29/2021:</strong> Adaptación completa al estándar europeo (RGPD).</li>
+                        <li><strong>Llei 35/2014:</strong> Firma electrónica y servicios de confianza (basada en eIDAS).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-violet-50 p-6 rounded-xl border border-violet-200">
+                <h3 class="font-bold text-violet-800 mb-3">🌐 Soberanía vs. Armonización</h3>
+                <p class="text-sm text-slate-700">Andorra mantiene su autonomía legislativa pero busca la armonización con la UE y el Consejo de Europa para garantizar la validez de sus actos digitales en el extranjero (ej. transferencia de datos, pruebas forenses).</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: LLEI 29/2021 -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Llei 29/2021: Protección de Datos Personales</h2>
+            <p class="text-slate-600 mb-6">La ley fundamental que regula la privacidad en Andorra, alineada con el RGPD europeo.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Principios -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-2xl mb-2">📜 Principios (Arts. 4-10)</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Licitud y Transparencia</h4>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>Minimización de datos.</li>
+                        <li>Exactitud y limitación de finalidad.</li>
+                        <li>Base jurídica obligatoria para todo tratamiento.</li>
+                    </ul>
+                </div>
+                <!-- Seguridad -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-2xl mb-2">🔒 Medidas de Seguridad (Art. 34)</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Control Técnico</h4>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>Cifrado y seudonimización.</li>
+                        <li>Autenticación robusta.</li>
+                        <li>Auditorías periódicas obligatorias.</li>
+                    </ul>
+                </div>
+                <!-- Brechas -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-2xl mb-2">⏱️ Notificación Brechas (Art. 38)</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Plazos Estrictos</h4>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>Máximo 72 horas a la APDA.</li>
+                        <li>Comunicación a afectados si riesgo alto.</li>
+                        <li>Documentoación detallada del incidente.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                <h3 class="font-bold text-red-800 mb-3">⚠️ Régimen Sancionador</h3>
+                <table class="min-w-full text-sm text-left">
+                    <thead class="bg-red-100 text-red-800 font-bold">
+                        <tr>
+                            <th class="px-3 py-2">Gravedad</th>
+                            <th class="px-3 py-2">Ejemplo</th>
+                            <th class="px-3 py-2">Multa Máxima</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-red-100">
+                        <tr>
+                            <td class="px-3 py-2 font-bold">Leve</td>
+                            <td class="px-3 py-2">No atender solicitud de derechos en plazo.</td>
+                            <td class="px-3 py-2">3.000 €</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 py-2 font-bold">Grave</td>
+                            <td class="px-3 py-2">Falta de medidas de seguridad o notificación tardía.</td>
+                            <td class="px-3 py-2">25.000 €</td>
+                        </tr>
+                        <tr>
+                            <td class="px-3 py-2 font-bold">Muy Grave</td>
+                            <td class="px-3 py-2">Cesión no autorizada de datos sensibles o intencionalidad.</td>
+                            <td class="px-3 py-2">100.000 €</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: CIBERDELINCUENCIA -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Ciberdelincuencia & Convenio de Budapest</h2>
+            <p class="text-slate-600 mb-6">Andorra ha ratificado el Convenio de Budapest (2001), incorporándolo al Código Penal para tipificar delitos informáticos.</p>
+
+            <div class="mb-8 bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                <h3 class="font-bold text-purple-900 mb-4">Delitos Tipificados (Codi Penal)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-purple-50 text-purple-800 font-bold">
+                            <tr>
+                                <th class="px-3 py-2">Tipo Delito</th>
+                                <th class="px-3 py-2">Descripción</th>
+                                <th class="px-3 py-2">Artículo CP</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-purple-100">
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Acceso Ilícito</td>
+                                <td class="px-3 py-2">Entrada no autorizada en sistemas/redes sin permiso.</td>
+                                <td class="px-3 py-2">Art. 218</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Intercepción Ilegal</td>
+                                <td class="px-3 py-2">Captura de comunicaciones electrónicas sin consentimiento.</td>
+                                <td class="px-3 py-2">Art. 219</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Daños/Alteración</td>
+                                <td class="px-3 py-2">Modificación o supresión intencionada de datos.</td>
+                                <td class="px-3 py-2">Art. 221</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Fraude Informático</td>
+                                <td class="px-3 py-2">Manipulación de sistemas automatizados con ánimo de lucro.</td>
+                                <td class="px-3 py-2">Art. 223</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                <h3 class="font-bold text-blue-800 mb-3">🤝 Preservación Rápida (Art. 29 Budapest)</h3>
+                <p class="text-sm text-slate-700">Instrumento crucial para investigación transfronteriza: permite solicitar a proveedores la conservación urgente de datos (logs, IPs) antes de que se pierdan, mientras se tramita la asistencia judicial mutua formal.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: INSTITUCIONES -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Instituciones y Cooperación</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- APDA -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">🏛️ Agència Andorrana de Protecció de Dades (APDA)</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Organismo independiente supervisor.</li>
+                        <li>Emitir sanciones y guías técnicas.</li>
+                        <li>Mantener registro de actividades.</li>
+                        <li>Cooperar con EDPB (observador).</li>
+                    </ul>
+                </div>
+                <!-- Policía & Justícia -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">👮 Unitat de Delictes Tecnològics (UDT)</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Investigación y análisis forense digital.</li>
+                        <li>Coordinación con INTERPOL/Europol.</li>
+                        <li>Asistencia judicial y peritaje.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
+                <h3 class="font-bold text-yellow-800 mb-3">🌍 Estrategia Nacional 2023-2028</h3>
+                <p class="text-sm text-slate-700">Plan estratégico que promueve la colaboración público-privada (CERT-AND, CAT-SD), la formación ciudadana y la protección de infraestructuras críticas bajo estándares europeos.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CASO PRÁCTICO 21 (APDA) -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <div class="case-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">5. Caso Práctico 21: Sanción de la APDA por Incumplimiento de la Llei 29/2021</h2>
+                <p class="opacity-90">Violación de principios de minimización y transparencia en videovigilancia.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-8">
+                <div class="mb-6 border-l-4 border-pink-400 bg-pink-50/50 p-5 rounded-r-lg">
+                    <h4 class="font-bold text-pink-900 mb-4 text-lg">ENUNCIADO COMPLETO</h4>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        En 2022, la Agència Andorrana de Protecció de Dades (APDA) sancionó a una empresa del sector minorista por instalar un sistema de videovigilancia que captaba audio sin informar ni obtener consentimiento. La investigación determinó que la captación vulneraba los principios de proporcionalidad y minimización recogidos en los artículos 5 y 6 de la Llei 29/2021.
+                    </p>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        La empresa tampoco disponía de un registro actualizado de actividades de tratamiento ni había realizado una Avaluació d’Impacte (EIPD) pese a tratarse de un tratamiento de alto riesgo. La sanción incluyó multa económica, obligación de desactivar el audio, actualización del registro de tratamientos e implantación de medidas de transparencia, formación y control.
+                    </p>
+                    <p class="text-slate-800 font-semibold">
+                        Este caso se convirtió en referencia sobre cómo la protección de datos en Andorra exige niveles equivalentes a los europeos, especialmente en tratamientos sensibles como la videovigilancia.
+                    </p>
+                    
+                    <div class="mt-6 space-y-6">
+                        <!-- Pregunta 1 -->
+                        <div>
+                            <h5 class="font-bold text-pink-900 text-sm uppercase mb-2">Pregunta 1: Clasificar los requisitos legales y técnicos necesarios para cumplir con la Llei 29/2021 en sistemas de videovigilancia.</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-white p-3 rounded border border-pink-100">
+                                    <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Informar de forma clara, visible y accesible sobre la videovigilancia.</li>
+                                        <li>Mantener un registro actualizado de actividades de tratamiento.</li>
+                                        <li>Garantizar que no se capte audio salvo base jurídica específica y documentada.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-pink-100">
+                                    <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Minimización de datos: captación limitada a lo estrictamente necesario.</li>
+                                        <li>Transparencia con empleados, clientes y visitantes.</li>
+                                        <li>Limitación estricta del tiempo de conservación de las grabaciones.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-pink-100">
+                                    <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Configuración adecuada del sistema: audio desactivado por defecto.</li>
+                                        <li>Control de accesos a grabaciones y registro de accesos (logs).</li>
+                                        <li>Almacenamiento seguro y cifrado de las imágenes.</li>
+                                        <li>Auditorías técnicas periódicas de configuración, acceso y retención.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-pink-100">
+                                    <span class="block font-bold text-yellow-700 mb-1">⚖️ Legales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Cumplimiento de la Llei 29/2021 y principios generales de protección de datos.</li>
+                                        <li>Realización de una Evaluación de Impacto (EIPD) cuando exista alto riesgo para los derechos de las personas.</li>
+                                        <li>Contratos de encargado del tratamiento cuando intervengan terceros (empresa instaladora o mantenedora).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 2 -->
+                        <div>
+                            <h5 class="font-bold text-pink-900 text-sm uppercase mb-2">Pregunta 2: Elaborar un caso de uso que describa la implantación legalmente conforme de un sistema de videograbación en Andorra.</h5>
+                            <div class="bg-white p-4 rounded border border-pink-100 text-sm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                    <div><strong>Caso de uso:</strong> Instalación conforme de un sistema de videovigilancia</div>
+                                    <div><strong>Actor:</strong> Responsable del tratamiento / Empresa instaladora autorizada.</div>
+                                </div>
+                                
+                                <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3 flow-arrow-list">
+                                    <li>La organización identifica una necesidad legítima de seguridad física.</li>
+                                    <li>Se evalúa el riesgo y se realiza una EIPD si procede.</li>
+                                    <li>El sistema se configura sin audio, con áreas mínimas de captación y sin ángulos intrusivos.</li>
+                                    <li>Se instalan carteles informativos visibles conforme a la normativa.</li>
+                                    <li>El tratamiento se documenta en el registro interno: finalidad, base jurídica, retención, encargados.</li>
+                                    <li>Se establecen controles de acceso y políticas de conservación.</li>
+                                </ol>
+                                <p class="font-bold text-slate-800 mb-1">Excepciones:</p>
+                                <ul class="list-disc list-inside text-slate-700 text-xs">
+                                    <li>Un interesado ejerce derechos (acceso, oposición, supresión) → el responsable responde dentro de los plazos de la Llei 29/2021.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 3 -->
+                        <div>
+                            <h5 class="font-bold text-pink-900 text-sm uppercase mb-2">Pregunta 3: Describir métodos para validar el cumplimiento normativo ante una auditoría de la APDA.</h5>
+                            <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-pink-100 text-sm">
+                                <li>Auditoría interna inicial y anual para revisar cumplimiento.</li>
+                                <li>Verificación técnica: audio desactivado, accesos registrados, tiempos de retención configurados, cifrado activo.</li>
+                                <li>Revisión documental del registro de actividades, contratos con terceros y EIPD.</li>
+                                <li>Simulación de una inspección siguiendo guías y criterios de la APDA.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMEN VISUAL -->
+                <div class="mt-8 visual-box p-6 rounded-xl bg-gradient-to-br from-slate-50 to-pink-50 border border-pink-200">
+                    <h4 class="font-bold text-center text-pink-900 mb-4">⚠️ Análisis Visual: Fallo vs. Solución</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Problema -->
+                        <div class="bg-red-50 p-4 rounded border border-red-200">
+                            <h5 class="font-bold text-red-700 mb-2 text-center">❌ Lo que FALLÓ</h5>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Capta Audio</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Sin Base Jurídica</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Sin Registro RAT</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Sin EIPD</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Sin Información</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Multas APDA</span>
+                            </div>
+                        </div>
+                        <!-- Solución -->
+                        <div class="bg-green-50 p-4 rounded border border-green-200">
+                            <h5 class="font-bold text-green-700 mb-2 text-center">✅ La Solución Requerida</h5>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Audio OFF por defecto</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Minimización</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">EIPD Obligatoria</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Gestión Riesgos</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Carteles Visible</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Transparencia</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-4 italic">*"La protección de datos en Andorra exige niveles equivalentes a los europeos."*</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: CASO PRÁCTICO 22 (EUROPOL) -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <div class="case-header bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">6. Caso Práctico 22: Cooperación con Europol en Investigación Transfronteriza</h2>
+                <p class="opacity-90">Desmantelamiento de red de fraude financiero bajo el Convenio de Budapest.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-8">
+                <div class="mb-6 border-l-4 border-cyan-400 bg-cyan-50/50 p-5 rounded-r-lg">
+                    <h4 class="font-bold text-cyan-900 mb-4 text-lg">ENUNCIADO COMPLETO</h4>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        En 2023, la Unitat de Delictes Tecnològics de la Policia d’Andorra participó en una operación coordinada por Europol EC3 y el Consejo de Europa, en el marco del Convenio de Budapest sobre ciberdelincuencia. El objetivo era desmantelar una red internacional dedicada al fraude financiero mediante identidades digitales falsas y cuentas bancarias abiertas en múltiples jurisdicciones.
+                    </p>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        Gracias a la cooperación con autoridades de España y Francia, Andorra identificó a tres responsables extranjeros que operaban parcialmente desde el Principado. La actuación se basó en los artículos 29 (preservación rápida de datos almacenados) y 35 (punto de contacto operativo 24/7) del Convenio de Budapest, que regulan la asistencia judicial mutua y la cooperación inmediata.
+                    </p>
+                    <p class="text-slate-800 font-semibold">
+                        El caso demuestra la importancia de que Estados de menor tamaño participen en redes internacionales de coordinación y dispongan de capacidades propias de análisis forense digital compatibles con los estándares probatorios europeos.
+                    </p>
+                    
+                    <div class="mt-6 space-y-6">
+                        <!-- Pregunta 1 -->
+                        <div>
+                            <h5 class="font-bold text-cyan-900 text-sm uppercase mb-2">Pregunta 1: Clasificar los requisitos legales, operativos y técnicos necesarios para la cooperación internacional en ciberdelincuencia conforme al Convenio de Budapest.</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-white p-3 rounded border border-cyan-100">
+                                    <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Ejecutar de forma inmediata órdenes de preservación rápida de datos previstas en el art. 29 del Convenio de Budapest.</li>
+                                        <li>Facilitar asistencia judicial mutua dentro de los plazos requeridos.</li>
+                                        <li>Mantener cadena de custodia e integridad probatoria durante toda la operación.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-cyan-100">
+                                    <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Coordinación ágil entre autoridades andorranas, Europol y organismos extranjeros.</li>
+                                        <li>Gestión eficiente y segura de comunicaciones cifradas.</li>
+                                        <li>Disponibilidad continua del punto de contacto 24/7 (art. 35 Budapest).</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-cyan-100">
+                                    <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Herramientas forenses certificadas y compatibles con estándares internacionales.</li>
+                                        <li>Sistemas de registro, hash y sellado temporal de evidencias digitales.</li>
+                                        <li>Infraestructura segura de almacenamiento con trazabilidad completa.</li>
+                                        <li>Procedimientos de exportación de evidencias en formatos aceptados por Europol y tribunales europeos.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-cyan-100">
+                                    <span class="block font-bold text-yellow-700 mb-1">⚖️ Legales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Cumplimiento del Convenio de Budapest, legislación penal andorrana y normativa de cooperación internacional.</li>
+                                        <li>Garantía de derechos fundamentales y proporcionalidad en las medidas de preservación.</li>
+                                        <li>Aplicación de instrumentos de cooperación bilateral/multilateral (MLAT, Europol, Interpol).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 2 -->
+                        <div>
+                            <h5 class="font-bold text-cyan-900 text-sm uppercase mb-2">Pregunta 2: Elaborar un caso de uso sobre la preservación rápida de datos solicitada por Europol.</h5>
+                            <div class="bg-white p-4 rounded border border-cyan-100 text-sm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                    <div><strong>Caso de uso:</strong> Preservación rápida de datos</div>
+                                    <div><strong>Actor:</strong> Policia d’Andorra / Autoridad judicial competente.</div>
+                                </div>
+                                
+                                <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3 flow-arrow-list">
+                                    <li>Europol solicita a Andorra la preservación urgente de datos vinculados a una operación de ciberdelincuencia.</li>
+                                    <li>La autoridad andorrana identifica el proveedor, sistema o infraestructura involucrada.</li>
+                                    <li>Se emite una orden interna legal para preservar los datos sin acceder al contenido, tal como exige el Convenio.</li>
+                                    <li>Los datos preservados se hashifican, se les aplica sello temporal y se documenta íntegramente la intervención.</li>
+                                    <li>Se inicia formalmente el procedimiento de asistencia judicial mutua para la entrega posterior de los datos.</li>
+                                </ol>
+                                <p class="font-bold text-slate-800 mb-1">Excepciones:</p>
+                                <ul class="list-disc list-inside text-slate-700 text-xs">
+                                    <li>Si el proveedor se encuentra fuera de Andorra → activación de mecanismos de cooperación bilateral, MLAT o vías previstas en el propio Convenio.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 3 -->
+                        <div>
+                            <h5 class="font-bold text-cyan-900 text-sm uppercase mb-2">Pregunta 3: Describir métodos para validar que las evidencias digitales cumplen estándares internacionales.</h5>
+                            <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-cyan-100 text-sm">
+                                <li>Revisión de la cadena de custodia, verificando que cada acceso y operación está registrado.</li>
+                                <li>Comprobación de integridad mediante hashes, firmas digitales y sellos temporales.</li>
+                                <li>Pruebas forenses controladas para asegurar que los procedimientos cumplen estándares de Europol, Eurojust y tribunales europeos.</li>
+                                <li>Auditorías periódicas de interoperabilidad y cumplimiento legal con servicios como Europol EC3.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMEN VISUAL -->
+                <div class="mt-8 visual-box p-6 rounded-xl bg-gradient-to-br from-slate-50 to-cyan-50 border border-cyan-200">
+                    <h4 class="font-bold text-center text-cyan-900 mb-4">🌍 Flujograma: Cooperación Internacional</h4>
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+                        <!-- Solicitud -->
+                        <div class="w-full md:w-1/4 bg-white p-3 rounded shadow border-l-4 border-cyan-500 text-center">
+                            <div class="font-bold text-cyan-700">1. SOLICITUD</div>
+                            <div class="text-slate-600 mt-1">Europol EC3<br>(Art. 29 Urgencia)</div>
+                        </div>
+                        <div class="hidden md:block text-2xl text-slate-400">➜</div>
+                        
+                        <!-- Acción Local -->
+                        <div class="w-full md:w-1/4 bg-white p-3 rounded shadow border-l-4 border-blue-500 text-center">
+                            <div class="font-bold text-blue-700">2. PRESERVACIÓN</div>
+                            <div class="text-slate-600 mt-1">Policía Andorra<br>Orden Interna<br>Hash & Sellado</div>
+                        </div>
+                        <div class="hidden md:block text-2xl text-slate-400">➜</div>
+
+                        <!-- Procedimiento -->
+                        <div class="w-full md:w-1/4 bg-white p-3 rounded shadow border-l-4 border-indigo-500 text-center">
+                            <div class="font-bold text-indigo-700">3. ASISTENCIA</div>
+                            <div class="text-slate-600 mt-1">Trámite Judicial Mutuo<br>(MLAT)</div>
+                        </div>
+                        <div class="hidden md:block text-2xl text-slate-400">➜</div>
+
+                        <!-- Resultado -->
+                        <div class="w-full md:w-1/4 bg-white p-3 rounded shadow border-l-4 border-green-500 text-center">
+                            <div class="font-bold text-green-700">4. ENTREGA</div>
+                            <div class="text-slate-600 mt-1">Evidencia Válida<br>Tribunales Europeos<br>✅ Desmantelamiento</div>
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-4 italic">*"Capacidad forense compatible con estándares europeos es vital para pequeños estados."</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(['btn-sec5', 'btn-sec6'].includes(btn.id)) {
+                     if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-pink-400');
+                     if(btn.id === 'btn-sec6' && sectionId !== 'sec6') btn.classList.add('text-cyan-400');
+                }
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-pink-400', 'text-cyan-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec1');
+        };
+    </script>
+</body>
+</html>
