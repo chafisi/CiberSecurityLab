@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 4 - Sistemas Cortafuegos | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 4: Cortafuegos</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Evolución Histórica</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Tipos de Cortafuegos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Componentes y Arquitectura</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Tecnologías Asociadas</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Gestión y Despliegue</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Configuración y Gestión</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Despliegue y Escenarios</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">7. Limitaciones y Retos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">8. Buenas Prácticas</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-orange-400 font-semibold tab-btn">9. Caso Práctico 5 (Config)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec10')" id="btn-sec10" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400 font-semibold tab-btn">10. Caso Práctico 6 (NGFW)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec11')" id="btn-sec11" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-purple-400 font-semibold tab-btn">11. Caso Práctico 7 (Snort)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec12')" id="btn-sec12" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400 font-semibold tab-btn">12. Caso Práctico 8 (IPS FP)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="window.open('ud4-laboratorios.html', '_blank')" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 Laboratorios Interactivos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: EVOLUCIÓN HISTÓRICA -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Evolución Histórica</h2>
+            <p class="text-slate-600 mb-6">Los cortafuegos representan una de las tecnologías más antiguas y vigentes en protección de redes. Su evolución refleja la adaptación constante a nuevas amenazas.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Generaciones de Cortafuegos</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="border-l-4 border-gray-500 pl-4">
+                        <h4 class="font-bold text-gray-800 mb-2 text-sm">1ª Generación (1980s)</h4>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li>Filtrado estático de paquetes</li>
+                            <li>Reglas simples basadas en cabeceras</li>
+                            <li>No contexto de conexión</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="font-bold text-blue-800 mb-2 text-sm">2ª Generación (1990s)</h4>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li>Inspección con estado (Stateful)</li>
+                            <li>Rastreo de conexiones activas</li>
+                            <li>Contexto del flujo</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-purple-500 pl-4">
+                        <h4 class="font-bold text-purple-800 mb-2 text-sm">3ª Generación</h4>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li>Análisis de protocolos</li>
+                            <li>Control de aplicaciones</li>
+                            <li>Profundidad en inspección</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-green-500 pl-4">
+                        <h4 class="font-bold text-green-800 mb-2 text-sm">NGFW (2010+)</h4>
+                        <ul class="list-disc list-inside text-xs text-slate-700 space-y-1">
+                            <li>DPI + Control de apps</li>
+                            <li>IDS/IPS integrado</li>
+                            <li>Inteligencia de amenazas</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200">
+                <h3 class="font-bold text-indigo-900 mb-3">📈 Impacto Actual</h3>
+                <p class="text-sm text-slate-700 mb-3">Desde los filtros estáticos hasta los NGFW actuales, los cortafuegos han evolucionado para convertirse en nodos estratégicos dentro de arquitecturas de ciberseguridad más amplias, especialmente en entornos de nube y redes definidas por software (SDN).</p>
+                <div class="bg-indigo-100 p-4 rounded text-center text-sm font-mono">
+                    Perímetro clásico → Defensa en profundidad → Zero Trust Architecture
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: TIPOS DE CORTAFUEGOS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Tipos de Cortafuegos</h2>
+            <p class="text-slate-600 mb-8">La clasificación se basa en ubicación y función dentro de la infraestructura.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Cortafuegos de Red -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                    <div class="text-3xl mb-3 text-blue-500">🌐</div>
+                    <h3 class="font-bold text-lg text-blue-900 mb-2">Cortafuegos de Red</h3>
+                    <p class="text-sm text-slate-700 mb-3">Se despliegan en el perímetro como primera línea de defensa.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>Control tráfico entre redes internas/externas</li>
+                        <li>Gestionan grandes volúmenes de tráfico</li>
+                        <li>Incluyen segmentación mediante DMZ</li>
+                        <li>Ejemplos: FortiGate, Cisco ASA, Palo Alto</li>
+                    </ul>
+                </div>
+
+                <!-- Cortafuegos Personales -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500">
+                    <div class="text-3xl mb-3 text-purple-500">💻</div>
+                    <h3 class="font-bold text-lg text-purple-900 mb-2">Cortafuegos Personales/Host</h3>
+                    <p class="text-sm text-slate-700 mb-3">Instalados en dispositivos individuales.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>Control tráfico entrante/saliente a nivel SO</li>
+                        <li>Protección granular contra intrusiones locales</li>
+                        <li>Ideal para equipos móviles/redes públicas</li>
+                        <li>Ejemplos: Windows Defender Firewall, iptables, ufw</li>
+                    </ul>
+                </div>
+
+                <!-- Cortafuegos en la Nube -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-500">
+                    <div class="text-3xl mb-3 text-green-500">☁️</div>
+                    <h3 class="font-bold text-lg text-green-900 mb-2">Cortafuegos en la Nube</h3>
+                    <p class="text-sm text-slate-700 mb-3">Soluciones virtuales y FWaaS (Firewall-as-a-Service).</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>Políticas centralizadas en entornos cloud</li>
+                        <li>Flexibilidad para arquitecturas dinámicas</li>
+                        <li>Desafíos: dependencia proveedor, latencia</li>
+                        <li>Ejemplos: AWS Security Groups, Azure NSG</li>
+                    </ul>
+                </div>
+
+                <!-- Firewall Transparente -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+                    <div class="text-3xl mb-3 text-orange-500">🔗</div>
+                    <h3 class="font-bold text-lg text-orange-900 mb-2">Firewall Transparente/Bridge</h3>
+                    <p class="text-sm text-slate-700 mb-3">Opera en capa 2 (Enlace), invisible para dispositivos.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>No modifica direccionamiento IP</li>
+                        <li>Insertable sin reconfigurar red existente</li>
+                        <li>Útil para mejorar protección sin interrumpir servicio</li>
+                        <li>Soporta DPI y control de acceso</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: COMPONENTES Y ARQUITECTURA -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Componentes y Arquitectura</h2>
+            <p class="text-slate-600 mb-8">El diseño implica configuración de múltiples componentes interrelacionados.</p>
+
+            <div class="bg-white border-t-4 border-t-cyan-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-cyan-800 mb-4">Arquitectura Basada en Zonas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="bg-blue-100 w-20 h-20 mx-auto rounded-full flex justify-center items-center text-3xl mb-3">🏠</div>
+                        <h4 class="font-bold text-blue-900">Red Interna</h4>
+                        <p class="text-xs text-slate-600 mt-2">Alta confianza. Sistemas críticos.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-yellow-100 w-20 h-20 mx-auto rounded-full flex justify-center items-center text-3xl mb-3">⚖️</div>
+                        <h4 class="font-bold text-yellow-900">DMZ</h4>
+                        <p class="text-xs text-slate-600 mt-2">Zona intermedia. Servicios públicos expuestos.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-red-100 w-20 h-20 mx-auto rounded-full flex justify-center items-center text-3xl mb-3">🌐</div>
+                        <h4 class="font-bold text-red-900">Red Externa</h4>
+                        <p class="text-xs text-slate-600 mt-2">Internet. Potencialmente hostil.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <h4 class="font-bold text-blue-900 mb-3">Listas de Control de Acceso (ACL)</h4>
+                    <p class="text-sm text-slate-700 mb-3">Conjunto ordenado de reglas que especifican qué tráfico se admite o rechaza:</p>
+                    <ul class="list-disc list-inside text-xs text-slate-700 space-y-2">
+                        <li>Direcciones IP origen/destino</li>
+                        <li>Puertos de aplicación</li>
+                        <li>Protocolos de comunicación</li>
+                        <li>Orden crítico: regla primera coincide</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                    <h4 class="font-bold text-green-900 mb-3">Integración IDS/IPS y Proxies</h4>
+                    <p class="text-sm text-slate-700 mb-3">Sinergia que añade visibilidad y capacidad de reacción:</p>
+                    <ul class="list-disc list-inside text-xs text-slate-700 space-y-2">
+                        <li>IDS/IPS: Patrones conocidos, firmas de ataque</li>
+                        <li>Proxies: Intermediarios, caché, anonimización</li>
+                        <li>Arcitectura defensiva más robusta</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: TECNOLOGÍAS ASOCIADAS -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Tecnologías Asociadas</h2>
+            <p class="text-slate-600 mb-8">Los cortafuegos operan junto a tecnologías complementarias que amplían sus capacidades.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+                    <div class="text-3xl mb-3 text-orange-500">🔄</div>
+                    <h3 class="font-bold text-orange-900 mb-2">NAT/PAT</h3>
+                    <p class="text-xs text-slate-700 mb-2">Traducción de direcciones de red.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>Ocultar IPs internas tras una pública</li>
+                        <li>Mitigar escasez IPv4</li>
+                        <li>Aportar anonimización adicional</li>
+                        <li>PAT multiplexa puertos únicos</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                    <div class="text-3xl mb-3 text-blue-500">🔒</div>
+                    <h3 class="font-bold text-blue-900 mb-2">VPNs</h3>
+                    <p class="text-xs text-slate-700 mb-2">Túneles cifrados seguros.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>Confidencialidad e integridad</li>
+                        <li>Acceso remoto seguro</li>
+                        <li>Evolución hacia ZTNA</li>
+                        <li>Terminación en cortafuegos</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-500">
+                    <div class="text-3xl mb-3 text-green-500">⚡</div>
+                    <h3 class="font-bold text-green-900 mb-2">WAF/LB</h3>
+                    <p class="text-xs text-slate-700 mb-2">Web Application Firewall + Load Balancer.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1">
+                        <li>Proteger servicios HTTP/HTTPS</li>
+                        <li>Distribuir tráfico entre servidores</li>
+                        <li>Bloquear SQLi, XSS</li>
+                        <li>Optimizar rendimiento y HA</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CONFIGURACIÓN Y GESTIÓN -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. Configuración y Gestión</h2>
+            <p class="text-slate-600 mb-8">La eficacia depende de cómo se configura y administra en el tiempo.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Pilares de la Gestión</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="font-bold text-blue-800 mb-2">Políticas de Seguridad</h4>
+                        <p class="text-xs text-slate-700">Marco que guía configuración: servicios disponibles, usuarios permitidos, tráfico legítimo.</p>
+                    </div>
+                    <div class="border-l-4 border-purple-500 pl-4">
+                        <h4 class="font-bold text-purple-800 mb-2">Reglas y Orden</h4>
+                        <p class="text-xs text-slate-700">Implementación práctica: evaluación secuencial, filosofía "deny by default".</p>
+                    </div>
+                    <div class="border-l-4 border-green-500 pl-4">
+                        <h4 class="font-bold text-green-800 mb-2">Registro/Auditoría</h4>
+                        <p class="text-xs text-slate-700">Eventos almacenados: detección patrones anómalos, cumplimiento normativo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-900 mb-3">⚠️ Principio Deny by Default</h3>
+                <p class="text-sm text-slate-700 mb-3">Bloquear todo el tráfico salvo aquel que se encuentre claramente autorizado mediante reglas explícitas. Reduce superficie de exposición.</p>
+                <div class="bg-amber-100 p-4 rounded text-center text-sm font-mono">
+                    Permitir → Solo lo necesario | Bloquear → Todo lo demás
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: DESPLIEGUE Y ESCENARIOS -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Despliegue y Escenarios</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-900 mb-3">Perimetral vs Interno</h3>
+                    <p class="text-sm text-slate-700 mb-3">Modelo clásico: cortafuegos en perímetro como primera barrera. Limitaciones modernas: amenazas internas.</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Cortafuegos internos = Segmentación</li>
+                        <li>Dividen red en dominios pequeños</li>
+                        <li>Controlan tráfico lateral</li>
+                        <li>Dificultan movimiento interno atacante</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                    <h3 class="font-bold text-lg text-purple-900 mb-3">Entornos Híbridos y Cloud</h3>
+                    <p class="text-sm text-slate-700 mb-3">Recursos locales + virtualizados requieren políticas coherentes.</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Cortafuegos virtuales/FWaaS</li>
+                        <li>Extensiones cloud (AWS, Azure, GCP)</li>
+                        <li>Flexibilidad y escalabilidad</li>
+                        <li>Coordinación equipos red-seguridad-proveedores</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: LIMITACIONES Y RETOS -->
+        <section id="sec7" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">7. Limitaciones y Retos</h2>
+            <p class="text-slate-600 mb-8">Los cortafuegos no son infalibles. Su eficacia depende de configuración correcta y adaptación a nuevas tácticas.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-500">
+                    <div class="text-3xl mb-3 text-red-500">🕵️</div>
+                    <h4 class="font-bold text-red-900 mb-2">Evasión</h4>
+                    <p class="text-xs text-slate-700">Fragmentación paquetes, túneles encubiertos, ofuscación, Tor, HTTPS dificultan identificación propósito real.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+                    <div class="text-3xl mb-3 text-orange-500">🔒</div>
+                    <h4 class="font-bold text-orange-900 mb-2">Cifrado</h4>
+                    <p class="text-xs text-slate-700">HTTPS/TLS masivo limita inspección contenido. Inspección SSL plantea dilemas privacidad/rendimiento.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500">
+                    <div class="text-3xl mb-3 text-purple-500">📈</div>
+                    <h4 class="font-bold text-purple-900 mb-2">Escalabilidad</h4>
+                    <p class="text-xs text-slate-700">Millones conexiones simultáneas requieren hardware especializado, offloading y arquitecturas elásticas.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 p-6 rounded-xl border border-slate-300">
+                <h3 class="font-bold text-slate-800 mb-4">Impacto Real del Tráfico Cifrado</h3>
+                <p class="text-sm text-slate-700 mb-3">Desde 2020, más del 95% del tráfico web global en Chrome ya estaba cifrado, reduciendo posibilidades de inspección sin soluciones específicas.</p>
+                <div class="bg-slate-200 p-4 rounded text-center">
+                    <div class="text-4xl font-bold text-slate-800">95%+</div>
+                    <div class="text-xs text-slate-600 mt-1">Tráfico web cifrado (Google Transparency Report)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: BUENAS PRÁCTICAS -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">8. Buenas Prácticas</h2>
+            <p class="text-slate-600 mb-8">Muchos incidentes tienen origen en configuraciones deficientes, reglas obsoletas o administración poco rigurosa.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="font-bold text-lg text-green-900 mb-3">✅ Principio Mínimo Privilegio</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Conceder únicamente accesos estrictamente necesarios</li>
+                        <li>Reglas solo tráfico indispensable</li>
+                        <li>"Denegar por defecto, permitir explícito"</li>
+                        <li>Reduce superficie de exposición</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-900 mb-3">🔄 Revisión Periódica Reglas</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Identificar entradas obsoletas/duplicadas</li>
+                        <li>Alinear política con necesidades actuales</li>
+                        <li>Auditorías internas y externas</li>
+                        <li>Cumplimiento normativo sector regulado</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                    <h3 class="font-bold text-lg text-purple-900 mb-3">🤖 Automatización/Orquestación</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Infraestructura como Código (IaC)</li>
+                        <li>DevSecOps integration</li>
+                        <li>Reducir errores manuales</li>
+                        <li>Acelerar respuesta ante incidentes</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-orange-500">
+                    <h3 class="font-bold text-lg text-orange-900 mb-3">📊 Monitorización Continua</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Logs centralizados (SIEM)</li>
+                        <li>Detectar patrones anómalos</li>
+                        <li>Ajustar sensibilidad reglas</li>
+                        <li>Mejorar continuamente lessons learned</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: CASO PRÁCTICO 5 (CONFIGURACIÓN ERRÓNEA) -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-orange-500 pb-2 inline-block">9. Caso Práctico 5: Configuración Errónea en Firewall Perimetral</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del incidente y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-orange-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔥</span>
+                        <h3 class="text-lg font-bold">Enunciado del Incidente</h3>
+                    </div>
+                    <span class="bg-orange-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Caso Real</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        En una empresa mediana del sector financiero, una mala configuración en el cortafuegos perimetral dejó expuesto a Internet un puerto asociado a la base de datos corporativa. Aunque existían credenciales, la reutilización de contraseñas y la falta de segmentación permitieron que los atacantes obtuvieran acceso mediante fuerza bruta. El incidente provocó exfiltración de datos sensibles, interrupción de varios servicios internos y un impacto operativo significativo. La auditoría posterior reveló que no existían procedimientos formales para validar reglas del firewall, la gestión se realizaba de forma manual, no había revisión por pares, y no existía un proceso automatizado de detección de puertos expuestos.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-orange-400 bg-orange-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-orange-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">1. Clasificar requisitos seguridad para evitar errores de configuración en firewall</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Definir y validar reglas de filtrado antes de su aplicación en producción.</li>
+                                            <li>Mantener un registro completo de cambios con historial de versiones del firewall.</li>
+                                            <li>Generar alertas automáticas ante la apertura de puertos no autorizados o cambios sospechosos.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Alta disponibilidad del servicio de firewall (≥99,9%).</li>
+                                            <li>Baja latencia en el filtrado para no afectar al tráfico legítimo.</li>
+                                            <li>Interfaz de gestión segura, clara y resistente a errores humanos.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Segmentación adecuada entre base de datos, frontend, servidores internos y administración.</li>
+                                            <li>Autenticación fuerte para administradores (MFA y control de acceso basado en roles).</li>
+                                            <li>Automatización de pruebas de reglas mediante herramientas de análisis y validación.</li>
+                                            <li>Uso de entornos de prueba o modo staging antes del despliegue.</li>
+                                            <li>Aplicación del principio de mínimo privilegio en reglas y políticas.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">2. Elaborar caso de uso: gestión segura de reglas de cortafuegos</h5>
+                                <div class="bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">Administrador de seguridad.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El administrador propone una nueva regla (por ejemplo, apertura de un puerto para un servicio específico).</li>
+                                        <li>La regla es revisada por pares (segundo administrador o equipo de seguridad).</li>
+                                        <li>El sistema ejecuta una validación automatizada usando herramientas de análisis de políticas.</li>
+                                        <li>La regla se aplica primero en un entorno de pruebas o en modo controlado.</li>
+                                        <li>Tras confirmar que no causa problemas, se despliega en producción.</li>
+                                        <li>El cambio queda registrado en el historial del firewall.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Regla insegura o redundante: se rechaza y se documenta la justificación.</li>
+                                        <li>Fallos de rendimiento o interrupciones tras aplicar la regla: rollback automático.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">3. Cómo validar que reglas y configuraciones son correctas y seguras</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <li>Auditorías periódicas de reglas, políticas y configuraciones del firewall.</li>
+                                    <li>Escaneos automatizados (Nmap, Nessus, OpenVAS) para detectar puertos expuestos o servicios inesperados.</li>
+                                    <li>Pruebas de penetración internas para verificar la segmentación de la red.</li>
+                                    <li>Revisión por pares de cualquier regla antes y después de su despliegue.</li>
+                                    <li>Comparación periódica entre la arquitectura prevista y la configuración real del firewall (config drift detection).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Flujo Correctivo</h4>
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">⚠️ Puerto<br/>DB Expuesto</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-yellow-100 text-yellow-800 px-3 py-2 rounded border border-yellow-300">🔍 Auditoría<br/>Detecta Error</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">🛡️ Aplica<br/>Reglas Seguras</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-blue-100 text-blue-800 px-3 py-2 rounded border border-blue-300">✅ Monitoriza<br/>Continuo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 10: CASO PRÁCTICO 6 (NGFW MIGRATION) -->
+        <section id="sec10" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-blue-500 pb-2 inline-block">10. Caso Práctico 6: Migración a NGFW</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del despliegue NGFW y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-blue-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🌐</span>
+                        <h3 class="text-lg font-bold">Enunciado del Despliegue</h3>
+                    </div>
+                    <span class="bg-blue-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Infraestructura</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Una empresa de telecomunicaciones realizó la migración de un firewall tradicional a un cortafuegos de próxima generación (NGFW) para detectar aplicaciones evasivas como Tor, proxies anónimos o herramientas utilizadas por empleados para saltarse restricciones corporativas. Durante la transición, se integraron capacidades de inspección profunda de paquetes (DPI), control de aplicaciones y análisis de tráfico cifrado. Esto permitió identificar patrones encubiertos, conexiones no autorizadas y canales cifrados que el firewall anterior no podía detectar. El proyecto requirió ajustes de rendimiento, optimización de políticas y formación del personal para comprender las nuevas alertas y capacidades.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-blue-400 bg-blue-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-blue-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">1. Clasificar requisitos necesarios para la transición a un NGFW</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Inspección profunda de paquetes (DPI) en tiempo real.</li>
+                                            <li>Identificación de aplicaciones, incluso cuando utilizan cifrado o técnicas evasivas.</li>
+                                            <li>Bloqueo automático de tráfico no autorizado según políticas corporativas.</li>
+                                            <li>Generación de reportes detallados sobre actividad sospechosa o evasiva.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Rendimiento suficiente para DPI sin degradar servicios críticos.</li>
+                                            <li>Escalabilidad para gestionar picos de tráfico propios de entornos de telecomunicaciones.</li>
+                                            <li>Alertas claras y con baja tasa de falsos positivos.</li>
+                                            <li>Interfaz de gestión intuitiva para facilitar la adopción.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Integración con sistemas SIEM para correlación de eventos.</li>
+                                            <li>Soporte de políticas de control por usuario, aplicación, categoría y contenido.</li>
+                                            <li>Actualizaciones frecuentes de firmas, heurísticas y motores de análisis.</li>
+                                            <li>Capacidad de inspección TLS/SSL en escenarios permitidos.</li>
+                                            <li>Automatización de despliegue de reglas y políticas.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">2. Elaborar caso de uso: detección de aplicaciones no autorizadas</h5>
+                                <div class="bg-white p-4 rounded border border-blue-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">NGFW / Equipo de seguridad.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>Un empleado intenta utilizar Tor, un proxy anónimo o una VPN no autorizada.</li>
+                                        <li>El NGFW analiza el tráfico mediante DPI e identifica el patrón asociado a esa aplicación.</li>
+                                        <li>El cortafuegos bloquea automáticamente la conexión según las políticas definidas.</li>
+                                        <li>El NGFW genera una alerta al SOC o al equipo de seguridad.</li>
+                                        <li>El incidente queda registrado para análisis y auditoría.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Aplicación legítima mal clasificada → revisión de reglas, whitelisting controlado o reentrenamiento del motor de firmas.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">3. Cómo validar la eficacia del NGFW tras su despliegue</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-blue-100 text-sm">
+                                    <li>Pruebas de laboratorio utilizando aplicaciones evasivas reales (Tor, VPNs, túneles SSH, proxies).</li>
+                                    <li>Pruebas de rendimiento para verificar que el DPI no causa latencia excesiva ni afecta a servicios críticos.</li>
+                                    <li>Revisión de alertas en el SOC para ajustar sensibilidad, reglas y reducir falsos positivos.</li>
+                                    <li>Simulaciones de uso indebido para comprobar detección, bloqueo y correcto registro del incidente.</li>
+                                    <li>Revisión periódica de políticas para asegurar que el NGFW cubre nuevas aplicaciones evasivas emergentes.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen de Capacidades NGFW</h4>
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-gray-100 text-gray-800 px-3 py-2 rounded border border-gray-300">Firewall Tradicional<br/>Puertos/IPs</div>
+                            <div class="text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 text-purple-800 px-3 py-2 rounded border border-purple-300">DPI +<br/>App Control</div>
+                            <div class="text-slate-400">⬇️</div>
+                            <div class="bg-blue-100 text-blue-800 px-3 py-2 rounded border border-blue-300">NGFW Completo<br/>DPI+IPS+Users</div>
+                        </div>
+                        <p class="text-center text-slate-500 italic text-sm">
+                            "Los NGFW aumentan visibilidad y seguridad, pero requieren gestión del cambio, recursos técnicos adicionales y capacitación continua."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 11: CASO PRÁCTICO 7 (SNORT) -->
+        <section id="sec11" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-purple-500 pb-2 inline-block">11. Caso Práctico 7: Uso de Snort en una Universidad</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del despliegue IDS Snort y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-purple-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🛡️</span>
+                        <h3 class="text-lg font-bold">Enunciado del Proyecto</h3>
+                    </div>
+                    <span class="bg-purple-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Educación</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Una universidad europea implementó el IDS Snort como parte de un proyecto de investigación y formación en ciberseguridad. El sistema fue desplegado en la red perimetral para monitorizar tráfico entrante y saliente, con el objetivo de detectar accesos no autorizados y escaneos masivos. Poco después del despliegue, Snort detectó patrones anómalos correspondientes a un escaneo de puertos dirigido a decenas de servidores. La alerta permitió bloquear proactivamente el origen del ataque desde el cortafuegos perimetral, evitando una intrusión mayor. Los registros generados se utilizaron además como material pedagógico en cursos de seguridad informática.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-purple-400 bg-purple-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-purple-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-purple-900 text-sm uppercase mb-2">1. Clasificar requisitos necesarios para desplegar y operar un IDS basado en firmas como Snort</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-purple-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Monitorizar tráfico entrante y saliente en tiempo real.</li>
+                                            <li>Detectar patrones de ataque basados en firmas (escaneos, exploits, anomalías comunes).</li>
+                                            <li>Generar alertas automáticas para el equipo de TI o el SOC.</li>
+                                            <li>Registrar eventos y permitir análisis posterior.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-purple-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Capacidad para analizar grandes volúmenes de tráfico sin pérdida de paquetes.</li>
+                                            <li>Actualización frecuente de la base de firmas para cubrir nuevas amenazas.</li>
+                                            <li>Baja tasa de falsos positivos y reglas bien ajustadas.</li>
+                                            <li>Disponibilidad continua del sensor IDS.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-purple-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Integración con el cortafuegos perimetral para respuesta coordinada.</li>
+                                            <li>Configuración adecuada de preprocessors y reglas personalizadas.</li>
+                                            <li>Acceso a registros completos (pcap, alertas, logs) para análisis forense.</li>
+                                            <li>Uso de hardware o red espejo (SPAN/TAP) para capturar tráfico real.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-purple-900 text-sm uppercase mb-2">2. Elaborar caso de uso: detección de un escaneo de puertos</h5>
+                                <div class="bg-white p-4 rounded border border-purple-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">IDS Snort</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>Snort inspecciona el tráfico que llega a la red perimetral.</li>
+                                        <li>Detecta un patrón característico de escaneo masivo (p. ej., múltiples SYN a puertos consecutivos).</li>
+                                        <li>Genera una alerta con información del origen y destino del tráfico.</li>
+                                        <li>El equipo de TI revisa la alerta en el dashboard o SIEM.</li>
+                                        <li>El cortafuegos bloquea el origen del escaneo mediante una regla automática o manual.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Actividad interna legítima que genera alertas (pruebas, inventariado, monitoreo) → ajuste de reglas o whitelist.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-purple-900 text-sm uppercase mb-2">3. Cómo validar que el IDS está configurado correctamente y detecta ataques reales</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-purple-100 text-sm">
+                                    <li>Realizar pruebas controladas con herramientas como Nmap o Masscan para verificar que Snort detecta los escaneos.</li>
+                                    <li>Revisar y actualizar reglas periódicamente para mantener la detección eficaz.</li>
+                                    <li>Analizar el rendimiento del IDS (pérdida de paquetes, carga del sensor, cuellos de botella).</li>
+                                    <li>Correlacionar alertas con otros sistemas (SIEM, firewall, syslog) para confirmar detecciones reales.</li>
+                                    <li>Monitorizar la tasa de falsos positivos y ajustar reglas o preprocessors según necesidad.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Flujo de Detección</h4>
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">🔍 Escaneo<br/>Massive Ports</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-purple-100 text-purple-800 px-3 py-2 rounded border border-purple-300">🛡️ Snort<br/>Detecta Firma</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-yellow-100 text-yellow-800 px-3 py-2 rounded border border-yellow-300">🔔 Alerta<br/>SOC/TI</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">🚫 Firewall<br/>Bloquea Origen</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 12: CASO PRÁCTICO 8 (FALSOS POSITIVOS IPS) -->
+        <section id="sec12" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-red-500 pb-2 inline-block">12. Caso Práctico 8: Falsos Positivos en un IPS Financiero</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del incidente de falsos positivos y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-red-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <h3 class="text-lg font-bold">Enunciado del Incidente</h3>
+                    </div>
+                    <span class="bg-red-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Financiero</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Una entidad financiera experimentó un incidente crítico cuando su IPS comenzó a bloquear tráfico legítimo de clientes. Las reglas habían sido configuradas de forma excesivamente estricta, provocando que patrones válidos se clasificaran como maliciosos. El fallo generó interrupciones en operaciones esenciales y un impacto reputacional significativo. La investigación reveló varios problemas estructurales: ausencia de pruebas en un entorno previo al despliegue, falta de un laboratorio de validación, e inexistencia de procedimientos formales para revisar y aprobar reglas IPS. El caso refleja un dilema clásico en la operación de un IPS: demasiado control compromete la disponibilidad, mientras que muy poco control disminuye la seguridad.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-red-400 bg-red-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-red-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">1. Clasificar requisitos necesarios para operar un IPS con bajo nivel de falsos positivos</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Inspeccionar tráfico en tiempo real y bloquear ataques confirmados.</li>
+                                            <li>Registrar cada acción de bloqueo y mantener trazabilidad completa.</li>
+                                            <li>Habilitar un modo "alerta" para probar reglas antes de activarlas en modo "bloqueo".</li>
+                                            <li>Permitir despliegue gradual de reglas críticas.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Baja tasa de falsos positivos.</li>
+                                            <li>Alta disponibilidad del servicio (≥99,99%), imprescindible en entornos financieros.</li>
+                                            <li>Latencia mínima en la inspección para no afectar la experiencia de usuario.</li>
+                                            <li>Estabilidad del motor IPS bajo carga elevada.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos
+
+                                           
+                                        </span>
+                                            <ul class="list-disc list-inside text-slate-700">
+                                                 <li>Disponer de un entorno de pruebas o laboratorio para validar reglas antes del despliegue.</li>
+                                                 <li>Utilizar módulos de análisis heurístico o aprendizaje adaptativo para mejorar la clasificación.</li> <li>Integración con un SIEM para correlación de eventos y reducción de falsos positivos.</li> <li>Automatización de pruebas con tráfico realista y patrones maliciosos conocidos.</li>
+                                                 </ul> 
+                                    </div>
+                                 </div> <!-- Caso de Uso --> 
+                                 <div> <h5 class="font-bold text-red-900 text-sm uppercase mb-2">2. Elaborar caso de uso: validación de reglas IPS</h5> 
+                                    <div class="bg-white p-4 rounded border border-red-100 text-sm"> <p class="font-bold text-slate-800 mb-2">Actor:</p> <p class="text-slate-600 mb-3">Administrador de seguridad.</p> <p class="font-bold text-slate-800 mb-2">Flujo principal:</p> <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3"> <li>El administrador crea o modifica una regla IPS.</li> <li>La regla se prueba en un entorno de laboratorio en modo "alerta".</li> <li>Se analizan los resultados: número de falsos positivos y falsos negativos.</li> <li>Si la regla es estable y precisa, se despliega gradualmente en modo "bloqueo".</li> <li>El cambio se documenta y se registra en el sistema para trazabilidad.</li> </ol> <p class="font-bold text-slate-800 mb-2">Excepciones:</p> <ul class="list-disc list-inside text-slate-700"> <li>Tasa excesiva de falsos positivos → reajuste o reescritura de la regla.</li> <li>Impacto en un servicio crítico → reversión inmediata (rollback).</li> </ul> </div> </div> <!-- Métodos Validación --> <div> <h5 class="font-bold text-red-900 text-sm uppercase mb-2">3. Mecanismos para validar que un IPS no está bloqueando tráfico legítimo</h5> <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-red-100 text-sm"> <li>Realizar pruebas de carga y tráfico real (capturas, replay, simulaciones) antes de activar reglas.</li> <li>Monitorizar continuamente el comportamiento del IPS tras el despliegue.</li> <li>Revisar estadísticas de falsos positivos/falsos negativos y ajustar reglas iterativamente.</li> <li>Simular ataques reales o conocidos para verificar la eficacia del bloqueo.</li> <li>Correlacionar eventos del IPS con logs de aplicaciones, firewall y SIEM para detectar impactos no deseados.</li> </ul> </div> </div> </div> <!-- Resumen Visual --> <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm"> <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Dilema IPS</h4> <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono"> <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">Demasiado Relajado<br/>❌ Brechas Seguridad</div> <div class="text-slate-400">⚖️</div> <div class="bg-orange-100 text-orange-800 px-3 py-2 rounded border border-orange-300">Equilibrio Ideal<br/>✅ Seguridad + Disponibilidad</div> <div class="text-slate-400">⚖️</div> <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">Demasiado Estricto<br/>❌ Bloqueo Legítimo</div> </div> <p class="text-center text-slate-500 italic text-sm"> "El equilibrio entre eficacia y falsos positivos es fundamental. Un fallo puede generar interrupciones operativas y daño reputacional." </p> </div> </div> </div> </section> </main> <script> // ========================================== // UI CORE & NAVEGACIÓN // ========================================== function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); } function switchSection(sectionId) { document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden')); document.getElementById(sectionId).classList.remove('hidden'); document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white'); btn.classList.add('border-transparent'); if(['btn-sec9', 'btn-sec10', 'btn-sec11', 'btn-sec12'].includes(btn.id)) { if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-orange-400'); if(btn.id === 'btn-sec10' && sectionId !== 'sec10') btn.classList.add('text-blue-400'); if(btn.id === 'btn-sec11' && sectionId !== 'sec11') btn.classList.add('text-purple-400'); if(btn.id === 'btn-sec12' && sectionId !== 'sec12') btn.classList.add('text-red-400'); } }); const currentBtn = document.getElementById('btn-' + sectionId); if(currentBtn) { currentBtn.classList.remove('border-transparent', 'text-orange-400', 'text-blue-400', 'text-purple-400', 'text-red-400'); currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white'); } document.getElementById('mainContent').scrollTop = 0; if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open'); } // Buscador document.getElementById('searchInput').addEventListener('keyup', function(e) { const term = e.target.value.toLowerCase(); document.querySelectorAll('.nav-item').forEach(item => { item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none'; }); }); // Inicializar window.onload = function() { switchSection('sec1'); }; </script> </body> </html> 
