@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 11 - Laboratorios Prácticos | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Estilos específicos */
+        .lab-header { background: linear-gradient(to right, #7c3aed, #4f46e5); }
+        
+        /* Simulación APDA */
+        .violation-card { transition: all 0.3s; opacity: 0.6; cursor: pointer; }
+        .violation-card:hover { opacity: 1; transform: scale(1.05); }
+        .violation-card.fixed { opacity: 1; border-color: #10b981; background-color: #ecfdf5; pointer-events: none; }
+
+        /* Simulación Cooperación */
+        .vuln-alert { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
+
+        /* Dashboard Metrics */
+        .metric-card { transition: all 0.3s; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        /* Timeline Line */
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 11: Labs AD</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Laboratorios Legales</li>
+                <li class="nav-item"><button onclick="switchSection('sec11')" id="btn-sec11" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-pink-500 bg-slate-800 text-white tab-btn text-pink-400 font-bold">1. Auditoría APDA (Llei 29/21)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec12')" id="btn-sec12" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">2. Cooperación Europol (Budapest)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec13')" id="btn-sec13" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-orange-400 font-bold">3. Gestión Derechos ARCO</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Navegación</li>
+                <li class="nav-item"><button onclick="window.location.href='ud11-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400">← Volver a Teoría y Casos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 11: AUDITORÍA APDA -->
+        <section id="sec11" class="main-section fade-in">
+            <div class="lab-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">1. Laboratorio: Auditoría APDA (Llei 29/2021)</h2>
+                <p class="opacity-90">Actúa como inspector de la APDA. Identifica infracciones en una tienda minorista y corrígelas antes de recibir una sanción.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+                    <!-- Escenario Visual -->
+                    <div class="bg-gray-100 rounded-xl p-4 border border-gray-300 relative h-64 overflow-hidden">
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9ImZub25lIi8+CjxjaXJjbGUgY3k9IjIwIiBjeD0iMjAiIHI9IjEiIGZpbGw9IiNjY2MiIG9wYWNpdHk9IjAuNSIvPgo8L3N2Zz4=')] opacity-20"></div>
+                        <div class="absolute top-4 left-4 flex flex-col items-center">
+                            <div class="text-3xl relative cursor-pointer violation-target" onclick="toggleViolation('camera')" id="cam-icon">
+                                📷
+                                <div class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-pulse hidden" id="mic-dot">🎤</div>
+                            </div>
+                            <span class="text-xs text-gray-600 mt-2">Sistema CCTV</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 text-center w-32 cursor-pointer violation-target" onclick="toggleViolation('sign')">
+                            <div class="bg-yellow-100 border-2 border-dashed border-yellow-500 h-20 w-full rounded flex items-center justify-center text-xs text-yellow-700 font-bold" id="sign-box">
+                                [Sin Cartel]
+                            </div>
+                            <span class="text-xs text-gray-600 mt-1">Entrada</span>
+                        </div>
+                        
+                        <div id="inspection-log" class="absolute bottom-4 right-4 bg-white/90 p-2 rounded text-xs shadow max-w-[200px] h-24 overflow-y-auto">
+                            <div class="text-green-600 font-bold">Auditoría Iniciada...</div>
+                        </div>
+                    </div>
+
+                    <!-- Panel de Control -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-3">🔍 Checklist de Cumplimiento</h4>
+                        <p class="text-sm text-slate-600 mb-4">Haz clic en los elementos sospechosos para inspeccionar. Si encuentras una infracción, aplica la medida correcta.</p>
+                        
+                        <div class="space-y-3">
+                            <div id="item-camera" class="p-3 border rounded bg-white violation-card flex justify-between items-center">
+                                <div>
+                                    <div class="font-bold text-slate-700">📷 Videovigilancia con Audio</div>
+                                    <div class="text-xs text-red-500" id="cam-issue">Infracción detectada: Captura de audio sin justificación.</div>
+                                </div>
+                                <button onclick="fixViolation('camera')" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200 disabled:opacity-50" id="btn-fix-camera">Desactivar Audio</button>
+                            </div>
+
+                            <div id="item-sign" class="p-3 border rounded bg-white violation-card flex justify-between items-center">
+                                <div>
+                                    <div class="font-bold text-slate-700">📢 Cartel Informativo</div>
+                                    <div class="text-xs text-red-500" id="sign-issue">Infracción detectada: Falta de información visible.</div>
+                                </div>
+                                <button onclick="fixViolation('sign')" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200 disabled:opacity-50" id="btn-fix-sign">Instalar Cartel</button>
+                            </div>
+
+                            <div id="item-doc" class="p-3 border rounded bg-white violation-card flex justify-between items-center">
+                                <div>
+                                    <div class="font-bold text-slate-700">📄 Registro & EIPD</div>
+                                    <div class="text-xs text-red-500">Falta: No hay EIPD ni Registro actualizado.</div>
+                                </div>
+                                <button onclick="fixViolation('doc')" class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200 disabled:opacity-50" id="btn-fix-doc">Generar EIPD</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="auditResult" class="hidden p-4 rounded-lg bg-gray-50 border text-center animate-fade-in">
+                    <!-- Resultado dinámico -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 12: COOPERACIÓN EUROPOL -->
+        <section id="sec12" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">2. Laboratorio: Preservación Rápida (Convenio de Budapest)</h2>
+                <p class="opacity-90">La Unitat de Delictes Tecnològics debe responder a una solicitud urgente de Europol EC3.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="mb-6 flex justify-between items-center bg-cyan-50 p-4 rounded border border-cyan-200">
+                    <div>
+                        <h3 class="font-bold text-cyan-900 text-lg">🚨 ALERTA: Solicitud Europol (Art. 29)</h3>
+                        <p class="text-sm text-cyan-800">Red de fraude financiero. Necesitan preservar logs de servidores en Andorra antes de que se sobrescriban.</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-cyan-600 font-bold uppercase">Urgencia</div>
+                        <div class="text-2xl font-black text-cyan-600 vuln-alert">ALTA</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Pasos de Acción -->
+                    <div class="lg:col-span-1 space-y-3 timeline-container relative pl-8 timeline-line">
+                        <div class="timeline-step" id="step1">
+                            <div class="absolute left-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold border-4 border-white shadow">1</div>
+                            <button onclick="executeStep('identify')" class="w-full text-left p-3 bg-white border rounded hover:bg-cyan-50 hover:border-cyan-400 transition text-sm font-medium shadow-sm">
+                                🔍 Identificar Sistemas Afectados
+                            </button>
+                        </div>
+                        <div class="timeline-step" id="step2">
+                            <div class="absolute left-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold border-4 border-white shadow">2</div>
+                            <button onclick="executeStep('order')" id="btn-order" disabled class="w-full text-left p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-sm font-medium">
+                                ⚖️ Emitir Orden de Preservación (Sin acceso)
+                            </button>
+                        </div>
+                        <div class="timeline-step" id="step3">
+                            <div class="absolute left-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold border-4 border-white shadow">3</div>
+                            <button onclick="executeStep('hash')" id="btn-hash" disabled class="w-full text-left p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-sm font-medium">
+                                🔒 Hashing y Sellado Temporal
+                            </button>
+                        </div>
+                        <div class="timeline-step" id="step4">
+                            <div class="absolute left-0 w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold border-4 border-white shadow">4</div>
+                            <button onclick="executeStep('transfer')" id="btn-transfer" disabled class="w-full text-left p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-sm font-medium">
+                                🌍 Iniciar Asistencia Judicial Mutua
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Consola Forense -->
+                    <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 text-white font-mono text-sm relative overflow-hidden">
+                        <div class="absolute top-2 right-2 text-xs text-slate-500">Terminal Policia d'Andorra</div>
+                        <div id="forensicConsole" class="space-y-2 h-64 overflow-y-auto custom-scrollbar pr-2">
+                            <div class="text-cyan-400">> Sistema iniciado...</div>
+                            <div class="text-yellow-400">> RECEPCIÓN: Solicitud urgente de Europol EC3 (Ref: FRAUD-2023-AD).</div>
+                            <div class="text-red-400">> AVISO: Datos volátiles en riesgo de pérdida en 24 horas.</div>
+                            <div class="text-slate-400 italic">Esperando acciones del inspector...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cooperationResult" class="hidden mt-6 p-4 rounded-lg border-2 text-center animate-fade-in bg-cyan-50 border-cyan-500 text-cyan-800 font-bold">
+                    <!-- Resultado dinámico -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 13: DERECHOS ARCO -->
+        <section id="sec13" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-orange-600 to-red-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">3. Laboratorio: Gestión de Derechos ARCO</h2>
+                <p class="opacity-90">Responde a las solicitudes de los ciudadanos cumpliendo los plazos de la Llei 29/2021.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Cola de Solicitudes -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-4">Cola de Solicitudes (Pending)</h4>
+                        <div id="requestQueue" class="space-y-3">
+                            <!-- Solicitudes generadas dinámicamente -->
+                        </div>
+                    </div>
+
+                    <!-- Área de Trabajo -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative">
+                        <h4 class="font-bold text-slate-700 mb-2 text-center">Panel de Respuesta</h4>
+                        <div id="workArea" class="hidden">
+                            <div class="bg-white p-3 rounded border mb-3">
+                                <div class="text-xs text-slate-500 uppercase font-bold">Solicitante</div>
+                                <div id="workerName" class="font-bold text-slate-800">---</div>
+                            </div>
+                            <div class="bg-white p-3 rounded border mb-3">
+                                <div class="text-xs text-slate-500 uppercase font-bold">Tipo de Derecho</div>
+                                <div id="workerType" class="font-bold text-slate-800">---</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="text-xs text-slate-500 uppercase font-bold mb-1">Plazo Legal (Días)</div>
+                                <input type="number" id="daysInput" class="w-full p-2 border rounded" value="30">
+                                <div class="text-xs text-slate-400 mt-1">Maximo legal: 30 días hábiles.</div>
+                            </div>
+
+                            <button onclick="processRequest()" class="w-full py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition">Enviar Respuesta</button>
+                        </div>
+                        <div id="emptyState" class="text-center text-slate-500 py-10">
+                            <div class="text-4xl mb-2">📂</div>
+                            <p>Espere nuevas solicitudes...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded border border-blue-200 text-sm">
+                    <h5 class="font-bold text-blue-900 mb-2">💡 Lección Clave:</h5>
+                    <p class="text-slate-700">Según la Llei 29/2021, las organizaciones tienen un máximo de <strong>30 días hábiles</strong> para atender solicitudes ARCO. Incumplir este plazo o no dar respuesta puede resultar en sanciones leves (< 3.000€).</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec11' && sectionId !== 'sec11') btn.classList.add('text-pink-400');
+                if(btn.id === 'btn-sec12' && sectionId !== 'sec12') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec13' && sectionId !== 'sec13') btn.classList.add('text-orange-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-pink-400', 'text-cyan-400', 'text-orange-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // ==========================================
+        // LABORATORIO 1: APDA INSPECTION
+        // ==========================================
+        let auditScore = 0;
+        const totalViolations = 3;
+        const logDiv = document.getElementById('inspection-log');
+
+        function toggleViolation(type) {
+            const icon = document.getElementById(type === 'camera' ? 'cam-icon' : 'sign-box');
+            const mic = document.getElementById('mic-dot');
+            
+            if (type === 'camera') {
+                if (!document.getElementById('btn-fix-camera').disabled) {
+                    mic.classList.remove('hidden');
+                    addLog("Inspección CCTV: ¡Cámara captando audio!", "text-red-600");
+                }
+            } else {
+                if (!document.getElementById('btn-fix-sign').disabled) {
+                    icon.innerHTML = '<span class="text-red-500 font-bold text-xs">⚠️ Sin Info</span>';
+                    addLog("Inspección Entrada: Sin cartel informativo.", "text-red-600");
+                }
+            }
+        }
+
+        function fixViolation(type) {
+            const card = document.getElementById(`item-${type}`);
+            const btn = document.getElementById(`btn-fix-${type}`);
+            const issue = document.getElementById(`${type}-issue`);
+            
+            if (card.classList.contains('fixed')) return;
+
+            card.classList.add('fixed');
+            btn.disabled = true;
+            btn.innerText = "✅ Corregido";
+            btn.classList.replace('bg-blue-100', 'bg-green-100');
+            btn.classList.replace('text-blue-700', 'text-green-700');
+            
+            if(issue) issue.innerText = "Corregido: Cumplimiento verificado.";
+            issue.classList.replace('text-red-500', 'text-green-600');
+
+            auditScore++;
+            addLog(`Acción tomada: ${type.toUpperCase()} corregido.`, "text-green-600");
+
+            if (auditScore === totalViolations) {
+                setTimeout(() => {
+                    const resDiv = document.getElementById('auditResult');
+                    resDiv.className = "mt-6 p-6 rounded-lg bg-green-100 border-2 border-green-500 text-green-800 text-center animate-fade-in";
+                    resDiv.innerHTML = "<h3 class='text-xl font-bold'>✅ AUDITORÍA SUPERADA</h3><p class='mt-2'>No se han encontrado infracciones graves. La empresa evita la multa de la APDA.</p>";
+                }, 500);
+            }
+        }
+
+        function addLog(msg, colorClass) {
+            const div = document.createElement('div');
+            div.className = `${colorClass} font-bold`;
+            div.innerText = msg;
+            logDiv.prepend(div);
+        }
+
+        // ==========================================
+        // LABORATORIO 2: BUDAPEST COOPERATION
+        // ==========================================
+        let coopStep = 0; // 0=None, 1=Identify, 2=Order, 3=Hash, 4=Transfer
+        const consoleOutput = document.getElementById('forensicConsole');
+
+        function logForensic(msg, color = 'text-slate-400') {
+            const div = document.createElement('div');
+            div.className = `${color}`;
+            div.innerHTML = `> ${msg}`;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function executeStep(action) {
+            if (action === 'identify' && coopStep === 0) {
+                coopStep = 1;
+                logForensic("Analizando solicitud de Europol...", "text-blue-300");
+                setTimeout(() => {
+                    logForensic("✅ Identificados: Servidores DB-PROD-04 y logs Firewall.", "text-green-400");
+                    enableStep('btn-order', 'step2');
+                }, 800);
+            } else if (action === 'order' && coopStep === 1) {
+                coopStep = 2;
+                logForensic("Emisión de orden judicial interna...", "text-blue-300");
+                logForensic("AVISO: Preservación sin acceso al contenido (Art. 29).", "text-yellow-400");
+                enableStep('btn-hash', 'step3');
+            } else if (action === 'hash' && coopStep === 2) {
+                coopStep = 3;
+                logForensic("Calculando hashes SHA-256...", "text-blue-300");
+                logForensic("Aplicando sello temporal (RFC 3161)...", "text-blue-300");
+                logForensic("✅ Integridad asegurada. Cadena de custodia iniciada.", "text-green-400");
+                enableStep('btn-transfer', 'step4');
+            } else if (action === 'transfer' && coopStep === 3) {
+                coopStep = 4;
+                logForensic("Iniciando canal seguro MLAT...", "text-blue-300");
+                logForensic("Transferencia de evidencias a Europol completada.", "text-green-400");
+                logForensic(">>> OPERACIÓN EXITOSA. Evidencia admisible en tribunales europeos.", "text-emerald-400 font-bold");
+                
+                const resDiv = document.getElementById('cooperationResult');
+                resDiv.className = "mt-6 p-6 rounded-lg border-2 bg-green-50 border-green-500 text-green-800 animate-fade-in text-center";
+                resDiv.innerHTML = "<h3 class='text-xl font-bold'>✅ PRESERVACIÓN COMPLETADA</h3><p class='mt-2'>Has seguido el Art. 29 correctamente: Identificar -> Preservar (sin acceder) -> Hash -> Transferir.</p>";
+            } else {
+                logForensic("⛔ Error: Sigue el flujo lógico del Convenio.", "text-red-400");
+            }
+        }
+
+        function enableStep(btnId, stepId) {
+            const btn = document.getElementById(btnId);
+            const step = document.getElementById(stepId);
+            
+            btn.disabled = false;
+            btn.classList.remove('bg-gray-100', 'border-gray-200', 'text-gray-400', 'cursor-not-allowed');
+            btn.classList.add('bg-white', 'border-cyan-400', 'text-cyan-900', 'hover:bg-cyan-50', 'font-bold');
+            
+            step.querySelector('.w-8').classList.remove('bg-gray-200', 'text-gray-600');
+            step.querySelector('.w-8').classList.add('bg-cyan-500', 'text-white');
+        }
+
+        // ==========================================
+        // LABORATORIO 3: ARCO REQUESTS
+        // ==========================================
+        const requests = [
+            { name: "Joan G.", type: "Acceso (ART. 17)", urgency: "Alta", date: new Date() },
+            { name: "Maria S.", type: "Supresión (Derecho al Olvido)", urgency: "Media", date: new Date(Date.now() - 86400000) },
+            { name: "Empresa Tech AD", type: "Portabilidad", urgency: "Media", date: new Date(Date.now() - 172800000) },
+            { name: "Citoyen X", type: "Limitación", urgency: "Baja", date: new Date(Date.now() - 259200000) }
+        ];
+
+        let queue = [...requests];
+        let currentReq = null;
+
+        function renderQueue() {
+            const container = document.getElementById('requestQueue');
+            container.innerHTML = '';
+            
+            if (queue.length === 0) {
+                container.innerHTML = '<div class="text-center text-slate-500 py-4 text-sm">Todas las solicitudes procesadas.</div>';
+                return;
+            }
+
+            queue.forEach((req, idx) => {
+                const el = document.createElement('div');
+                el.className = "p-3 border rounded bg-white hover:bg-orange-50 cursor-pointer transition flex justify-between items-center";
+                el.onclick = () => selectRequest(idx);
+                el.innerHTML = `
+                    <div>
+                        <div class="font-bold text-slate-800">${req.name}</div>
+                        <div class="text-xs text-slate-500">${req.type}</div>
+                    </div>
+                    <div class="text-xs font-bold px-2 py-1 rounded ${req.urgency === 'Alta' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}">
+                        ${req.urgency}
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function selectRequest(idx) {
+            currentReq = queue[idx];
+            queue.splice(idx, 1); // Remove from queue
+            
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('workArea').classList.remove('hidden');
+            
+            document.getElementById('workerName').innerText = currentReq.name;
+            document.getElementById('workerType').innerText = currentReq.type;
+            document.getElementById('daysInput').value = 30; // Reset to default legal limit
+        }
+
+        function processRequest() {
+            const days = parseInt(document.getElementById('daysInput').value);
+            const resDiv = document.getElementById('auditResult'); // Reusing div for feedback in this lab context
+            
+            let statusHtml = "";
+            let statusClass = "";
+
+            if (days > 30) {
+                statusClass = "bg-red-100 border-red-500 text-red-800";
+                statusHtml = `<h3 class='text-xl font-bold'>⚠️ INCUMPLIMIENTO LEGAL</h3><p class='mt-2'>Respuesta enviada en ${days} días. El límite legal es 30 días. Riesgo de sanción leve.</p>`;
+            } else {
+                statusClass = "bg-green-100 border-green-500 text-green-800";
+                statusHtml = `<h3 class='text-xl font-bold'>✅ RESPUESTA VÁLIDA</h3><p class='mt-2'>Derecho atendido en ${days} días dentro del plazo legal. Cumplimiento garantizado.</p>`;
+            }
+
+            const feedback = document.createElement('div');
+            feedback.className = `mt-4 p-4 rounded-lg border-2 text-center animate-fade-in ${statusClass}`;
+            feedback.innerHTML = statusHtml;
+            
+            // Insert after work area
+            const workArea = document.getElementById('workArea');
+            workArea.parentNode.insertBefore(feedback, workArea.nextSibling);
+
+            // Clear work area after delay
+            setTimeout(() => {
+                feedback.remove();
+                document.getElementById('workArea').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+                renderQueue();
+            }, 3000);
+        }
+
+        // Init
+        window.onload = function() {
+            renderQueue();
+            switchSection('sec11');
+        };
+    </script>
+</body>
+</html>
