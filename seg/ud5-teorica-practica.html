@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 5 - Sistemas para la Detección de Intrusiones | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 5: IDS/IPS</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Fundamentos IDS/IPS</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Tipos de IDS</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Métodos de Detección</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Arquitectura y Componentes</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Implementación</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. IPS: Prevención Activa</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Implementación Práctica</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">7. Limitaciones y Desafíos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">8. Buenas prácticas</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-orange-400 font-semibold tab-btn">9. Caso Práctico 9 (ARP)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec10')" id="btn-sec10" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400 font-semibold tab-btn">10. Caso Práctico 10 (IPSec)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="window.open('ud5-laboratorios.html', '_blank')" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 Laboratorios Interactivos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: FUNDAMENTOS -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Fundamentos de Detección de Intrusiones</h2>
+            <p class="text-slate-600 mb-6">Los sistemas para la detección de intrusiones (IDS) constituyen un componente esencial en la arquitectura moderna de ciberseguridad, proporcionando alertas tempranas que permiten responder de manera rápida a actividades maliciosas.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Definición IDS e IPS</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="font-bold text-blue-800 mb-2">🛡️ IDS (Intrusion Detection System)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Identifica actividades maliciosas o no autorizadas</li>
+                            <li>Detecta, registra y notifica incidentes</li>
+                            <li>No bloquea tráfico activamente</li>
+                            <li>Segunda línea de defensa tras firewalls</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-red-500 pl-4">
+                        <h4 class="font-bold text-red-800 mb-2">⚠️ IPS (Intrusion Prevention System)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Detecta Y actúa automáticamente</li>
+                            <li>Bloquea o mitiga ataques en tiempo real</li>
+                            <li>Integrado en firewalls NGFW</li>
+                            <li>Puede causar falsos positivos (interrupción servicio)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 mb-8">
+                <h3 class="font-bold text-indigo-900 mb-3">📋 Objetivos Principales</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-3xl mb-2">👁️</div>
+                        <h4 class="font-bold text-slate-800">Detección</h4>
+                        <p class="text-xs text-slate-600 mt-1">Identificar patrones o anomalías en tráfico/host</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-3xl mb-2">🔔</div>
+                        <h4 class="font-bold text-slate-800">Alerta</h4>
+                        <p class="text-xs text-slate-600 mt-1">Notificar claramente al equipo SOC</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm text-center">
+                        <div class="text-3xl mb-2">🛑</div>
+                        <h4 class="font-bold text-slate-800">Respuesta</h4>
+                        <p class="text-xs text-slate-600 mt-1">Bloqueo automático (IPS only)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-900 mb-3">Rol en Defensa en Profundidad</h3>
+                <p class="text-sm text-slate-700 mb-3">Los IDS se ubican como segunda línea tras los cortafuegos, aportando visibilidad que estos últimos no pueden ofrecer:</p>
+                <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                    <li>Detectan movimientos laterales dentro de la red</li>
+                    <li>Identifican escaladas de privilegios</li>
+                    <li>Descubren exfiltraciones de datos que evadieron controles perimetrales</li>
+                    <li>Se integran con SIEM y SOAR para automatizar respuestas</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: TIPOS DE IDS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Tipos de IDS</h2>
+            <p class="text-slate-600 mb-8">Los sistemas de detección de intrusiones se clasifican según su ámbito de actuación y el tipo de información que monitorizan.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- NIDS -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                    <div class="text-3xl mb-3 text-blue-500">🌐</div>
+                    <h3 class="font-bold text-lg text-blue-900 mb-2">NIDS (Network-based)</h3>
+                    <p class="text-sm text-slate-700 mb-3">Monitoriza tráfico en puntos estratégicos de la infraestructura de red.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1 mb-3">
+                        <li>Ubicación: Routers, switches, firewalls</li>
+                        <li>Ventaja: Visibilidad global de la red</li>
+                        <li>Límite: No ve tráfico cifrado interno</li>
+                    </ul>
+                    <div class="bg-blue-50 p-2 rounded text-xs text-blue-800 font-mono">
+                        Herramientas: Snort, Suricata, Zeek
+                    </div>
+                </div>
+
+                <!-- HIDS -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500">
+                    <div class="text-3xl mb-3 text-purple-500">💻</div>
+                    <h3 class="font-bold text-lg text-purple-900 mb-2">HIDS (Host-based)</h3>
+                    <p class="text-sm text-slate-700 mb-3">Se ejecuta en equipos individuales, monitorizando registros y sistema operativo.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1 mb-3">
+                        <li>Ubicación: Servidores y estaciones de trabajo</li>
+                        <li>Ventaja: Granularidad profunda</li>
+                        <li>Límite: Mayor carga de gestión</li>
+                    </ul>
+                    <div class="bg-purple-50 p-2 rounded text-xs text-purple-800 font-mono">
+                        Herramientas: OSSEC, Tripwire
+                    </div>
+                </div>
+
+                <!-- Híbrido -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-green-500">
+                    <div class="text-3xl mb-3 text-green-500">🔗</div>
+                    <h3 class="font-bold text-lg text-green-900 mb-2">Híbrido/Distribuido</h3>
+                    <p class="text-sm text-slate-700 mb-3">Combina fuentes de red y host para visión completa.</p>
+                    <ul class="list-disc list-inside text-xs text-slate-600 space-y-1 mb-3">
+                        <li>Correlaciona múltiples fuentes de datos</li>
+                        <li>Reduce falsos positivos</li>
+                        <li>Integración con SIEM/SOAR</li>
+                    </ul>
+                    <div class="bg-green-50 p-2 rounded text-xs text-green-800 font-mono">
+                        Plataformas: Splunk, Elastic SIEM
+                    </div>
+                </div>
+            </div>
+
+            <!-- Casos Reales -->
+            <div class="bg-slate-100 p-6 rounded-xl border border-slate-300">
+                <h3 class="font-bold text-slate-800 mb-4">📊 Ejemplos de Incidentes Detectados por IDS</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-red-700 text-sm">Ransomware Hospital Europeo (2021)</h4>
+                        <p class="text-xs text-slate-600 mt-1">El IDS detectó patrones anómalos antes del impacto irreversible</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <h4 class="font-bold text-orange-700 text-sm">Botnets IoT (2023)</h4>
+                        <p class="text-xs text-slate-600 mt-1">Comportamiento inusual en dispositivos conectados identificado temprano</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: MÉTODOS DE DETECCIÓN -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Métodos de Detección</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Basado en Firmas -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-900 mb-3">🔍 Basado en Firmas</h3>
+                    <p class="text-sm text-slate-700 mb-3">Compara tráfico con patrones previamente conocidos de ataques.</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li>Base de datos de cadenas de bytes, secuencias de comandos</li>
+                        <li>Efectivo contra amenazas documentadas</li>
+                        <li>Limitación: No detecta ataques de día cero</li>
+                        <li>Requiere actualización constante de firmas</li>
+                    </ul>
+                    <div class="bg-blue-50 p-3 rounded text-xs text-blue-800 font-mono">
+                        Ejemplo: Alerta cuando se detecta "SELECT * FROM users WHERE ' OR '1'='1"
+                    </div>
+                </div>
+
+                <!-- Basado en Anomalías -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-orange-500">
+                    <h3 class="font-bold text-lg text-orange-900 mb-3">📈 Basado en Anomalías</h3>
+                    <p class="text-sm text-slate-700 mb-3">Identifica desviaciones respecto al comportamiento normal.</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li>Modelo estadístico del tráfico esperado</li>
+                        <li>Puede detectar ataques desconocidos (zero-day)</li>
+                        <li>Alto tasa de falsos positivos</li>
+                        <li>Necesita periodo de aprendizaje</li>
+                    </ul>
+                    <div class="bg-orange-50 p-3 rounded text-xs text-orange-800 font-mono">
+                        Ejemplo: Tráfico HTTP aumenta 500% desde servidor web habitual
+                    </div>
+                </div>
+
+                <!-- Heurística / ML -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500 col-span-1 md:col-span-2">
+                    <h3 class="font-bold text-lg text-purple-900 mb-3">🤖 Basado en Heurísticas y Machine Learning</h3>
+                    <p class="text-sm text-slate-700 mb-3">Reglas generales o modelos entrenados para descubrir amenazas complejas.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-purple-50 p-4 rounded">
+                            <h4 class="font-bold text-purple-800 mb-2">Heurística</h4>
+                            <ul class="list-disc list-inside text-slate-700">
+                                <li>Reglas inferidas sin coincidencia exacta</li>
+                                <li>Lógica de comportamiento sospechoso</li>
+                                <li>Menos precisas pero más generalizables</li>
+                            </ul>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded">
+                            <h4 class="font-bold text-purple-800 mb-2">Machine Learning</h4>
+                            <ul class="list-disc list-inside text-slate-700">
+                                <li>Clustering, árboles de decisión, redes neuronales</li>
+                                <li>Identifica patrones invisibles al ojo humano</li>
+                                <li>Aplicación: Ransomware, IoT industrial</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: ARQUITECTURA -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Arquitectura y Componentes</h2>
+            <p class="text-slate-600 mb-8">La arquitectura típica de un IDS se compone de elementos coordinados para capturar, procesar y generar alertas útiles.</p>
+
+            <div class="bg-white border-t-4 border-t-cyan-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-cyan-800 mb-4">Componentes Principales</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="bg-cyan-100 w-20 h-20 mx-auto rounded-full flex justify-center items-center text-3xl mb-3">📡</div>
+                        <h4 class="font-bold text-cyan-900">Sensores/Agentes</h4>
+                        <p class="text-xs text-slate-600 mt-2">Recopilan información de red o host</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-cyan-100 w-20 h-20 mx-auto rounded-full flex justify-center items-center text-3xl mb-3">🖥️</div>
+                        <h4 class="font-bold text-cyan-900">Consola Gestión</h4>
+                        <p class="text-xs text-slate-600 mt-2">Configuración, visualización alertas, priorización</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-cyan-100 w-20 h-20 mx-auto rounded-full flex justify-center items-center text-3xl mb-3">💾</div>
+                        <h4 class="font-bold text-cyan-900">Base Datos Eventos</h4>
+                        <p class="text-xs text-slate-600 mt-2">Almacenamiento persistente, correlación, forense</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <h4 class="font-bold text-blue-900 mb-3">Posicionamiento Estratégico</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Frontera de red: Tráfico entrante/saliente</li>
+                        <li>DMZ: Servicios expuestos a Internet</li>
+                        <li>Segmentos internos críticos: Movimientos laterales</li>
+                        <li>Cloud/Virtual: Instancias entre redes locales y servicios</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-6 rounded-xl border border-green-200">
+                    <h4 class="font-bold text-green-900 mb-3">Integración con otros Sistemas</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Firewalls: Validación y reglas dinámicas de bloqueo</li>
+                        <li>SIEM: Centralización de eventos múltiples fuentes</li>
+                        <li>SOAR: Acciones automáticas y orquestadas</li>
+                        <li>Sistemas legacy: APIs y webhooks para alertas</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: IPS PREVENCIÓN ACTIVA -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. IPS: Prevención Activa</h2>
+            <p class="text-slate-600 mb-8">Los sistemas de prevención de intrusiones representan un paso más en la defensa proactiva: actúan automáticamente para bloquear o mitigar amenazas en tiempo real.</p>
+
+            <div class="bg-white p-8 rounded-xl shadow-md border border-slate-200 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="font-bold text-xl text-red-900 mb-4">🛡️ Bloqueo de Tráfico Malicioso</h3>
+                        <p class="text-sm text-slate-700 mb-3">Cuando el IPS detecta un patrón asociado a un ataque puede:</p>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li>Blockear conexión inmediatamente</li>
+                            <li>Descartar paquetes sospechosos</li>
+                            <li>Reconfigurar dinámicamente reglas de firewall</li>
+                            <li>Aislar hosts comprometidos</li>
+                        </ul>
+                        <div class="bg-red-50 p-3 rounded mt-4 text-xs text-red-800 font-bold">
+                            ⚠️ Requiere alta precisión: falso positivo = interrupción servicio legítimo
+                        </div>
+                    </div>
+                    <div class="bg-gradient-to-br from-red-100 to-pink-100 p-6 rounded-lg border-2 border-red-300">
+                        <h4 class="font-bold text-red-900 mb-3">Casos de Uso Comunes</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>Redes corporativas:</strong> Explotación vulnerabilidades, day-zero</li>
+                            <li><strong>ICS/SCADA:</strong> Comportamientos anómalos críticos</li>
+                            <li><strong>Cloud:</strong> Mitigación DDoS fases tempranas</li>
+                            <li><strong>Data centers:</strong> Protección lateral entre servidores</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-900 mb-3">⚠️ Limitaciones y Falsos Positivos</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2 text-sm">Problema Principal</h4>
+                        <p class="text-xs text-slate-700">Equilibrio entre seguridad y operatividad. Tasa elevada de falsos positivos puede bloquear tráfico legítimo con consecuencias graves en entornos financieros o sanitarios.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2 text-sm">Desafío Rendimiento</h4>
+                        <p class="text-xs text-slate-700">Procesar grandes volúmenes de tráfico en tiempo real requiere hardware especializado, optimización algoritmos y arquitecturas distribuidas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: IMPLEMENTACIÓN PRÁCTICA -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Implementación Práctica</h2>
+            <p class="text-slate-600 mb-8">El despliegue de un IDS no es trivial: su eficacia depende de decisiones estratégicas sobre ubicación, integración y políticas.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Ubicación Estratégica en Red</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="p-3 text-left font-bold text-slate-800">Posición</th>
+                                <th class="p-3 text-left font-bold text-slate-800">Objetivo</th>
+                                <th class="p-3 text-left font-bold text-slate-800">Beneficio</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-blue-700">Frontera (Perímetro)</td>
+                                <td class="p-3 text-slate-700">Tráfico entrada/salida Internet</td>
+                                <td class="p-3 text-green-700">Detección escaneos masivos</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-purple-700">DMZ</td>
+                                <td class="p-3 text-slate-700">Servicios públicos expuestos</td>
+                                <td class="p-3 text-green-700">Protección servidores web/mail</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-orange-700">Internos Críticos</td>
+                                <td class="p-3 text-slate-700">Segmentos DB, AD, backups</td>
+                                <td class="p-3 text-green-700">Movimientos laterales</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-teal-700">Entornos Cloud</td>
+                                <td class="p-3 text-slate-700">VPCs, instancias virtuales</td>
+                                <td class="p-3 text-green-700">Híbrido local-nube</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200">
+                <h3 class="font-bold text-indigo-900 mb-3">Políticas y Reglas de Detección</h3>
+                <p class="text-sm text-slate-700 mb-3">Las políticas definen qué comportamientos se consideran sospechosos y prioridad de cada alerta:</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <h4 class="font-bold text-indigo-800">Firmas Actualizadas</h4>
+                        <p class="text-xs text-slate-600 mt-1">Periódicas según amenazas nuevas</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <h4 class="font-bold text-indigo-800">Umbrales Comportamiento</h4>
+                        <p class="text-xs text-slate-600 mt-1">Contexto específico organización</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <h4 class="font-bold text-indigo-800">Modelos Anomalía ML</h4>
+                        <p class="text-xs text-slate-600 mt-1">Entrenados continuamente</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: LIMITACIONES -->
+        <section id="sec7" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">7. Limitaciones y Desafíos</h2>
+            <p class="text-slate-600 mb-8">Aunque fundamentales, los IDS/IPS presentan limitaciones que condicionan su eficacia frente a amenazas avanzadas.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-red-500">
+                    <div class="text-3xl mb-3 text-red-500">🕵️</div>
+                    <h4 class="font-bold text-red-900 mb-2">Evasión IDS/IPS</h4>
+                    <p class="text-xs text-slate-700">Fragmentación paquetes, manipulación cabeceras, ofuscación, túneles cifrados, protocolos poco comunes dificultan inspección.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+                    <div class="text-3xl mb-3 text-orange-500">📈</div>
+                    <h4 class="font-bold text-orange-900 mb-2">Escalabilidad</h4>
+                    <p class="text-xs text-slate-700">Millones conexiones simultáneas sin cuello botella requiere hardware especializado y arquitecturas distribuidas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500">
+                    <div class="text-3xl mb-3 text-purple-500">🔒</div>
+                    <h4 class="font-bold text-purple-900 mb-2">Tráfico Cifrado</h4>
+                    <p class="text-xs text-slate-700">HTTPS/TLS masivo limita inspección contenido. Inspección TLS plantea dilemas privacidad/rendimiento.</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 p-6 rounded-xl border border-slate-300">
+                <h3 class="font-bold text-slate-800 mb-4">Impacto Real del Tráfico Cifrado</h3>
+                <p class="text-sm text-slate-700 mb-3">Desde 2020, más del 95% del tráfico web global en Chrome ya estaba cifrado, reduciendo posibilidades de inspección sin soluciones específicas.</p>
+                <div class="bg-slate-200 p-4 rounded text-center">
+                    <div class="text-4xl font-bold text-slate-800">95%+</div>
+                    <div class="text-xs text-slate-600 mt-1">Tráfico web cifrado (Google Transparency Report)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: BUENAS PRÁCTICAS -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">8. Buenas Prácticas</h2>
+            <p class="text-slate-600 mb-8">La eficacia de los IDS/IPS depende tanto del diseño técnico como de las prácticas de gestión que los acompañan.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="font-bold text-lg text-green-900 mb-3">✅ Mantenimiento y Actualización</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Actualización periódica bases de firmas crítica</li>
+                        <li>Falta actualización = indefenso ante amenazas conocidas</li>
+                        <li>Complementar con threat intelligence</li>
+                        <li>Automatización descargas proveedor</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-900 mb-3">⚙️ Optimización Falsos Positivos</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Ajustar umbrales según contexto org</li>
+                        <li>Refinar reglas continuamente</li>
+                        <li>Machine learning mejora precisión</li>
+                        <li>Métricas claras calidad alertas</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                    <h3 class="font-bold text-lg text-purple-900 mb-3">🏢 Integración con SOC</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Correlacionar eventos múltiples fuentes</li>
+                        <li>Priorizar alertas críticas</li>
+                        <li>Orquestar respuestas (aislar hosts, bloquear IPs)</li>
+                        <li>Automatizar tareas repetitivas (SOAR)</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-orange-500">
+                    <h3 class="font-bold text-lg text-orange-900 mb-3">📊 Respuesta Incidentes</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Procedimientos documentados</li>
+                        <li>Capacitación analistas SOC</li>
+                        <li>Ejercicios simulación periódicos</li>
+                        <li>Mejora continua lessons learned</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: CASO PRÁCTICO 9 (ARP SPOOFING) -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-orange-500 pb-2 inline-block">9. Caso Práctico 9: ARP Spoofing en Red Corporativa</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del incidente y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-orange-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🕸️</span>
+                        <h3 class="text-lg font-bold">Enunciado del Incidente</h3>
+                    </div>
+                    <span class="bg-orange-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Caso Real</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        En una red corporativa de tamaño medio, un empleado utilizó una herramienta pública para ejecutar un ataque de ARP spoofing. Mediante la falsificación de respuestas ARP, logró que múltiples estaciones enviaran su tráfico a través de su equipo, capturando credenciales internas y datos sensibles. El ataque pasó desapercibido durante días hasta que análisis forense detectó asociaciones IP–MAC anómalas en switches.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-orange-400 bg-orange-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-orange-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">1. Clasificar requisitos necesarios para proteger frente a ARP spoofing</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Verificar integridad mensajes ARP mediante Dynamic ARP Inspection (DAI).</li>
+                                            <li>Monitorizar de forma continua las asociaciones IP–MAC.</li>
+                                            <li>Generar alertas automáticas ante inconsistencias ARP sospechosas.</li>
+                                            <li>Registrar eventos ARP para posterior análisis.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Baja latencia en comprobación tráfico ARP (protocolo crítico rendimiento).</li>
+                                            <li>Alta disponibilidad infraestructura switching.</li>
+                                            <li>Bajo impacto operacional tras activar DAI/DHCP Snooping.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Activar DAI y DHCP Snooping en switches gestionables.</li>
+                                            <li>Implementar ARP estático en servidores y dispositivos críticos.</li>
+                                            <li>Integrar logs red con SIEM para correlación eventos.</li>
+                                            <li>Configurar puertos confianza/no confianza switches.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">2. Elaborar caso de uso: detección y bloqueo ataques ARP</h5>
+                                <div class="bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">Sistema de red (switch gestionable con DAI).</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El switch inspecciona todos los mensajes ARP recibidos en puertos no confiables.</li>
+                                        <li>Detecta respuesta ARP incorrecta (inconsistencia IP–MAC o violación binding DHCP Snooping).</li>
+                                        <li>Bloquea paquete automáticamente y registra incidente.</li>
+                                        <li>Se genera alerta enviada al equipo de seguridad.</li>
+                                        <li>El administrador identifica dispositivo atacante y lo aísla.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Asociación ARP legítima pero inusual → requiere revisión manual antes acción.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">3. Mecanismos validación protección ARP</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <li>Realizar ataques controlados (ej. arpspoof, ettercap) comprobar que DAI detecta y bloquea.</li>
+                                    <li>Revisar periódicamente tablas ARP en switches y servidores.</li>
+                                    <li>Probar en laboratorio comportamiento DAI/DHCP Snooping con distintos escenarios.</li>
+                                    <li>Correlacionar alertas ARP con SIEM para análisis automatizado detección temprana.</li>
+                                    <li>Verificar que no producen interrupciones ni falsos positivos dispositivos críticos.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Flujo Correctivo</h4>
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">🕵️ Ataque<br/>ARP Spoofing</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-yellow-100 text-yellow-800 px-3 py-2 rounded border border-yellow-300">🛡️ DAI Detecta<br/>Inconsistencia</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">🚫 Bloquea<br/>Paquete</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-blue-100 text-blue-800 px-3 py-2 rounded border border-blue-300">📊 Alerta<br/>SOC</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 10: CASO PRÁCTICO 10 (IPSec VPNs) -->
+        <section id="sec10" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-blue-500 pb-2 inline-block">10. Caso Práctico 10: Implementación IPSec entre Sedes</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del despliegue VPN y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-blue-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🌐</span>
+                        <h3 class="text-lg font-bold">Enunciado del Despliegue</h3>
+                    </div>
+                    <span class="bg-blue-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Infraestructura</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Una empresa multinacional desplegó VPNs basadas en IPSec para proteger comunicaciones entre sedes en Europa y América. Objetivo: garantizar seguridad transferencias financieras, operaciones internas y accesos remotos corporativos. Durante fase inicial surgieron problemas interoperabilidad entre fabricantes y gestión masiva claves/políticas. Sistema estabilizado cumplió estándares técnicos y ofreció alta confiabilidad.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-blue-400 bg-blue-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-blue-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">1. Clasificar requisitos seguridad para implementar IPSec entre sedes</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Establecer túneles IPSec seguros entre sedes geográficamente distribuidas.</li>
+                                            <li>Garantizar confidencialidad, integridad y autenticación tráfico intercambiado.</li>
+                                            <li>Implementar renegociación automática claves mediante IKEv2.</li>
+                                            <li>Mantener conexión estable con reconexión automática caída.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Baja latencia permitir operaciones críticas tiempo real.</li>
+                                            <li>Alta disponibilidad túnel VPN (failover automático, redundancia).</li>
+                                            <li>Escalabilidad admitir múltiples sedes diferentes zonas horarias.</li>
+                                            <li>Estabilidad enlace incluso fluctuaciones red.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Compatibilidad interoperabilidad dispositivos distintos fabricantes (Cisco, Fortinet, Juniper).</li>
+                                            <li>Algoritmos modernos seguros: AES-GCM cifrado, SHA-2 integridad.</li>
+                                            <li>Gestión centralizada claves, políticas seguridad plantillas configuración.</li>
+                                            <li>Soporte Perfect Forward Secrecy (PFS).</li>
+                                            <li>Monitoreo estado túnel integración sistemas red corporativos.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">2. Elaborar caso de uso: establecimiento túnel IPSec</h5>
+                                <div class="bg-white p-4 rounded border border-blue-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">Gateway VPN de cada sede.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>Gateways de cada sede intercambian parámetros seguridad usando IKEv2.</li>
+                                        <li>Cada gateway verifica identidad otro mediante certificados digitales o claves precompartidas (PSK).</li>
+                                        <li>Se negocian algoritmos cifrado, integridad y tiempos vida claves (SA).</li>
+                                        <li>Se establece túnel IPSec (fase 2) y crean Security Associations.</li>
+                                        <li>Tráfico entre sedes se cifra automáticamente circula túnel.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Fallo autenticación → túnel rechazado automáticamente.</li>
+                                        <li>Diferencias algoritmos/parámetros soportados → negociación fallida.</li>
+                                        <li>Desincronización temporal → reintentos mediante IKEv2.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">3. Métodos validación correcta operación VPNs IPSec</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-blue-100 text-sm">
+                                    <li>Realizar pruebas interoperabilidad distintos equipos versiones firmware.</li>
+                                    <li>Simular pérdida conectividad validar mecanismos failover reconexión automática.</li>
+                                    <li>Verificar periódicamente tráfico entre sedes viaja siempre cifrado análisis paquetes herramientas red.</li>
+                                    <li>Revisar configuraciones confirmar uso algoritmos seguros parámetros consistentes.</li>
+                                    <li>Monitorizar logs IKE e IPSec identificar errores, renegociaciones caídas recurrentes.</li>
+                                    <li>Medir latencia rendimiento túnel bajo carga real asegurar cumplimiento requisitos.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Proceso IKEv2/IPSec</h4>
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-gray-100 text-gray-800 px-3 py-2 rounded border border-gray-300">Sede A<br/>Gateway</div>
+                            <div class="text-slate-400">◄──►</div>
+                            <div class="bg-purple-100 text-purple-800 px-3 py-2 rounded border border-purple-300">Fase 1<br/>IKEv2 Auth</div>
+                            <div class="text-slate-400">◄──►</div>
+                            <div class="bg-blue-100 text-blue-800 px-3 py-2 rounded border border-blue-300">Fase 2<br/>IPSec SA</div>
+                            <div class="text-slate-400">◄──►</div>
+                            <div class="bg-gray-100 text-gray-800 px-3 py-2 rounded border border-gray-300">Sede B<br/>Gateway</div>
+                        </div>
+                        <p class="text-center text-slate-500 italic text-sm">
+                            "Robustez protocolos capa red como IPSec + estandarización + interoperabilidad = continuidad operativa"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-orange-400');
+                if(btn.id === 'btn-sec10' && sectionId !== 'sec10') btn.classList.add('text-blue-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-orange-400', 'text-blue-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec1');
+        };
+    </script>
+</body>
+</html>
