@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 6 - Seguridad en las Capas de Comunicación | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Efectos visuales interactivos */
+        @keyframes pulse-border { 0% { border-color: #8b5cf6; } 50% { border-color: #c4b5fd; } 100% { border-color: #8b5cf6; } }
+        .animate-pulse-border { animation: pulse-border 2s infinite; }
+
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 6: Seguridad en Capas de Comunicación</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar sección o concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Contenido Teórico</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Introducción a Capas de Comunicación</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Amenazas por Capa OSI</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Protocolos y Defensas</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos Resueltos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-cyan-400 font-bold">8. Flujo Operativo E2E</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación Final</li>
+                <li class="nav-item"><button onclick="window.open('ud6-laboratorios.html', '_blank')" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 Laboratorios & TEST (Lab 2)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: INTRODUCCIÓN -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Introducción a la Seguridad en las Capas de Comunicación</h2>
+            <p class="text-slate-600 mb-6">La seguridad en las capas de comunicación constituye un aspecto fundamental dentro de la ciberseguridad, ya que el intercambio de información entre sistemas depende de protocolos que, si no son protegidos adecuadamente, se convierten en vectores de ataque.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Modelo OSI vs TCP/IP</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-l-4 border-blue-500 pl-4">
+                        <h4 class="font-bold text-blue-800 mb-2">📐 Modelo OSI (7 Capas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Física - Enlace - Red - Transporte</li>
+                            <li>Sesión - Presentación - Aplicación</li>
+                            <li>Aporta marco conceptual estandarizado</li>
+                            <li>Cada capa protege a la superior</li>
+                        </ul>
+                    </div>
+                    <div class="border-l-4 border-violet-500 pl-4">
+                        <h4 class="font-bold text-violet-800 mb-2">🌐 Pila TCP/IP</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Acceso a red - Internet - Transporte - Aplicación</li>
+                            <li>Modelo práctico de implementación real</li>
+                            <li>Protocolos: IP, TCP, UDP, HTTP, DNS</li>
+                            <li>Principios de análisis de seguridad aplicables</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 mb-8">
+                <h3 class="font-bold text-indigo-900 mb-3">🛡️ Defensa en Profundidad</h3>
+                <p class="text-sm text-slate-700 mb-3">Este principio puede expresarse matemáticamente como una reducción del riesgo total <em>R<sub>total</sub></em> en función del producto de probabilidades de éxito <em>p<sub>i</sub></em> de cada control:</p>
+                <div class="bg-indigo-100 p-4 rounded font-mono text-center text-sm">
+                    R<sub>total</sub> = p₁ × p₂ × p₃ × ... × p<sub>n</sub>
+                </div>
+                <p class="text-sm text-slate-700 mt-3">A mayor diversidad y solidez de controles, menor será la probabilidad de éxito de un ataque completo.</p>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-900 mb-3">⚠️ Desafíos Actuales</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">👁️</span><strong>Tráfico cifrado</strong>
+                        <p class="text-xs text-slate-600 mt-1">Más del 95% del tráfico web es HTTPS (reduciendo visibilidad IDS/IPS)</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">📈</span><strong>Escalabilidad</strong>
+                        <p class="text-xs text-slate-600 mt-1">5G, IoT y cloud multiplican el volumen de datos a proteger</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">🔄</span><strong>Interoperabilidad</strong>
+                        <p class="text-xs text-slate-600 mt-1">Coexistencia de múltiples protocolos (IPSec, TLS, DNSSEC, WPA3)</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-sm">
+                        <span class="text-2xl mr-2">🏢</span><strong>Zero Trust</strong>
+                        <p class="text-xs text-slate-600 mt-1">Ninguna comunicación es confiable por defecto, incluso interna</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: AMENAZAS POR CAPA -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Amenazas y Vulnerabilidades por Capa</h2>
+            <p class="text-slate-600 mb-8">Cada capa del modelo de comunicación presenta vulnerabilidades específicas. A medida que se asciende en la pila de protocolos, aparecen amenazas más complejas.</p>
+
+            <!-- Tabla de Amenazas -->
+            <div class="bg-white border-t-4 border-t-red-500 rounded-xl p-6 shadow-sm mb-8">
+                <h3 class="text-xl font-bold text-red-800 mb-4 flex items-center">
+                    <span class="text-3xl mr-3">📊</span>Amenazas por Capa OSI
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="p-3 text-left font-bold text-slate-800">Capa</th>
+                                <th class="p-3 text-left font-bold text-slate-800">Amenaza típica</th>
+                                <th class="p-3 text-left font-bold text-slate-800">Medida de defensa</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-blue-700">Física</td>
+                                <td class="p-3 text-slate-700">Escuchas no autorizadas, cable tapping</td>
+                                <td class="p-3 text-green-700">Blindaje, acceso físico restringido</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-purple-700">Enlace</td>
+                                <td class="p-3 text-slate-700">ARP/MAC spoofing, VLAN hopping</td>
+                                <td class="p-3 text-green-700">Port security, autenticación 802.1X</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-orange-700">Red</td>
+                                <td class="p-3 text-slate-700">IP spoofing, DoS, BGP hijacking</td>
+                                <td class="p-3 text-green-700">Filtrado, IPSec, ACLs, RPKI</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-teal-700">Transporte</td>
+                                <td class="p-3 text-slate-700">SYN flood, session hijacking</td>
+                                <td class="p-3 text-green-700">TLS, SYN cookies, firewalls</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-pink-700">Sesión/Presentación</td>
+                                <td class="p-3 text-slate-700">Token theft, downgrade attacks</td>
+                                <td class="p-3 text-green-700">Regeneración sesiones, TLS 1.3</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-3 font-semibold text-red-700">Aplicación</td>
+                                <td class="p-3 text-slate-700">SQL injection, XSS, phishing</td>
+                                <td class="p-3 text-green-700">WAF, validación entradas, DNSSEC</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Casos Reales Destacados -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                    <h4 class="font-bold text-red-900 mb-3">💀 Mirai Botnet (2016)</h4>
+                    <p class="text-sm text-slate-700 mb-2">Ataque DDoS masivo vía UDP amplificado afectando a Dyn, Twitter, Netflix.</p>
+                    <p class="text-xs text-slate-600 italic">Capa: Transporte • Impacto: Servicios globales offline horas</p>
+                </div>
+                <div class="bg-orange-50 p-6 rounded-xl border border-orange-200">
+                    <h4 class="font-bold text-orange-900 mb-3">🌐 BGP Hijacking (2018)</h4>
+                    <p class="text-sm text-slate-700 mb-2">Secuestro de rutas redirigiendo tráfico de criptomonedas durante horas.</p>
+                    <p class="text-xs text-slate-600 italic">Capa: Red • Pérdidas millonarias</p>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+                    <h4 class="font-bold text-purple-900 mb-3">🔓 Heartbleed (2014)</h4>
+                    <p class="text-sm text-slate-700 mb-2">Vulnerabilidad OpenSSL exponiendo datos sensibles sin actualización tardía.</p>
+                    <p class="text-xs text-slate-600 italic">Capa: Transporte • Parche disponible pero no aplicado</p>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <h4 class="font-bold text-blue-900 mb-3">📧 Yahoo Breach (2013-14)</h4>
+                    <p class="text-sm text-slate-700 mb-2">3 billones de cuentas comprometidas, contraseñas transmitidas sin cifrado robusto.</p>
+                    <p class="text-xs text-slate-600 italic">Capa: Aplicación/Sesión • Sin cifrado efectivo</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: PROTOCOLOS Y DEFENSAS -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Protocolos y Mecanismos de Protección</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Capa Física y Enlace -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-900 mb-3">🔒 Capa Física y Enlace</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>Blindaje de cables:</strong> FTP/S FTP contra escuchas</li>
+                        <li><strong>Control de acceso físico:</strong> Salas restringidas, jaulas Faraday</li>
+                        <li><strong>VLANs y Port Security:</strong> Segmentación lógica</li>
+                        <li><strong>802.1X:</strong> Autenticación basada en puertos</li>
+                        <li><strong>DAI:</strong> Dynamic ARP Inspection contra spoofing</li>
+                    </ul>
+                    <div class="bg-blue-50 p-3 rounded text-xs text-blue-800 font-mono">
+                        WEP ❌ → WPA2 ⚠️ → WPA3 ✅
+                    </div>
+                </div>
+
+                <!-- Capa de Red -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-orange-500">
+                    <h3 class="font-bold text-lg text-orange-900 mb-3">🌐 Capa de Red (IPSec)</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>IPSec:</strong> Confidencialidad, integridad, autenticación</li>
+                        <li><strong>Modos:</strong> Transporte (payload) / Túnel (todo paquete)</li>
+                        <li><strong>VPNs:</strong> Conexión segura entre sedes/remotos</li>
+                        <li><strong>ACLs:</strong> Listas de control de acceso en routers</li>
+                        <li><strong>Segmentación:</strong> Zonas y conductos críticos</li>
+                    </ul>
+                    <div class="bg-orange-50 p-3 rounded text-xs text-orange-800 font-mono">
+                        C ∧ I ∧ A → Seguridad completa
+                    </div>
+                </div>
+
+                <!-- Capa de Transporte -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-teal-500">
+                    <h3 class="font-bold text-lg text-teal-900 mb-3">🛡️ Capa de Transporte (TLS)</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>TLS 1.3:</strong> Elimina algoritmos obsoletos, handshake rápido</li>
+                        <li><strong>Propiedades:</strong> C, I, A, PFS (Perfect Forward Secrecy)</li>
+                        <li><strong>SYN Cookies:</strong> Mitigación SYN flood</li>
+                        <li><strong>HSTS:</strong> HTTP Strict Transport Security</li>
+                        <li><strong>Certificados digitales:</strong> Validación identidad servidor</li>
+                    </ul>
+                    <div class="bg-teal-50 p-3 rounded text-xs text-teal-800 font-mono">
+                        SSLv2/3 ❌ TLS 1.0-1.1 ⚠️ TLS 1.3 ✅
+                    </div>
+                </div>
+
+                <!-- Capa de Sesión/Presentación -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                    <h3 class="font-bold text-lg text-purple-900 mb-3">🔐 Sesión y Presentación</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>Regeneración tokens:</strong> Tras autenticación exitosa</li>
+                        <li><strong>Expiración temprana:</strong> Sesiones inactivas cortas</li>
+                        <li><strong>Cifrado simétrico/asimétrico:</strong> Datos en tránsito</li>
+                        <li><strong>Protección Downgrade:</strong> Bloquear versiones obsoletas</li>
+                        <li><strong>Validación certificados:</strong> Cadena completa + revocación</li>
+                    </ul>
+                </div>
+
+                <!-- Capa de Aplicación -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-red-500">
+                    <h3 class="font-bold text-lg text-red-900 mb-3">🖥️ Capa de Aplicación</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2 mb-4">
+                        <li><strong>HTTPS:</strong> Web segura (TLS sobre HTTP)</li>
+                        <li><strong>SMTPS:</strong> Correo electrónico cifrado</li>
+                        <li><strong>DNSSEC:</strong> Firmas digitales DNS, anti-envenenamiento</li>
+                        <li><strong>WAF:</strong> Filtrado tráfico HTTP/HTTPS</li>
+                        <li><strong>Proxies seguros:</strong> Intermediarios con inspección</li>
+                    </ul>
+                </div>
+
+                <!-- Gestión y Monitoreo -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="font-bold text-lg text-green-900 mb-3">📊 Buenas prácticas transversales</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Gestión de parches:</strong> SLA crítico < 7 días</li>
+                        <li><strong>Monitoreo continuo:</strong> SIEM, correlación eventos</li>
+                        <li><strong>Auditorías periódicas:</strong> Pentesting, revisiones código</li>
+                        <li><strong>Zero Trust:</strong> Verificar explícitamente cada solicitud</li>
+                        <li><strong>Defensa multicapa:</strong> Controles redundantes</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: CASOS PRÁCTICOS RESUELTOS (SOLUCIONES OFICIALES) -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-violet-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
+            <p class="text-slate-600 mb-8">Análisis detallado de incidentes reales y sus soluciones técnicas oficiales.</p>
+
+            <!-- CASO 11 -->
+            <div class="mb-16 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏦</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 11: Brecha de datos en Equifax (2017)</h3>
+                    </div>
+                    <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        En 2017, Equifax sufrió una de las brechas de datos más graves registradas debido a una vulnerabilidad crítica en Apache Struts (CVE-2017-5638). Aunque el parche estaba disponible semanas antes del ataque, la organización no lo aplicó a tiempo, afectando a 147 millones de personas.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-indigo-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        
+                        <!-- Reclasificación de Requisitos -->
+                        <div class="space-y-6">
+                            <div>
+                                <h5 class="font-bold text-indigo-900 text-sm uppercase mb-2">1. Clasificación de Requisitos para Gestión de Parches</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-indigo-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Detección automática de vulnerabilidades en frameworks, librerías y dependencias.</li>
+                                            <li>Flujo formal de gestión de parches: detección → prueba → validación → despliegue.</li>
+                                            <li>Registro detallado de todas las actualizaciones aplicadas en cada sistema.</li>
+                                            <li>Notificación automática al equipo de seguridad cuando aparezcan vulnerabilidades críticas.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-indigo-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Minimizar el tiempo entre la publicación de un parche y su despliegue (tiempo medio de parcheo).</li>
+                                            <li>Mantener la disponibilidad del servicio durante el proceso de actualización.</li>
+                                            <li>Reducir la superficie de exposición mediante arquitectura modular y defensas adicionales (WAF, segmentación).</li>
+                                            <li>Evitar interrupciones o regresiones al aplicar actualizaciones.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-indigo-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Integración con herramientas de escaneo y análisis de vulnerabilidades (Nessus, OpenVAS, Qualys).</li>
+                                            <li>Uso de herramientas de Software Composition Analysis (SCA) para detectar fallos en dependencias.</li>
+                                            <li>Entornos de staging para pruebas previas antes del despliegue en producción.</li>
+                                            <li>Automatización mediante pipelines CI/CD para desplegar parches de forma rápida y controlada.</li>
+                                            <li>Monitorización continua de aplicaciones para detectar anomalías tras una actualización.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-indigo-100">
+                                        <span class="block font-bold text-amber-700 mb-1">🟠 Legales/Normativos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Cumplimiento RGPD/LOPDGDD (protección de datos personales afectados).</li>
+                                            <li>Normativa PCI-DSS (si hay datos financieros/cartas implicados).</li>
+                                            <li>Ley ENS (Esquema Nacional de Seguridad) para infraestructuras críticas.</li>
+                                            <li>Obligación de notificación de brechas en plazos legales establecidos.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-indigo-900 text-sm uppercase mb-2">2. Caso de Uso: Aplicación de Parches Críticos</h5>
+                                <div class="bg-white p-4 rounded border border-indigo-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">Equipo de seguridad / Equipo DevOps.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El sistema de monitorización o SCA detecta una vulnerabilidad crítica en un componente (ej., Apache Struts).</li>
+                                        <li>Se genera una alerta y se notifica al equipo de seguridad.</li>
+                                        <li>El parche se descarga y se prueba en un entorno controlado de staging.</li>
+                                        <li>Una vez validado, se despliega en producción mediante el pipeline CI/CD.</li>
+                                        <li>Se verifica que la aplicación continúa operativa y se documenta la actualización.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Fallo de compatibilidad en staging → rollback automático y análisis de impacto.</li>
+                                        <li>Parche no disponible → aplicar mitigaciones temporales (reglas WAF, deshabilitar funcionalidad afectada).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos de Validación -->
+                            <div>
+                                <h5 class="font-bold text-indigo-900 text-sm uppercase mb-2">3. Métodos para validar gestión eficaz de vulnerabilidades</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-indigo-100 text-sm">
+                                    <li>Escaneos periódicos de vulnerabilidades y dependencias en todas las aplicaciones.</li>
+                                    <li>Pruebas de penetración para verificar que el fallo ha sido mitigado realmente.</li>
+                                    <li>Evaluación de KPIs como MTTP (Mean Time To Patch) o porcentaje de sistemas desactualizados.</li>
+                                    <li>Auditorías internas de cumplimiento de políticas de actualización.</li>
+                                    <li>Revisión continua de logs y telemetría para detectar comportamiento anómalo tras aplicar parches.</li>
+                                    <li>Validación del pipeline CI/CD para evitar que versiones antiguas o inseguras se desplieguen accidentalmente.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual y Espacio Imagen -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen Visual del Flujo</h4>
+                        
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">🔴 CVE Detectado<br/>(SCA/Scanner)</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-yellow-100 text-yellow-800 px-3 py-2 rounded border border-yellow-300">⚙️ Staging Test<br/>(Validación)</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">✅ Production<br/>(CI/CD)</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-blue-100 text-blue-800 px-3 py-2 rounded border border-blue-300">📊 Monitorizar<br/>(Telemetría)</div>
+                        </div>
+
+                        <div class="text-center text-slate-500 italic text-sm mb-6">
+                            "147 millones de personas afectadas. Un simple retraso en parcheos tiene consecuencias irreversibles."
+                        </div>
+
+                        <!-- Hueco para la imagen -->
+                        <div class="w-full h-64 bg-white border-2 border-dashed border-indigo-300 rounded-lg flex flex-col items-center justify-center hover:border-indigo-500 transition cursor-pointer group">
+                            <div class="text-indigo-400 text-4xl mb-2 group-hover:scale-110 transition transform">🏦</div>
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[ESPACIO PARA IMAGEN DIAGRAMA DE FLUJO GESTIÓN PARCHES]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO 12 -->
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-emerald-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏦</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 12: Robo de tokens vía XSS en Banca Online</h3>
+                    </div>
+                    <span class="bg-emerald-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Una aplicación de banca electrónica tenía un campo vulnerable a XSS reflejado que permitía inyectar JavaScript malicioso. El atacante capturaba tokens de sesión almacenados en el navegador y realizaba transacciones fraudulentas sin credenciales.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-emerald-400 bg-emerald-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-emerald-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Reclasificación -->
+                            <div>
+                                <h5 class="font-bold text-emerald-900 text-sm uppercase mb-2">1. Clasificación de Requisitos para Prevenir XSS</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-emerald-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Validar y sanear todas las entradas del usuario en formularios, parámetros URL y cabeceras.</li>
+                                            <li>Aplicar codificación de salida específica para el contexto (HTML, JavaScript, URL, atributos).</li>
+                                            <li>Gestionar sesiones de forma segura mediante tokens robustos, expiración reducida y cookies HttpOnly.</li>
+                                            <li>Detectar y bloquear patrones comunes de XSS antes de procesar la solicitud.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-emerald-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Mantener un rendimiento adecuado durante el filtrado y la sanitización.</li>
+                                            <li>Minimizar falsos positivos en validaciones para no afectar la usabilidad.</li>
+                                            <li>Garantizar una experiencia fluida incluso con CSP estricta.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-emerald-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Implementar Content Security Policy (CSP) para restringir la ejecución de scripts.</li>
+                                            <li>Utilizar cookies con atributos HttpOnly, Secure y SameSite.</li>
+                                            <li>Automatizar escaneos de seguridad con OWASP ZAP, Burp Suite, Nikto o herramientas SAST.</li>
+                                            <li>Utilizar frameworks modernos con plantillas seguras que evitan XSS por defecto (Django, Spring, Angular, React con JSX seguro).</li>
+                                            <li>Aplicar WAF con reglas específicas contra XSS.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-emerald-100">
+                                        <span class="block font-bold text-amber-700 mb-1">🟠 Legales/Normativos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>RGPD: Protección de datos personales (token de sesión = dato personal).</li>
+                                            <li>PSD2 (Payment Services Directive): Autenticación fuerte y protección de canales de pago.</li>
+                                            <li>ISO 27001: Controles de desarrollo seguro (A.14).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-emerald-900 text-sm uppercase mb-2">2. Caso de Uso: Procesamiento seguro de entrada web</h5>
+                                <div class="bg-white p-4 rounded border border-emerald-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">Usuario legítimo.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El usuario introduce datos en un formulario web (p. ej., búsqueda, comentario o campo de contacto).</li>
+                                        <li>El servidor valida la entrada y ejecuta sanitización anti-XSS eliminando o escapando contenido peligroso.</li>
+                                        <li>Antes de mostrar la información en el navegador, la aplicación aplica codificación de salida adecuada.</li>
+                                        <li>La sesión del usuario se protege mediante tokens seguros y cookies con atributos de seguridad.</li>
+                                        <li>El usuario continúa con la operación bancaria de forma normal.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Detección de un payload sospechoso → se rechaza la solicitud y se genera una alerta de seguridad.</li>
+                                        <li>Token caducado o inválido → cierre de sesión, solicitud de reautenticación o aplicación de MFA.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-emerald-900 text-sm uppercase mb-2">3. Métodos para validar resistencia a XSS</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-emerald-100 text-sm">
+                                    <li>Pruebas de penetración manual utilizando payloads XSS típicos (script de alertas, payloads polimórficos).</li>
+                                    <li>Escaneos automatizados con OWASP ZAP, Nikto o Burp Suite para detectar puntos vulnerables.</li>
+                                    <li>Revisión de código mediante análisis estático (SAST) para verificar que toda salida está codificada y toda entrada sanitizada.</li>
+                                    <li>Pruebas específicas de CSP para confirmar que no se ejecutan scripts externos o inline no autorizados.</li>
+                                    <li>Validación del comportamiento de cookies y tokens para asegurar que no puedan ser robados mediante inyección.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resumen Visual y Espacio Imagen -->
+                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen Visual del Flujo</h4>
+                        
+                        <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                            <div class="bg-gray-100 text-gray-800 px-3 py-2 rounded border border-gray-300">👤 Input<br/>(Usuario)</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">🛡️ Sanitizar<br/>(Servidor)</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-emerald-100 text-emerald-800 px-3 py-2 rounded border border-emerald-300">✨ Codificar<br/>(Salida)</div>
+                            <div class="text-slate-400">➡️</div>
+                            <div class="bg-emerald-100 text-emerald-800 px-3 py-2 rounded border border-emerald-300">🔒 Token Seguro<br/>(Cookie)</div>
+                        </div>
+
+                        <div class="text-center text-slate-500 italic text-sm mb-6">
+                            "Validación estricta + codificación de salida + cookies seguras = Protección contra robo de tokens"
+                        </div>
+
+                        <!-- Hueco para la imagen -->
+                        <div class="w-full h-64 bg-white border-2 border-dashed border-emerald-300 rounded-lg flex flex-col items-center justify-center hover:border-emerald-500 transition cursor-pointer group">
+                            <div class="text-emerald-400 text-4xl mb-2 group-hover:scale-110 transition transform">🛡️</div>
+                            <span class="text-slate-500 font-mono text-xs md:text-sm text-center px-4">[ESPACIO PARA IMAGEN COMPARATIVA INPUT MALICIOSO VS SANITIZADO]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: FICHAS RÁPIDAS -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">5. Fichas Rápidas (Conceptos Core)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Ficha 1 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-blue-500">📐</span>
+                            <h3 class="font-bold text-lg">Modelo OSI</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Definición</h4>
+                            <p class="text-sm">7 capas de abstracción (Física, Enlace, Red, Transporte, Sesión, Presentación, Aplicación).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 2 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-red-500">🛡️</span>
+                            <h3 class="font-bold text-lg">IPSec</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Función</h4>
+                            <p class="text-sm">Protocolo de capa de red para confidencialidad, integridad y autenticación.</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Modos</h4>
+                            <p class="text-sm">Transporte (payload) / Túnel (paquete completo).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 3 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-teal-500">🔒</span>
+                            <h3 class="font-bold text-lg">TLS 1.3</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Protoco
+</think>
+
+ 
+
+He completado el archivo HTML con las **soluciones oficiales** de los casos prácticos 11 y 12 tal cual me las has proporcionado en los PDF adjuntos. El código anterior quedó cortado por límite de caracteres.
+
+Aquí tienes el **código completo final** del archivo `ud6-teorica-practica.html`:
+
+```html
+... (SECCIONES 1-4 YA GENERADAS ARRIBA)...
+
+                <!-- Ficha 3 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-teal-500">🔒</span>
+                            <h3 class="font-bold text-lg">TLS 1.3</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Protocolo</h4>
+                            <p class="text-sm">Transport Layer Security 1.3: Confidencialidad, integridad, autenticación + PFS.</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Mejoras</h4>
+                            <p class="text-sm">Handshake más rápido, elimina algoritmos obsoletos (RC4, MD5, SHA-1).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 4 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-orange-500">🕸️</span>
+                            <h3 class="font-bold text-lg">ARP Spoofing</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Amenaza</h4>
+                            <p class="text-sm">Suplantación de direcciones MAC/ARP para redirigir tráfico local (Man-in-the-Middle).</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Defensa</h4>
+                            <p class="text-sm">DAI (Dynamic ARP Inspection), tablas ARP estáticas, 802.1X.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 5 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-purple-500">📶</span>
+                            <h3 class="font-bold text-lg">WPA3</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Wi-Fi Security</h4>
+                            <p class="text-sm">Estándar más moderno para redes inalámbricas con SAE (Simultaneous Authentication of Equals).</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Resistencia</h4>
+                            <p class="text-sm">Bloquea ataques de diccionario offline y fuerza bruta.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 6 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-yellow-500">🔥</span>
+                            <h3 class="font-bold text-lg">WAF</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Web Application Firewall</h4>
+                            <p class="text-sm">Filtra tráfico HTTP/HTTPS bloqueando SQLi, XSS, inyecciones y ataques conocidos.</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Ubicación</h4>
+                            <p class="text-sm">Capa 7 (Aplicación) - Antes de llegar al servidor web.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 7 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-blue-500">🗣️</span>
+                            <h3 class="font-bold text-lg">DNSSEC</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Función</h4>
+                            <p class="text-sm">Domain Name System Security Extensions: firma digital de respuestas DNS.</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Beneficio</h4>
+                            <p class="text-sm">Previene envenenamiento de caché y redirección a dominios maliciosos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ficha 8 -->
+                <div class="flip-card cursor-pointer">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <span class="text-3xl mb-3 text-green-500">🛡️</span>
+                            <h3 class="font-bold text-lg">CSP</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2">Content Security Policy</h4>
+                            <p class="text-sm">Cabecera HTTP que restringe qué recursos pueden cargarse y ejecutarse en el navegador.</p>
+                            <h4 class="font-bold text-yellow-300 border-b border-white/20 pb-1 mb-2 mt-2">Prevención</h4>
+                            <p class="text-sm">Bloquea ejecución de scripts no autorizados (mitiga XSS).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: GLOSARIO EXTENDIDO -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">6. Glosario Operativo</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Downgrade Attack</h4>
+                    <p class="text-sm text-slate-600 mt-1">Ataque que obliga a las partes a negociar un nivel de seguridad más débil explotando compatibilidad con versiones anteriores (ej. POODLE en SSL 3.0).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Session Hijacking</h4>
+                    <p class="text-sm text-slate-600 mt-1">Secuestro de sesión mediante robo o predicción de identificadores de sesión válidos para suplantar un usuario autenticado.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">DoS/DDoS</h4>
+                    <p class="text-sm text-slate-600 mt-1">Denegación de Servicio (Distributed): sobrecarga de recursos mediante volumetría de tráfico para inhabilitar servicios.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">Zero Trust</h4>
+                    <p class="text-sm text-slate-600 mt-1">Arquitectura donde ninguna comunicación es confiable por defecto, incluso interna; cada solicitud debe autenticarse explícitamente.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">IDS/IPS</h4>
+                    <p class="text-sm text-slate-600 mt-1">Intrusion Detection/Prevention System: monitorea y/o bloquea tráfico malicioso basado en firmas o anomalías.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">BGP Hijacking</h4>
+                    <p class="text-sm text-slate-600 mt-1">Secuestro de rutas BGP para redirigir tráfico global de internet a servidores controlados por atacantes.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">PFS (Perfect Forward Secrecy)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Propiedad de TLS donde cada conexión usa claves únicas; si una clave se compromete, no afecta otras sesiones pasadas/futuras.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">VLAN Hopping</h4>
+                    <p class="text-sm text-slate-600 mt-1">Ataque que permite acceder a segmentos de red aislados mediante mala configuración de trunking o exploits de doble etiquetado.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">MTTP (Mean Time To Patch)</h4>
+                    <p class="text-sm text-slate-600 mt-1">KPI que mide el tiempo medio entre la publicación de un parche y su aplicación efectiva en producción.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">SCA (Software Composition Analysis)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Herramienta que identifica dependencias de terceros y sus vulnerabilidades conocidas (CVEs) en el código fuente.</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">RCE (Remote Code Execution)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Vulnerabilidad que permite ejecutar código arbitrario en un sistema remoto, como en el caso de Apache Struts (CVE-2017-5638).</p>
+                </div>
+                <div class="bg-white p-4 border-l-4 border-violet-500 shadow-sm rounded-r-lg hover:shadow-md transition">
+                    <h4 class="font-bold text-slate-800">HSTS (HTTP Strict Transport Security)</h4>
+                    <p class="text-sm text-slate-600 mt-1">Política que obliga a los navegadores a usar solo conexiones HTTPS, evitando downgrade attacks y cookie hijacking.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: FLUJO OPERATIVO E2E -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-block">8. Flujo Operativo E2E (Seguridad en Redes)</h2>
+            <p class="text-slate-600 mb-8">El ciclo de vida de la seguridad en redes integra controles desde el diseño hasta la monitorización continua, garantizando protección en todas las capas.</p>
+
+            <div class="max-w-4xl mx-auto space-y-4 relative">
+                <!-- Paso 1 -->
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-slate-800 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-1')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-slate-100 w-12 h-12 flex justify-center items-center rounded-full">📋</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">1. Análisis de Riesgos y Topología</h4>
+                                <span class="text-xs font-bold text-slate-500">Fase de Planificación</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-1" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">
+                        Identificar activos críticos, evaluar amenazas por capa (física, enlace, red, transporte, aplicación) y diseñar topología de red considerando zonas de confianza y perímetros de seguridad.
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <!-- Paso 2 -->
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-blue-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-2')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-blue-100 w-12 h-12 flex justify-center items-center rounded-full">🏗️</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">2. Diseño de Arquitectura Segura</h4>
+                                <span class="text-xs font-bold text-blue-500">Fase de Diseño</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-2" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">
+                        Diseñar segmentación (VLANs, subredes), definir políticas de cifrado (TLS 1.3, IPSec), planear control de acceso (802.1X, firewall zones) y arquitecturas Zero Trust.
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <!-- Paso 3 -->
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-indigo-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-3')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-indigo-100 w-12 h-12 flex justify-center items-center rounded-full">🔧</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">3. Despliegue y Hardening</h4>
+                                <span class="
