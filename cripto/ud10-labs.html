@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 10 - Laboratorios Prácticos | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Estilos específicos */
+        .lab-header { background: linear-gradient(to right, #2563eb, #1d4ed8); }
+        
+        /* Simulación PDCA */
+        .pdca-step { opacity: 0.3; transition: all 0.5s; border-left: 4px solid transparent; }
+        .pdca-step.active { opacity: 1; border-left-color: #2563eb; background-color: #eff6ff; transform: translateX(5px); }
+        .pdca-step.done { opacity: 1; border-left-color: #10b981; background-color: #ecfdf5; }
+
+        /* Simulación Vulnerabilidad */
+        .vuln-alert { animation: pulse-red 2s infinite; }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Dashboard Metrics */
+        .metric-card { transition: all 0.3s; }
+        .metric-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-blue-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-blue-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 10: Labs</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Laboratorios de Gestión</li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-blue-500 bg-slate-800 text-white tab-btn text-purple-400 font-bold">1. Simulador PDCA (SGSI)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-red-400 font-bold">2. Crisis Log4Shell (Banco)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec10')" id="btn-sec10" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">3. Dashboard KPI/KRI</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Navegación</li>
+                <li class="nav-item"><button onclick="window.location.href='ud10-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400">← Volver a Teoría y Casos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 8: LABORATORIO PDCA -->
+        <section id="sec8" class="main-section fade-in">
+            <div class="lab-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">1. Laboratorio: Implementación de un SGSI (Ciclo PDCA)</h2>
+                <p class="opacity-90">Guía a la Universidad Europea a través del ciclo PDCA para obtener la certificación ISO 27001.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Controles -->
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 p-4 rounded border border-blue-200">
+                            <h4 class="font-bold text-blue-900 mb-2">🎯 Tu Misión</h4>
+                            <p class="text-sm text-slate-700">Realiza las acciones correctas en cada fase del ciclo PDCA para progresar hacia la certificación.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Fase Actual: <span id="currentPhaseDisplay" class="text-blue-600 font-bold">PLANIFICAR</span></label>
+                            <div class="space-y-2">
+                                <button onclick="doPhaseAction('plan')" class="w-full text-left p-3 bg-white border rounded hover:bg-blue-50 hover:border-blue-400 transition text-sm font-medium">
+                                    📋 Identificar activos críticos y evaluar riesgos
+                                </button>
+                                <button onclick="doPhaseAction('do')" id="btn-do" disabled class="w-full text-left p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-sm font-medium">
+                                    ⚙️ Implementar SIEM y controles (Bloqueado)
+                                </button>
+                                <button onclick="doPhaseAction('check')" id="btn-check" disabled class="w-full text-left p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-sm font-medium">
+                                    🔍 Auditar internamente y medir KPIs (Bloqueado)
+                                </button>
+                                <button onclick="doPhaseAction('act')" id="btn-act" disabled class="w-full text-left p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-sm font-medium">
+                                    🚀 Corregir desviaciones y certificar (Bloqueado)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualizador Progreso -->
+                    <div class="bg-slate-50 p-4 rounded border border-slate-200 relative overflow-hidden">
+                        <h4 class="font-bold text-slate-800 mb-4">Estado del SGSI</h4>
+                        <div class="space-y-4">
+                            <div class="pdca-step p-3 rounded bg-white border border-slate-200" id="step-plan">
+                                <div class="font-bold text-slate-700">1. Planificar</div>
+                                <div class="text-xs text-slate-500">Inventario, Riesgos, Controles</div>
+                            </div>
+                            <div class="pdca-step p-3 rounded bg-white border border-slate-200" id="step-do">
+                                <div class="font-bold text-slate-700">2. Hacer (Do)</div>
+                                <div class="text-xs text-slate-500">Despliegue, Formación, Documentación</div>
+                            </div>
+                            <div class="pdca-step p-3 rounded bg-white border border-slate-200" id="step-check">
+                                <div class="font-bold text-slate-700">3. Verificar (Check)</div>
+                                <div class="text-xs text-slate-500">Auditorías, Métricas, Revisión</div>
+                            </div>
+                            <div class="pdca-step p-3 rounded bg-white border border-slate-200" id="step-act">
+                                <div class="font-bold text-slate-700">4. Actuar (Act)</div>
+                                <div class="text-xs text-slate-500">Mejora Continua, CERTIFICACIÓN ✨</div>
+                            </div>
+                        </div>
+                        
+                        <div id="certificationBadge" class="hidden absolute inset-0 bg-emerald-100/90 flex flex-col items-center justify-center z-10 backdrop-blur-sm">
+                            <div class="text-5xl mb-2">🏆</div>
+                            <h3 class="text-2xl font-bold text-emerald-800">CERTIFICADO ISO 27001</h3>
+                            <p class="text-emerald-700 text-sm mt-2">¡La universidad ha obtenido la certificación!</p>
+                            <button onclick="resetPDCA()" class="mt-4 px-4 py-2 bg-emerald-600 text-white rounded text-sm font-bold hover:bg-emerald-700">Reiniciar Ciclo</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="feedbackMsg" class="hidden p-4 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 font-bold text-sm"></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: CRISIS LOG4SHELL -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-red-600 to-orange-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">2. Laboratorio: Gestión de Crisis Log4Shell</h2>
+                <p class="opacity-90">Toma las decisiones correctas para mitigar una vulnerabilidad crítica en un entorno bancario.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="mb-6 flex justify-between items-center bg-red-50 p-4 rounded border border-red-200">
+                    <div>
+                        <h3 class="font-bold text-red-900 text-lg">⚠️ ALERTA CRÍTICA: CVE-2021-44228 (Log4Shell)</h3>
+                        <p class="text-sm text-red-800">Se ha detectado una vulnerabilidad de ejecución remota de código en servidores de pruebas de un proveedor externo.</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-red-600 font-bold uppercase">Nivel de Amenaza</div>
+                        <div class="text-2xl font-black text-red-600 vuln-alert">CRÍTICO</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Panel de Acciones -->
+                    <div class="lg:col-span-1 space-y-3">
+                        <button onclick="handleVuln('scan')" class="w-full p-3 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 transition text-left">
+                            <div class="font-bold text-blue-900">1. Escaneo Inmediato</div>
+                            <div class="text-xs text-slate-600">Identificar dependencias afectadas en todos los entornos.</div>
+                        </button>
+                        <button onclick="handleVuln('inventory')" id="btn-inv" disabled class="w-full p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-left">
+                            <div class="font-bold text-slate-400">2. Actualizar Inventario</div>
+                            <div class="text-xs text-slate-500">Registrar activos y dependencias (Bloqueado).</div>
+                        </button>
+                        <button onclick="handleVuln('patch')" id="btn-patch" disabled class="w-full p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-left">
+                            <div class="font-bold text-slate-400">3. Parchear / Mitigar</div>
+                            <div class="text-xs text-slate-500">Aplicar solución o medidas compensatorias (Bloqueado).</div>
+                        </button>
+                        <button onclick="handleVuln('verify')" id="btn-verify" disabled class="w-full p-3 bg-gray-100 border border-gray-200 rounded text-gray-400 cursor-not-allowed text-left">
+                            <div class="font-bold text-slate-400">4. Validar y Reportar</div>
+                            <div class="text-xs text-slate-500">Confirmar cierre y actualizar registro de riesgos (Bloqueado).</div>
+                        </button>
+                    </div>
+
+                    <!-- Simulador de Estado -->
+                    <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 text-white font-mono text-sm relative overflow-hidden">
+                        <div class="absolute top-2 right-2 text-xs text-slate-500">Terminal de Respuesta</div>
+                        <div id="consoleOutput" class="space-y-2 h-64 overflow-y-auto custom-scrollbar pr-2">
+                            <div class="text-green-400">> Sistema iniciado...</div>
+                            <div class="text-yellow-400">> ALERTA: Nueva vulnerabilidad crítica detectada en feed NIST.</div>
+                            <div class="text-red-400">> ERROR: Inventario de dependencias obsoleto. No se sabe qué sistemas están afectados.</div>
+                            <div class="text-slate-400 italic">Esperando instrucciones...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="crisisResult" class="hidden mt-6 p-4 rounded-lg border-2 text-center animate-fade-in">
+                    <!-- Resultado dinámico -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 10: DASHBOARD METRICS -->
+        <section id="sec10" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">3. Laboratorio: Dashboard KPI & KRI</h2>
+                <p class="opacity-90">Configura indicadores para detectar riesgos antes de que se conviertan en incidentes.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Configuración -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-4">Configurar Indicadores</h4>
+                        <p class="text-sm text-slate-600 mb-4">Selecciona qué métricas activar en el dashboard. Algunos son KPI (desempeño) y otros KRI (riesgo predictivo).</p>
+                        
+                        <div class="space-y-3">
+                            <label class="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-slate-50">
+                                <div>
+                                    <span class="font-bold text-sm">Tiempo Medio de Respuesta (MTTR)</span>
+                                    <span class="text-xs text-slate-500 ml-2">(KPI)</span>
+                                </div>
+                                <input type="checkbox" checked class="metric-toggle w-5 h-5 accent-green-600" data-type="kpi">
+                            </label>
+                            <label class="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-slate-50">
+                                <div>
+                                    <span class="font-bold text-sm">% Sistemas sin Parche > 30 días</span>
+                                    <span class="text-xs text-red-500 ml-2 font-bold">(KRI - Riesgo Alto)</span>
+                                </div>
+                                <input type="checkbox" checked class="metric-toggle w-5 h-5 accent-red-600" data-type="kri">
+                            </label>
+                            <label class="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-slate-50">
+                                <div>
+                                    <span class="font-bold text-sm">Accesos fallidos consecutivos</span>
+                                    <span class="text-xs text-orange-500 ml-2">(KRI - Ataques)</span>
+                                </div>
+                                <input type="checkbox" checked class="metric-toggle w-5 h-5 accent-orange-600" data-type="kri">
+                            </label>
+                            <label class="flex items-center justify-between p-3 border rounded cursor-pointer hover:bg-slate-50">
+                                <div>
+                                    <span class="font-bold text-sm">Porcentaje de Proveedores Auditados</span>
+                                    <span class="text-xs text-blue-500 ml-2">(KPI - Cumplimiento)</span>
+                                </div>
+                                <input type="checkbox" class="metric-toggle w-5 h-5 accent-blue-600" data-type="kpi">
+                            </label>
+                        </div>
+                        
+                        <button onclick="updateDashboard()" class="w-full mt-4 py-2 bg-slate-800 text-white rounded font-bold hover:bg-slate-900 transition">Actualizar Dashboard</button>
+                    </div>
+
+                    <!-- Dashboard Visual -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 relative">
+                        <h4 class="font-bold text-slate-700 mb-2 text-center">Vista Ejecutiva en Tiempo Real</h4>
+                        <div id="dashboardGrid" class="grid grid-cols-2 gap-4">
+                            <!-- Tarjetas generadas dinámicamente -->
+                        </div>
+                        
+                        <div id="alertBox" class="hidden absolute bottom-4 left-4 right-4 bg-red-600 text-white p-3 rounded shadow-lg text-center font-bold text-sm animate-bounce">
+                            ⚠️ ¡ALERTA DE RIESGO! Umbral crítico superado. Acción inmediata requerida.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded border border-blue-200 text-sm">
+                    <h5 class="font-bold text-blue-900 mb-2">💡 Lección Clave:</h5>
+                    <p class="text-slate-700">Los <strong>KPI</strong> te dicen si estás cumpliendo objetivos (ej. parchear a tiempo). Los <strong>KRI</strong> te alertan de problemas futuros (ej. muchos sistemas sin parche). Sin KRI, solo reaccionas cuando ya es tarde.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-purple-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-red-400');
+                if(btn.id === 'btn-sec10' && sectionId !== 'sec10') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-purple-400', 'text-red-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // ==========================================
+        // LABORATORIO 1: PDCA SIMULATION
+        // ==========================================
+        let pdcaPhase = 0; // 0=Plan, 1=Do, 2=Check, 3=Act
+        const phaseNames = ["PLANIFICAR", "HACER", "VERIFICAR", "ACTUAR"];
+        
+        function doPhaseAction(phase) {
+            const feedback = document.getElementById('feedbackMsg');
+            
+            if (phase === 'plan' && pdcaPhase === 0) {
+                updateStep('step-plan', 'done');
+                enableButton('btn-do');
+                pdcaPhase = 1;
+                updateDisplayPhase();
+                feedback.className = "hidden";
+            } else if (phase === 'do' && pdcaPhase === 1) {
+                updateStep('step-do', 'done');
+                enableButton('btn-check');
+                pdcaPhase = 2;
+                updateDisplayPhase();
+                feedback.className = "hidden";
+            } else if (phase === 'check' && pdcaPhase === 2) {
+                updateStep('step-check', 'done');
+                enableButton('btn-act');
+                pdcaPhase = 3;
+                updateDisplayPhase();
+                feedback.className = "hidden";
+            } else if (phase === 'act' && pdcaPhase === 3) {
+                document.getElementById('certificationBadge').classList.remove('hidden');
+                feedback.className = "hidden";
+            } else {
+                feedback.innerText = "❌ Error: Debes completar las fases en orden secuencial (PDCA).";
+                feedback.classList.remove('hidden');
+                setTimeout(() => feedback.classList.add('hidden'), 3000);
+            }
+        }
+
+        function updateStep(id, status) {
+            const el = document.getElementById(id);
+            el.classList.remove('active');
+            el.classList.add(status);
+            if(status === 'done') el.style.borderLeftColor = '#10b981';
+        }
+
+        function enableButton(id) {
+            const btn = document.getElementById(id);
+            btn.disabled = false;
+            btn.classList.remove('bg-gray-100', 'border-gray-200', 'text-gray-400', 'cursor-not-allowed');
+            btn.classList.add('bg-white', 'border-blue-400', 'text-blue-900', 'hover:bg-blue-50', 'font-medium');
+        }
+
+        function updateDisplayPhase() {
+            document.getElementById('currentPhaseDisplay').innerText = phaseNames[pdcaPhase];
+        }
+
+        function resetPDCA() {
+            pdcaPhase = 0;
+            document.getElementById('certificationBadge').classList.add('hidden');
+            ['step-plan', 'step-do', 'step-check', 'step-act'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('done', 'active');
+                el.style.borderLeftColor = 'transparent';
+            });
+            ['btn-do', 'btn-check', 'btn-act'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.disabled = true;
+                btn.classList.add('bg-gray-100', 'border-gray-200', 'text-gray-400', 'cursor-not-allowed');
+                btn.classList.remove('bg-white', 'border-blue-400', 'text-blue-900', 'hover:bg-blue-50', 'font-medium');
+            });
+            updateDisplayPhase();
+        }
+
+        // ==========================================
+        // LABORATORIO 2: LOG4SHELL SIMULATION
+        // ==========================================
+        let vulnStep = 0; // 0=Start, 1=Scan, 2=Inv, 3=Patch, 4=Verify
+        const consoleOutput = document.getElementById('consoleOutput');
+
+        function log(msg, color = 'text-slate-400') {
+            const div = document.createElement('div');
+            div.className = `${color}`;
+            div.innerHTML = `> ${msg}`;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function handleVuln(action) {
+            if (action === 'scan' && vulnStep === 0) {
+                vulnStep = 1;
+                log("Escaneando dependencias en todos los entornos...", "text-blue-300");
+                setTimeout(() => {
+                    log("✅ Escaneo completado. Se encontraron 12 servidores críticos con Log4j.", "text-green-400");
+                    log("⚠️ Alerta: Algunos servidores pertenecen a proveedores externos.", "text-yellow-400");
+                    enableVulnBtn('btn-inv');
+                }, 800);
+            } else if (action === 'inventory' && vulnStep === 1) {
+                vulnStep = 2;
+                log("Actualizando inventario de activos y dependencias...", "text-blue-300");
+                log("✅ Inventario actualizado. Matriz de dependencia generada.", "text-green-400");
+                log("📝 Registro de riesgos actualizado con nuevos assets.", "text-blue-300");
+                enableVulnBtn('btn-patch');
+            } else if (action === 'patch' && vulnStep === 2) {
+                vulnStep = 3;
+                log("Analizando opciones de mitigación...", "text-blue-300");
+                log(">> Sistema Interno: Parche aplicado exitosamente.", "text-green-400");
+                log(">> Proveedor Externo: Parche no disponible aún. Aplicando WAF rule y aislamiento de red.", "text-orange-400");
+                log("✅ Medidas compensatorias activadas en entornos no parcheables.", "text-green-400");
+                enableVulnBtn('btn-verify');
+            } else if (action === 'verify' && vulnStep === 3) {
+                vulnStep = 4;
+                log("Validando cierre de vulnerabilidad...", "text-blue-300");
+                log("✅ Todos los sistemas internos protegidos.", "text-green-400");
+                log("✅ Controles compensatorios vigentes en proveedores.", "text-green-400");
+                log(">>> BRECHA EVITADA. Incidente cerrado sin impacto masivo.", "text-emerald-400 font-bold");
+                
+                const resDiv = document.getElementById('crisisResult');
+                resDiv.className = "mt-6 p-4 rounded-lg border-2 bg-emerald-50 border-emerald-500 text-emerald-800 animate-fade-in";
+                resDiv.innerHTML = "<h3 class='text-xl font-bold'>✅ GESTIÓN EXITOSA</h3><p>Hiciste lo correcto: escanear primero, inventariar, parchear/mitigar y validar. Evitaste la brecha masiva.</p>";
+            } else {
+                log("⛔ Acción incorrecta en el flujo. Sigue el orden lógico.", "text-red-400");
+            }
+        }
+
+        function enableVulnBtn(id) {
+            const btn = document.getElementById(id);
+            btn.disabled = false;
+            btn.classList.remove('bg-gray-100', 'border-gray-200', 'text-gray-400', 'cursor-not-allowed');
+            btn.classList.add('bg-white', 'border-blue-400', 'text-blue-900', 'hover:bg-blue-50', 'font-bold');
+        }
+
+        // ==========================================
+        // LABORATORIO 3: DASHBOARD METRICS
+        // ==========================================
+        function updateDashboard() {
+            const grid = document.getElementById('dashboardGrid');
+            grid.innerHTML = '';
+            const checkboxes = document.querySelectorAll('.metric-toggle');
+            let hasRiskAlert = false;
+
+            checkboxes.forEach(chk => {
+                if (chk.checked) {
+                    const type = chk.dataset.type;
+                    let cardClass = "";
+                    let value = "";
+                    let label = chk.previousElementSibling.childNodes[0].nodeValue.trim();
+                    
+                    // Simular valores aleatorios pero lógicos según tipo
+                    if (type === 'kpi') {
+                        cardClass = "bg-green-50 border-green-200";
+                        value = Math.floor(Math.random() * (100 - 90) + 90) + "%"; // Valores altos buenos
+                    } else {
+                        cardClass = "bg-red-50 border-red-200";
+                        // Generar riesgo alto para demo
+                        value = Math.floor(Math.random() * (15 - 5) + 5) + "%"; 
+                        hasRiskAlert = true; 
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = `p-3 rounded border ${cardClass} metric-card`;
+                    card.innerHTML = `
+                        <div class="text-xs font-bold uppercase opacity-70">${type.toUpperCase()}</div>
+                        <div class="text-xl font-black my-1">${value}</div>
+                        <div class="text-xs font-medium truncate" title="${label}">${label}</div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+
+            const alertBox = document.getElementById('alertBox');
+            if (hasRiskAlert) {
+                alertBox.classList.remove('hidden');
+                setTimeout(() => alertBox.classList.add('hidden'), 4000);
+            } else {
+                alertBox.classList.add('hidden');
+            }
+        }
+
+        // Inicializar
+        window.onload = function() {
+            updateDashboard(); // Init with defaults
+            switchSection('sec8');
+        };
+    </script>
+</body>
+</html>
