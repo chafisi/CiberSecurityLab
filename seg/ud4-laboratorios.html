@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 4 - Laboratorios y Test | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Drag & Drop Styles */
+        .draggable { cursor: grab; touch-action: none; user-select: none; }
+        .draggable:active { cursor: grabbing; }
+        .drop-zone { transition: all 0.3s ease; border-style: dashed; }
+        .drop-zone.drag-over { border-style: solid; border-color: #8b5cf6; background-color: #f3e8ff; }
+        .drop-zone.correct { border-color: #22c55e; background-color: #dcfce7; }
+        .drop-zone.wrong { border-color: #ef4444; background-color: #fee2e2; }
+        
+        /* Test Styles */
+        .quiz-question { transition: all 0.3s; }
+        .quiz-question.correct-answer { border-left-color: #22c55e; background-color: #f0fdf4; }
+        .quiz-question.wrong-answer { border-left-color: #ef4444; background-color: #fef2f2; }
+        
+        /* Rule Builder Styles */
+        .rule-step { transition: all 0.3s; opacity: 0.5; pointer-events: none; }
+        .rule-step.active { opacity: 1; pointer-events: auto; }
+        .rule-card { transition: transform 0.2s; }
+        .rule-card:hover { transform: scale(1.02); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-950 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 4: Labs & Test</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-yellow-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 TEST EVALUACIÓN</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Información</li>
+                <li class="nav-item"><button onclick="window.location.href='ud4-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400">← Volver a Teoría</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 7: LABORATORIOS INTERACTIVOS -->
+        <section id="sec7" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-400 mb-8">Practica configurando reglas de firewall y diseñando arquitecturas seguras con DMZ.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- LABORATORIO 1: Constructor de Reglas Firewall -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container h-[750px]">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">🛡️ Laboratorio 1: Constructor de Reglas</span>
+                        <span id="lab1Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Regla 1/5</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-cyan-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Construye la regla de firewall correcta para cada escenario descrito. Elige Acción, Origen, Destino y Puerto.</p>
+                        </div>
+
+                        <!-- Escenario Actual -->
+                        <div class="bg-indigo-900/50 border border-indigo-500 p-4 rounded-lg mb-4">
+                            <h5 class="text-xs font-bold text-indigo-300 uppercase mb-2">Escenario Actual</h5>
+                            <p class="text-sm text-white" id="scenarioText">Permitir que los usuarios internos naveguen por Internet (HTTP/HTTPS).</p>
+                        </div>
+
+                        <!-- Selector de Acciones -->
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-400 mb-1">Acción</label>
+                                <select id="actionSelect" class="w-full bg-slate-900 text-white rounded border border-slate-600 p-2 text-sm">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="permit">PERMITIR (Allow)</option>
+                                    <option value="deny">DENEGAR (Deny)</option>
+                                </select>
+                            </div>
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-400 mb-1">Puerto/Protocolo</label>
+                                <select id="portSelect" class="w-full bg-slate-900 text-white rounded border border-slate-600 p-2 text-sm">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="any">ANY (Todo)</option>
+                                    <option value="80,443">HTTP/HTTPS (80,443)</option>
+                                    <option value="22">SSH (22)</option>
+                                    <option value="3389">RDP (3389)</option>
+                                    <option value="3306">MySQL (3306)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                         <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-400 mb-1">Origen</label>
+                                <select id="sourceSelect" class="w-full bg-slate-900 text-white rounded border border-slate-600 p-2 text-sm">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="LAN">Red Interna (LAN)</option>
+                                    <option value="Internet">Internet (WAN)</option>
+                                    <option value="DMZ">Zona Desmilitarizada (DMZ)</option>
+                                    <option value="DB_Server">Servidor DB Específico</option>
+                                </select>
+                            </div>
+                            <div class="col-span-1">
+                                <label class="block text-xs font-bold text-slate-400 mb-1">Destino</label>
+                                <select id="destSelect" class="w-full bg-slate-900 text-white rounded border border-slate-600 p-2 text-sm">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="Any">Cualquiera (Any)</option>
+                                    <option value="LAN">Red Interna (LAN)</option>
+                                    <option value="Web_Server">Servidor Web DMZ</option>
+                                    <option value="DB_Server">Servidor DB Interna</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="checkRule()" class="mt-auto w-full bg-violet-600 hover:bg-violet-500 text-white px-4 py-3 rounded-lg font-bold text-sm transition">Validar Regla</button>
+                        
+                        <div id="feedbackMsg" class="hidden mt-4 p-3 rounded text-sm font-bold text-center"></div>
+                    </div>
+                </div>
+
+                <!-- LABORATORIO 2: Diseño de Arquitectura (DMZ) -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-emerald-400 font-bold">🏗️ Laboratorio 2: Arquitecto de Redes</span>
+                        <span id="lab2Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">0/4 colocados</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-emerald-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Arrastra cada servicio a la zona de red más segura y adecuada (Interna, DMZ o Externa).</p>
+                        </div>
+
+                        <!-- Servicios Disponibles -->
+                        <div class="mb-4 bg-slate-900 p-3 rounded-lg min-h-[100px] border-2 border-slate-700">
+                            <h5 class="text-xs font-bold text-slate-400 mb-2 uppercase">Servicios Disponibles</h5>
+                            <div class="flex flex-wrap gap-2" id="servicesContainer">
+                                <div draggable="true" data-service="web" class="draggable bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Servidor Web Público</div>
+                                <div draggable="true" data-service="db" class="draggable bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Base de Datos Sensible</div>
+                                <div draggable="true" data-service="admin" class="draggable bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Consola Admin</div>
+                                <div draggable="true" data-service="mail" class="draggable bg-orange-600 hover:bg-orange-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Servidor Mail (SMTP)</div>
+                            </div>
+                        </div>
+
+                        <!-- Zonas de Red (Drop Zones) -->
+                        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="drop-zone bg-blue-900/30 border-2 border-blue-500 p-2 rounded flex flex-col items-center justify-center min-h-[150px]" data-zone="internal">
+                                <div class="text-blue-300 font-bold mb-2">🏢 Zona Interna</div>
+                                <div class="text-xs text-blue-400 mb-1 text-center">Alta Confianza<br/>Datos Críticos</div>
+                                <div class="drop-area w-full min-h-[50px]"></div>
+                            </div>
+                            <div class="drop-zone bg-yellow-900/30 border-2 border-yellow-500 p-2 rounded flex flex-col items-center justify-center min-h-[150px]" data-zone="dmz">
+                                <div class="text-yellow-300 font-bold mb-2">⚖️ DMZ</div>
+                                <div class="text-xs text-yellow-400 mb-1 text-center">Medio Riesgo<br/>Servicios Públicos</div>
+                                <div class="drop-area w-full min-h-[50px]"></div>
+                            </div>
+                            <div class="drop-zone bg-red-900/30 border-2 border-red-500 p-2 rounded flex flex-col items-center justify-center min-h-[150px]" data-zone="external">
+                                <div class="text-red-300 font-bold mb-2">☁️ Externa</div>
+                                <div class="text-xs text-red-400 mb-1 text-center">Sin Confianza<br/>Internet</div>
+                                <div class="drop-area w-full min-h-[50px]"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="resetLab2()" class="mt-4 w-full bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Reiniciar Lab</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST EVALUACIÓN -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-green-500 pb-2 inline-block">8. Test de Evaluación Oficial</h2>
+            <p class="text-slate-400 mb-6">Demuestra tus conocimientos sobre Sistemas Cortafuegos. 20 preguntas basadas en el temario oficial.</p>
+            
+            <form id="quizForm" class="space-y-6 max-w-4xl mx-auto">
+                
+                <!-- PREGUNTA 1 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">1 ¿Qué caracteriza a un firewall de filtrado estático?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="A"> A) Analiza contenido completo del paquete.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="B"> B) Evalúa solo cabeceras según reglas predefinidas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="C"> C) Realiza inspección profunda de aplicaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="D"> D) Reescribe tráfico cifrado.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 2 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">2 ¿Cuál es un ejemplo de política débil en un firewall?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="A"> A) Permitir solo puertos requeridos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="B"> B) Abrir puertos innecesarios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="C"> C) Utilizar listas blancas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="D"> D) Registrar eventos críticos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 3 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">3 ¿Qué tipo de tráfico debe permitirse siempre con cautela?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="A"> A) Saliente HTTP.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="B"> B) Entrante desde Internet hacia la LAN.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="C"> C) DNS interno.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="D"> D) Tráfico interno entre VLANs seguras.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 4 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">4 ¿Qué es un firewall basado en proxy?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="A"> A) Un repetidor de señal.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="B"> B) Un intermediario que inspecciona tráfico a nivel aplicación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="C"> C) Un dispositivo que solo analiza cabeceras.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="D"> D) Un servidor de logs.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 5 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">5 ¿Qué hace un firewall de próxima generación (NGFW)?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="A"> A) Se limita a bloquear puertos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="B"> B) Añade inspección de aplicaciones, IPS y control de usuarios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="C"> C) Solo funciona en capa física.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="D"> D) Es exclusivo para IoT.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 6 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">6 Una ventaja del filtrado por MAC es:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="A"> A) Alta seguridad criptográfica.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="B"> B) Permite controlar acceso por dispositivos físicos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="C"> C) Controla tráfico a nivel aplicación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="D"> D) Funciona únicamente en redes IPv6.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 7 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">7 ¿Qué es NAT en un firewall?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="A"> A) Un método de cifrado simétrico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="B"> B) Traducción de direcciones internas a externas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="C"> C) Un protocolo de autenticación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="D"> D) Un IDS embebido.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 8 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">8 ¿Qué es un cortafuegos y cuál es su propósito principal?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="A"> A) Dispositivo o software que controla el tráfico de red según reglas de seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="B"> B) Mecanismo de balanceo de carga.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="C"> C) Sistema de copias de seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="D"> D) Herramienta de auditoría de aplicaciones.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 9 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">9 Diferencie cortafuegos de red y de host.</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="A"> A) El de red protege múltiples sistemas; el de host protege un dispositivo individual.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="B"> B) Ambos solo protegen aplicaciones web.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="C"> C) El de host inspecciona solo tráfico saliente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="D"> D) El de red requiere modo proxy siempre.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 10 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">10 La inspección con estado (stateful) permite:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="A"> A) Registrar únicamente paquetes UDP.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="B"> B) Mantener información de conexiones activas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="C"> C) Deshabilitar NAT.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="D"> D) Ignorar tráfico fragmentado.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 11 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">11 ¿Cuál es un riesgo de permitir "Any–Any"?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="A"> A) Optimiza el rendimiento.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="B"> B) Abre toda la superficie de ataque.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="C"> C) Facilita auditorías.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="D"> D) Requiere menos memoria.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 12 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">12 ¿Qué debe revisarse periódicamente en un firewall?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="A"> A) Únicamente el consumo eléctrico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="B"> B) Reglas, registros y actualizaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="C"> C) Estado de la pintura del chasis.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="D"> D) El número de cables conectados.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 13 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">13 ¿Qué firewall trabaja en capa 7?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="A"> A) Filtrado estático.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="B"> B) Cortafuegos de aplicación (WAF).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="C"> C) NAT clásico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="D"> D) Filtrado MAC.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 14 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">14 ¿Qué permite un firewall con IDS/IPS integrado?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="A"> A) Cifrado extremo a extremo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="B"> B) Detección y bloqueo de ataques en tiempo real.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="C"> C) Balancear servidores.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="D"> D) Garantizar redundancia física.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 15 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">15 ¿Cuál es un indicador de mala configuración?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="A"> A) Reglas precisas y minimalistas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="B"> B) Gran cantidad de reglas redundantes o contradictorias.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="C"> C) Uso de listas negras y blancas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="D"> D) Segmentación adecuada.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 16 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">16 ¿Qué implica el principio "deny by default"?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="A"> A) Permitir todo salvo reglas específicas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="B"> B) Bloquear todo y permitir solo lo explícitamente autorizado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="C"> C) Ignorar tráfico saliente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="D"> D) Forzar uso de VLANs.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 17 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">17 ¿Cuál es la función principal de un firewall perimetral?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="A"> A) Aumentar la velocidad de navegación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="B"> B) Proteger la frontera entre redes internas y externas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="C"> C) Reemplazar políticas de seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="D"> D) Sustituir la autenticación de usuarios.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 18 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">18 ¿Cuál es el objetivo del "port forwarding"?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="A"> A) Ocultar puertos internos sin exponer servicios.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="B"> B) Redirigir tráfico externo hacia un servicio interno específico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="C"> C) Deshabilitar UPnP.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="D"> D) Crear túneles VPN.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 19 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">19 ¿Qué es una DMZ?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="A"> A) Una red interna sin seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="B"> B) Zona aislada donde se colocan servicios expuestos al exterior.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="C"> C) Red de respaldo para bases de datos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="D"> D) Un túnel VPN.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 20 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">20 ¿Para qué se usa un firewall personal?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="A"> A) Proteger un solo equipo contra accesos no autorizados.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="B"> B) Gestionar VLANs.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="C"> C) Monitorear routers en la nube.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="D"> D) Filtrar tráfico entre sedes corporativas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Botones de Control -->
+                <div class="sticky bottom-4 bg-slate-800 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-600 hover:bg-slate-500 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            // Init Lab 1 if entering section 7
+            if(sectionId === 'sec7') initLab1();
+        }
+
+        // ==========================================
+        // LABORATORIO 1: CONSTRUCTOR DE REGLAS
+        // ==========================================
+        const scenarios = [
+            {
+                id: 1,
+                text: "Permitir que los usuarios internos naveguen por Internet (HTTP/HTTPS).",
+                correct: { action: "permit", port: "80,443", source: "LAN", dest: "Any" }
+            },
+            {
+                id: 2,
+                text: "Bloquear cualquier acceso directo desde Internet a la Base de Datos.",
+                correct: { action: "deny", port: "3306", source: "Internet", dest: "DB_Server" }
+            },
+            {
+                id: 3,
+                text: "Permitir que el Servidor Web de la DMZ acceda a la DB Interna.",
+                correct: { action: "permit", port: "3306", source: "Web_Server", dest: "DB_Server" }
+            },
+            {
+                id: 4,
+                text: "Bloquear acceso administrativo (SSH) desde Internet a cualquier equipo.",
+                correct: { action: "deny", port: "22", source: "Internet", dest: "LAN" }
+            },
+            {
+                id: 5,
+                text: "Permitir que el administrador acceda al firewall desde la red interna.",
+                correct: { action: "permit", port: "22", source: "LAN", dest: "Any" } // Simplificado para el ejercicio
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+
+        function initLab1() {
+            loadScenario(0);
+        }
+
+        function loadScenario(index) {
+            if (index >= scenarios.length) {
+                document.getElementById('lab1Status').className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+                document.getElementById('lab1Status').innerText = '¡Finalizado!';
+                document.querySelector('#lab1 button').classList.add('hidden');
+                document.getElementById('scenarioText').innerHTML = '<span class="text-green-400">Has completado todos los escenarios.</span>';
+                return;
+            }
+            document.getElementById('scenarioText').innerText = scenarios[index].text;
+            document.getElementById('lab1Status').innerText = `Regla ${index + 1}/${scenarios.length}`;
+            
+            // Reset selects
+            ['actionSelect', 'portSelect', 'sourceSelect', 'destSelect'].forEach(id => {
+                document.getElementById(id).value = "";
+            });
+            document.getElementById('feedbackMsg').classList.add('hidden');
+        }
+
+        function checkRule() {
+            const action = document.getElementById('actionSelect').value;
+            const port = document.getElementById('portSelect').value;
+            const source = document.getElementById('sourceSelect').value;
+            const dest = document.getElementById('destSelect').value;
+            const feedback = document.getElementById('feedbackMsg');
+
+            if (!action || !port || !source || !dest) {
+                feedback.className = "mt-4 p-3 rounded text-sm font-bold text-center bg-red-900 text-red-200";
+                feedback.innerHTML = "⚠️ Debes seleccionar todas las opciones.";
+                feedback.classList.remove('hidden');
+                return;
+            }
+
+            const scenario = scenarios[currentScenarioIndex];
+            const isCorrect = (
+                action === scenario.correct.action &&
+                port === scenario.correct.port &&
+                source === scenario.correct.source &&
+                dest === scenario.correct.dest
+            );
+
+            feedback.classList.remove('hidden', 'bg-green-800', 'text-green-200', 'bg-red-800', 'text-red-200');
+            
+            if (isCorrect) {
+                feedback.classList.add('bg-green-800', 'text-green-200');
+                feedback.innerHTML = "✅ ¡Correcto! Procediendo al siguiente...";
+                setTimeout(() => {
+                    currentScenarioIndex++;
+                    loadScenario(currentScenarioIndex);
+                }, 1500);
+            } else {
+                feedback.classList.add('bg-red-800', 'text-red-200');
+                feedback.innerHTML = `❌ Incorrecto. Intenta de nuevo.<br><small>Hint: Revisa origen, destino y puerto correcto.</small>`;
+            }
+        }
+
+        // ==========================================
+        // LABORATORIO 2: ARQUITECTURA DE REDES
+        // ==========================================
+        let lab2Score = 0;
+        const serviceMap = {
+            'web': 'dmz',
+            'db': 'internal',
+            'admin': 'internal',
+            'mail': 'dmz'
+        };
+
+        function initLab2() {
+             document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('correct', 'wrong', 'drag-over');
+                zone.querySelector('.drop-area').innerHTML = '';
+            });
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.style.display = 'inline-block';
+                item.classList.remove('opacity-50');
+            });
+            lab2Score = 0;
+            updateLab2Status();
+
+             // Listeners
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.addEventListener('dragstart', dragStartLab2);
+                item.addEventListener('touchstart', touchStart, {passive: false});
+                item.addEventListener('touchmove', touchMove, {passive: false});
+                item.addEventListener('touchend', touchEnd);
+            });
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', dragOver);
+                zone.addEventListener('dragleave', dragLeave);
+                zone.addEventListener('drop', dropLab2);
+            });
+        }
+
+        function dragStartLab2(e) {
+            draggedItem = e.target;
+            e.dataTransfer.setData('text/plain', e.target.dataset.service);
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        }
+
+        function dropLab2(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const zone = e.currentTarget.dataset.zone;
+            const service = e.dataTransfer.getData('text/plain');
+            const dropArea = e.currentTarget.querySelector('.drop-area');
+
+            if (zone === serviceMap[service]) {
+                handleCorrectDrop(service, dropArea, e.currentTarget);
+            } else {
+                handleWrongDrop(e.currentTarget);
+            }
+        }
+
+        function handleCorrectDrop(service, dropArea, zoneElement) {
+            const newItem = document.createElement('div');
+            newItem.className = 'bg-green-600 text-white text-xs px-2 py-1 rounded mb-1 animate-fade-in';
+            newItem.textContent = service.charAt(0).toUpperCase() + service.slice(1);
+            dropArea.appendChild(newItem);
+            
+            const original = Array.from(document.querySelectorAll('.draggable')).find(el => el.dataset.service === service);
+            if(original) original.style.display = 'none';
+            
+            zoneElement.classList.add('correct');
+            lab2Score++;
+            
+            if(lab2Score === 4) {
+                document.getElementById('lab2Status').className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+                document.getElementById('lab2Status').innerText = '¡Completado! 4/4';
+            } else {
+                updateLab2Status();
+            }
+        }
+
+        function handleWrongDrop(zoneElement) {
+            zoneElement.classList.add('wrong');
+            setTimeout(() => zoneElement.classList.remove('wrong'), 1000);
+            if(navigator.vibrate) navigator.vibrate(200);
+        }
+
+        function updateLab2Status() {
+            document.getElementById('lab2Status').innerText = `${lab2Score}/4 colocados`;
+        }
+
+        function resetLab2() {
+            initLab2();
+        }
+
+        // Touch support
+        function touchStart(e) {
+            e.preventDefault();
+            draggedItem = e.target;
+        }
+        function touchMove(e) { e.preventDefault(); }
+        function touchEnd(e) {
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropZone = elementBelow ? elementBelow.closest('.drop-zone') : null;
+            
+            if(dropZone) {
+                const zone = dropZone.dataset.zone;
+                const service = draggedItem.dataset.service;
+                const dropArea = dropZone.querySelector('.drop-area');
+                
+                if(zone === serviceMap[service]) {
+                    handleCorrectDrop(service, dropArea, dropZone);
+                } else {
+                    handleWrongDrop(dropZone);
+                }
+            }
+            draggedItem.style.opacity = '1';
+            draggedItem = null;
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                feedbackBox.classList.remove('hidden', 'bg-green-800', 'text-green-200', 'bg-red-800', 'text-red-200');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-900/20');
+                        feedbackBox.classList.add('bg-green-800', 'text-green-200');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-900/20');
+                        feedbackBox.classList.add('bg-red-800', 'text-red-200');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-800', 'text-red-200');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-400', 'text-red-400', 'text-yellow-400');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-400');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+                alert("¡Enhorabuena! Has superado el test (≥80%).");
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-400');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-400');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+                alert("No has superado el test. Necesitas al menos un 80%.");
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                q.classList.add('border-slate-700');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec7');
+        };
+    </script>
+</body>
+</html>
