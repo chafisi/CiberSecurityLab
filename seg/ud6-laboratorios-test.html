@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 6 - Laboratorios y Test | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Drag & Drop Styles */
+        .draggable { cursor: grab; touch-action: none; user-select: none; }
+        .draggable:active { cursor: grabbing; }
+        .drop-zone { transition: all 0.3s ease; border-style: dashed; }
+        .drop-zone.drag-over { border-style: solid; border-color: #8b5cf6; background-color: #f3e8ff; }
+        .drop-zone.correct { border-color: #22c55e; background-color: #dcfce7; }
+        .drop-zone.wrong { border-color: #ef4444; background-color: #fee2e2; }
+        
+        /* Test Styles */
+        .quiz-question { transition: all 0.3s; }
+        .quiz-question.correct-answer { border-left-color: #22c55e; background-color: #f0fdf4; }
+        .quiz-question.wrong-answer { border-left-color: #ef4444; background-color: #fef2f2; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-950 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 6: Labs & Test</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-yellow-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 TEST EVALUACIÓN</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Información</li>
+                <li class="nav-item"><button onclick="window.location.href='ud6-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400">← Volver a Teoría</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 7: LABORATORIOS INTERACTIVOS -->
+        <section id="sec7" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-400 mb-8">Practica identificando amenazas por capa de red y analizando seguridad inalámbrica.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- LABORATORIO 1: Arrastrar Amenazas a Capas OSI -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container h-[800px]">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">🧩 Laboratorio 1: Clasificador OSI</span>
+                        <span id="lab1Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">0/6 correctos</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-cyan-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Arrastra cada amenaza a la capa del modelo OSI donde ocurre principalmente.</p>
+                        </div>
+
+                        <!-- Zona de Amenazas (Draggables) -->
+                        <div class="mb-4 bg-slate-900 p-3 rounded-lg min-h-[100px] border-2 border-slate-700">
+                            <h5 class="text-xs font-bold text-slate-400 mb-2 uppercase">Amenazas Disponibles</h5>
+                            <div class="flex flex-wrap gap-2" id="threatsContainer">
+                                <!-- Los elementos se generan dinámicamente o están aquí -->
+                                <div draggable="true" data-threat="physical" class="draggable bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Sniffing Físico</div>
+                                <div draggable="true" data-threat="link" class="draggable bg-orange-600 hover:bg-orange-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">ARP Spoofing</div>
+                                <div draggable="true" data-threat="network" class="draggable bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">IP Spoofing</div>
+                                <div draggable="true" data-threat="transport" class="draggable bg-teal-600 hover:bg-teal-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">SYN Flood</div>
+                                <div draggable="true" data-threat="session" class="draggable bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Session Hijacking</div>
+                                <div draggable="true" data-threat="app" class="draggable bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">SQL Injection</div>
+                            </div>
+                        </div>
+
+                        <!-- Zona de Capas (Drop Zones) -->
+                        <div class="flex-1 overflow-y-auto custom-scrollbar space-y-2">
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-layer="physical">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-300">Capa 1: Física</span>
+                                    <span class="text-[10px] text-slate-400">Blindaje, Cable</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-layer="link">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-300">Capa 2: Enlace</span>
+                                    <span class="text-[10px] text-slate-400">MAC, Switch, VLAN</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-layer="network">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-300">Capa 3: Red</span>
+                                    <span class="text-[10px] text-slate-400">IP, Router, BGP</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-layer="transport">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-300">Capa 4: Transporte</span>
+                                    <span class="text-[10px] text-slate-400">TCP, UDP, TLS</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-layer="session">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-slate-300">Capa 5-7: Sesión/Aplicación</span>
+                                    <span class="text-[10px] text-slate-400">Sockets, HTTP, Web</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="resetLab1()" class="mt-4 w-full bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Reiniciar Lab</button>
+                    </div>
+                </div>
+
+                <!-- LABORATORIO 2: Simulador Wi-Fi Security -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-emerald-400 font-bold">📶 Laboratorio 2: Analizador Wi-Fi</span>
+                        <span id="lab2Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">Selecciona protocolo</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-emerald-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Analiza la vulnerabilidad de diferentes estándares Wi-Fi frente a ataques de diccionario y fuerza bruta.</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-2">Protocolo Wi-Fi a Analizar:</label>
+                            <select id="wifiProtocol" onchange="analyzeWifi()" class="w-full bg-slate-900 text-white rounded-lg px-4 py-3 border-2 border-slate-600 focus:border-emerald-500 focus:outline-none font-mono text-sm">
+                                <option value="">-- Seleccionar Protocolo --</option>
+                                <option value="wep">WEP (Wired Equivalent Privacy)</option>
+                                <option value="wpa">WPA (Wi-Fi Protected Access)</option>
+                                <option value="wpa2">WPA2-Personal (CCMP/AES)</option>
+                                <option value="wpa3">WPA3-SAE (Simultaneous Auth of Equals)</option>
+                            </select>
+                        </div>
+
+                        <div id="analysisResult" class="hidden flex-1 bg-slate-900 rounded-lg p-4 border border-slate-700 overflow-y-auto custom-scrollbar">
+                            <!-- Resultado dinámico -->
+                            <div class="mb-4">
+                                <h5 class="text-xs font-bold text-slate-400 uppercase mb-1">Estado del Cifrado</h5>
+                                <div id="cryptoStatus" class="text-lg font-bold"></div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h5 class="text-xs font-bold text-slate-400 uppercase mb-1">Tiempo estimado de Crackeo (Diccionario)</h5>
+                                <div id="crackTime" class="text-xl font-mono text-yellow-400"></div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="text-xs font-bold text-slate-400 uppercase mb-1">Vulnerabilidades Conocidas</h5>
+                                <ul id="vulnList" class="list-disc list-inside text-sm text-slate-300 space-y-1"></ul>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="text-xs font-bold text-slate-400 uppercase mb-1">Recomendación</h5>
+                                <div id="recommendation" class="text-sm italic text-slate-200"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-slate-800 rounded text-xs text-slate-400">
+                            <strong>Nota técnica:</strong> Este simulador asume una contraseña de 8 caracteres alfanuméricos. El tiempo de crackeo varía según la potencia de GPU atacante.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST EVALUACIÓN -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-green-500 pb-2 inline-block">8. Test de Evaluación Oficial</h2>
+            <p class="text-slate-400 mb-6">Demuestra tus conocimientos sobre Seguridad en las Capas de Comunicación. 20 preguntas basadas en el temario oficial.</p>
+            
+            <form id="quizForm" class="space-y-6 max-w-4xl mx-auto">
+                
+                <!-- PREGUNTA 1 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">1. ¿Qué modelo se utiliza para estructurar las capas de comunicación y analizar su seguridad?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="A"> A) Modelo DARPA</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="B"> B) Modelo OSI de 7 capas</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="C"> C) Modelo TCP/UDP híbrido</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="D"> D) Modelo IEEE 802.11</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 2 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">2. La seguridad en la capa física se centra en:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="A"> A) Cifrado extremo a extremo</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="B"> B) Protección contra interferencias, sabotaje físico y acceso no autorizado</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="C"> C) Filtrado de puertos TCP</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="D"> D) Protección de cookies</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 3 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">3. ¿Cuál es la función de TLS?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="A"> A) Proteger bases de datos</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="B"> B) Asegurar comunicaciones mediante cifrado y autenticación en tránsito</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="C"> C) Generar hashes</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="D"> D) Firmar digitalmente certificados</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 4 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">4. Una amenaza típica en la capa de enlace es:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="A"> A) Ataques de fuerza bruta</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="B"> B) Ataques ARP SPOOFING/POISONING</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="C"> C) DNS hijacking</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="D"> D) Inyecciones SQL</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 5 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">5. ¿Cuál de los siguientes protocolos opera en la capa de aplicación?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="A"> A) ICMP</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="B"> B) HTTPS</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="C"> C) ARP</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="D"> D) EAPOL</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 6 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">6. Una amenaza típica en la capa de transporte es:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="A"> A) ARP Cache Poisoning</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="B"> B) SYN Flood</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="C"> C) Cross-site scripting</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="D"> D) Rogue AP</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 7 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">7. El uso de WAF está orientado a proteger:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="A"> A) Capa física</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="B"> B) Aplicaciones web frente a ataques como XSS y SQLi</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="C"> C) Capa de transporte</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="D"> D) Rutas IP</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 8 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">8. ¿Qué es el "man-in-the-middle"?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="A"> A) Un error en la compresión</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="B"> B) Interceptar y alterar comunicaciones entre dos extremos</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="C"> C) Un conflicto en ARP</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="D"> D) Un exploit para servidores DNS</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 9 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">9. Una amenaza típica en la capa de aplicación es:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="A"> A) SYN Flood</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="B"> B) SQL Injection</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="C"> C) MAC spoofing</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="D"> D) Jamming RF</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 10 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">10. ¿Qué protocolo ofrece seguridad en la capa de transporte?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="A"> A) ARP</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="B"> B) TLS</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="C"> C) OSPF</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="D"> D) SMTP</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 11 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">11. Un ataque DNS spoofing afecta principalmente a la capa:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="A"> A) Física</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="B"> B) Aplicación</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="C"> C) Enlace</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="D"> D) Transporte</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 12 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">12. La capa de presentación se encarga de:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="A"> A) Seleccionar rutas</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="B"> B) Formato de datos (codificación, compresión y cifrado)</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="C"> C) Filtrar tráfico</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="D"> D) Validar usuarios</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 13 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">13. Para proteger la capa de red, suele emplearse:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="A"> A) IPSec</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="B"> B) Cookies HttpOnly</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="C"> C) Firewall WAF</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="D"> D) Filtros de contenido web</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 14 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">14. ¿Qué función cumple un proxy seguro?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="A"> A) Corromper paquetes</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="B"> B) Inspeccionar y filtrar tráfico a nivel aplicación</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="C"> C) Generar ARP dinámicos</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="D"> D) Balancear red inalámbrica</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 15 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">15. La capa de sesión se ocupa de:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="A"> A) Crear sesiones de comunicación estables y gestionar estados</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="B"> B) Definir estructuras de datos</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="C"> C) Rutas de red</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="D"> D) Interacciones físicas</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 16 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">16. ¿Qué medida transversal es útil en todas las capas?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="A"> A) Desactivar logs para mejorar rendimiento</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="B"> B) Principio de mínimo privilegio y segmentación</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="C"> C) Permitir tráfico Any-Any</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="D"> D) Clonar direcciones MAC</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 17 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">17. En la capa de red, una amenaza común es:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="A"> A) Jamming RF</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="B"> B) IP spoofing</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="C"> C) XSS</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="D"> D) Manipulación de certificados</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 18 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">18. ¿Qué medida mejora la seguridad en la capa de enlace?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="A"> A) Spanning Tree desactivado</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="B"> B) Uso de VLANs y port-security</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="C"> C) Filtrado a nivel aplicación</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="D"> D) Quitar logs</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 19 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">19. Una amenaza en la capa de sesión es:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="A"> A) Hijacking de sesión</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="B"> B) ARP poisoning</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="C"> C) Ataques de diccionario</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="D"> D) Inyección XML</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 20 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">20. ¿Qué técnica reduce riesgos en redes inalámbricas?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="A"> A) Desactivar autenticación</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="B"> B) WPA3 y segmentación</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="C"> C) Permitir SSID abierto</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="D"> D) Crear una única VLAN</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Botones de Control -->
+                <div class="sticky bottom-4 bg-slate-800 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-600 hover:bg-slate-500 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            // Init Lab 1 if entering section 7
+            if(sectionId === 'sec7') initLab1();
+        }
+
+        // ==========================================
+        // LABORATORIO 1: DRAG AND DROP OSI
+        // ==========================================
+        let draggedItem = null;
+        let lab1Score = 0;
+
+        function initLab1() {
+            // Reiniciar estado visual
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('correct', 'wrong', 'drag-over');
+                zone.querySelector('.drop-area').innerHTML = '';
+            });
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.style.display = 'inline-block';
+                item.classList.remove('opacity-50');
+            });
+            lab1Score = 0;
+            updateLab1Status();
+            
+            // Re-asignar listeners
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('touchstart', touchStart, {passive: false});
+                item.addEventListener('touchmove', touchMove, {passive: false});
+                item.addEventListener('touchend', touchEnd);
+            });
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', dragOver);
+                zone.addEventListener('dragleave', dragLeave);
+                zone.addEventListener('drop', drop);
+            });
+        }
+
+        function dragStart(e) {
+            draggedItem = e.target;
+            e.dataTransfer.setData('text/plain', e.target.dataset.threat);
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const layer = e.currentTarget.dataset.layer;
+            const threat = e.dataTransfer.getData('text/plain');
+            const dropArea = e.currentTarget.querySelector('.drop-area');
+
+            if (isValidMatch(layer, threat)) {
+                // Correcto
+                handleCorrectDrop(threat, dropArea);
+            } else {
+                // Incorrecto
+                handleWrongDrop(threat, dropArea, e.currentTarget);
+            }
+        }
+
+        function isValidMatch(layer, threat) {
+            // Lógica de correspondencia
+            if (layer === 'physical' && threat === 'physical') return true;
+            if (layer === 'link' && threat === 'link') return true;
+            if (layer === 'network' && threat === 'network') return true;
+            if (layer === 'transport' && threat === 'transport') return true;
+            if ((layer === 'session') && (threat === 'session' || threat === 'app')) return true; // Agrupamos 5-7
+            return false;
+        }
+
+        function handleCorrectDrop(threat, dropArea) {
+            const newItem = document.createElement('div');
+            newItem.className = 'bg-green-600 text-white text-xs px-2 py-1 rounded mb-1 animate-fade-in';
+            newItem.textContent = threat.charAt(0).toUpperCase() + threat.slice(1);
+            dropArea.appendChild(newItem);
+            
+            // Ocultar original
+            const original = Array.from(document.querySelectorAll('.draggable')).find(el => el.dataset.threat === threat);
+            if(original) {
+                original.style.display = 'none';
+            }
+            
+            const zone = dropArea.parentElement;
+            zone.classList.add('correct');
+            lab1Score++;
+            
+            if(lab1Score === 6) {
+                document.getElementById('lab1Status').className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+                document.getElementById('lab1Status').innerText = '¡Completado! 6/6';
+            } else {
+                updateLab1Status();
+            }
+        }
+
+        function handleWrongDrop(threat, dropArea, zoneElement) {
+            zoneElement.classList.add('wrong');
+            setTimeout(() => zoneElement.classList.remove('wrong'), 1000);
+            
+            // Sonido de error opcional o vibración
+            if(navigator.vibrate) navigator.vibrate(200);
+        }
+
+        function updateLab1Status() {
+            const status = document.getElementById('lab1Status');
+            status.innerText = `${lab1Score}/6 correctos`;
+            status.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+        }
+
+        function resetLab1() {
+            initLab1();
+        }
+
+        // Soporte Touch básico
+        let touchStartX, touchStartY;
+        function touchStart(e) {
+            e.preventDefault();
+            draggedItem = e.target;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }
+        function touchMove(e) { e.preventDefault(); }
+        function touchEnd(e) {
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropZone = elementBelow ? elementBelow.closest('.drop-zone') : null;
+            
+            if(dropZone) {
+                const layer = dropZone.dataset.layer;
+                const threat = draggedItem.dataset.threat;
+                const dropArea = dropZone.querySelector('.drop-area');
+                
+                if(isValidMatch(layer, threat)) {
+                    handleCorrectDrop(threat, dropArea);
+                } else {
+                    handleWrongDrop(threat, dropArea, dropZone);
+                }
+            }
+            draggedItem.style.opacity = '1';
+            draggedItem = null;
+        }
+
+        // ==========================================
+        // LABORATORIO 2: WI-FI ANALYZER
+        // ==========================================
+        const wifiData = {
+            wep: {
+                status: "🔴 CRÍTICO - Obsoleto",
+                time: "< 1 minuto",
+                vulns: [
+                    "RC4 stream cipher vulnerable",
+                    "IVs cortos y repetitivos",
+                    "Ataques de diccionario instantáneos",
+                    "Herramientas como Aircrack-ng lo rompen en segundos"
+                ],
+                rec: "NO USAR. Deshabilitar inmediatamente."
+            },
+            wpa: {
+                status: "🟠 DÉBIL - Vulnerable",
+                time: "Minutos / Horas",
+                vulns: [
+                    "TKIP vulnerable a ataques de inyección de paquetes",
+                    "Vulnerable a attacks de dictionary offline si contraseña débil",
+                    "Ya no considerado seguro para entornos críticos"
+                ],
+                rec: "Actualizar a WPA2 o WPA3 si es posible."
+            },
+            wpa2: {
+                status: "🟡 FUERTE - Estándar actual",
+                time: "Años / Siglos (con contraseña compleja)",
+                vulns: [
+                    "KRACK attack (Key Reinstallation Attack) mitigado con parches",
+                    "Vulnerable a ataques Offline Dictionary si la contraseña es débil (ej. 'password123')",
+                    "PMKID attack posible sin asociación completa"
+                ],
+                rec: "Usar contraseñas largas (>20 carácteres) y aleatorias. Actualizar firmwares."
+            },
+            wpa3: {
+                status: "🟢 MUY SEGURO - Recomendado",
+                time: "Imposible (computacionalmente)",
+                vulns: [
+                    "Mitiga ataques de fuerza bruta offline gracias a SAE",
+                    "Protección contra escaneos de diccionario",
+                    "Solo vulnerabilidad teórica: Dragonblood (mitigada en revisiones)"
+                ],
+                rec: "ESTÁNDAR RECOMENDADO. Usar siempre que el hardware lo permita."
+            }
+        };
+
+        function analyzeWifi() {
+            const protocol = document.getElementById('wifiProtocol').value;
+            const resultBox = document.getElementById('analysisResult');
+            const statusEl = document.getElementById('cryptoStatus');
+            const timeEl = document.getElementById('crackTime');
+            const vulnEl = document.getElementById('vulnList');
+            const recEl = document.getElementById('recommendation');
+            const badge = document.getElementById('lab2Status');
+
+            if (!protocol) {
+                resultBox.classList.add('hidden');
+                badge.innerText = 'Esperando selección';
+                badge.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+                return;
+            }
+
+            const data = wifiData[protocol];
+            resultBox.classList.remove('hidden');
+
+            // Renderizar datos
+            statusEl.innerHTML = data.status;
+            timeEl.innerText = data.time;
+            
+            vulnEl.innerHTML = '';
+            data.vulns.forEach(v => {
+                const li = document.createElement('li');
+                li.innerText = v;
+                vulnEl.appendChild(li);
+            });
+
+            recEl.innerText = data.rec;
+
+            // Color del badge
+            if(protocol === 'wep' || protocol === 'wpa') {
+                badge.innerText = '⚠️ Riesgo Alto';
+                badge.className = 'text-xs text-red-400 bg-red-900 px-2 rounded';
+            } else if (protocol === 'wpa2') {
+                badge.innerText = '✅ Seguro';
+                badge.className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+            } else {
+                badge.innerText = '🛡️ Máxima Seguridad';
+                badge.className = 'text-xs text-blue-400 bg-blue-900 px-2 rounded';
+            }
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                // Limpiar estilos previos
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                feedbackBox.classList.remove('hidden', 'bg-green-800', 'text-green-200', 'bg-red-800', 'text-red-200');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-900/20');
+                        feedbackBox.classList.add('bg-green-800', 'text-green-200');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-900/20');
+                        feedbackBox.classList.add('bg-red-800', 'text-red-200');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-800', 'text-red-200');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-400', 'text-red-400', 'text-yellow-400');
+            const percent = (score / questions.length) * 100;
+            
+            // Mensajes según resultado
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-400');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+                alert("¡Enhorabuena! Has superado el test (≥80%).");
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-400');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-400');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+                alert("No has superado el test. Necesitas al menos un 80%.");
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                q.classList.add('border-slate-700');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec7');
+        };
+    </script>
+</body>
+</html>
