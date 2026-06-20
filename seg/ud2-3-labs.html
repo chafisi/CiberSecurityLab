@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidades 2 & 3 - Laboratorios y Test | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Drag & Drop Styles */
+        .draggable { cursor: grab; touch-action: none; user-select: none; transition: transform 0.2s; z-index: 10; }
+        .draggable:active { cursor: grabbing; transform: scale(1.1); z-index: 20; }
+        .drop-zone { transition: all 0.3s ease; border-style: dashed; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px; gap: 5px;}
+        .drop-zone.drag-over { border-style: solid; border-color: #8b5cf6; background-color: #f3e8ff; transform: scale(1.02); }
+        .drop-zone.correct { border-color: #22c55e; background-color: #dcfce7; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+        .drop-zone.wrong { border-color: #ef4444; background-color: #fee2e2; animation: shake 0.5s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* PKI Tree Styles */
+        .pki-tree-container { position: relative; }
+        .cert-node { border: 2px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; background: white; cursor: pointer; transition: all 0.3s; text-align: center; font-size: 0.85rem; position: relative; z-index: 2; }
+        .cert-node.selected { border-color: #8b5cf6; background-color: #f5f3ff; color: #6d28d9; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2); }
+        .cert-node.revoked { background-color: #fee2e2; border-color: #ef4444; color: #b91c1c; text-decoration: line-through; }
+        .connector-line { position: absolute; left: 50%; height: 30px; width: 2px; background-color: #cbd5e1; top: 100%; z-index: 1; }
+        
+        /* Quiz Styles */
+        .quiz-question { transition: all 0.3s; border-left: 4px solid transparent; }
+        .quiz-question.correct-answer { border-left-color: #22c55e; background-color: #f0fdf4; }
+        .quiz-question.wrong-answer { border-left-color: #ef4444; background-color: #fef2f2; }
+        
+        /* Lab Header */
+        .lab-header { background: linear-gradient(to right, #4f46e5, #7c3aed); }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 2 & 3: Labs</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Laboratorios Prácticos</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">1. Clasificación de Algoritmos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">2. Simulador PKI & Revocación</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-blue-400 font-bold">🎯 TEST EVALUACIÓN</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Navegación</li>
+                <li class="nav-item"><button onclick="window.location.href='ud2-3-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400">← Volver a Teoría y Casos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 7: LABORATORIO CLASIFICACIÓN -->
+        <section id="sec7" class="main-section fade-in">
+            <div class="lab-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">1. Laboratorio: Clasificación de Algoritmos</h2>
+                <p class="opacity-90">Arrastra cada algoritmo a su categoría correcta: <strong>Simétrico</strong>, <strong>Asimétrico</strong> o <strong>Hash</strong>. ¡Cuidado con los obsoletos!</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <!-- Área de Algoritmos Disponibles -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-slate-700 mb-3 text-sm uppercase tracking-wide">Algoritmos Disponibles (Arrastrar)</h3>
+                    <div class="flex flex-wrap gap-3 p-4 bg-slate-50 border border-slate-200 rounded-lg min-h-[100px]" id="algoContainer">
+                        <!-- Se llenará con JS -->
+                    </div>
+                </div>
+
+                <!-- Zonas de Destino -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="drop-zone bg-blue-50 border-2 border-blue-200 rounded-lg" data-category="symmetric" data-id="zone-sym">
+                        <div class="font-bold text-blue-800 text-sm mb-2">🔒 Simétrico</div>
+                        <div class="text-xs text-blue-600 text-center mb-2">Una clave compartida<br>(Rápido)</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                    <div class="drop-zone bg-purple-50 border-2 border-purple-200 rounded-lg" data-category="asymmetric" data-id="zone-asym">
+                        <div class="font-bold text-purple-800 text-sm mb-2">🔑 Asimétrico</div>
+                        <div class="text-xs text-purple-600 text-center mb-2">Par Clave Pública/Privada<br>(Lento, Firmas)</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                    <div class="drop-zone bg-green-50 border-2 border-green-200 rounded-lg" data-category="hash" data-id="zone-hash">
+                        <div class="font-bold text-green-800 text-sm mb-2">📝 Función Hash</div>
+                        <div class="text-xs text-green-600 text-center mb-2">Resumen único<br>(Integridad)</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                    <div class="drop-zone bg-red-50 border-2 border-red-200 rounded-lg" data-category="obsolete" data-id="zone-obs">
+                        <div class="font-bold text-red-800 text-sm mb-2">⚠️ Obsoleto</div>
+                        <div class="text-xs text-red-600 text-center mb-2">NO USAR<br>Inseguro hoy</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <div id="lab1Feedback" class="hidden p-4 rounded-lg font-bold text-lg shadow-inner"></div>
+                    <button onclick="resetLab1()" class="mt-4 px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded font-bold text-sm transition">Reiniciar Ejercicio</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: LABORATORIO PKI -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-indigo-600 to-blue-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">2. Laboratorio: Simulador PKI & Revocación</h2>
+                <p class="opacity-90">Configura la cadena de confianza correcta. Haz clic en un certificado para ver sus detalles y gestionar su estado (Válido/Revocado).</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <!-- Instrucciones Dinámicas -->
+                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mb-6">
+                    <h3 class="font-bold text-blue-900 mb-2">🎯 Misión Actual:</h3>
+                    <p class="text-sm text-blue-800">La <strong>CA Raíz</strong> es segura. La <strong>CA Intermedia</strong> ha sido comprometida. El atacante emitió un certificado falso para <em>malo.com</em>.</p>
+                    <ol class="list-decimal list-inside text-sm text-blue-800 mt-2 space-y-1">
+                        <li>Haz clic en la <strong>CA Intermedia</strong> para revocarla.</li>
+                        <li>Verifica que el certificado malicioso (<em>malo.com</em>) se marque como inválido automáticamente.</li>
+                        <li>Crea un nuevo certificado válido para <em>bien.com</em> firmado por una nueva CA Intermedia.</li>
+                    </ol>
+                </div>
+
+                <!-- Visualizador de Árbol PKI -->
+                <div class="pki-tree-container relative mx-auto max-w-2xl py-8">
+                    <!-- Nivel Raíz -->
+                    <div class="flex justify-center mb-8 relative">
+                        <div class="cert-node selected" id="node-root" onclick="selectNode('root')">
+                            <span class="block font-bold">CA RAÍZ (Confiable)</span>
+                            <span class="text-xs text-gray-500">Estado: Válido</span>
+                        </div>
+                        <div class="absolute left-1/2 w-0.5 h-8 bg-gray-300 bottom-0 translate-y-full"></div>
+                    </div>
+
+                    <!-- Nivel Intermedio -->
+                    <div class="flex justify-around relative mt-8">
+                        <!-- CA Comprometida -->
+                        <div class="flex flex-col items-center">
+                            <div class="cert-node" id="node-compromised" onclick="selectNode('compromised')">
+                                <span class="block font-bold">CA INTERMEDIA A</span>
+                                <span class="text-xs text-gray-500">Comprometida</span>
+                            </div>
+                            <div class="absolute left-1/2 w-0.5 h-8 bg-gray-300 bottom-0 translate-y-full"></div>
+                            
+                            <!-- Certificados Firmados por la Comprometida -->
+                            <div class="flex gap-4 mt-8">
+                                <div class="cert-node" id="node-malo" onclick="selectNode('malo')">
+                                    <span class="block font-bold text-red-600">malo.com</span>
+                                    <span class="text-xs text-red-500">Firma: CA Int A</span>
+                                </div>
+                                <div class="cert-node text-gray-400">
+                                    <span class="block font-bold">outdated.net</span>
+                                    <span class="text-xs text-gray-400">Expirado</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nueva CA Segura (Para crear) -->
+                        <div class="flex flex-col items-center opacity-50">
+                            <button id="btn-create-inter" onclick="createNewIntermediate()" class="cert-node border-dashed border-2 border-green-500 text-green-700 hover:bg-green-50 w-32">
+                                + Crear Nueva CA
+                            </button>
+                            <div id="new-chain" class="hidden flex-col items-center mt-4">
+                                <div class="relative">
+                                    <div class="absolute left-1/2 w-0.5 h-8 bg-gray-300 bottom-0 translate-y-full"></div>
+                                    <div class="cert-node" id="node-new-int" onclick="selectNode('new-int')">
+                                        <span class="block font-bold text-green-700">CA INTERMEDIA B</span>
+                                        <span class="text-xs text-green-600">Segura</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-4 mt-8">
+                                    <div class="cert-node" id="node-bien" onclick="selectNode('bien')">
+                                        <span class="block font-bold text-green-700">bien.com</span>
+                                        <span class="text-xs text-green-600">Firma: CA Int B</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Control de Estado -->
+                <div class="mt-8 bg-slate-50 p-4 rounded border border-slate-200">
+                    <h4 class="font-bold text-slate-700 mb-3">Panel de Control de Estado</h4>
+                    <p id="node-details" class="text-sm text-slate-600 italic">Selecciona un nodo del árbol para ver detalles...</p>
+                    <div class="mt-4 flex gap-4" id="action-buttons" style="display:none;">
+                        <button onclick="revokeSelected()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm font-bold">REVOCAR CERTIFICADO</button>
+                        <button onclick="validateSelected()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-bold">VALIDAR CERTIFICADO</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST EVALUACIÓN -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-green-500 pb-2 inline-block">3. Test de Evaluación: Criptografía y Autenticación</h2>
+            <p class="text-slate-600 mb-6">Pon a prueba tus conocimientos sobre algoritmos, PKI y MFA.</p>
+            
+            <form id="quizForm" class="space-y-6 max-w-4xl mx-auto">
+                
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">1. ¿Qué característica principal distingue al cifrado simétrico del asimétrico?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A) Usa claves diferentes para cifrar y descifrar.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B) Usa la misma clave secreta para ambos procesos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C) Es más lento pero ofrece mayor seguridad per clave.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D) No permite autenticación de identidad.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">2. ¿Cuál de los siguientes algoritmos se considera actualmente obsoleto e inseguro?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A) AES-256</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B) ChaCha20</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C) DES (Data Encryption Standard)</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D) RSA-2048</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">3. ¿Qué propiedad de una función hash garantiza que no se puede recuperar el mensaje original a partir del digest?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A) Resistencia a preimagen.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B) Resistencia a colisiones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C) No repudio.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D) Confidencialidad.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">4. En una Infraestructura de Clave Pública (PKI), ¿qué ocurre si se revoca una Autoridad de Certificación Intermedia?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A) Solo se invalida esa autoridad, los certificados firmados siguen válidos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B) Todos los certificados emitidos por esa autoridad intermedia pierden su validez.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C) La CA Raíz también se revoca automáticamente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D) Se requiere renovar solo los certificados expirados.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 5 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">5. ¿Qué mecanismo es la mejor defensa contra ataques de Credential Stuffing?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A) Usar contraseñas largas solo con números.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B) Cambiar la contraseña cada semana obligatoriamente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C) Implementar Autenticación Multifactor (MFA).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D) Bloquear todas las IPs externas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                 <!-- Pregunta 6 -->
+                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">6. ¿Qué algoritmo se recomienda actualmente para dispositivos móviles y bajo consumo energético?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="A"> A) RC4</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="B"> B) ChaCha20-Poly1305</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="C"> C) 3DES</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q6" value="D"> D) MD5</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Botones de Control -->
+                <div class="sticky bottom-4 bg-white p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-200 shadow-2xl z-20 mt-8 mx-auto max-w-4xl">
+                    <div id="quizResultText" class="text-slate-800 font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-green-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-blue-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-green-400', 'text-blue-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            if(sectionId === 'sec7') initLab1();
+            if(sectionId === 'sec8') initLab2();
+        }
+
+        // ==========================================
+        // LABORATORIO 1: CLASIFICACIÓN DE ALGORITMOS
+        // ==========================================
+        const algorithms = [
+            { id: 'aes', name: 'AES-256', category: 'symmetric' },
+            { id: 'rsa', name: 'RSA-2048', category: 'asymmetric' },
+            { id: 'sha256', name: 'SHA-256', category: 'hash' },
+            { id: 'des', name: 'DES', category: 'obsolete' },
+            { id: 'ecc', name: 'ECC (Curve)', category: 'asymmetric' },
+            { id: 'md5', name: 'MD5', category: 'obsolete' },
+            { id: 'chacha', name: 'ChaCha20', category: 'symmetric' },
+            { id: 'bcrypt', name: 'bcrypt', category: 'hash' }, // Para password hashing
+            { id: 'rc4', name: 'RC4', category: 'obsolete' },
+            { id: '3des', name: '3DES', category: 'obsolete' },
+            { id: 'blowfish', name: 'Blowfish', category: 'symmetric' },
+            { id: 'dsa', name: 'DSA', category: 'asymmetric' }
+        ];
+
+        function initLab1() {
+            const container = document.getElementById('algoContainer');
+            container.innerHTML = '';
+            
+            // Shuffle algorithms
+            const shuffled = [...algorithms].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(algo => {
+                const el = document.createElement('div');
+                el.className = 'draggable bg-white border border-slate-300 shadow-sm px-3 py-1 rounded text-sm font-semibold text-slate-700';
+                el.draggable = true;
+                el.innerText = algo.name;
+                el.dataset.id = algo.id;
+                el.dataset.category = algo.category;
+                
+                // Event Listeners for Desktop Drag
+                el.addEventListener('dragstart', dragStart);
+                
+                // Touch Support simplificado
+                el.addEventListener('touchstart', touchStart, {passive: false});
+                el.addEventListener('touchmove', touchMove, {passive: false});
+                el.addEventListener('touchend', touchEnd);
+
+                container.appendChild(el);
+            });
+
+            // Setup Drop Zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', dragOver);
+                zone.addEventListener('dragleave', dragLeave);
+                zone.addEventListener('drop', drop);
+                // Touch zones
+                zone.addEventListener('touchstart', touchZoneStart, {passive: false});
+                zone.addEventListener('touchmove', touchZoneMove, {passive: false});
+                zone.addEventListener('touchend', touchZoneEnd);
+            });
+        }
+
+        let draggedItem = null;
+        let touchClone = null;
+
+        function dragStart(e) {
+            draggedItem = e.target;
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            const zone = e.currentTarget;
+            if(!zone.classList.contains('drag-over')) zone.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const zone = e.currentTarget;
+            zone.classList.remove('drag-over');
+            
+            if(draggedItem) {
+                processDrop(zone, draggedItem);
+                draggedItem = null;
+            }
+        }
+
+        function processDrop(zone, item) {
+            const itemCategory = item.dataset.category;
+            const zoneCategory = zone.dataset.category;
+            const feedback = document.getElementById('lab1Feedback');
+
+            if(itemCategory === zoneCategory) {
+                // Correct
+                item.draggable = false;
+                item.style.cursor = 'default';
+                item.classList.remove('draggable');
+                
+                // Remove listeners
+                item.removeEventListener('dragstart', dragStart);
+                item.removeEventListener('touchstart', touchStart);
+                
+                zone.querySelector('.drop-area').appendChild(item);
+                zone.classList.add('correct');
+                
+                checkCompletion();
+            } else {
+                // Wrong
+                zone.classList.add('wrong');
+                feedback.className = "mt-6 p-4 rounded-lg font-bold text-lg shadow-inner bg-red-100 text-red-700";
+                feedback.innerHTML = `❌ Incorrecto: ${item.innerText} no pertenece a esta zona.`;
+                feedback.classList.remove('hidden');
+                setTimeout(() => {
+                    zone.classList.remove('wrong');
+                    feedback.classList.add('hidden');
+                }, 1500);
+            }
+        }
+
+        function checkCompletion() {
+            const totalItems = algorithms.length;
+            const placedItems = document.querySelectorAll('#algoContainer .draggable, #algoContainer .cursor-default').length;
+            
+            // Wait a moment then check if container is empty of draggable items
+            setTimeout(() => {
+                const remaining = document.querySelectorAll('#algoContainer .draggable').length;
+                if(remaining === 0) {
+                    const feedback = document.getElementById('lab1Feedback');
+                    feedback.className = "mt-6 p-4 rounded-lg font-bold text-lg shadow-inner bg-green-100 text-green-700 animate-pulse";
+                    feedback.innerHTML = "✅ ¡Excelente! Has clasificado correctamente todos los algoritmos.";
+                    feedback.classList.remove('hidden');
+                }
+            }, 500);
+        }
+
+        function resetLab1() {
+            initLab1();
+            document.getElementById('lab1Feedback').classList.add('hidden');
+        }
+
+        // Touch Support Functions (Simplified)
+        function touchStart(e) {
+            e.preventDefault();
+            draggedItem = e.target;
+            const touch = e.touches[0];
+            touchClone = draggedItem.cloneNode(true);
+            touchClone.style.position = 'absolute';
+            touchClone.style.pointerEvents = 'none';
+            touchClone.style.zIndex = '1000';
+            document.body.appendChild(touchClone);
+            moveClone(touch.pageX, touch.pageY);
+        }
+
+        function touchMove(e) {
+            e.preventDefault();
+            if(touchClone) moveClone(e.touches[0].pageX, e.touches[0].pageY);
+        }
+
+        function touchEnd(e) {
+            if(touchClone) {
+                const touch = e.changedTouches[0];
+                touchClone.remove();
+                
+                // Find element below
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                const zone = elementBelow ? elementBelow.closest('.drop-zone') : null;
+                
+                if(zone) {
+                    processDrop(zone, draggedItem);
+                }
+                
+                touchClone = null;
+                draggedItem = null;
+            }
+        }
+
+        function moveClone(x, y) {
+            touchClone.style.left = (x - 40) + 'px'; // Center approx
+            touchClone.style.top = (y - 15) + 'px';
+        }
+
+        function touchZoneStart(e) {
+            // Just placeholder if we need specific touch handling on zones
+        }
+        function touchZoneMove(e) { e.preventDefault(); }
+        function touchZoneEnd(e) {
+             // Placeholder
+        }
+
+        // ==========================================
+        // LABORATORIO 2: PKI SIMULADOR
+        // ==========================================
+        let selectedNodeId = null;
+
+        function initLab2() {
+            // Reset state
+            document.getElementById('node-compromised').classList.remove('revoked');
+            document.getElementById('node-malo').classList.remove('revoked');
+            document.getElementById('node-compromised').querySelector('span:last-child').innerText = "Comprometida";
+            document.getElementById('node-malo').querySelector('span:last-child').innerText = "Firma: CA Int A";
+            document.getElementById('node-malo').classList.remove('text-red-600');
+            
+            document.getElementById('new-chain').classList.add('hidden');
+            document.getElementById('btn-create-inter').disabled = false;
+            document.getElementById('btn-create-inter').innerText = "+ Crear Nueva CA";
+            document.getElementById('node-details').innerText = "Selecciona un nodo del árbol para ver detalles...";
+            document.getElementById('action-buttons').style.display = 'none';
+        }
+
+        function selectNode(nodeId) {
+            // Visual selection
+            document.querySelectorAll('.cert-node').forEach(n => n.classList.remove('selected'));
+            const node = document.getElementById(`node-${nodeId}`);
+            if(node) {
+                node.classList.add('selected');
+                selectedNodeId = nodeId;
+                
+                // Update details panel
+                updateDetails(nodeId, node);
+                
+                // Show action buttons if not root
+                document.getElementById('action-buttons').style.display = nodeId !== 'root' ? 'flex' : 'none';
+            }
+        }
+
+        function updateDetails(id, nodeElement) {
+            const isRevoked = nodeElement.classList.contains('revoked');
+            const statusText = isRevoked ? "REVOCADO" : "VÁLIDO";
+            const statusColor = isRevoked ? "text-red-600 font-bold" : "text-green-600 font-bold";
+            
+            let desc = "";
+            if(id === 'root') desc = "Esta es la Autoridad Raíz. Es la máxima confianza.";
+            else if(id === 'compromised') desc = "Esta CA ha sido comprometida. Debe ser revocada inmediatamente.";
+            else if(id === 'malo') desc = "Certificado sospechoso emitido por la CA comprometida.";
+            else if(id === 'new-int') desc = "Nueva Autoridad Intermedia creada tras el incidente.";
+            else if(id === 'bien') desc = "Certificado legítimo emitido por la nueva CA.";
+            
+            document.getElementById('node-details').innerHTML = 
+                `<strong>Nodo: ${id.toUpperCase()}</strong><br>${desc}<br>Estatus: <span class="${statusColor}">${statusText}</span>`;
+        }
+
+        function revokeSelected() {
+            if(!selectedNodeId) return;
+            const node = document.getElementById(`node-${selectedNodeId}`);
+            node.classList.add('revoked');
+            
+            // Logic: If we revoke the compromised CA, malo.com becomes invalid automatically
+            if(selectedNodeId === 'compromised') {
+                const child = document.getElementById('node-malo');
+                child.classList.add('revoked');
+                child.querySelector('span:first-child').innerText = "malo.com (INVÁLIDO)";
+                alert("⚠️ CA COMPROMETIDA REVOCADA.\nTodos los certificados emitidos por ella (incluido 'malo.com') ahora son INVÁLIDOS.");
+            }
+            
+            updateDetails(selectedNodeId, node);
+        }
+
+        function validateSelected() {
+            if(!selectedNodeId) return;
+            const node = document.getElementById(`node-${selectedNodeId}`);
+            node.classList.remove('revoked');
+            updateDetails(selectedNodeId, node);
+        }
+
+        function createNewIntermediate() {
+            const newChain = document.getElementById('new-chain');
+            newChain.classList.remove('hidden');
+            newChain.classList.add('flex');
+            
+            document.getElementById('btn-create-inter').disabled = true;
+            document.getElementById('btn-create-inter').innerText = "Creada";
+            
+            // Auto-create bien.com certificate
+            setTimeout(() => {
+                alert("✅ Nueva CA Intermedia B creada y operable.\nPuedes emitir certificados seguros (ej: bien.com).");
+            }, 500);
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length})`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}). Repasa conceptos.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}). Necesitas estudiar más.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec7');
+        };
+    </script>
+</body>
+</html>
