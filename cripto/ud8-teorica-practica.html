@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 8 - Codificación de la Fuente | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 8: Cod. Fuente</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Fundamentos</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Teoría de Shannon & Entropía</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Algoritmos: Huffman, Aritmética, LZ</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Seguridad Crítica</li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Compresión vs. Cifrado (Canales Laterales)</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Casos Prácticos</li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400 font-semibold tab-btn">4. Caso 16: Ataque CRIME/BREACH</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-orange-400 font-semibold tab-btn">5. Caso 15: JPEG Seguro & Padding</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="window.location.href='ud8-labs.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-green-400 font-bold">🎯 Laboratorios Interactivos (Próximamente)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: FUNDAMENTOS -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Fundamentos: Teoría de la Información</h2>
+            <p class="text-slate-600 mb-6">Introducida por Claude Shannon (1948), la codificación de la fuente busca representar mensajes de forma eficiente eliminando redundancia sin perder información esencial.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Entropía -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="font-bold text-lg text-blue-900 mb-3">📊 Entropía (H)</h3>
+                    <p class="text-sm text-slate-700 mb-3">Mide la incertidumbre media de una fuente aleatoria. Es el límite teórico de compresión sin pérdida.</p>
+                    <div class="bg-blue-50 p-3 rounded font-mono text-xs text-blue-800">
+                        H(X) = − Σ p(xi) · log₂ p(xi)
+                    </div>
+                    <p class="text-xs text-slate-500 mt-2">* Alta entropía = Aleatorio = Difícil de comprimir.<br>* Baja entropía = Predecible = Fácil de comprimir.</p>
+                </div>
+                <!-- Redundancia -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="font-bold text-lg text-green-900 mb-3">♻️ Redundancia</h3>
+                    <p class="text-sm text-slate-700 mb-3">Información repetitiva o predecible. Los algoritmos de compresión eliminan esto para reducir el tamaño (tasa de compresión r).</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="text-xs font-bold bg-gray-200 px-2 py-1 rounded">Original</span>
+                        <span>➡️</span>
+                        <span class="text-xs font-bold bg-green-100 text-green-800 px-2 py-1 rounded">Comprimido</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
+                <h3 class="font-bold text-yellow-800 mb-3">⚠️ Importancia en Seguridad</h3>
+                <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                    <li><strong>Optimización:</strong> Reduce volumen para cifrar (menos CPU/ancho de banda).</li>
+                    <li><strong>Orden Crítico:</strong> <em>Comprimir ➔ Cifrar</em> es recomendado. <em>Cifrar ➔ Comprimir</em> es ineficaz (cifrado produce alta entropía/incompresibilidad).</li>
+                    <li><strong>Riesgo:</strong> Si se co-comprimen secretos con datos del usuario, se crean oráculos de longitud (CRIME/BREACH).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: ALGORITMOS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Técnicas de Codificación de la Fuente</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Huffman -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-2xl mb-2">🌳 Huffman</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Código Prefijo Óptimo</h4>
+                    <p class="text-xs text-slate-600 mb-3">Asigna códigos más cortos a símbolos frecuentes. Ideal para fuentes estáticas.</p>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>✅ Rápido y simple.</li>
+                        <li>❌ Granularidad de 1 bit (no supera H+1).</li>
+                        <li>🛡️ Usado en DEFLATE (ZIP, PNG), HPACK.</li>
+                    </ul>
+                </div>
+                <!-- Aritmética -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-2xl mb-2">🔢 Aritmética</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Intervalos</h4>
+                    <p class="text-xs text-slate-600 mb-3">Codifica secuencias completas en un subintervalo [0,1). Muy preciso.</p>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>✅ Se acerca mucho a la entropía H.</li>
+                        <li>❌ Complejidad computacional alta.</li>
+                        <li>🛡️ Usado en códecs modernos (JPEG 2000, CABAC).</li>
+                    </ul>
+                </div>
+                <!-- LZ -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
+                    <div class="text-2xl mb-2">🔄 Lempel-Ziv</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Universal Adaptativo</h4>
+                    <p class="text-xs text-slate-600 mb-3">Aprende patrones "al vuelo" usando diccionarios o ventanas deslizantes.</p>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>✅ No requiere conocer la distribución previa.</li>
+                        <li>❌ Riesgo de co-compresión (CRIME).</li>
+                        <li>🛡️ Base de ZIP, GZIP, Brotli, Zstd.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-3">Comparativa Técnica</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-slate-200 text-slate-700 font-bold">
+                            <tr>
+                                <th class="px-3 py-2">Técnica</th>
+                                <th class="px-3 py-2">Fortalezas</th>
+                                <th class="px-3 py-2">Limitaciones</th>
+                                <th class="px-3 py-2">Usos Típicos</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Huffman</td>
+                                <td class="px-3 py-2">Rápido, óptimo para fuentes fijas</td>
+                                <td class="px-3 py-2">Pierde eficacia si cambia distribución</td>
+                                <td class="px-3 py-2">DEFLATE, PNG, HPACK</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Aritmética</td>
+                                <td class="px-3 py-2">Precisión extrema (~H)</td>
+                                <td class="px-3 py-2">Complejidad numérica</td>
+                                <td class="px-3 py-2">Códecs de video/audio</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">LZ (77/78)</td>
+                                <td class="px-3 py-2">Universal, aprende al vuelo</td>
+                                <td class="px-3 py-2">Vulnerable a CRIME/BREACH</td>
+                                <td class="px-3 py-2">ZIP, GZIP, Brotli, Web</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: SEGURIDAD Y CIFRADO -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Relación con Criptografía y Canales Laterales</h2>
+            
+            <div class="mb-8 bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
+                <h3 class="font-bold text-indigo-900 mb-4">Regla de Oro: Comprimir ANTES de Cifrar</h3>
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <div class="flex-1">
+                        <p class="text-sm text-slate-700 mb-2">El orden correcto (<strong>Compresión ➔ Cifrado</strong>) reduce el volumen y elimina patrones estadísticos antes de protegerlos.</p>
+                        <div class="bg-indigo-50 p-3 rounded text-center font-bold text-indigo-800 text-sm">
+                            Datos Originales ➔ [Compresión] ➔ Datos Comprimidos ➔ [Cifrado AEAD] ➔ Tráfico Seguro
+                        </div>
+                    </div>
+                    <div class="flex-1 bg-red-50 p-4 rounded border border-red-200">
+                        <h4 class="font-bold text-red-800 text-sm mb-2">❌ El Peligro: Co-Compresión</h4>
+                        <p class="text-xs text-slate-700">Si se comprimen JUNTOS:<br>1. Secretos (Cookies/Tokens)<br>2. Datos controlados por el atacante<br><br>El tamaño final revela coincidencias (CRIME/BREACH).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">Buenas Prácticas Defensivas</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Desactivar compresión TLS:</strong> Usar compresión solo en capa de aplicación si es necesario.</li>
+                        <li><strong>Separar contextos:</strong> Nunca mezclar cookies con inputs del usuario en la misma respuesta comprimida.</li>
+                        <li><strong>Padding Aleatorio:</strong> Añadir bits "basura" para ocultar la longitud real del mensaje.</li>
+                        <li><strong>Autenticación (AEAD):</strong> Usar AES-GCM o ChaCha20-Poly1305 siempre.</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">Riesgos Comunes</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Zip-Bombs:</strong> Archivos pequeños que explotan memoria/CPU al descomprimir (DoS).</li>
+                        <li><strong>Oráculos de Longitud:</strong> Variación del ciphertext que permite deducir secretos.</li>
+                        <li><strong>Metadatos Exif:</strong> En imágenes, pueden filtrar ubicación o dispositivo.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: CASO PRÁCTICO 16 (CRIME) -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-red-500 pb-2 inline-block">4. Caso Práctico 16: CRIME en TLS/HTTP</h2>
+            <p class="text-slate-600 mb-8">Análisis de filtración por compresión de cabeceras (HPACK/QPACK) y soluciones.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-red-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🕵️‍♂️</span>
+                        <h3 class="text-lg font-bold">Enunciado: Ataque CRIME/BREACH</h3>
+                    </div>
+                    <span class="bg-red-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Web Security</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        El ataque CRIME explota la compresión a nivel TLS o SPDY para inferir secretos (cookies). Al inyectar cadenas candidatas y observar si el tamaño del ciphertext disminuye (mayor compresión), se descubren partes de la cookie. Similarmente, BREACH lo hace a nivel de cuerpo HTTP.
+                        Relevante en HTTP/2–3 donde HPACK/QPACK pueden crear canales laterales si no se gestionan contextos.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-red-400 bg-red-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-red-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">1. Clasificar requisitos para evitar filtraciones</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Separar datos secretos (cookies) de entradas del usuario.</li>
+                                            <li>Desactivar compresión TLS si no es vital.</li>
+                                            <li>Gestionar contextos HPACK/QPACK evitando mezcla.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Mantener rendimiento aceptable sin compresión TLS.</li>
+                                            <li>Minimizar latencia por padding.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Desactivar compresión TLS (obligatorio en 1.3).</li>
+                                            <li>Aplicar padding aleatorio y rate limiting.</li>
+                                            <li>Sanitizar cabeceras sensibles.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">2. Elaborar caso de uso: Evitar co-compresión</h5>
+                                <div class="bg-white p-4 rounded border border-red-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Caso de uso: Protección contra filtración por compresión</p>
+                                    <p class="text-slate-600 mb-3">Actor: Aplicación web / Servidor HTTP.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>Cliente envía petición con parámetros controlados.</li>
+                                        <li>Servidor genera respuesta con cookies/tokens.</li>
+                                        <li><strong>Acción Crítica:</strong> Sistema evita co-comprimir datos sensibles:</li>
+                                        <ul class="list-disc list-inside ml-6 text-slate-600 mb-2">
+                                            <li>Se envían en cabeceras NO comprimidas.</li>
+                                            <li>O se separan contextos en HPACK/QPACK.</li>
+                                            <li>O se añade padding forzado.</li>
+                                        </ul>
+                                        <li>Comunicación se cifra en TLS 1.3 (sin compresión).</li>
+                                        <li>Usuario recibe respuesta sin revelar info por longitud.</li>
+                                    </ol>
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Uso de HTTP/2/3 sin políticas seguras → Activar separación estricta.</li>
+                                        <li>Necesidad de ancho de banda → Padding aleatorio obligatorio.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Validación -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">3. Métodos de validación (Oráculos de longitud)</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-red-100 text-sm">
+                                    <li><strong>Entorno especializado:</strong> Comprobar variación predictiva del ciphertext al modificar inputs.</li>
+                                    <li><strong>Escaneos automáticos:</strong> Herramientas que detecten compresión indebida o riesgo HPACK.</li>
+                                    <li><strong>Análisis de tráfico:</strong> Verificar que TLS no usa compresión y no hay correlación input/tamaño.</li>
+                                    <li><strong>Revisión de políticas:</strong> Confirmar aislamiento entre cabeceras sensibles y userInput.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CASO PRÁCTICO 15 (JPEG) -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-orange-500 pb-2 inline-block">5. Caso Práctico 15: Huffman en JPEG y transmisión segura</h2>
+            <p class="text-slate-600 mb-8">Análisis del pipeline "comprimir -> cifrar" en imágenes y canales laterales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-orange-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🖼️</span>
+                        <h3 class="text-lg font-bold">Enunciado: JPEG & Canal Lateral</h3>
+                    </div>
+                    <span class="bg-orange-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Multimedia</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Plataformas convierten imágenes a JPEG (DCT + Cuantización + Huffman). Esto reduce tamaño y acelera subida. Aunque se cifran con TLS 1.3, la longitud del ciphertext puede revelar resolución, calidad o tipo de imagen (canal lateral). En contextos sensibles (médico/legal), esto es crítico.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-orange-400 bg-orange-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-orange-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">1. Clasificar requisitos para pipeline seguro</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Comprimir antes de cifrar (para eficiencia).</li>
+                                            <li>Transmitir vía canal cifrado (TLS 1.3).</li>
+                                            <li>Aplicar padding opcional si tamaño revela info.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Minimizar latencia de compresión.</li>
+                                            <li>Mantener calidad perceptual.</li>
+                                            <li>Evitar patrones de longitud correlacionables.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Estándar JPEG con Huffman.</li>
+                                            <li>TLS 1.3 con AES-GCM/ChaCha20.</li>
+                                            <li>Padding uniforme o tamaños normalizados.</li>
+                                            <li>Eliminar metadatos EXIF.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">2. Elaborar caso de uso: Transmisión segura JPEG</h5>
+                                <div class="bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Caso de uso: Subida segura de imagen</p>
+                                    <p class="text-slate-600 mb-3">Actor: Cliente y Servidor.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>Usuario sube imagen.</li>
+                                        <li>App convierte a JPEG (Huffman).</li>
+                                        <li>Comunicación se cifra (TLS 1.3).</li>
+                                        <li>Servidor recibe y procesa.</li>
+                                        <li>Sistema registra tamaño interno.</li>
+                                    </ol>
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Imágenes con metadatos sensibles → Normalización previa (limpieza EXIF).</li>
+                                        <li>Tamaño revela info → Aplicar padding uniforme antes de cifrar.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Validación -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">3. Métodos de validación (No filtración por longitud)</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <li><strong>Pruebas canal lateral:</strong> Comparar varios archivos similares; verificar si ciphertext length infiere resolución/tipo.</li>
+                                    <li><strong>Evaluación rendimiento:</strong> Ahorro de ancho de banda vs. PNG/RAW.</li>
+                                    <li><strong>Verificación TLS:</strong> Usar SSL Labs/Wireshark para confirmar cifrado robusto y sin fallback.</li>
+                                    <li><strong>Análisis privacidad:</strong> Chequear eliminación de EXIF y pruebas de padding.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(['btn-sec4', 'btn-sec5'].includes(btn.id)) {
+                     if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-red-400');
+                     if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-orange-400');
+                }
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-red-400', 'text-orange-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec1');
+        };
+    </script>
+</body>
+</html>
