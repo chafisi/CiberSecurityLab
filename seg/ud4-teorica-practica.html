@@ -800,15 +800,120 @@
                                         </ul>
                                     </div>
                                     <div class="bg-white p-3 rounded border border-red-100">
-                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos
-
-                                           
-                                        </span>
-                                            <ul class="list-disc list-inside text-slate-700">
-                                                 <li>Disponer de un entorno de pruebas o laboratorio para validar reglas antes del despliegue.</li>
-                                                 <li>Utilizar módulos de análisis heurístico o aprendizaje adaptativo para mejorar la clasificación.</li> <li>Integración con un SIEM para correlación de eventos y reducción de falsos positivos.</li> <li>Automatización de pruebas con tráfico realista y patrones maliciosos conocidos.</li>
-                                                 </ul> 
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Disponer de un entorno de pruebas o laboratorio para validar reglas antes del despliegue.</li>
+                                            <li>Utilizar módulos de análisis heurístico o aprendizaje adaptativo para mejorar la clasificación.</li>
+                                            <li>Integración con un SIEM para correlación de eventos y reducción de falsos positivos.</li>
+                                            <li>Automatización de pruebas con tráfico realista y patrones maliciosos conocidos.</li>
+                                        </ul>
                                     </div>
-                                 </div> <!-- Caso de Uso --> 
-                                 <div> <h5 class="font-bold text-red-900 text-sm uppercase mb-2">2. Elaborar caso de uso: validación de reglas IPS</h5> 
-                                    <div class="bg-white p-4 rounded border border-red-100 text-sm"> <p class="font-bold text-slate-800 mb-2">Actor:</p> <p class="text-slate-600 mb-3">Administrador de seguridad.</p> <p class="font-bold text-slate-800 mb-2">Flujo principal:</p> <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3"> <li>El administrador crea o modifica una regla IPS.</li> <li>La regla se prueba en un entorno de laboratorio en modo "alerta".</li> <li>Se analizan los resultados: número de falsos positivos y falsos negativos.</li> <li>Si la regla es estable y precisa, se despliega gradualmente en modo "bloqueo".</li> <li>El cambio se documenta y se registra en el sistema para trazabilidad.</li> </ol> <p class="font-bold text-slate-800 mb-2">Excepciones:</p> <ul class="list-disc list-inside text-slate-700"> <li>Tasa excesiva de falsos positivos → reajuste o reescritura de la regla.</li> <li>Impacto en un servicio crítico → reversión inmediata (rollback).</li> </ul> </div> </div> <!-- Métodos Validación --> <div> <h5 class="font-bold text-red-900 text-sm uppercase mb-2">3. Mecanismos para validar que un IPS no está bloqueando tráfico legítimo</h5> <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-red-100 text-sm"> <li>Realizar pruebas de carga y tráfico real (capturas, replay, simulaciones) antes de activar reglas.</li> <li>Monitorizar continuamente el comportamiento del IPS tras el despliegue.</li> <li>Revisar estadísticas de falsos positivos/falsos negativos y ajustar reglas iterativamente.</li> <li>Simular ataques reales o conocidos para verificar la eficacia del bloqueo.</li> <li>Correlacionar eventos del IPS con logs de aplicaciones, firewall y SIEM para detectar impactos no deseados.</li> </ul> </div> </div> </div> <!-- Resumen Visual --> <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm"> <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Dilema IPS</h4> <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono"> <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">Demasiado Relajado<br/>❌ Brechas Seguridad</div> <div class="text-slate-400">⚖️</div> <div class="bg-orange-100 text-orange-800 px-3 py-2 rounded border border-orange-300">Equilibrio Ideal<br/>✅ Seguridad + Disponibilidad</div> <div class="text-slate-400">⚖️</div> <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">Demasiado Estricto<br/>❌ Bloqueo Legítimo</div> </div> <p class="text-center text-slate-500 italic text-sm"> "El equilibrio entre eficacia y falsos positivos es fundamental. Un fallo puede generar interrupciones operativas y daño reputacional." </p> </div> </div> </div> </section> </main> <script> // ========================================== // UI CORE & NAVEGACIÓN // ========================================== function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); } function switchSection(sectionId) { document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden')); document.getElementById(sectionId).classList.remove('hidden'); document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white'); btn.classList.add('border-transparent'); if(['btn-sec9', 'btn-sec10', 'btn-sec11', 'btn-sec12'].includes(btn.id)) { if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-orange-400'); if(btn.id === 'btn-sec10' && sectionId !== 'sec10') btn.classList.add('text-blue-400'); if(btn.id === 'btn-sec11' && sectionId !== 'sec11') btn.classList.add('text-purple-400'); if(btn.id === 'btn-sec12' && sectionId !== 'sec12') btn.classList.add('text-red-400'); } }); const currentBtn = document.getElementById('btn-' + sectionId); if(currentBtn) { currentBtn.classList.remove('border-transparent', 'text-orange-400', 'text-blue-400', 'text-purple-400', 'text-red-400'); currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white'); } document.getElementById('mainContent').scrollTop = 0; if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open'); } // Buscador document.getElementById('searchInput').addEventListener('keyup', function(e) { const term = e.target.value.toLowerCase(); document.querySelectorAll('.nav-item').forEach(item => { item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none'; }); }); // Inicializar window.onload = function() { switchSection('sec1'); }; </script> </body> </html> 
+
+                                <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">2. Elaborar caso de uso: validación de reglas IPS</h5>
+                                <div class="bg-white p-4 rounded border border-red-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Actor:</p>
+                                    <p class="text-slate-600 mb-3">Administrador de seguridad.</p>
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                    <li>El administrador crea o modifica una regla IPS.</li>
+                                    <li>La regla se prueba en un entorno de laboratorio en modo "alerta".</li>
+                                    <li>Se analizan los resultados: número de falsos positivos y falsos negativos.</li>
+                                    <li>Si la regla es estable y precisa, se despliega gradualmente en modo "bloqueo".</li>
+                                    <li>El cambio se documenta y se registra en el sistema para trazabilidad.</li>
+                                    </ol>
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                    <li>Tasa excesiva de falsos positivos → reajuste o reescritura de la regla.</li>
+                                    <li>Impacto en un servicio crítico → reversión inmediata (rollback).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                             <!-- Métodos Validación -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">3. Mecanismos para validar que un IPS no está bloqueando tráfico legítimo</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-red-100 text-sm">
+                                    <li>Realizar pruebas de carga y tráfico real (capturas, replay, simulaciones) antes de activar reglas.</li>
+                                    <li>Monitorizar continuamente el comportamiento del IPS tras el despliegue.</li>
+                                    <li>Revisar estadísticas de falsos positivos/falsos negativos y ajustar reglas iterativamente.</li>
+                                    <li>Simular ataques reales o conocidos para verificar la eficacia del bloqueo.</li>
+                                    <li>Correlacionar eventos del IPS con logs de aplicaciones, firewall y SIEM para detectar impactos no deseados.</li>
+                                </ul>
+                            </div>
+
+                            <!-- Resumen Visual -->
+                            <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4 text-center">🎨 Resumen del Dilema IPS</h4>
+                                <div class="flex flex-wrap justify-center items-center gap-4 mb-6 text-xs sm:text-sm font-mono">
+                                    <div class="bg-green-100 text-green-800 px-3 py-2 rounded border border-green-300">
+                                    Demasiado Relajado<br>❌ Brechas Seguridad
+                                    </div>
+                                    <div class="text-slate-400">⚖️</div>
+                                    <div class="bg-orange-100 text-orange-800 px-3 py-2 rounded border border-orange-300">
+                                    Equilibrio Ideal<br>✅ Seguridad + Disponibilidad
+                                    </div>
+                                    <div class="text-slate-400">⚖️</div>
+                                    <div class="bg-red-100 text-red-800 px-3 py-2 rounded border border-red-300">
+                                    Demasiado Estricto<br>❌ Bloqueo Legítimo
+                            </div>
+                        </div>
+                        <p class="text-center text-slate-500 italic text-sm">
+                            "El equilibrio entre eficacia y falsos positivos es fundamental. Un fallo puede generar interrupciones operativas y daño reputacional."
+                        </p>
+                        </div>
+
+<section>
+  <main>
+    <script>
+      // ==========================================
+      // UI CORE & NAVEGACIÓN
+      // ==========================================
+      function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+      }
+
+      function switchSection(sectionId) {
+        document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+        document.getElementById(sectionId).classList.remove('hidden');
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+          btn.classList.add('border-transparent');
+          
+          if(['btn-sec9', 'btn-sec10', 'btn-sec11', 'btn-sec12'].includes(btn.id)) {
+            if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-orange-400');
+            if(btn.id === 'btn-sec10' && sectionId !== 'sec10') btn.classList.add('text-blue-400');
+            if(btn.id === 'btn-sec11' && sectionId !== 'sec11') btn.classList.add('text-purple-400');
+            if(btn.id === 'btn-sec12' && sectionId !== 'sec12') btn.classList.add('text-red-400');
+          }
+        });
+
+        const currentBtn = document.getElementById('btn-' + sectionId);
+        if(currentBtn) {
+          currentBtn.classList.remove('border-transparent', 'text-orange-400', 'text-blue-400', 'text-purple-400', 'text-red-400');
+          currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+        }
+        
+        document.getElementById('mainContent').scrollTop = 0;
+        if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+      }
+
+      // Buscador
+      document.getElementById('searchInput').addEventListener('keyup', function(e) {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+        });
+      });
+
+      // Inicializar
+      window.onload = function() {
+        switchSection('sec1');
+      };
+    </script>
+  </main>
+</section>
+</body>
+</html>
