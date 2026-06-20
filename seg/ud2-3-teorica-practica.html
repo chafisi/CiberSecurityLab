@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidades 2 & 3 - Criptografía y Autenticación | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Flip Cards */
+        .flip-card { perspective: 1000px; height: 200px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .flip-card-front { background-color: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; }
+        .flip-card-back { background-color: #2e1065; color: white; transform: rotateY(180deg); overflow-y: auto; text-align: left; font-size: 0.875rem; }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 2 & 3: Crypto</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar concepto..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Fundamentos</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-violet-500 bg-slate-800 text-white tab-btn">1. Fundamentos & Tríada CIA</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. Algoritmos: Simétricos vs Asimétricos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Funciones Hash & Firmas</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Gestión de Claves & PKI</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Práctica Avanzada</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400 font-semibold tab-btn">5. Caso 1: Ransomware Hospital</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-orange-400 font-semibold tab-btn">6. Caso 2: Credential Stuffing</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400 font-semibold tab-btn">7. Caso 3: Ataque DES -> AES</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-purple-400 font-semibold tab-btn">8. Caso 4: Brecha DigiNotar</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="window.location.href='ud2-3-labs.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-green-400 font-bold">🎯 Laboratorios Interactivos (Próximamente)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: FUNDAMENTOS -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">1. Fundamentos de Seguridad & Criptografía</h2>
+            <p class="text-slate-600 mb-6">La criptografía es el núcleo técnico que permite garantizar los principios fundamentales de la seguridad.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Triada CIA -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-violet-500">
+                    <h3 class="font-bold text-lg text-violet-900 mb-3">🛡️ La Tríada CIA</h3>
+                    <ul class="space-y-3 text-sm text-slate-700">
+                        <li><strong class="text-violet-700">Confidencialidad:</strong> Solo usuarios autorizados acceden a la info (Cifrado).</li>
+                        <li><strong class="text-violet-700">Integridad:</strong> Los datos no han sido alterados (Hash, Firmas).</li>
+                        <li><strong class="text-violet-700">Disponibilidad:</strong> Acceso garantizado cuando se necesita (Redundancia, Anti-DDoS).</li>
+                    </ul>
+                </div>
+                <!-- Otros Principios -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
+                    <h3 class="font-bold text-lg text-indigo-900 mb-3">🔑 Principios Complementarios</h3>
+                    <ul class="space-y-3 text-sm text-slate-700">
+                        <li><strong class="text-indigo-700">Autenticación:</strong> Verificar identidad (MFA, Certificados).</li>
+                        <li><strong class="text-indigo-700">No Repudio:</strong> Imposible negar una acción (Firma Digital).</li>
+                        <li><strong class="text-indigo-700">Trazabilidad:</strong> Registro de acciones (Logs, Auditoría).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
+                <h3 class="font-bold text-yellow-800 mb-3">⚠️ Amenazas Actuales</h3>
+                <p class="text-sm text-slate-700 mb-3">Desde virus clásicos hasta <strong>APT (Amenazas Persistentes Avanzadas)</strong> y <strong>Ransomware</strong>. El cibercrimen es ahora una industria global que explota vulnerabilidades humanas (phishing) y técnicas (no parcheadas).</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: ALGORITMOS -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">2. Algoritmos Criptográficos</h2>
+            
+            <div class="mb-8 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="font-bold text-slate-800 mb-4">Comparativa: Simétrico vs Asimétrico</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold">
+                            <tr>
+                                <th class="px-4 py-3">Característica</th>
+                                <th class="px-4 py-3">Simétrico (AES, ChaCha20)</th>
+                                <th class="px-4 py-3">Asimétrico (RSA, ECC)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-4 py-3 font-bold">Clave</td>
+                                <td class="px-4 py-3">Una clave compartida (secreta)</td>
+                                <td class="px-4 py-3">Par: Pública + Privada</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold">Velocidad</td>
+                                <td class="px-4 py-3 text-green-600">Muy rápida (ideal para datos)</td>
+                                <td class="px-4 py-3 text-red-600">Lenta (computacionalmente costoso)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold">Uso Principal</td>
+                                <td class="px-4 py-3">Cifrado de grandes volúmenes de datos</td>
+                                <td class="px-4 py-3">Intercambio de claves, Firma digital</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-bold">Desafío</td>
+                                <td class="px-4 py-3">Distribución segura de la clave</td>
+                                <td class="px-4 py-3">Gestión de confianza (PKI)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                    <h4 class="font-bold text-blue-900 mb-3">🔒 Estándares Recomendados</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                        <li><strong>AES:</strong> 128, 192 o 256 bits (Estándar oro).</li>
+                        <li><strong>ChaCha20-Poly1305:</strong> Para móviles/bajo poder (usado en TLS 1.3).</li>
+                        <li><strong>ECC:</strong> Curvas elípticas (seguridad alta con claves cortas).</li>
+                    </ul>
+                </div>
+                <div class="bg-red-50 p-6 rounded-xl border border-red-200">
+                    <h4 class="font-bold text-red-900 mb-3">❌ Algoritmos Obsoletos</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                        <li><strong>DES / 3DES:</strong> Claves demasiado cortas (56/112 bits).</li>
+                        <li><strong>RC4:</strong> Debilidades críticas en flujo.</li>
+                        <li><strong>MD5 / SHA-1:</strong> Colisiones prácticas demostradas.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: HASH Y FIRMAS -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">3. Integridad y No Repudio</h2>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                <h3 class="font-bold text-slate-800 mb-4">Funciones Hash Criptográficas</h3>
+                <p class="text-sm text-slate-700 mb-4">Condensan cualquier dato en un resumen único (digest). Propiedades clave:</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="border border-slate-200 p-3 rounded text-center">
+                        <div class="text-2xl mb-2">🔒</div>
+                        <strong class="block text-sm text-slate-700">Resistencia a Preimagen</strong>
+                        <p class="text-xs text-slate-500">Imposible recuperar el mensaje original desde el hash.</p>
+                    </div>
+                    <div class="border border-slate-200 p-3 rounded text-center">
+                        <div class="text-2xl mb-2">🔄</div>
+                        <strong class="block text-sm text-slate-700">Segunda Preimagen</strong>
+                        <p class="text-xs text-slate-500">Imposible encontrar otro mensaje con el mismo hash.</p>
+                    </div>
+                    <div class="border border-slate-200 p-3 rounded text-center">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <strong class="block text-sm text-slate-700">Resistencia a Colisiones</strong>
+                        <p class="text-xs text-slate-500">Imposible encontrar dos mensajes distintos con igual hash.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-purple-50 p-6 rounded-xl border border-purple-200">
+                <h3 class="font-bold text-purple-900 mb-3">Firmas Digitales</h3>
+                <p class="text-sm text-slate-700 mb-3">Utilizan criptografía asimétrica (clave privada para firmar, pública para verificar) para garantizar:</p>
+                <ul class="list-disc list-inside text-sm text-slate-700 space-y-1 ml-4">
+                    <li><strong>Autenticidad:</strong> Quién envió el mensaje.</li>
+                    <li><strong>Integridad:</strong> Que no fue modificado.</li>
+                    <li><strong>No Repudio:</strong> El emisor no puede negar su autoría.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: GESTIÓN DE CLAVES -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-block">4. Gestión de Claves & PKI</h2>
+            <p class="text-slate-600 mb-6">La seguridad más fuerte falla si las claves se gestionan mal.</p>
+
+            <div class="bg-white p-6 rounded-xl shadow-md mb-8 border-t-4 border-green-500">
+                <h3 class="font-bold text-green-800 mb-4">Infraestructura de Clave Pública (PKI)</h3>
+                <p class="text-sm text-slate-700 mb-3">Sistema jerárquico donde una <strong>Autoridad de Certificación (CA)</strong> emite certificados digitales que vinculan una clave pública con una identidad.</p>
+                <div class="mt-4 p-4 bg-gray-50 rounded border border-gray-200 text-sm">
+                    <strong>Cadena de Confianza:</strong> CA Raíz (confiada por defecto) → CA Intermedia → Certificado del Servidor/Usuario.<br>
+                    <strong>Revocación:</strong> Si una clave se compromete, se usa CRL (Lista de Revocación) u OCSP para invalidarla antes de su caducidad.
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-slate-100 p-6 rounded-xl">
+                    <h4 class="font-bold text-slate-800 mb-3">Almacenamiento Seguro</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>HSM (Hardware Security Module):</strong> Dispositivos físicos dedicados para generar y almacenar claves.</li>
+                        <li><strong>TPM (Trusted Platform Module):</strong> Chip integrado en placas base.</li>
+                        <li><strong>Tokens (YubiKey):</strong> Dispositivos USB para autenticación y almacenamiento.</li>
+                    </ul>
+                </div>
+                <div class="bg-slate-100 p-6 rounded-xl">
+                    <h4 class="font-bold text-slate-800 mb-3">Ciclo de Vida</h4>
+                    <ol class="list-decimal list-inside text-sm text-slate-700 space-y-2">
+                        <li>Generación (Aleatoriedad alta).</li>
+                        <li>Distribución (Canales seguros/PKI).</li>
+                        <li>Almacenamiento (Protegido).</li>
+                        <li>Rotación (Cambiar periódicamente).</li>
+                        <li>Destrucción Segura (Cuando ya no sirve).</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CASO PRÁCTICO 1 (HOSPITAL) -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-red-500 pb-2 inline-block">5. Caso Práctico 1: Ransomware en un hospital comarcal</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del incidente y soluciones técnicas oficiales.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-red-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🏥</span>
+                        <h3 class="text-lg font-bold">Enunciado del Incidente</h3>
+                    </div>
+                    <span class="bg-red-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Salud</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        En 2023, un hospital comarcal sufrió un ataque de ransomware iniciado mediante un correo de phishing enviado a un empleado administrativo. El archivo adjunto contenía código malicioso que aprovechó vulnerabilidades sin parchear, escaló privilegios y cifró los servidores de la historia clínica electrónica.
+                        Como consecuencia, se paralizó la actividad asistencial. La recuperación fue lenta debido a la falta de segmentación en la red y a copias de seguridad incompletas.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-red-400 bg-red-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-red-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">1. Clasifica los requisitos de seguridad relacionados con el incidente</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Monitorizar correos entrantes y detectar intentos de phishing.</li>
+                                            <li>Ejecutar automáticamente procedimientos de aislamiento ante actividad sospechosa.</li>
+                                            <li>Mantener copias de seguridad restaurables fácilmente.</li>
+                                            <li>Registrar y alertar accesos o modificaciones anómalas en servidores clínicos.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Disponibilidad del sistema clínico superior al 99,5%.</li>
+                                            <li>Restauración completa en un máximo de X horas.</li>
+                                            <li>Tiempo de respuesta de alertas inferior a 5 minutos.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Segmentación de la red (administrativa, clínica, IoT médico).</li>
+                                            <li>Actualización automática de parches de seguridad.</li>
+                                            <li>Soluciones EDR/antimalware avanzadas.</li>
+                                            <li>Copias de seguridad cifradas con múltiples puntos de restauración.</li>
+                                        </ul>
+                                    </div>
+                                     <div class="bg-white p-3 rounded border border-red-100">
+                                        <span class="block font-bold text-orange-700 mb-1">🟠 Legales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Cumplimiento RGPD/HIPAA (notificación de brechas en < 72h).</li>
+                                            <li>Preservación de evidencias para posibles acciones legales.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">2. Elabora un caso de uso relacionado con la detección y respuesta</h5>
+                                <div class="bg-white p-4 rounded border border-red-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Caso de uso: Respuesta ante actividad de cifrado masivo</p>
+                                    <p class="text-slate-600 mb-3">Actor: Equipo de seguridad / SOC hospitalario.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El sistema detecta actividad de cifrado masivo en un servidor.</li>
+                                        <li>El EDR aísla automáticamente el equipo afectado.</li>
+                                        <li>Se envía una alerta inmediata al SOC.</li>
+                                        <li>El equipo de seguridad activa el protocolo de contención y recuperación.</li>
+                                        <li>Los datos se restauran desde copias de seguridad verificadas.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Fallo en la restauración: activar plan de continuidad manual.</li>
+                                        <li>Expansión del ataque: aplicar segmentación adicional o apagado controlado.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Validación -->
+                            <div>
+                                <h5 class="font-bold text-red-900 text-sm uppercase mb-2">3. Cómo validarías que las medidas mitigan el riesgo</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-red-100 text-sm">
+                                    <li>Revisión con responsables TI y clínicos para verificar adecuación de requisitos.</li>
+                                    <li>Pruebas mensuales de restauración de copias de seguridad.</li>
+                                    <li>Simulaciones de phishing para evaluar concienciación del personal.</li>
+                                    <li>Pruebas de penetración internas para validar segmentación y escalado de privilegios.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: CASO PRÁCTICO 2 (CREDENTIAL STUFFING) -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-orange-500 pb-2 inline-block">6. Caso Práctico 2: Fuga de datos por credenciales reutilizadas</h2>
+            <p class="text-slate-600 mb-8">Análisis completo del ataque de credential stuffing y soluciones.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-orange-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🛒</span>
+                        <h3 class="text-lg font-bold">Enunciado del Incidente</h3>
+                    </div>
+                    <span class="bg-orange-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">E-commerce</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Una compañía de comercio electrónico sufrió en 2019 un acceso masivo a cuentas mediante credential stuffing. Los atacantes utilizaron combinaciones de usuario y contraseña obtenidas de filtraciones previas. La ausencia de MFA y la falta de monitorización facilitaron el ataque.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-orange-400 bg-orange-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-orange-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">1. Clasifica los requisitos necesarios para evitar ataques de credential stuffing</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Implementar autenticación multifactor (MFA).</li>
+                                            <li>Aplicar bloqueo temporal tras intentos fallidos repetidos.</li>
+                                            <li>Incorporar detección de accesos anómalos basada en comportamiento.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Tiempo de autenticación inferior a 2 segundos.</li>
+                                            <li>Alta disponibilidad del portal (> 99,9%).</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-orange-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Almacenamiento de contraseñas con hashing seguro (Argon2, bcrypt).</li>
+                                            <li>Detección basada en IP, reputación, geolocalización.</li>
+                                            <li>Integración con SIEM para correlación de eventos.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">2. Elabora un caso de uso de autenticación segura</h5>
+                                <div class="bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Caso de uso: Autenticación segura de un usuario</p>
+                                    <p class="text-slate-600 mb-3">Actor: Cliente de la plataforma.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El usuario introduce nombre de usuario y contraseña.</li>
+                                        <li>El sistema verifica la contraseña y solicita segundo factor (MFA).</li>
+                                        <li>El usuario valida el factor adicional (SMS, app, TOTP, llave física).</li>
+                                        <li>El usuario accede a su cuenta.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Contraseña incorrecta: incrementar contador, posible bloqueo temporal.</li>
+                                        <li>Fallo en verificación MFA: acceso denegado.</li>
+                                        <li>Inicio sospechoso: requerir verificación adicional (CAPTCHA, email).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Validación -->
+                            <div>
+                                <h5 class="font-bold text-orange-900 text-sm uppercase mb-2">3. Describe cómo validarías la eficacia</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-orange-100 text-sm">
+                                    <li>Pruebas de fuerza bruta para verificar eficacia de política de bloqueo.</li>
+                                    <li>Pruebas funcionales del flujo MFA en todos sus métodos.</li>
+                                    <li>Revisión periódica de logs para confirmar detección de accesos anómalos.</li>
+                                    <li>Simulaciones controladas de credential stuffing para evaluar resiliencia.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: CASO PRÁCTICO 3 (DES A AES) -->
+        <section id="sec7" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-blue-500 pb-2 inline-block">7. Caso Práctico 3: Ataque al algoritmo DES y transición hacia AES</h2>
+            <p class="text-slate-600 mb-8">Análisis de la obsolescencia criptográfica y migración de estándares.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-blue-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔐</span>
+                        <h3 class="text-lg font-bold">Enunciado Histórico</h3>
+                    </div>
+                    <span class="bg-blue-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Cripto</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        Durante más de dos décadas, DES fue el estándar. Con clave de 56 bits, quedó obsoleto. En 1998, EFF demostró que DES podía romperse en menos de 3 días. Esto aceleró la adopción de AES (claves 128, 192, 256 bits) por parte del NIST en 2001.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-blue-400 bg-blue-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-blue-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">1. Clasifica los requisitos derivados del caso</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Implementar solo algoritmos recomendados por organismos oficiales.</li>
+                                            <li>Permitir actualización modular de algoritmos sin interrumpir servicio.</li>
+                                            <li>Registrar y auditar el uso de algoritmos y longitudes de clave.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Garantizar tiempos de cifrado compatibles con rendimiento esperado.</li>
+                                            <li>Mantener compatibilidad temporal con sistemas heredados durante transición.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-blue-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Sustituir DES por AES con claves 128/192/256 bits.</li>
+                                            <li>Emplear librerías probadas (OpenSSL, libsodium).</li>
+                                            <li>Realizar análisis periódico del estado criptográfico.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">2. Proporciona un caso de uso de actualización criptográfica</h5>
+                                <div class="bg-white p-4 rounded border border-blue-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Caso de uso: Actualización de algoritmos criptográficos</p>
+                                    <p class="text-slate-600 mb-3">Actor: Administrador de seguridad / Equipo TI.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>El sistema detecta que un algoritmo (ej. DES) ha sido declarado inseguro.</li>
+                                        <li>Se genera alerta para el administrador.</li>
+                                        <li>El administrador selecciona el nuevo algoritmo recomendado (AES, SHA-256).</li>
+                                        <li>El sistema aplica la actualización y migra datos/claves.</li>
+                                        <li>Se valida compatibilidad y documentan cambios.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Incompatibilidad con heredados: activar plan de mitigación (gateway, doble cifrado).</li>
+                                        <li>Fallo en migración: restauración desde copia segura.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Validación -->
+                            <div>
+                                <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">3. Describe cómo validarías que un sistema usa algoritmos seguros</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-blue-100 text-sm">
+                                    <li>Auditorías periódicas para verificar uso exclusivo de algoritmos vigentes.</li>
+                                    <li>Análisis automatizados (testssl.sh, scripts internos).</li>
+                                    <li>Pruebas de rendimiento para asegurar que AES cumple requisitos operativos.</li>
+                                    <li>Revisión de cumplimiento normativo frente a estándares NIST/ENISA.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: CASO PRÁCTICO 4 (DIGINOTAR) -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-purple-500 pb-2 inline-block">8. Caso Práctico 4: Brecha por certificados falsificados (DigiNotar)</h2>
+            <p class="text-slate-600 mb-8">Análisis del fallo en PKI y mecanismos de defensa.</p>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-purple-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🆔</span>
+                        <h3 class="text-lg font-bold">Enunciado del Incidente</h3>
+                    </div>
+                    <span class="bg-purple-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">PKI</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">
+                        En 2011, DigiNotar sufrió intrusión permitiendo emitir >500 certificados fraudulentos (Google, Yahoo, Gobierno). Usados en ataques MITM en Irán. DigiNotar quebró. Impulsó mejoras como Certificate Transparency.
+                    </p>
+                    
+                    <div class="mb-8 border-l-4 border-purple-400 bg-purple-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-purple-800 mb-3 text-lg">MIS RESPUESTAS SOLUCIÓN</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Clasificación Requisitos -->
+                            <div>
+                                <h5 class="font-bold text-purple-900 text-sm uppercase mb-2">1. Clasifica los requisitos para proteger una infraestructura PKI</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-white p-3 rounded border border-purple-100">
+                                        <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Validar certificados mediante OCSP/CRL antes de conectar.</li>
+                                            <li>Registrar todo intento de emisión y acceso a componentes críticos.</li>
+                                            <li>Generar alertas ante solicitudes/dominios no autorizados.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-purple-100">
+                                        <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Alta disponibilidad de servicios de validación (OCSP, CRL).</li>
+                                            <li>Baja latencia en verificación de estado.</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-white p-3 rounded border border-purple-100">
+                                        <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                        <ul class="list-disc list-inside text-slate-700">
+                                            <li>Implementar Certificate Transparency y monitorizar logs públicos.</li>
+                                            <li>Endurecer servidores CA con HSM, MFA y aislamiento estricto.</li>
+                                            <li>Segmentar red para proteger entorno de emisión.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Caso de Uso -->
+                            <div>
+                                <h5 class="font-bold text-purple-900 text-sm uppercase mb-2">2. Elaborar caso de uso: Validación de certificado</h5>
+                                <div class="bg-white p-4 rounded border border-purple-100 text-sm">
+                                    <p class="font-bold text-slate-800 mb-2">Caso de uso: Validación de un certificado recibido</p>
+                                    <p class="text-slate-600 mb-3">Actor: Navegador web / dispositivo.</p>
+                                    
+                                    <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                    <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3">
+                                        <li>Usuario accede a sitio HTTPS.</li>
+                                        <li>Navegador recibe certificado del servidor.</li>
+                                        <li>Se valida cadena de confianza hasta CA raíz confiable.</li>
+                                        <li>Se consulta estado mediante OCSP o CRL.</li>
+                                        <li>Si válido y no revocado, se establece conexión cifrada.</li>
+                                    </ol>
+
+                                    <p class="font-bold text-slate-800 mb-2">Excepciones:</p>
+                                    <ul class="list-disc list-inside text-slate-700">
+                                        <li>Certificado revocado/fraudulento: conexión bloqueada.</li>
+                                        <li>CA comprometida: advertencia crítica y bloqueo.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Validación -->
+                            <div>
+                                <h5 class="font-bold text-purple-900 text-sm uppercase mb-2">3. Describe mecanismos para validar que la cadena de confianza no ha sido comprometida</h5>
+                                <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-purple-100 text-sm">
+                                    <li>Supervisión continua de logs de Certificate Transparency.</li>
+                                    <li>Pruebas de intrusión enfocadas en entorno de emisión de la CA.</li>
+                                    <li>Simulaciones de ataques MITM para verificar detección de certificados ilegítimos.</li>
+                                    <li>Revisión periódica de parámetros criptográficos (longitud clave, algoritmos).</li>
+                                    <li>Validación funcionamiento real de OCSP/CRL (disponibilidad).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(['btn-sec5', 'btn-sec6', 'btn-sec7', 'btn-sec8'].includes(btn.id)) {
+                     if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-red-400');
+                     if(btn.id === 'btn-sec6' && sectionId !== 'sec6') btn.classList.add('text-orange-400');
+                     if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-blue-400');
+                     if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-purple-400');
+                }
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-red-400', 'text-orange-400', 'text-blue-400', 'text-purple-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec1');
+        };
+    </script>
+</body>
+</html>
