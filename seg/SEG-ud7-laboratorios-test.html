@@ -86,7 +86,7 @@
 
                         <div class="mb-4">
                             <label class="block text-sm font-semibold mb-2">Input del Usuario:</label>
-                            <input type="text" id="validationInput" placeholder='Ej: OR 1=1, <script>alert(1)</script>, ../../../etc/passwd' 
+                            <input type="text" id="validationInput" placeholder='Ej: OR 1=1, &lt;script&gt;alert(1)&lt;/script&gt;, ../../../etc/passwd' 
                                 class="w-full bg-slate-900 text-white rounded-lg px-4 py-3 border-2 border-slate-600 focus:border-violet-500 focus:outline-none font-mono text-sm"
                                 onkeyup="analyzeInput()">
                         </div>
@@ -316,8 +316,9 @@
         }
 
         function testExamples() {
+            // CORRECCIÓN: Uso de comillas dobles externas para evitar conflicto con comillas simples internas
             const examples = [
-                "' OR '1'='1",
+                " OR 1=1",
                 "<script>alert('XSS')</script>",
                 "../../../etc/passwd",
                 "admin@proton.me",
