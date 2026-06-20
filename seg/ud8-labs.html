@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 8 - Laboratorios y Test | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Drag & Drop Styles */
+        .draggable { cursor: grab; touch-action: none; user-select: none; transition: transform 0.2s; z-index: 10; }
+        .draggable:active { cursor: grabbing; transform: scale(1.05); z-index: 20; }
+        .drop-zone { transition: all 0.3s ease; border-style: dashed; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 10px; gap: 5px;}
+        .drop-zone.drag-over { border-style: solid; border-color: #8b5cf6; background-color: #f3e8ff; transform: scale(1.02); }
+        .drop-zone.correct { border-color: #22c55e; background-color: #dcfce7; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+        .drop-zone.wrong { border-color: #ef4444; background-color: #fee2e2; animation: shake 0.5s; }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Lab Header */
+        .lab-header { background: linear-gradient(to right, #ea580c, #d97706); }
+        
+        /* Simulation Steps */
+        .sim-step { opacity: 0.3; transition: all 0.5s; border-left: 4px solid transparent; }
+        .sim-step.active { opacity: 1; border-left-color: #ea580c; background-color: #fff7ed; transform: translateX(5px); }
+        .sim-step.done { opacity: 1; border-left-color: #22c55e; background-color: #f0fdf4; }
+        
+        /* Quiz Styles */
+        .quiz-question { transition: all 0.3s; border-left: 4px solid transparent; }
+        .quiz-question.correct-answer { border-left-color: #22c55e; background-color: #f0fdf4; }
+        .quiz-question.wrong-answer { border-left-color: #ef4444; background-color: #fef2f2; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-orange-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-orange-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 8: Labs</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Laboratorios Prácticos</li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-orange-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">1. Clasificación de Algoritmos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-red-400 font-bold">2. Simulador CRIME/BREACH</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-blue-400 font-bold">3. Pipeline Seguro JPEG</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Evaluación</li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 TEST EVALUACIÓN</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Navegación</li>
+                <li class="nav-item"><button onclick="window.location.href='ud8-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400">← Volver a Teoría y Casos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 6: LABORATORIO CLASIFICACIÓN -->
+        <section id="sec6" class="main-section fade-in">
+            <div class="lab-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">1. Laboratorio: Clasificación de Algoritmos</h2>
+                <p class="opacity-90">Arrastra cada algoritmo a su categoría correcta: <strong>Huffman</strong>, <strong>Lempel-Ziv</strong> o <strong>Aritmética</strong>.</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200">
+                <!-- Área de Algoritmos Disponibles -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-slate-700 mb-3 text-sm uppercase tracking-wide">Algoritmos Disponibles (Arrastrar)</h3>
+                    <div class="flex flex-wrap gap-3 p-4 bg-slate-50 border border-slate-200 rounded-lg min-h-[100px]" id="algoContainer">
+                        <!-- Se llenará con JS -->
+                    </div>
+                </div>
+
+                <!-- Zonas de Destino -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="drop-zone bg-yellow-50 border-2 border-yellow-200 rounded-lg" data-category="huffman" data-id="zone-huff">
+                        <div class="font-bold text-yellow-800 text-sm mb-2">🌳 Huffman</div>
+                        <div class="text-xs text-yellow-600 text-center mb-2">Código prefijo<br>Óptimo para fuentes fijas<br>Rápido pero granularidad 1 bit</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                    <div class="drop-zone bg-purple-50 border-2 border-purple-200 rounded-lg" data-category="lz" data-id="zone-lz">
+                        <div class="font-bold text-purple-800 text-sm mb-2">🔄 Lempel-Ziv</div>
+                        <div class="text-xs text-purple-600 text-center mb-2">Universal adaptativo<br>Ventana deslizante/Diccionario<br>Base de ZIP/GZIP/Deflate</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                    <div class="drop-zone bg-blue-50 border-2 border-blue-200 rounded-lg" data-category="arith" data-id="zone-arith">
+                        <div class="font-bold text-blue-800 text-sm mb-2">🔢 Aritmética</div>
+                        <div class="text-xs text-blue-600 text-center mb-2">Intervalos [0,1)<br>Muy precisa (~Entropía)<br>Complejo computacionalmente</div>
+                        <div class="drop-area w-full flex-1"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <div id="lab1Feedback" class="hidden p-4 rounded-lg font-bold text-lg shadow-inner"></div>
+                    <button onclick="resetLab1()" class="mt-4 px-6 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded font-bold text-sm transition">Reiniciar Ejercicio</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: SIMULADOR CRIME -->
+        <section id="sec7" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-red-600 to-orange-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">2. Laboratorio: Simulador Ataque CRIME</h2>
+                <p class="opacity-90">Visualiza cómo un atacante infiere una cookie secreta midiendo la longitud del ciphertext.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mb-6">
+                    <h3 class="font-bold text-red-900 mb-2">🎯 Misión: Inferir la Cookie Secreta</h3>
+                    <p class="text-sm text-red-800">Supongamos que la cookie es <code>SECRET=A1B2</code>. El atacante sabe que la cookie empieza por <code>S</code>, <code>E</code>...</p>
+                    <p class="text-sm text-red-800 mt-2">Haz clic en los pasos para simular cómo el atacante envía inputs y mide la respuesta.</p>
+                </div>
+
+                <!-- Visualizador de Pasos -->
+                <div class="space-y-4 mb-8">
+                    <div class="sim-step p-4 rounded bg-white border border-slate-200" id="step1">
+                        <h4 class="font-bold text-slate-800">Paso 1: El Atacante prepara un input</h4>
+                        <p class="text-sm text-slate-600">Envía: <code>?guess=S</code> (Sabe que empieza por S)</p>
+                    </div>
+                    <div class="sim-step p-4 rounded bg-white border border-slate-200" id="step2">
+                        <h4 class="font-bold text-slate-800">Paso 2: El Servidor co-comprime</h4>
+                        <p class="text-sm text-slate-600">Respuesta = <code>Cipher( HTTP + Cookie("SECRET=S...") + Input("?guess=S") )</code></p>
+                        <p class="text-xs text-orange-600 italic">* Nota: Si la guess coincide con el secreto, hay más repetición = mejor compresión.</p>
+                    </div>
+                    <div class="sim-step p-4 rounded bg-white border border-slate-200" id="step3">
+                        <h4 class="font-bold text-slate-800">Paso 3: Medición de Longitud</h4>
+                        <p class="text-sm text-slate-600">Atacante observa: La longitud del ciphertext es <strong>MENOR</strong> cuando guess="S".</p>
+                    </div>
+                    <div class="sim-step p-4 rounded bg-white border border-slate-200" id="step4">
+                        <h4 class="font-bold text-slate-800">Conclusión</h4>
+                        <p class="text-sm text-green-700 font-bold">✅ ¡Extracción exitosa! La primera letra de la cookie es "S".</p>
+                        <p class="text-xs text-slate-500">Se repite el proceso probando "SE", "SECR", etc., hasta revelar todo el valor.</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center bg-slate-100 p-4 rounded-lg">
+                    <button onclick="runSimulation()" class="px-6 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-bold text-sm shadow-lg">▶️ Iniciar Simulación</button>
+                    <div id="simStatus" class="text-slate-600 font-medium">Esperando inicio...</div>
+                </div>
+
+                <div class="mt-8 border-t pt-6">
+                    <h4 class="font-bold text-slate-800 mb-3">¿Cómo se mitiga?</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-1 bg-green-50 p-4 rounded border border-green-200">
+                        <li>Desactivar compresión TLS (obligatorio en TLS 1.3).</li>
+                        <li>Separar contextos de compresión (no mezclar cookie con input).</li>
+                        <li>Aplicar Padding Aleatorio (oculta la longitud real).</li>
+                        <li>Rate Limiting (dificulta la iteración masiva).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: PIPELINE JPEG -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">3. Laboratorio: Pipeline Seguro de Imágenes</h2>
+                <p class="opacity-90">Configura el flujo correcto para subir imágenes médicas sin filtrar metadatos ni tamaños reveladores.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-4xl mx-auto">
+                <div class="mb-6">
+                    <p class="text-slate-700 mb-4">Tienes una imagen médica sensible. Debes elegir el orden correcto y aplicar las medidas de seguridad.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="p-4 border rounded bg-slate-50">
+                            <h5 class="font-bold text-slate-800 mb-2">Opciones de Orden</h5>
+                            <div class="flex gap-2">
+                                <button onclick="selectOrder('A')" id="btn-order-A" class="flex-1 py-2 px-3 bg-white border rounded hover:border-blue-500 text-sm">A) Cifrar ➔ Comprimir</button>
+                                <button onclick="selectOrder('B')" id="btn-order-B" class="flex-1 py-2 px-3 bg-white border rounded hover:border-blue-500 text-sm border-blue-500 bg-blue-50 font-bold text-blue-800">B) Comprimir ➔ Cifrar ✅</button>
+                            </div>
+                        </div>
+                        <div class="p-4 border rounded bg-slate-50">
+                            <h5 class="font-bold text-slate-800 mb-2">Medidas Adicionales</h5>
+                            <label class="flex items-center gap-2 mb-2">
+                                <input type="checkbox" id="chk-exif" class="rounded text-blue-600"> Eliminar Metadatos EXIF
+                            </label>
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" id="chk-padding" class="rounded text-blue-600"> Añadir Padding de Tamaño
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="pipelineResult" class="hidden p-6 rounded-lg border-2 text-center transition-all duration-500">
+                    <!-- Resultado dinámico -->
+                </div>
+
+                <div class="flex justify-center mt-6">
+                    <button onclick="validatePipeline()" class="px-8 py-3 bg-blue-600 text-white rounded-lg font-bold text-lg shadow-lg hover:bg-blue-700 transition">Validar Configuración</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST EVALUACIÓN -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-green-500 pb-2 inline-block">4. Test de Evaluación: Codificación de la Fuente</h2>
+            <p class="text-slate-600 mb-6">Pon a prueba tus conocimientos sobre Shannon, algoritmos y ataques de compresión.</p>
+            
+            <form id="quizForm" class="space-y-6 max-w-4xl mx-auto">
+                
+                <!-- Pregunta 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">1. ¿Qué representa la Entropía (H) en teoría de la información?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="A"> A) La cantidad total de bits en un archivo comprimido.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="B"> B) La velocidad de transmisión en Mbps.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="C"> C) El límite teórico inferior de compresión sin pérdida (incertidumbre media).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q1" value="D"> D) La cantidad de redundancia eliminada.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">2. ¿Cuál es el orden recomendado para asegurar datos antes de transmitirlos?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="A"> A) Cifrar ➔ Comprimir (para proteger patrones).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="B"> B) Comprimir ➔ Cifrar (para eficiencia y seguridad).</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="C"> C) No comprimir nunca.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q2" value="D"> D) Es indiferente el orden.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-slate-800 mb-3">3. El ataque CRIME explota principalmente:</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="A"> A) La variación en la longitud del ciphertext al co-comprimir secretos y entradas del usuario.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="B"> B) Debilidades matemáticas en el algoritmo AES.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="C"> C) La falta de autenticación en TLS 1.2.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q3" value="D"> D) La velocidad de compresión de Huffman.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Pregunta 4 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-slate-800 mb-3">4. ¿Qué algoritmo utiliza una "ventana deslizante" para encontrar patrones repetidos?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="A"> A) Codificación Aritmética.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="B"> B) Huffman Canónico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="C"> C) LZ77 / Deflate.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q4" value="D"> D) RLE (Run-Length Encoding).</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                 <!-- Pregunta 5 -->
+                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-slate-800 mb-3">5. En el contexto de subida de imágenes sensibles, ¿qué medida ayuda a evitar canales laterales por longitud?</h4>
+                    <div class="space-y-2 text-sm text-slate-600">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="A"> A) Usar JPEG de baja calidad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="B"> B) Aplicar Padding aleatorio o normalizar tamaños antes de cifrar.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="C"> C) No usar cifrado para ahorrar CPU.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-50"><input type="radio" name="q5" value="D"> D) Enviar en formato RAW sin procesar.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Botones de Control -->
+                <div class="sticky bottom-4 bg-white p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-200 shadow-2xl z-20 mt-8 mx-auto max-w-4xl">
+                    <div id="quizResultText" class="text-slate-800 font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec6' && sectionId !== 'sec6') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-red-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-blue-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-red-400', 'text-blue-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            if(sectionId === 'sec6') initLab1();
+        }
+
+        // ==========================================
+        // LABORATORIO 1: CLASIFICACIÓN DE ALGORITMOS
+        // ==========================================
+        const algorithms = [
+            { id: 'huff', name: 'Huffman', category: 'huffman' },
+            { id: 'lz77', name: 'LZ77', category: 'lz' },
+            { id: 'arith', name: 'Aritmética', category: 'arith' },
+            { id: 'lzw', name: 'LZW', category: 'lz' },
+            { id: 'deflate', name: 'DEFLATE', category: 'lz' }, // Combina ambos pero principalmente LZ+Huff, aquí lo ponemos en LZ por la ventana
+            { id: 'huff_can', name: 'Huffman Canónico', category: 'huffman' },
+            { id: 'range', name: 'Range Coding', category: 'arith' },
+            { id: 'cabac', name: 'CABAC', category: 'arith' }
+        ];
+
+        function initLab1() {
+            const container = document.getElementById('algoContainer');
+            container.innerHTML = '';
+            
+            // Shuffle
+            const shuffled = [...algorithms].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(algo => {
+                const el = document.createElement('div');
+                el.className = 'draggable bg-white border border-slate-300 shadow-sm px-3 py-1 rounded text-sm font-semibold text-slate-700';
+                el.draggable = true;
+                el.innerText = algo.name;
+                el.dataset.id = algo.id;
+                el.dataset.category = algo.category;
+                
+                el.addEventListener('dragstart', dragStart);
+                el.addEventListener('touchstart', touchStart, {passive: false});
+                el.addEventListener('touchmove', touchMove, {passive: false});
+                el.addEventListener('touchend', touchEnd);
+
+                container.appendChild(el);
+            });
+
+            // Setup Drop Zones
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', dragOver);
+                zone.addEventListener('dragleave', dragLeave);
+                zone.addEventListener('drop', drop);
+                zone.addEventListener('touchstart', touchZoneStart, {passive: false});
+                zone.addEventListener('touchmove', touchZoneMove, {passive: false});
+                zone.addEventListener('touchend', touchZoneEnd);
+            });
+        }
+
+        let draggedItem = null;
+        let touchClone = null;
+
+        function dragStart(e) {
+            draggedItem = e.target;
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            const zone = e.currentTarget;
+            if(!zone.classList.contains('drag-over')) zone.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const zone = e.currentTarget;
+            zone.classList.remove('drag-over');
+            
+            if(draggedItem) {
+                processDrop(zone, draggedItem);
+                draggedItem = null;
+            }
+        }
+
+        function processDrop(zone, item) {
+            const itemCategory = item.dataset.category;
+            const zoneCategory = zone.dataset.category;
+            const feedback = document.getElementById('lab1Feedback');
+
+            if(itemCategory === zoneCategory) {
+                // Correct
+                item.draggable = false;
+                item.style.cursor = 'default';
+                item.classList.remove('draggable');
+                item.removeEventListener('dragstart', dragStart);
+                item.removeEventListener('touchstart', touchStart);
+                
+                zone.querySelector('.drop-area').appendChild(item);
+                zone.classList.add('correct');
+                checkCompletion();
+            } else {
+                // Wrong
+                zone.classList.add('wrong');
+                feedback.className = "mt-6 p-4 rounded-lg font-bold text-lg shadow-inner bg-red-100 text-red-700";
+                feedback.innerHTML = `❌ Incorrecto: ${item.innerText} no pertenece aquí.`;
+                feedback.classList.remove('hidden');
+                setTimeout(() => {
+                    zone.classList.remove('wrong');
+                    feedback.classList.add('hidden');
+                }, 1500);
+            }
+        }
+
+        function checkCompletion() {
+            setTimeout(() => {
+                const remaining = document.querySelectorAll('#algoContainer .draggable').length;
+                if(remaining === 0) {
+                    const feedback = document.getElementById('lab1Feedback');
+                    feedback.className = "mt-6 p-4 rounded-lg font-bold text-lg shadow-inner bg-green-100 text-green-700 animate-pulse";
+                    feedback.innerHTML = "✅ ¡Excelente! Has clasificado correctamente todos los algoritmos.";
+                    feedback.classList.remove('hidden');
+                }
+            }, 500);
+        }
+
+        function resetLab1() { initLab1(); document.getElementById('lab1Feedback').classList.add('hidden'); }
+
+        // Touch Functions (Simplified)
+        function touchStart(e) {
+            e.preventDefault();
+            draggedItem = e.target;
+            const touch = e.touches[0];
+            touchClone = draggedItem.cloneNode(true);
+            touchClone.style.position = 'absolute';
+            touchClone.style.pointerEvents = 'none';
+            touchClone.style.zIndex = '1000';
+            document.body.appendChild(touchClone);
+            moveClone(touch.pageX, touch.pageY);
+        }
+        function touchMove(e) { e.preventDefault(); if(touchClone) moveClone(e.touches[0].pageX, e.touches[0].pageY); }
+        function touchEnd(e) {
+            if(touchClone) {
+                const touch = e.changedTouches[0];
+                touchClone.remove();
+                const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                const zone = elementBelow ? elementBelow.closest('.drop-zone') : null;
+                if(zone) processDrop(zone, draggedItem);
+                touchClone = null; draggedItem = null;
+            }
+        }
+        function moveClone(x, y) { touchClone.style.left = (x - 40) + 'px'; touchClone.style.top = (y - 15) + 'px'; }
+        function touchZoneStart(e) {}
+        function touchZoneMove(e) { e.preventDefault(); }
+        function touchZoneEnd(e) {}
+
+        // ==========================================
+        // LABORATORIO 2: SIMULADOR CRIME
+        // ==========================================
+        function runSimulation() {
+            const status = document.getElementById('simStatus');
+            status.innerText = "⚙️ Iniciando simulación...";
+            
+            // Reset steps
+            document.querySelectorAll('.sim-step').forEach(s => {
+                s.classList.remove('active', 'done');
+                s.style.opacity = '0.3';
+            });
+            
+            let step = 0;
+            const interval = setInterval(() => {
+                step++;
+                const current = document.getElementById(`step${step}`);
+                
+                if(step > 4) {
+                    clearInterval(interval);
+                    status.innerText = "✅ Simulación finalizada. Revisa el resumen.";
+                    return;
+                }
+                
+                // Mark previous as done
+                if(step > 1) {
+                    document.getElementById(`step${step-1}`).classList.add('done');
+                    document.getElementById(`step${step-1}`).style.opacity = '1';
+                }
+                
+                // Activate current
+                current.classList.add('active');
+                current.style.opacity = '1';
+                
+                status.innerText = `Paso ${step}: ${current.querySelector('h4').innerText}`;
+            }, 1500);
+        }
+
+        // ==========================================
+        // LABORATORIO 3: PIPELINE JPEG
+        // ==========================================
+        let selectedOrder = 'B'; // Default correct
+
+        function selectOrder(order) {
+            selectedOrder = order;
+            document.getElementById('btn-order-A').className = `flex-1 py-2 px-3 bg-white border rounded hover:border-blue-500 text-sm ${order==='A'?'border-blue-500 bg-blue-50 font-bold text-blue-800':''}`;
+            document.getElementById('btn-order-B').className = `flex-1 py-2 px-3 bg-white border rounded hover:border-blue-500 text-sm ${order==='B'?'border-blue-500 bg-blue-50 font-bold text-blue-800':'border-gray-200'}`;
+        }
+
+        function validatePipeline() {
+            const chkExif = document.getElementById('chk-exif').checked;
+            const chkPadding = document.getElementById('chk-padding').checked;
+            const resultDiv = document.getElementById('pipelineResult');
+            
+            resultDiv.classList.remove('hidden');
+            
+            if (selectedOrder === 'B' && chkExif && chkPadding) {
+                resultDiv.className = "p-6 rounded-lg border-2 bg-green-50 border-green-500 text-green-800 animate-pulse";
+                resultDiv.innerHTML = `
+                    <h3 class="text-2xl font-bold mb-2">✅ ¡Configuración Perfecta!</h3>
+                    <p>Has elegido el orden correcto (<strong>Comprimir ➔ Cifrar</strong>) y aplicado todas las mitigaciones necesarias (Eliminación EXIF + Padding).</p>
+                    <p class="mt-2 text-sm">Tu imagen está protegida contra canales laterales de longitud y fugas de metadatos.</p>
+                `;
+            } else {
+                let errors = [];
+                if(selectedOrder !== 'B') errors.push("Error: El orden debe ser Comprimir primero, luego Cifrar.");
+                if(!chkExif) errors.push("Riesgo: Los metadatos EXIF pueden revelar ubicación o dispositivo médico.");
+                if(!chkPadding) errors.push("Riesgo: Sin padding, el tamaño del archivo podría revelar resolución o tipo de imagen.");
+                
+                resultDiv.className = "p-6 rounded-lg border-2 bg-red-50 border-red-500 text-red-800";
+                resultDiv.innerHTML = `
+                    <h3 class="text-xl font-bold mb-2">⚠️ Configuración Insegura</h3>
+                    <ul class="list-disc list-inside text-sm space-y-1">
+                        ${errors.map(e => `<li>${e}</li>`).join('')}
+                    </ul>
+                    <p class="mt-3 text-sm font-bold">Revisa las recomendaciones en el laboratorio anterior.</p>
+                `;
+            }
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                feedbackBox.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-50');
+                        feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-50');
+                        feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-100', 'text-red-800');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-600', 'text-red-600', 'text-yellow-600');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-600');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length})`;
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-600');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}). Repasa conceptos.`;
+            } else {
+                resDiv.classList.add('text-red-600');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}). Necesitas estudiar más.`;
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec6');
+        };
+    </script>
+</body>
+</html>
