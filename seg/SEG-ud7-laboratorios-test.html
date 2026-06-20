@@ -252,7 +252,9 @@
             for (let pattern of patterns.sqli) {
                 if (pattern.test(input)) {
                     sqlRisk = true;
-                    logs.push(`⚠️ Patrón SQL detectado: ${pattern.toString().substring(1, 40)}...`);
+                    // CORRECCIÓN: Escapar caracteres HTML en el log para evitar "unterminated string"
+                    const patternDesc = pattern.toString().slice(1, Math.min(40, pattern.toString().length));
+                    logs.push(`⚠️ Patrón SQL detectado: ${escapeHtml(patternDesc)}...`);
                     break;
                 }
             }
@@ -263,7 +265,8 @@
             for (let pattern of patterns.xss) {
                 if (pattern.test(input)) {
                     xssRisk = true;
-                    logs.push(`⚠️ Script/XSS detectado: ${pattern.toString().substring(1, 40)}...`);
+                    const patternDesc = pattern.toString().slice(1, Math.min(40, pattern.toString().length));
+                    logs.push(`⚠️ Script/XSS detectado: ${escapeHtml(patternDesc)}...`);
                     break;
                 }
             }
@@ -274,7 +277,8 @@
             for (let pattern of patterns.traversal) {
                 if (pattern.test(input)) {
                     travRisk = true;
-                    logs.push(`⚠️ Path Traversal detectado: ${pattern.toString().substring(1, 40)}...`);
+                    const patternDesc = pattern.toString().slice(1, Math.min(40, pattern.toString().length));
+                    logs.push(`⚠️ Path Traversal detectado: ${escapeHtml(patternDesc)}...`);
                     break;
                 }
             }
@@ -290,12 +294,23 @@
                 status.className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
             }
 
-            // Log
+            // Log - CORRECCIÓN: Evitar substring en cadena vacía
+            const existingLog = log.innerHTML || '';
             if (logs.length > 0) {
-                log.innerHTML = logs.map(l => `<div class="text-red-400">${l}</div>`).join('') + '<div class="text-slate-500 mt-2">──────────</div>' + log.innerHTML.substring(0, 2000);
+                log.innerHTML = logs.map(l => `<div class="text-red-400">${escapeHtml(l)}</div>`).join('') + 
+                    '<div class="text-slate-500 mt-2">──────────</div>' + 
+                    existingLog.slice(0, 2000);
             } else if (safeInputs.some(s => input.toLowerCase().includes(s))) {
-                log.innerHTML = `<div class="text-green-400">✅ Input benigno: "${input.substring(0, 20)}..."</div><div class="text-slate-500 mt-2">──────────</div>` + log.innerHTML.substring(0, 2000);
+                const safeMsg = `✅ Input benigno: "${escapeHtml(input.slice(0, 20))}..."`;
+                log.innerHTML = `<div class="text-green-400">${safeMsg}</div><div class="text-slate-500 mt-2">──────────</div>` + existingLog.slice(0, 2000);
             }
+        }
+
+        // Función auxiliar para escapar HTML (CORRECCIÓN CLAVE)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         function resetBadges() {
@@ -316,13 +331,17 @@
         }
 
         function testExamples() {
-            // CORRECCIÓN: Uso de comillas dobles externas para evitar conflicto con comillas simples internas
             const examples = [
-                "que te follen"
+                " OR 1=1",
+                "<script>alert(XSS)</script>",
+                "../../../etc/passwd",
+                "admin@proton.me",
+                "SELECT * FROM users"
             ];
             let i = 0;
             const interval = setInterval(() => {
                 if (i < examples.length) {
+                    // CORRECCIÓN: Set value con caracteres escapados para evitar errores de sintaxis
                     document.getElementById('validationInput').value = examples[i];
                     analyzeInput();
                     i++;
@@ -359,10 +378,9 @@
 
             const entropy = Math.round(length * Math.log2(charsetSize || 1));
             const combinations = Math.pow(charsetSize || 1, length);
-            const attemptsPerSecond = 10000000000; // 10 mil millones
+            const attemptsPerSecond = 10000000000;
             const secondsToCrack = combinations / attemptsPerSecond;
 
-            // Calcular tiempo legible
             let timeString = '';
             if (secondsToCrack < 1) timeString = '< 1 segundo';
             else if (secondsToCrack < 60) timeString = Math.round(secondsToCrack) + ' seg';
@@ -372,7 +390,6 @@
             else if (secondsToCrack < 3153600000) timeString = Math.round(secondsToCrack / 31536000) + ' años';
             else timeString = 'milenios+';
 
-            // Determinar fuerza
             let strength = 0, color = '#334155';
             if (entropy < 28) { strength = 1; color = '#ef4444'; }
             else if (entropy < 36) { strength = 2; color = '#f97316'; }
@@ -380,7 +397,6 @@
             else if (entropy < 80) { strength = 4; color = '#84cc16'; }
             else { strength = 5; color = '#22c55e'; }
 
-            // Mostrar resultados
             document.getElementById('passLength').innerText = length;
             document.getElementById('entropy').innerText = entropy;
             document.getElementById('crackTime').innerText = timeString;
@@ -392,7 +408,6 @@
             document.getElementById('strengthBar').style.width = `${strength * 20}%`;
             document.getElementById('strengthBar').style.backgroundColor = color;
 
-            // Features
             const features = [];
             if (length >= 12) features.push('✅ Longitud adecuada (≥12)');
             else features.push('❌ Añadir más caracteres (mínimo 12)');
@@ -403,10 +418,9 @@
             if (entropy >= 60) features.push('✅ Entropía segura'); else features.push('❌ Aumentar entropía');
 
             document.getElementById('passFeatures').innerHTML = features.map(f => 
-                `<div class="${f.startsWith('✅') ? 'text-green-400' : 'text-red-400'}">${f}</div>`
+                `<div class="${f.startsWith('✅') ? 'text-green-400' : 'text-red-400'}">${escapeHtml(f)}</div>`
             ).join('');
 
-            // Status badge
             status.innerHTML = strength >= 3 ? '✅ Contraseña Segura' : '⚠️ Mejorar Contraseña';
             status.className = `text-xs px-2 rounded ${strength >= 3 ? 'text-green-400 bg-green-900' : 'text-yellow-400 bg-yellow-900'}`;
         }
@@ -440,7 +454,6 @@
             document.getElementById('passwordInput').value = password;
             calculatePasswordStrength();
             
-            // Mostrar temporalmente
             setTimeout(() => {
                 document.getElementById('passwordInput').type = 'text';
                 setTimeout(() => {
@@ -449,7 +462,6 @@
             }, 100);
         }
 
-        // Inicializar
         window.onload = function() {
             switchSection('sec7');
         };
