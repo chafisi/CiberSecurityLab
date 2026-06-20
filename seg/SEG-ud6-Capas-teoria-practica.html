@@ -826,4 +826,133 @@ Aquí tienes el **código completo final** del archivo `ud6-teorica-practica.htm
                             <div class="text-3xl bg-indigo-100 w-12 h-12 flex justify-center items-center rounded-full">🔧</div>
                             <div>
                                 <h4 class="font-bold text-slate-800 text-lg">3. Despliegue y Hardening</h4>
-                                <span class="
+                                <span class="text-xs font-bold text-indigo-500">Fase de Implementación</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-3" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">
+                        Configurar dispositivos de red con configuración segura por defecto. Deshabilitar servicios innecesarios, actualizar firmwares, aplicar listas de control (ACLs), y configurar firewalls/walls con reglas mínimas necesarias.
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <!-- Paso 4 -->
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-purple-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-4')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-purple-100 w-12 h-12 flex justify-center items-center rounded-full">🚦</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">4. Configuración de Políticas de Seguridad</h4>
+                                <span class="text-xs font-bold text-purple-500">Fase de Política</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-4" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">
+                        Establecer políticas de firewall, reglas de NAT, ACLs en routers, configuraciones TLS obligatorias, WAF rules, y políticas de autenticación (MFA, 802.1X). Documentar todos los cambios.
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <!-- Paso 5 -->
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-green-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-5')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-green-100 w-12 h-12 flex justify-center items-center rounded-full">📊</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">5. Monitorización y Auditoría Continua</h4>
+                                <span class="text-xs font-bold text-green-500">Fase Operativa</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-5" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">
+                        Implementar SIEM para correlación de eventos, configurar logs centralizados, activar alertas proactivas, realizar auditorías periódicas de configuración, y monitorizar tráfico cifrado/des cifrado para detectar anomalías.
+                    </div>
+                </div>
+
+                <div class="text-center text-slate-300 text-2xl font-bold py-1">⬇</div>
+
+                <!-- Paso 6 -->
+                <div class="bg-white rounded-xl shadow-sm border-l-8 border-yellow-500 overflow-hidden group cursor-pointer" onclick="toggleE2E('e2e-6')">
+                    <div class="p-5 flex justify-between items-center hover:bg-slate-50 transition">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-yellow-100 w-12 h-12 flex justify-center items-center rounded-full">🎯</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-lg">6. Respuesta a Incidentes y Mejora</h4>
+                                <span class="text-xs font-bold text-yellow-500">Fase de Mejora Continua</span>
+                            </div>
+                        </div>
+                        <span class="text-slate-400">▼</span>
+                    </div>
+                    <div id="e2e-6" class="hidden p-5 border-t border-slate-100 bg-slate-50 text-sm text-slate-700">
+                        Tener plan de respuesta a incidentes documentado. Analizar brechas (como Equifax) para mejorar procesos. Actualizar parches según SLA crítico (<7 días), realizar pentests periódicos, y iterar sobre mejoras de arquitectura basadas en lessons learned.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Resetear botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                // Restaurar colores específicos si no están activos
+                if(btn.id === 'btn-sec4' && sectionId !== 'sec4') btn.classList.add('text-violet-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-cyan-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            // Activar botón actual
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-violet-400', 'text-cyan-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            // Scroll al top
+            document.getElementById('mainContent').scrollTop = 0;
+            
+            // Cerrar sidebar en móvil
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Toggle E2E Flow
+        function toggleE2E(stepId) {
+            const element = document.getElementById(stepId);
+            element.classList.toggle('hidden');
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec1');
+        };
+    </script>
+</body>
+</html>

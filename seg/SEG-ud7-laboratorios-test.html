@@ -331,7 +331,7 @@
         }
 
         function testExamples() {
-            const examples = ["OR 1=1","<script>alert(XSS)</script>","admin@proton.me","SELECT * FROM users"];
+            const examples = ["OR 1=1","admin@proton.me","SELECT * FROM users"];
             let i = 0;
             const interval = setInterval(() => {
                 if (i < examples.length) {
