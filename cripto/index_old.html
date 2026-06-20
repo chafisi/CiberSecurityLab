@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CiberMaster - Índice del Curso</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones y utilidades base */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Sidebar Móvil Responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        .scroll-mt-10 { scroll-margin-top: 2.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-slate-900 text-white p-2 rounded-lg shadow-lg flex items-center gap-2">
+        <span>☰</span> Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">Dashboard Principal</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-6 custom-scrollbar">
+            <ul class="space-y-2 px-4">
+                <li><a href="#cripto" onclick="closeSidebarMobile()" class="block w-full text-left px-4 py-2 hover:bg-slate-800 rounded transition border-l-4 border-violet-500 text-white bg-slate-800">🔐 Criptografía</a></li>
+                <li><a href="#blockchain" onclick="closeSidebarMobile()" class="block w-full text-left px-4 py-2 hover:bg-slate-800 rounded transition border-l-4 border-transparent">🔗 Blockchain</a></li>
+                <li><a href="#analytics" onclick="closeSidebarMobile()" class="block w-full text-left px-4 py-2 hover:bg-slate-800 rounded transition border-l-4 border-transparent">📊 Learning Analytics</a></li>
+                <li class="pt-4 mt-4 border-t border-slate-800"><a href="#talleres" onclick="closeSidebarMobile()" class="block w-full text-left px-4 py-2 hover:bg-slate-800 rounded transition text-yellow-500 font-bold">🛠️ Otras Herramientas</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <header class="mb-10 fade-in" style="animation-delay: 0s;">
+            <h2 class="text-4xl font-black text-slate-800 mb-2">Índice de la Asignatura</h2>
+            <p class="text-slate-500">Selecciona el módulo para acceder a los contenidos teóricos y evaluaciones.</p>
+        </header>
+
+        <section id="cripto" class="mb-14 scroll-mt-10">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b-2 border-violet-500 pb-2 inline-flex items-center gap-2">
+                <span class="text-3xl">🔐</span> Bloque I: Criptografía
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 fade-in" style="animation-delay: 0.1s;">
+                <a href="CR-unidad1_matematica.html" class="block group">
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-violet-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">🧮</div>
+                        <div class="text-4xl mb-4">🧮</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 1: Matemáticas</h3>
+                        <p class="text-slate-600 text-sm flex-1">Matemática Discreta, Primalidad (Miller-Rabin), Divisibilidad y Algoritmo de Euclides Extendido.</p>
+                        <div class="mt-6 flex items-center text-violet-600 font-bold text-sm uppercase tracking-wide">
+                            Acceder a la unidad <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="CR-unidad2_criptografia.html" class="block group">
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-blue-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">🔐</div>
+                        <div class="text-4xl mb-4">🔐</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 2: Cripto Base</h3>
+                        <p class="text-slate-600 text-sm flex-1">Fundamentos de Criptografía, evolución clásica a moderna, cifrado simétrico (DES) y conceptos de RSA.</p>
+                        <div class="mt-6 flex items-center text-blue-600 font-bold text-sm uppercase tracking-wide">
+                            Acceder a la unidad <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="CR-unidad3_criptografia2.html" class="block group">
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-cyan-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">🛡️</div>
+                        <div class="text-4xl mb-4">🛡️</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 3: Hash y AES</h3>
+                        <p class="text-slate-600 text-sm flex-1">Funciones Hash (SHA-256), Integridad, Efecto Avalancha y Encriptación Simétrica Avanzada (AES).</p>
+                        <div class="mt-6 flex items-center text-cyan-600 font-bold text-sm uppercase tracking-wide">
+                            Acceder a la unidad <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="CR-unidad4_criptografia.html" class="block group">
+                    <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all h-full flex flex-col border-t-4 border-t-slate-400 group-hover:border-t-yellow-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-6 opacity-10 text-6xl group-hover:scale-110 transition-transform">✍️</div>
+                        <div class="text-4xl mb-4">✍️</div>
+                        <h3 class="text-2xl font-bold text-slate-800 mb-2">Unidad 4: Asimétrica</h3>
+                        <p class="text-slate-600 text-sm flex-1">Criptografía Asimétrica, Firmas Digitales, Autenticidad, PKI, Certificados y No Repudio.</p>
+                        <div class="mt-6 flex items-center text-yellow-600 font-bold text-sm uppercase tracking-wide">
+                            Acceder a la unidad <span class="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="blockchain" class="mb-14 scroll-mt-10">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b-2 border-cyan-500 pb-2 inline-flex items-center gap-2">
+                <span class="text-3xl">🔗</span> Bloque II: Blockchain
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in" style="animation-delay: 0.2s;">
+                <a href="CR-unidad5_blockchain2.html" class="block group">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-cyan-500 transition-all h-full flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">🌐</div>
+                        <div>
+                            <span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Unidad 5</span>
+                            <h4 class="text-xl font-bold text-slate-800 mt-3 mb-2">Introducción a Blockchain</h4>
+                            <p class="text-sm text-slate-600">Fundamentos de la cadena de bloques, descentralización e inmutabilidad.</p>
+                        </div>
+                        <div class="mt-4 text-cyan-600 font-bold text-sm flex items-center gap-1">
+                            Acceder al módulo <span class="group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="CR-unidad6_blockchain.html" class="block group">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-cyan-500 transition-all h-full flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">⚙️</div>
+                        <div>
+                            <span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Unidad 6</span>
+                            <h4 class="text-xl font-bold text-slate-800 mt-3 mb-2">Aplicaciones y Smart Contracts</h4>
+                            <p class="text-sm text-slate-600">De Bitcoin a Ethereum. Casos de uso en logística, salud y votaciones.</p>
+                        </div>
+                        <div class="mt-4 text-cyan-600 font-bold text-sm flex items-center gap-1">
+                            Acceder al módulo <span class="group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="CR-unidad7_blockchain2.html" class="block group">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-cyan-500 transition-all h-full flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">⛏️</div>
+                        <div>
+                            <span class="bg-cyan-100 text-cyan-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Unidad 7</span>
+                            <h4 class="text-xl font-bold text-slate-800 mt-3 mb-2">Minería y Consenso</h4>
+                            <p class="text-sm text-slate-600">Proof of Work (PoW) vs Proof of Stake (PoS), Hash Rate y Escalabilidad.</p>
+                        </div>
+                        <div class="mt-4 text-cyan-600 font-bold text-sm flex items-center gap-1">
+                            Acceder al módulo <span class="group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="analytics" class="mb-14 scroll-mt-10">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b-2 border-teal-500 pb-2 inline-flex items-center gap-2">
+                <span class="text-3xl">📊</span> Bloque III: LA - Learning Analytics
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 fade-in" style="animation-delay: 0.3s;">
+                <a href="CR-unidad8_blockchain.html" class="block group">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-teal-500 transition-all h-full flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl group-hover:scale-110 transition-transform">📈</div>
+                        <div>
+                            <span class="bg-teal-100 text-teal-700 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Unidad 8</span>
+                            <h4 class="text-xl font-bold text-slate-800 mt-3 mb-2">Minería de Datos (KDD)</h4>
+                            <p class="text-sm text-slate-600">Descubrimiento de conocimiento, Clustering (K-Means) y Regresión Lineal.</p>
+                        </div>
+                        <div class="mt-4 text-teal-600 font-bold text-sm flex items-center gap-1">
+                            Acceder al módulo <span class="group-hover:translate-x-2 transition-transform">→</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <section id="talleres" class="mb-14 scroll-mt-10">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 border-b-2 border-slate-300 pb-2 inline-flex items-center gap-2">
+                <span class="text-3xl">🛠️</span> Documentación y Talleres Globales
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 fade-in" style="animation-delay: 0.4s;">
+                <a href="CR-Casos-Practicos.html" class="block group">
+                    <div class="bg-slate-900 p-6 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-6 border border-slate-700 hover:border-violet-500 h-full">
+                        <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-3xl shadow-inner border border-slate-700 shrink-0">
+                            📚
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Compendio de Casos</h4>
+                            <p class="text-sm text-slate-400 mt-1">Todos los ejercicios prácticos y esquemas de resolución listos para imprimir o consultar.</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="criptografia_master_labs.html" class="block group">
+                    <div class="bg-slate-900 p-6 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-6 border border-slate-700 hover:border-cyan-400 h-full">
+                        <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center text-3xl shadow-inner border border-slate-700 shrink-0">
+                            🧪
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white">Master Labs (Simuladores)</h4>
+                            <p class="text-sm text-slate-400 mt-1">Entornos interactivos para algoritmos (RSA, AES, SHA-256) y matemáticas criptográficas.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Lógica de Navegación del Dashboard
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function closeSidebarMobile() {
+            if (window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#sidebar nav ul li a');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= (sectionTop - 100)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('border-violet-500', 'text-white', 'bg-slate-800');
+                    link.classList.add('border-transparent', 'text-slate-300');
+                    
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('border-violet-500', 'text-white', 'bg-slate-800');
+                        link.classList.remove('border-transparent', 'text-slate-300');
+                    }
+                    
+                    if(link.getAttribute('href') === '#talleres') {
+                        link.classList.remove('text-slate-300', 'text-white', 'border-violet-500', 'bg-slate-800');
+                        link.classList.add('text-yellow-500', 'border-transparent');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
