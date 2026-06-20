@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 5 - Laboratorios y Test | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Drag & Drop Styles */
+        .draggable { cursor: grab; touch-action: none; user-select: none; }
+        .draggable:active { cursor: grabbing; }
+        .drop-zone { transition: all 0.3s ease; border-style: dashed; }
+        .drop-zone.drag-over { border-style: solid; border-color: #8b5cf6; background-color: #f3e8ff; }
+        .drop-zone.correct { border-color: #22c55e; background-color: #dcfce7; }
+        .drop-zone.wrong { border-color: #ef4444; background-color: #fee2e2; }
+        
+        /* Test Styles */
+        .quiz-question { transition: all 0.3s; }
+        .quiz-question.correct-answer { border-left-color: #22c55e; background-color: #f0fdf4; }
+        .quiz-question.wrong-answer { border-left-color: #ef4444; background-color: #fef2f2; }
+        
+        /* Alerta Cards */
+        .alert-card { cursor: pointer; transition: transform 0.2s; }
+        .alert-card:hover { transform: scale(1.02); }
+        .alert-card.selected { ring: 2px; ring-offset: 2px; ring-color: #8b5cf6; bg-slate-700; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-violet-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-950 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-900 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-violet-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 5: Labs & Test</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-yellow-500 bg-slate-800 text-white tab-btn text-yellow-400 font-bold">7. Laboratorios Interactivos</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">🎯 TEST EVALUACIÓN</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Información</li>
+                <li class="nav-item"><button onclick="window.location.href='ud5-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400">← Volver a Teoría</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-900 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 7: LABORATORIOS INTERACTIVOS -->
+        <section id="sec7" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-yellow-500 pb-2 inline-block">7. Laboratorios Interactivos</h2>
+            <p class="text-slate-400 mb-8">Practica identificando tipos de IDS/IPS y analizando falsos positivos/negativos.</p>
+            
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 flex-1 pb-10">
+                
+                <!-- LABORATORIO 1: Clasificador de IDS/IPS -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container h-[750px]">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-cyan-400 font-bold">🧩 Laboratorio 1: Identificador IDS/IPS</span>
+                        <span id="lab1Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">0/5 correctos</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-cyan-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Arrastra cada situación descrita al tipo correcto de sistema (NIDS, HIDS, IPS) o método de detección.</p>
+                        </div>
+
+                        <!-- Zona de Situciones (Draggables) -->
+                        <div class="mb-4 bg-slate-900 p-3 rounded-lg min-h-[100px] border-2 border-slate-700">
+                            <h5 class="text-xs font-bold text-slate-400 mb-2 uppercase">Situaciones Disponibles</h5>
+                            <div class="flex flex-wrap gap-2" id="scenariosContainer">
+                                <div draggable="true" data-type="nids" class="draggable bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Analiza tráfico entrante en firewall</div>
+                                <div draggable="true" data-type="hids" class="draggable bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Monitorea cambios en archivos /etc/passwd</div>
+                                <div draggable="true" data-type="ips" class="draggable bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Bloquea automáticamente un ataque SYN Flood</div>
+                                <div draggable="true" data-type="sig" class="draggable bg-orange-600 hover:bg-orange-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Compara firma hash con base de datos conocida</div>
+                                <div draggable="true" data-type="anom" class="draggable bg-teal-600 hover:bg-teal-500 text-white px-3 py-1 rounded text-sm shadow cursor-move">Detecta pico inusual de tráfico a las 3AM</div>
+                            </div>
+                        </div>
+
+                        <!-- Zona de Categorías (Drop Zones) -->
+                        <div class="flex-1 overflow-y-auto custom-scrollbar space-y-2">
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-cat="nids">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-blue-300">NIDS (Red)</span>
+                                    <span class="text-[10px] text-slate-400">Visibilidad Global</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-cat="hids">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-purple-300">HIDS (Host)</span>
+                                    <span class="text-[10px] text-slate-400">Granularidad Profunda</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-cat="ips">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-red-300">IPS (Prevención)</span>
+                                    <span class="text-[10px] text-slate-400">Bloqueo Activo</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                            <div class="drop-zone bg-slate-700 p-2 rounded border-2 border-slate-600" data-cat="methods">
+                                <div class="flex justify-between items-center mb-1">
+                                    <span class="text-xs font-bold text-green-300">Métodos</span>
+                                    <span class="text-[10px] text-slate-400">Firmas vs Anomalías</span>
+                                </div>
+                                <div class="min-h-[24px] drop-area"></div>
+                            </div>
+                        </div>
+
+                        <button onclick="resetLab1()" class="mt-4 w-full bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition">Reiniciar Lab</button>
+                    </div>
+                </div>
+
+                <!-- LABORATORIO 2: Analizador de Alertas (Falsos Positivos/Negativos) -->
+                <div class="bg-slate-800 rounded-xl shadow-2xl border border-violet-500 overflow-hidden flex flex-col font-sans relative text-slate-200 lab-container">
+                    <div class="bg-slate-900 px-4 py-3 border-b border-slate-700 flex justify-between items-center shrink-0">
+                        <span class="text-sm text-emerald-400 font-bold">🚨 Laboratorio 2: Gestor de Alertas SOC</span>
+                        <span id="lab2Status" class="text-xs text-yellow-400 bg-slate-800 px-2 rounded">0/5 analizadas</span>
+                    </div>
+                    
+                    <div class="p-4 flex flex-col h-full">
+                        <div class="mb-4 bg-slate-700 p-3 rounded-lg">
+                            <h4 class="font-bold text-emerald-400 mb-2 text-sm">Objetivo:</h4>
+                            <p class="text-xs text-slate-300">Lee la alerta generada por el IDS y clasifícala como "Real Attack", "False Positive" o "False Negative".</p>
+                        </div>
+
+                        <div id="alertDisplay" class="flex-1 bg-slate-900 rounded-lg p-4 border border-slate-700 overflow-y-auto custom-scrollbar mb-4 relative">
+                            <!-- Alerta Dinámica -->
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-xs font-bold text-slate-400 uppercase">Alerta ID: #<span id="alertId">001</span></span>
+                                <span class="text-xs px-2 py-1 rounded bg-slate-700 text-slate-300" id="alertSource">NIDS</span>
+                            </div>
+                            <h5 class="font-bold text-white text-lg mb-2" id="alertTitle">Tráfico HTTP anómalo detectado</h5>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-4" id="alertBody">Se ha detectado un paquete con payload que coincide exactamente con la firma CVE-2023-XXXX de inyección SQL en el parámetro 'id' de la URL.</p>
+                            
+                            <div class="border-t border-slate-700 pt-3">
+                                <p class="text-xs text-slate-500 italic mb-2">Contexto adicional:</p>
+                                <p class="text-xs text-slate-400" id="alertContext">El paquete fue originado desde la IP interna 192.168.1.50 hacia el servidor web de desarrollo, durante una prueba de QA programada.</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <button onclick="classifyAlert('attack')" class="bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg font-bold text-sm transition">⚔️ Real Attack</button>
+                            <button onclick="classifyAlert('fp')" class="bg-yellow-600 hover:bg-yellow-500 text-white py-2 rounded-lg font-bold text-sm transition">❌ False Positive</button>
+                            <button onclick="classifyAlert('fn')" class="bg-slate-600 hover:bg-slate-500 text-white py-2 rounded-lg font-bold text-sm transition">💀 False Negative</button>
+                        </div>
+
+                        <div id="feedbackMsg" class="hidden p-3 rounded text-sm font-bold text-center"></div>
+
+                        <div class="mt-4 p-3 bg-slate-800 rounded text-xs text-slate-400">
+                            <strong>Nota técnica:</strong> Los falsos positivos saturan al SOC. Los falsos negativos son los más peligrosos ya que dejan pasar ataques reales.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: TEST EVALUACIÓN -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-white mb-2 border-b-2 border-green-500 pb-2 inline-block">8. Test de Evaluación Oficial</h2>
+            <p class="text-slate-400 mb-6">Demuestra tus conocimientos sobre Sistemas de Detección de Intrusiones. 20 preguntas basadas en el temario oficial.</p>
+            
+            <form id="quizForm" class="space-y-6 max-w-4xl mx-auto">
+                
+                <!-- PREGUNTA 1 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">1. ¿Qué es un IDS?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="A"> A) Un firewall perimetral avanzado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="B"> B) Un sistema que detecta actividades sospechosas en la red o en el host.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="C"> C) Un protocolo de autenticación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q1" value="D"> D) Un analizador de logs sin alertas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 2 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">2. ¿Cuál es una función clave del SIEM?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="A"> A) Cifrar comunicaciones.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="B"> B) Correlacionar eventos de múltiples sistemas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="C"> C) Realizar copias de seguridad.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q2" value="D"> D) Configurar VLANs.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 3 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">3. ¿Dónde se instala un IDS de red (NIDS)?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="A"> A) En cada dispositivo final.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="B"> B) En un punto estratégico de la red para analizar tráfico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="C"> C) En un servidor aislado sin conexión.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q3" value="D"> D) En un firewall personal.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 4 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">4. Zeek (antes Bro) se caracteriza por:</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="A"> A) Ser exclusivamente un proxy.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="B"> B) Hacer análisis profundo y contextual de tráfico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="C"> C) Ser un firewall tradicional.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q4" value="D"> D) No generar logs.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 5 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">5. ¿Qué caracteriza a un IDS de host (HIDS)?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="A"> A) Analiza solo tráfico de Internet.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="B"> B) Monitorea actividad interna del sistema, archivos y logs.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="C"> C) Requiere VLANs dedicadas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q5" value="D"> D) No detecta cambios en archivos críticos.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 6 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">6. ¿Cuál es la ventaja de un IDS basado en anomalías?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="A"> A) Requiere reglas de ataque conocidas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="B"> B) Detecta desviaciones respecto al comportamiento normal.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="C"> C) Funciona sin aprendizaje previo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q6" value="D"> D) Solo supervisa tráfico HTTP.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 7 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">7. ¿Qué es un honeypot?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="A"> A) Un servidor oculto para auditorías.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="B"> B) Un sistema diseñado para atraer y estudiar atacantes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="C"> C) Un firewall de aplicación.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q7" value="D"> D) Un IDS basado en firmas.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 8 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-white mb-3">8. ¿Qué es un falso positivo en un IDS?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="A"> A) Un ataque real que no se detecta.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="B"> B) Un ataque bloqueado correctamente.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="C"> C) Una alerta errónea sobre tráfico legítimo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q8" value="D"> D) Un registro eliminado.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 9 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">9. ¿Qué es SPAN/port mirroring?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="A"> A) Tecnología para ocultar dispositivos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="B"> B) Técnica para duplicar tráfico hacia un IDS.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="C"> C) Método de cifrado TLS.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q9" value="D"> D) Protocolo de autenticación.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 10 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">10. ¿Qué ventaja aporta un honeynet frente a un honeypot?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="A"> A) Requiere menos recursos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="B"> B) Simula múltiples sistemas y escenarios de ataque.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="C"> C) No necesita monitoreo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q10" value="D"> D) Funciona sin red.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 11 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="A">
+                    <h4 class="font-bold text-white mb-3">11. ¿Qué analiza un IDS basado en firmas?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="A"> A) Patrones conocidos de ataques.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="B"> B) Comportamientos anómalos desconocidos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="C"> C) Solo tráfico cifrado.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q11" value="D"> D) Parámetros de hardware.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 12 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">12. ¿Qué es un IDS híbrido?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="A"> A) Un HIDS instalado dentro de un NIDS.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="B"> B) Combina análisis por firmas y por anomalías.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="C"> C) Solo detecta ataques físicos.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q12" value="D"> D) Exclusivo para IoT.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 13 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">13. ¿Qué hace Suricata?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="A"> A) Es un antivirus corporativo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="B"> B) IDS/IPS de alto rendimiento multinúcleo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="C"> C) Gestor de contraseñas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q13" value="D"> D) Sistema de copias de seguridad.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 14 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">14. ¿Qué es un falso negativo?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="A"> A) Una alerta excesiva.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="B"> B) Un ataque real que el IDS no detecta.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="C"> C) Un fallo del firewall.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q14" value="D"> D) Un error en el cifrado.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 15 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="C">
+                    <h4 class="font-bold text-white mb-3">15. ¿Qué diferencia a un IDS de un IPS?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="A"> A) El IDS bloquea automáticamente ataques, el IPS solo alerta.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="B"> B) El IDS analiza tráfico; el IPS únicamente lo cifra.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="C"> C) El IDS alerta; el IPS puede bloquear en tiempo real.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q15" value="D"> D) Ambos funcionan únicamente en capa física.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 16 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">16. ¿Cuál es un límite habitual de un IDS tradicional?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="A"> A) Detecta demasiado rápido.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="B"> B) No puede bloquear tráfico por sí mismo.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="C"> C) No genera logs.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q16" value="D"> D) Requiere redes 10Gbps.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 17 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">17. Ejemplo típico de IDS de host.</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="A"> A) Suricata.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="B"> B) OSSEC.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="C"> C) HAProxy.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q17" value="D"> D) Bro/Zeek.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 18 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">18. ¿Qué es un análisis de comportamiento (UBA/UEBA)?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="A"> A) Identifica ataques comparando solo IPs.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="B"> B) Analiza patrones de usuario y detecta anomalías.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="C"> C) Verifica integridad de hashes.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q18" value="D"> D) Cifra logs en tiempo real.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 19 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">19. Ejemplo típico de IDS de red.</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="A"> A) OSSEC.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="B"> B) Snort.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="C"> C) ClamAV.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q19" value="D"> D) Wireshark.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- PREGUNTA 20 -->
+                <div class="bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-700 quiz-question" data-correct="B">
+                    <h4 class="font-bold text-white mb-3">20. ¿Qué técnica ayuda a reducir falsos positivos?</h4>
+                    <div class="space-y-2 text-sm text-slate-300">
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="A"> A) Eliminar alertas bajas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="B"> B) Ajustar reglas y normalizar tráfico.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="C"> C) Desactivar firmas.</label>
+                        <label class="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-slate-700"><input type="radio" name="q20" value="D"> D) Permitir Any–Any.</label>
+                    </div>
+                    <div class="quiz-feedback hidden mt-3 p-3 rounded text-sm font-bold"></div>
+                </div>
+
+                <!-- Botones de Control -->
+                <div class="sticky bottom-4 bg-slate-800 p-4 rounded-xl flex flex-col md:flex-row gap-4 items-center justify-between border border-slate-700 shadow-2xl z-20 mt-8">
+                    <div id="quizResultText" class="text-white font-bold text-lg hidden"></div>
+                    <div class="flex w-full md:w-auto gap-4">
+                        <button type="button" onclick="resetQuiz()" class="w-full md:w-auto bg-slate-600 hover:bg-slate-500 text-white px-6 py-2 rounded font-bold transition">Reiniciar Test</button>
+                        <button type="button" onclick="evaluateQuiz()" class="w-full md:w-auto bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded font-bold transition shadow-lg">Verificar Respuestas</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-yellow-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-yellow-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+            
+            // Init Lab 1 if entering section 7
+            if(sectionId === 'sec7') initLab1();
+        }
+
+        // ==========================================
+        // LABORATORIO 1: DRAG AND DROP IDS/IPS
+        // ==========================================
+        let draggedItem = null;
+        let lab1Score = 0;
+
+        function initLab1() {
+            // Reiniciar estado visual
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.classList.remove('correct', 'wrong', 'drag-over');
+                zone.querySelector('.drop-area').innerHTML = '';
+            });
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.style.display = 'inline-block';
+                item.classList.remove('opacity-50');
+            });
+            lab1Score = 0;
+            updateLab1Status();
+            
+            // Re-asignar listeners
+            document.querySelectorAll('.draggable').forEach(item => {
+                item.addEventListener('dragstart', dragStart);
+                item.addEventListener('touchstart', touchStart, {passive: false});
+                item.addEventListener('touchmove', touchMove, {passive: false});
+                item.addEventListener('touchend', touchEnd);
+            });
+
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.addEventListener('dragover', dragOver);
+                zone.addEventListener('dragleave', dragLeave);
+                zone.addEventListener('drop', drop);
+            });
+        }
+
+        function dragStart(e) {
+            draggedItem = e.target;
+            e.dataTransfer.setData('text/plain', e.target.dataset.type);
+            setTimeout(() => e.target.style.opacity = '0.5', 0);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            
+            const cat = e.currentTarget.dataset.cat;
+            const type = e.dataTransfer.getData('text/plain');
+            const dropArea = e.currentTarget.querySelector('.drop-area');
+
+            if (isValidMatch(cat, type)) {
+                handleCorrectDrop(type, dropArea, e.currentTarget);
+            } else {
+                handleWrongDrop(e.currentTarget);
+            }
+        }
+
+        function isValidMatch(cat, type) {
+            if (cat === 'nids' && type === 'nids') return true;
+            if (cat === 'hids' && type === 'hids') return true;
+            if (cat === 'ips' && type === 'ips') return true;
+            if (cat === 'methods' && (type === 'sig' || type === 'anom')) return true;
+            return false;
+        }
+
+        function handleCorrectDrop(type, dropArea, zoneElement) {
+            const newItem = document.createElement('div');
+            newItem.className = 'bg-green-600 text-white text-xs px-2 py-1 rounded mb-1 animate-fade-in';
+            newItem.textContent = zoneElement.querySelector('span:first-child').textContent.split(':')[0];
+            dropArea.appendChild(newItem);
+            
+            const original = Array.from(document.querySelectorAll('.draggable')).find(el => el.dataset.type === type);
+            if(original) {
+                original.style.display = 'none';
+            }
+            
+            zoneElement.classList.add('correct');
+            lab1Score++;
+            
+            if(lab1Score === 5) {
+                document.getElementById('lab1Status').className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+                document.getElementById('lab1Status').innerText = '¡Completado! 5/5';
+            } else {
+                updateLab1Status();
+            }
+        }
+
+        function handleWrongDrop(zoneElement) {
+            zoneElement.classList.add('wrong');
+            setTimeout(() => zoneElement.classList.remove('wrong'), 1000);
+            if(navigator.vibrate) navigator.vibrate(200);
+        }
+
+        function updateLab1Status() {
+            const status = document.getElementById('lab1Status');
+            status.innerText = `${lab1Score}/5 correctos`;
+            status.className = 'text-xs text-yellow-400 bg-slate-800 px-2 rounded';
+        }
+
+        function resetLab1() {
+            initLab1();
+        }
+
+        // Soporte Touch básico
+        let touchStartX, touchStartY;
+        function touchStart(e) {
+            e.preventDefault();
+            draggedItem = e.target;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }
+        function touchMove(e) { e.preventDefault(); }
+        function touchEnd(e) {
+            const touch = e.changedTouches[0];
+            const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+            const dropZone = elementBelow ? elementBelow.closest('.drop-zone') : null;
+            
+            if(dropZone) {
+                const cat = dropZone.dataset.cat;
+                const type = draggedItem.dataset.type;
+                const dropArea = dropZone.querySelector('.drop-area');
+                
+                if(isValidMatch(cat, type)) {
+                    handleCorrectDrop(type, dropArea, dropZone);
+                } else {
+                    handleWrongDrop(dropZone);
+                }
+            }
+            draggedItem.style.opacity = '1';
+            draggedItem = null;
+        }
+
+        // ==========================================
+        // LABORATORIO 2: ANALISIS DE ALERTAS
+        // ==========================================
+        const alerts = [
+            {
+                id: "001",
+                title: "SQL Injection Detected",
+                body: "Payload 'SELECT * FROM users WHERE 1=1--' detected in GET parameter.",
+                context: "Origin: 192.168.1.105 (Internal Dev Server). Time: 14:00 (Lunch break). User: Admin dev test.",
+                answer: "fp",
+                msg: "✅ Falso Positivo: Es una prueba de QA planificada en un servidor interno."
+            },
+            {
+                id: "002",
+                title: "Brute Force SSH Attempt",
+                body: "Multiple failed login attempts (50+) from external IP within 1 minute.",
+                context: "Origin: 203.0.113.5 (External Unknown). Target: Production DB Server.",
+                answer: "attack",
+                msg: "⚔️ Ataque Real: Comportamiento de fuerza bruta externo y sospechoso."
+            },
+            {
+                id: "003",
+                title: "Traffic Spike Detected",
+                body: "Bandwidth usage exceeded 90% capacity for 10 minutes.",
+                context: "Reason: Planned backup full dump scheduled for Sunday night by IT admin.",
+                answer: "fp",
+                msg: "✅ Falso Positivo: Actividad legítima programada (Backup)."
+            },
+            {
+                id: "004",
+                title: "Malware Signature Match",
+                body: "File 'ransomware.exe' hash matches known threat database.",
+                context: "Detected on endpoint 192.168.1.50. File was quarantined by EDR immediately.",
+                answer: "attack",
+                msg: "⚔️ Ataque Real: Firma de malware confirmada en endpoint."
+            },
+            {
+                id: "005",
+                title: "Data Exfiltration Suspicion",
+                body: "Large outbound transfer of encrypted data via DNS tunneling protocol.",
+                context: "No previous logs show this behavior for this host. Host recently infected with trojan (unnoticed).",
+                answer: "fn", // Truco: La alerta dice "Suspicion" pero el contexto confirma que es real y no fue detectado antes claramente
+                // Corrección: Para el ejercicio, si la alerta se genera es porque se detectó. Vamos a cambiar el contexto para que sea FN real (no alertó cuando debió).
+                // Reajuste para FN real:
+                context: "El IDS NO alertó, pero el forense descubrió después que este tráfico fue exfiltración masiva. (Simulación: Si el IDS fallara aquí...)",
+                // Mejor caso para el LAB: El usuario debe marcar "Fn" si la alerta NO apareció pero hubo ataque.
+                // Vamos a simplificar: La alerta aparece pero el usuario debe decidir.
+                // Caso FN: "Tráfico HTTPS saliente anómalo". Contexto: "Es un Ransomware nuevo (Zero-day)".
+                // El IDS NO alerta por falta de firma. Pero el usuario sabe que hubo ataque.
+                // Para que funcione el botón, vamos a hacer que el usuario seleccione la respuesta correcta para un escenario dado.
+                // Re-definición:
+                isFnCase: true,
+                answer: "fn",
+                msg: "💀 Falso Negativo: El tráfico era malicioso (Ransomware Zero-day) pero el IDS no lo detectó (sin firma)."
+            }
+        ];
+        
+        // Reset case 5 to be clear for the lab
+        alerts[4] = {
+            id: "005",
+            title: "New Ransomware Traffic",
+            body: "Outbound traffic to suspicious IP using non-standard port 4444. Payload appears obfuscated.",
+            context: "This is a Zero-day attack variant not yet in the signature database. The IDS did NOT trigger an alert automatically.",
+            answer: "fn",
+            msg: "💀 Falso Negativo: El ataque ocurrió (Ransomware Zero-day) pero el IDS no generó alerta (falla de detección)."
+        };
+
+        let currentAlertIndex = 0;
+
+        function loadAlert(index) {
+            if (index >= alerts.length) {
+                document.getElementById('lab2Status').className = 'text-xs text-green-400 bg-green-900 px-2 rounded';
+                document.getElementById('lab2Status').innerText = '¡Finalizado!';
+                document.getElementById('alertDisplay').innerHTML = '<div class="flex flex-col items-center justify-center h-full text-center"><span class="text-4xl mb-4">🏆</span><h3 class="text-xl font-bold text-white">Todos los casos analizados</h3><p class="text-slate-400 text-sm mt-2">Has completado el laboratorio de análisis SOC.</p></div>';
+                document.querySelector('#lab2 button').classList.add('hidden');
+                return;
+            }
+
+            const alert = alerts[index];
+            document.getElementById('alertId').innerText = alert.id;
+            document.getElementById('alertSource').innerText = alert.body.includes("Endpoint") ? "HIDS" : "NIDS";
+            document.getElementById('alertTitle').innerText = alert.title;
+            document.getElementById('alertBody').innerText = alert.body;
+            document.getElementById('alertContext').innerText = alert.context;
+            document.getElementById('feedbackMsg').classList.add('hidden');
+        }
+
+        function classifyAlert(userAnswer) {
+            const alert = alerts[currentAlertIndex];
+            const feedback = document.getElementById('feedbackMsg');
+            feedback.classList.remove('hidden', 'bg-green-800', 'bg-red-800', 'text-green-200', 'text-red-200');
+            
+            if (userAnswer === alert.answer) {
+                feedback.classList.add('bg-green-800', 'text-green-200');
+                feedback.innerHTML = `✅ Correcto: ${alert.msg}`;
+                setTimeout(() => {
+                    currentAlertIndex++;
+                    loadAlert(currentAlertIndex);
+                }, 2000);
+            } else {
+                feedback.classList.add('bg-red-800', 'text-red-200');
+                feedback.innerHTML = `❌ Incorrecto. Intenta de nuevo.`;
+            }
+            updateLab2Status();
+        }
+
+        function updateLab2Status() {
+            document.getElementById('lab2Status').innerText = `${currentAlertIndex + 1}/${alerts.length} analizadas`;
+        }
+
+        // ==========================================
+        // LÓGICA TEST EVALUACIÓN
+        // ==========================================
+        function evaluateQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach((q, index) => {
+                const correctAns = q.getAttribute('data-correct');
+                const selected = q.querySelector(`input[name="q${index+1}"]:checked`);
+                const feedbackBox = q.querySelector('.quiz-feedback');
+                
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                feedbackBox.classList.remove('hidden', 'bg-green-800', 'text-green-200', 'bg-red-800', 'text-red-200');
+                
+                if (selected) {
+                    if (selected.value === correctAns) {
+                        score++;
+                        q.classList.add('border-green-500', 'bg-green-900/20');
+                        feedbackBox.classList.add('bg-green-800', 'text-green-200');
+                        feedbackBox.innerHTML = `✅ ¡Correcto!`;
+                    } else {
+                        q.classList.add('border-red-500', 'bg-red-900/20');
+                        feedbackBox.classList.add('bg-red-800', 'text-red-200');
+                        feedbackBox.innerHTML = `❌ Incorrecto. La opción correcta era la <strong>${correctAns}</strong>.`;
+                    }
+                } else {
+                    q.classList.add('border-red-500');
+                    feedbackBox.classList.add('bg-red-800', 'text-red-200');
+                    feedbackBox.innerHTML = `⚠️ No respondida. La correcta era <strong>${correctAns}</strong>.`;
+                }
+            });
+
+            const resDiv = document.getElementById('quizResultText');
+            resDiv.classList.remove('hidden', 'text-green-400', 'text-red-400', 'text-yellow-400');
+            const percent = (score / questions.length) * 100;
+            
+            if(percent >= 80) {
+                resDiv.classList.add('text-green-400');
+                resDiv.innerHTML = `🏆 TEST SUPERADO (${score}/${questions.length}) - ${percent}%`;
+                alert("¡Enhorabuena! Has superado el test (≥80%).");
+            } else if(percent >= 50) {
+                resDiv.classList.add('text-yellow-400');
+                resDiv.innerHTML = `⚠️ APROBADO JUSTO (${score}/${questions.length}) - ${percent}%. Necesitas 80% para excelencia.`;
+            } else {
+                resDiv.classList.add('text-red-400');
+                resDiv.innerHTML = `❌ NO SUPERADO (${score}/${questions.length}) - ${percent}%. Revisa el temario.`;
+                alert("No has superado el test. Necesitas al menos un 80%.");
+            }
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizForm').reset();
+            document.querySelectorAll('.quiz-question').forEach(q => {
+                q.classList.remove('border-green-500', 'bg-green-900/20', 'border-red-500', 'bg-red-900/20');
+                q.classList.add('border-slate-700');
+                q.querySelector('.quiz-feedback').classList.add('hidden');
+            });
+            document.getElementById('quizResultText').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec7');
+        };
+    </script>
+</body>
+</html>
