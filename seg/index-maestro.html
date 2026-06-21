@@ -1655,11 +1655,401 @@
             </div>
         </section>
 
+                <!-- ========================================== -->
+        <!-- UNIDAD 6: SEGURIDAD EN CAPAS DE COMUNICACIÓN (COMPLETA) -->
+        <!-- ========================================== -->
+        <section id="ud06" class="unit-section hidden fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">6. Seguridad en las capas de comunicación</h2>
+                <p class="text-slate-600 mt-2">Protocolos seguros (IPsec, TLS), túneles VPN y protección ante ataques DoS/DDoS.</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 11: IPSEC / TÚNELES VPN (VISIBLE) -->
+            <div id="ud06-case1" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 11</span>
+                                <h3 class="text-2xl font-bold mb-2">Implementación de Túneles IPsec para Conexiones Site-to-Site</h3>
+                                <p class="opacity-90">Establecimiento de conexión segura entre dos sedes corporativas utilizando protocolo IPsec en modo Túnel, garantizando confidencialidad e integridad del tráfico inter-sede.</p>
+                            </div>
+                            <i class="ph ph-network text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Negociar fase 1 (IKE) y fase 2 (ESP/AH), Autenticar peer mediante PSK o Certificados, Cifrar tráfico de red completa, Verificar integridad de paquetes.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Throughput del túnel > 500 Mbps, Overhead de cifrado ≤ 5%, Tiempo reconexión tras fallo < 30s, MTU ajustado para evitar fragmentación.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">IKEv2 (RFC 7296), ESP con AES-256-GCM, SHA-2 para integridad, DH Grupo 14/19, Perfect Forward Secrecy (PFS), NAT-T para detrás de firewalls.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">RGPD (Tráfico transfronterizo), ENS (Comunicaciones seguras), Ley de protección de infraestructuras críticas, Normativa de exportación criptográfica.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO TEXTUAL CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Establecimiento del Túnel IPsec</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner space-y-3">
+                                
+                                <div class="flex items-start">
+                                    <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-1 rounded text-sm mr-3">Actor</span>
+                                    <p class="text-sm text-slate-700"><strong>Sede A ↔ Sede B:</strong> Dos routers/firewalls corporativos que necesitan conectar redes privadas (192.168.1.0/24 ↔ 10.0.0.0/24).</p>
+                                </div>
+                                
+                                <hr class="border-slate-200">
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-start">
+                                        <span class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded text-sm mr-3">1️⃣ Fase 1 - IKE SA</span>
+                                        <p class="text-sm text-slate-700"><strong>Negociación:</strong> Los peers intercambian mensajes IKE para autenticarse (PSK/Certificado) y acordar algoritmos de cifrado.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">2️⃣ Fase 1 - ISAKMP SA</span>
+                                        <p class="text-sm text-slate-700"><strong>Canal Seguro:</strong> Se establece un canal cifrado protegido para negociar los parámetros de IPsec (la "tubería de gestión").</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-sm mr-3">3️⃣ Fase 2 - Quick Mode</span>
+                                        <p class="text-sm text-slate-700"><strong>Acuerdo IPsec:</strong> Negocian los parámetros del túnel real: qué tráfico proteger (proxy IDs), qué cifrar (AES-256), cuánto tiempo (lifetime).</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">4️⃣ Fase 2 - SA Creada</span>
+                                        <p class="text-sm text-slate-700"><strong>Túnel Activo:** Se crean las Security Associations (SA) bidireccionales. Todo el tráfico entre subnets ahora se encapsula y cifra.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded text-sm mr-3">5️⃣ Keepalive & Rekey</span>
+                                        <p class="text-sm text-slate-700"><strong>Mantenimiento:</strong> Dead Peer Detection (DPD) verifica conectividad periódica. PFS renueva claves antes de expirar sin exponer datos pasados.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 bg-purple-50 border-l-4 border-purple-400 text-xs text-purple-800">
+                                    💡 <em>Clave:</em> El Modo Túnel encapsula TODO el paquete IP original (cabecera + datos), ideal para site-to-site. El Modo Transporte solo cifra payload (host-to-host).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Estado Túnel</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">UP</div>
+                                    <div class="text-xs text-green-600 mt-1">Conectado desde hace 15 días</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Throughput</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">420 Mbps</div>
+                                    <div class="text-xs text-blue-600 mt-1">Capacidad: 500 Mbps</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Cifrado</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">AES-256</div>
+                                    <div class="text-xs text-purple-600 mt-1">Integridad: SHA-384</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Latencia Agregada</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">+2ms</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 95%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 12: PROTECCIÓN DOS/DDOS (VISIBLE) -->
+            <div id="ud06-case2" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-rose-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 12</span>
+                                <h3 class="text-2xl font-bold mb-2">Protección contra Ataques Denegación de Servicio (DoS/DDoS)</h3>
+                                <p class="opacity-90">Implementación de mecanismos de mitigación de ataques DDoS a nivel de red (Capa 3/4) contra servidores web públicos, usando rate limiting y sinks de limpieza.</p>
+                            </div>
+                            <i class="ph ph-warning-octagon text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Detectar picos de tráfico anormales, Aplicar rate limiting por IP, Filtrar SYN Flood, Challenge HTTP (CAPTCHA) para bots, Redirigir tráfico limpio (Scrubbing Center).</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Tiempo detección ataque < 30s, Capacidad mitigación ≥ 1 Tbps, Falsos positivos ≤ 0.1%, Disponibilidad servicio durante ataque ≥ 99.5%.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">BGP FlowSpec, Anycast DNS, Blackholing/Null Routing, SYN Cookies, TCP Proxy, WAF integrado, Servicios Cloud (Cloudflare/Akamai AWS Shield).</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">Ley de Servicios de la Sociedad de la Información (responsabilidad intermedios), RGPD (si afecta datos personales), NIS2 (protección operadores esenciales), SLA contractual.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO TEXTUAL CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Mitigación DDoS</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner space-y-3">
+                                
+                                <div class="flex items-start">
+                                    <span class="bg-rose-100 text-rose-700 font-bold px-2 py-1 rounded text-sm mr-3">Actor</span>
+                                    <p class="text-sm text-slate-700"><strong>Botnet Atacante:</strong> 10k dispositivos IoT lanzan un ataque volumétrico SYN Flood hacia el servidor web objetivo (IP Pública).</p>
+                                </div>
+                                
+                                <hr class="border-slate-200">
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-start">
+                                        <span class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded text-sm mr-3">1️⃣ Detección</span>
+                                        <p class="text-sm text-slate-700"><strong>Sistema IDS/SCRUBBING:</strong> Detecta anomalía súbita: 50 Gbps de tráfico entrante (vs 10 Mbps normales). Umbral superado.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">2️⃣ Alarma</span>
+                                        <p class="text-sm text-slate-700"><strong>Alerta Automática:</strong> Se activa procedimiento de emergencia DDoS. Notificación al equipo SOC y proveedor de mitigación.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-sm mr-3">3️⃣ Redirección</span>
+                                        <p class="text-sm text-slate-700"><strong>BGP Update / DNS:</strong> Se desvía todo el tráfico de la IP atacada a través del centro de limpieza (Scrubbing Center) del proveedor CDN.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">4️⃣ Limpieza</span>
+                                        <p class="text-sm text-slate-700"><strong>Filtrado Inteligente:</strong> El Scrubbing analiza paquetes: identifica síntesis maliciosos, aplica SYN Cookies, bloquea IPs sospechosas, deja pasar tráfico legítimo.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded text-sm mr-3">5️⃣ Retorno</span>
+                                        <p class="text-sm text-slate-700"><strong>Tráfico Limpio:</strong> Solo el tráfico validado llega a tu servidor. El ataque es absorbido y disipado en la red del CDN. Usuario final no nota impacto.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 bg-red-50 border-l-4 border-red-400 text-xs text-red-800">
+                                    ⚠️ <em>Clave:</em> La protección DDoS debe estar fuera de tu red (on-cloud/on-prem híbrido). Si atacas desde dentro, el atacante satura tu enlace ANTES de llegar al filtro.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Ataques Bloqueados</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">15</div>
+                                    <div class="text-xs text-green-600 mt-1">Este mes (todos mitigados)</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Volumen Máx.</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">250 Gbps</div>
+                                    <div class="text-xs text-blue-600 mt-1">Mitigado exitosamente</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Mitigación</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">28s</div>
+                                    <div class="text-xs text-purple-600 mt-1">Objetivo: < 60s</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Disponible Durante</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">99.8%</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 99.8%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud06-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-indigo-800 to-rose-800 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Patrón Global</span>
+                            <h3 class="text-xl font-bold mb-2">🌐 Respuestas Tipo: Comunicaciones Seguras</h3>
+                            <p class="text-slate-300 text-sm">Guía rápida para protocolos de capa de red, VPNs y protección de disponibilidad.</p>
+                        </div>
+                        <i class="ph ph-global text-5xl opacity-80"></i>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3 flex items-center"><i class="ph ph-sparkle mr-2"></i>Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>IPsec Componentes:</strong> AH (Autenticación) vs ESP (Encapsulado + Confidencialidad). Normalmente usamos solo ESP.</li>
+                            <li><strong>Modos IPsec:</strong> Túnel (todo el paquete) para VPNs Site-to-Site; Transporte (solo payload) para Host-to-Host.</li>
+                            <li><strong>DDoS Tipos:</strong> Volumétricos (saturan ancho de banda), Protocolo (agotan recursos como tabla conexiones), Aplicación (capa 7, más sutiles).</li>
+                            <li><strong>Availability = CIA:</strong> Sin disponibilidad, no hay seguridad. DDoS ataca directamente este pilar.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3 flex items-center"><i class="ph ph-gear mr-2"></i>Protocolos y Tecnologías</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>VPN Tipos:</strong> Site-to-Site (IPsec), Remote Access (OpenVPN, WireGuard, SSL-VPN), MPLS L2/L3 VPN.</li>
+                            <li><strong>TLS/SSL:</strong> Capa 6/7. HTTPS usa TLS para proteger HTTP. Versiones: TLS 1.2 (mínimo), TLS 1.3 (recomendado).</li>
+                            <li><strong>Anycast:</strong> Mismo IP en múltiples lugares. Mejora rendimiento y mitiga DDoS (trafgo se dispersa geográficamente).</li>
+                            <li><strong>Honeynets:</strong> Redes cebada para estudiar tráfico malicioso sin riesgo a producción.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-rose-50 p-6 rounded-xl border border-rose-200 mb-6">
+                    <h4 class="font-bold text-rose-800 mb-3 flex items-center"><i class="ph ph-shield-alert mr-2"></i>Comparativa: Modos de Operación IPsec</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-rose-100 text-rose-900 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2">Aspecto</th>
+                                    <th class="px-3 py-2">Modo Túnel</th>
+                                    <th class="px-3 py-2">Modo Transporte</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-rose-100">
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">¿Qué se cifra?</td>
+                                    <td class="px-3 py-2">Todo el paquete IP original</td>
+                                    <td class="px-3 py-2">Solo payload (datos)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Cabecera Nueva</td>
+                                    <td class="px-3 py-2">Sí (IP externo + IPsec + IP interno)</td>
+                                    <td class="px-3 py-2">No (solo añade cabecera IPsec)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">NAT Traversal</td>
+                                    <td class="px-3 py-2">Complicado, requiere NAT-T</td>
+                                    <td class="px-3 py-2">Incompatible usualmente</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Uso Típico</td>
+                                    <td class="px-3 py-2">Router ↔ Router (Site-to-Site)</td>
+                                    <td class="px-3 py-2">Host ↔ Host (ej: servidor a servidor)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-cyan-50 p-6 rounded-xl border border-cyan-200 mb-6">
+                    <h4 class="font-bold text-cyan-800 mb-3 flex items-center"><i class="ph ph-lightning mr-2"></i>Tipos de Ataques DDoS y Mitigación</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-cyan-100 text-cyan-900 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2">Tipo Ataque</th>
+                                    <th class="px-3 py-2">Capa OSI</th>
+                                    <th class="px-3 py-2">Característica</th>
+                                    <th class="px-3 py-2">Mitigación Recomendada</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-cyan-100">
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">SYN Flood</td>
+                                    <td class="px-3 py-2">Transporte (4)</td>
+                                    <td class="px-3 py-2">Exhaustión tabla de conexiones</td>
+                                    <td class="px-3 py-2">SYN Cookies, Rate Limiting</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">UDP Amplification</td>
+                                    <td class="px-3 py-2">Red/Transporte (3-4)</td>
+                                    <td class="px-3 py-2">Reflexión (DNS/NTP/SSDP)</td>
+                                    <td class="px-3 py-2">BGP Blackholing, Proveedor Cloud</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">HTTP Flood</td>
+                                    <td class="px-3 py-2">Aplicación (7)</td>
+                                    <td class="px-3 py-2">Saturación servidor web</td>
+                                    <td class="px-3 py-2">WAF, CAPTCHA Challenge, CDN</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Slowloris</td>
+                                    <td class="px-3 py-2">Aplicación (7)</td>
+                                    <td class="px-3 py-2">Mantiene conexiones semi-abiertas</td>
+                                    <td class="px-3 py-2">Timeout corto, Limitar concurrencia</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                    <h4 class="font-bold text-amber-800 mb-3 flex items-center"><i class="ph ph-warning mr-2"></i>Preguntas Frecuentes de Examen</h4>
+                    <ol class="list-decimal list-inside text-sm text-amber-900 space-y-1">
+                        <li><strong>"¿Por qué IPsec necesita IKE?"</strong>: Para negociar de forma segura los parámetros de cifrado y autenticar los peers antes de enviar datos sensibles.</li>
+                        <li><strong>"¿Qué es Perfect Forward Secrecy (PFS)?"</strong>: Garantiza que si se compromete una clave privada a largo plazo, las sesiones pasadas no puedan ser descifradas (nuevas claves por sesión).</li>
+                        <li><strong>"¿La NAT rompe IPsec?"</strong>: Sí, porque IPsec autentifica la cabecera IP original (incluyendo direcciones). Por eso necesitamos NAT-T (UDP encapsulation en puerto 4500).</li>
+                        <li><strong>"¿Cuál es la diferencia entre ataque DoS y DDoS?"</strong>: DoS = Denegación de Servicio (origen único). DDoS = Distribuido (múltiples fuentes coordinadas, ej: botnet). Más difícil de mitigar.</li>
+                        <li><strong>"¿Por qué usar Anycast para DDoS?"</strong>: Porque dispersa el tráfico atacante geográficamente. El atacante no puede saturar un punto único de entrada; su capacidad se reparte.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
             <i class="ph ph-info text-4xl mb-2"></i>
             <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
         </div>
-        
+
+        <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
+            <i class="ph ph-info text-4xl mb-2"></i>
+            <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
+        </div>
+
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
             <i class="ph ph-info text-4xl mb-2"></i>
             <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
