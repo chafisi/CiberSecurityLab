@@ -1339,7 +1339,7 @@
             </div>
         </section>
 
-        <!-- SECCIÓN UNIDAD 5-->
+        <!-- SECCIÓN UNIDAD 6-->
         <section id="ud06" class="unit-section fade-in block">
             <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
                 <h2 class="text-3xl font-bold text-slate-800">UD 6: Seguridad en Capas de Comunicación</h2>
@@ -1593,61 +1593,240 @@
                 </div>
             </div>
 
+        </section>
+
+        !-- SECCIÓN UNIDAD 7-->
+        <section id="ud07" class="unit-section fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">UD 7: Seguridad en Capa de Aplicación</h2>
+                <p class="text-slate-600 mt-2">Capa aplicación</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 13-14:  -->
             <!-- PATRÓN GLOBAL (PLANTILLA) -->
-            <div id="ud04-patron-global" class="pattern-container fade-in">
-                <div class="bg-gradient-to-r from-orange-800 to-orange-950 text-white rounded-xl shadow-lg p-6 mb-6">
-                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global: Seguridad en Capa de Aplicación</h3>
-                    <p class="text-orange-200 text-sm">Plantilla de análisis para cualquier servicio, API o plataforma web. Úsala como estructura mental ante preguntas generales de diseño seguro.</p>
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud13-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">⏳ Caso Práctico 13: Brecha por certificados caducados (Microsoft Teams)</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual para la gestión del ciclo de vida de certificados digitales, matriz de requisitos de automatización PKI, flujo de renovación ACME y panel de validación proactiva (SSL Labs, monitoreo de caducidad).</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-xl border border-orange-200 shadow-sm">
-                        <h4 class="font-bold text-orange-900 mb-4 flex items-center gap-2">💡 Puntos Clave (Palabras Mágicas)</h4>
-                        <ul class="space-y-2 text-sm text-slate-700">
-                            <li class="flex items-start gap-2"><span>✅</span> <strong>Input Validation:</strong> "Nunca confíes en el usuario". Saneamiento en el servidor.</li>
-                            <li class="flex items-start gap-2"><span>✅</span> <strong>Least Privilege:</strong> El proceso/usuario solo accede a lo estrictamente necesario.</li>
-                            <li class="flex items-start gap-2"><span>✅</span> <strong>Defense in Depth:</strong> WAF + Código Seguro + Autenticación.</li>
-                            <li class="flex items-start gap-2"><span>✅</span> <strong>Session Management:</strong> Rotación, expiración y flags <em>Secure/HttpOnly</em>.</li>
-                            <li class="flex items-start gap-2"><span>✅</span> <strong>Fail-Safe Defaults:</strong> Si el control de seguridad falla, el acceso se deniega por defecto.</li>
-                            <li class="flex items-start gap-2"><span>✅</span> <strong>Logging & Monitoring:</strong> Auditoría de acciones (no solo errores).</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-white p-6 rounded-xl border border-orange-200 shadow-sm">
-                        <h4 class="font-bold text-orange-900 mb-4 flex items-center gap-2">⚙️ Ejemplos de Tecnologías Base</h4>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
-                                <span class="text-lg">🛡️</span>
-                                <div>
-                                    <strong class="text-xs block text-slate-500 uppercase">Protección</strong>
-                                    <span class="text-sm font-semibold">WAF (Web Application Firewall)</span>
-                                </div>
+                    
+                    <!-- 1. REQUISITOS (Matriz) -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <!-- Funcionales -->
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Supervisar expiración continua</li>
+                                    <li>Renovación automática (ACME)</li>
+                                    <li>Alertas proactivas</li>
+                                    <li>Inventario actualizado</li>
+                                </ul>
                             </div>
-                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
-                                <span class="text-lg">🔑</span>
-                                <div>
-                                    <strong class="text-xs block text-slate-500 uppercase">Identidad</strong>
-                                    <span class="text-sm font-semibold">MFA / FIDO2 / WebAuthn</span>
-                                </div>
+                            <!-- No Funcionales -->
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Alta disponibilidad</li>
+                                    <li>Baja latencia TLS</li>
+                                    <li>Minimizar intervención manual</li>
+                                    <li>Confiabilidad del proceso</li>
+                                </ul>
                             </div>
-                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
-                                <span class="text-lg">🚀</span>
-                                <div>
-                                    <strong class="text-xs block text-slate-500 uppercase">DevSecOps</strong>
-                                    <span class="text-sm font-semibold">SAST/DAST + CI/CD Pipelines</span>
-                                </div>
+                            <!-- Técnicos -->
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Integración Let's Encrypt/ACME/PKI</li>
+                                    <li>Inventario centralizado (claves/certs)</li>
+                                    <li>Validación cadena confianza</li>
+                                    <li>Pipelines de sustitución segura</li>
+                                </ul>
                             </div>
-                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
-                                <span class="text-lg">📜</span>
-                                <div>
-                                    <strong class="text-xs block text-slate-500 uppercase">Gestión Certs</strong>
-                                    <span class="text-sm font-semibold">ACME (Let's Encrypt) / PKI</span>
-                                </div>
+                            <!-- Legales -->
+                            <div class="bg-orange-50 border border-orange-200 p-3 rounded-lg">
+                                <div class="font-bold text-orange-800 mb-2 flex items-center gap-1"><span>🟠</span> LEGALES/NORM.</div>
+                                <ul class="list-disc pl-4 text-orange-900 space-y-1">
+                                    <li>Cumplimiento RGPD (tránsito)</li>
+                                    <li>PCI-DSS (pagos)</li>
+                                    <li>Ley ENS (Gobierno)</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
+
+                    <!-- 2. CASO DE USO (Diagrama de Flujo) -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Renovación Automática</h4>
+                        <div class="flex flex-col space-y-2 text-xs font-mono">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Sistema gestión certs (ACME / PKI)</span>
+                            </div>
+                            
+                            <!-- Flujo Principal -->
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">⏳ Detecta expiración cercana</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🚀 Inicia proceso renovación (ACME)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🔑 CA emite nuevo certificado</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🔄 Servidor sustituye sin interrupción</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Registro y validación</div>
+                            
+                            <!-- Excepciones -->
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Error validación</span> <span>➔ 🔔 Notificación admin</span></div>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Fallo despliegue</span> <span>➔ 🔙 Rollback certificado previo</span></div>
+                                <div class="flex justify-between items-center"><span>⚠️ Incompatibilidad</span> <span>➔ 🔧 Ajuste configuración TLS</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. VALIDACIÓN (Dashboard de Métricas) -->
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <!-- Check 1: Escaneos -->
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔍</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Escaneos TLS</span>
+                                <span class="text-[11px] text-slate-500 mt-1">SSL Labs, testssl.sh, Qualys</span>
+                            </div>
+
+                            <!-- Check 2: Alertas -->
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔔</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Alertas Automáticas</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Antelación 30/14/7 días</span>
+                            </div>
+
+                            <!-- Check 3: Failover -->
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚡</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Failover / Rolling</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Validación de sustitución sin interrupción</span>
+                            </div>
+
+                            <!-- Check 4: Auditorías -->
+                            <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📋</span>
+                                <span class="text-xs font-bold text-purple-800 uppercase">Auditoría Inventario</span>
+                                <span class="text-[11px] text-purple-600 mt-1">Detectar caducados o duplicados</span>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
+            <div id="ud14-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🔑 Caso Práctico 14: Uso exitoso de MFA robusto (Google / FIDO2)</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual para la implementación de autenticación resistente al phishing, matriz de requisitos FIDO2/WebAuthn, flujo de autenticación criptográfica y panel de validación de robustez contra ataques MITM.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Autenticación FIDO2/WebAuthn</li>
+                                    <li>Registro seguro de dispositivos</li>
+                                    <li>Detección de intentos sospechosos</li>
+                                    <li>Recuperación segura ante pérdida</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Alta usabilidad (Productividad)</li>
+                                    <li>Latencia mínima de validación</li>
+                                    <li>Compatibilidad cross-platform</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>WebAuthn + FIDO2</li>
+                                    <li>Gestión/rotación de llaves corporativas</li>
+                                    <li>Autenticación adaptativa</li>
+                                    <li>Resistencia a Phishing/Replay/AitM</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Autenticación FIDO2</h4>
+                        
+                        <div class="flex flex-col space-y-2 text-xs font-mono mt-4">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Usuario corporativo</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">🖥️ Usuario accede al portal</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">👤 Introduce password/PIN (Factor 1)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🔑 Sistema solicita llave FIDO2</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">👆 Usuario toca llave (Challenge único)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Sistema valida firma criptográfica</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Llave extraviada</span> <span>➔ 🔄 Recuperación reforzada / Revocación</span></div>
+                                <div class="flex justify-between items-center"><span>❌ Dispositivo no registrado</span> <span>➔ 📝 Registro vía MFA previo</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🎣</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Simulacro Phishing</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Comprobar resistencia real del sistema</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🌐</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Test WebAuthn</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Compatibilidad (Browser, SO, dispositivos)</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📋</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Auditoría Logs</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Detección de intentos anómalos o MITM</span>
+                            </div>
+
+                            <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">💪</span>
+                                <span class="text-xs font-bold text-purple-800 uppercase">Test Robustez</span>
+                                <span class="text-[11px] text-purple-600 mt-1">Pérdida, cambio, rotación de llaves</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </section>
 
         <!-- -->
