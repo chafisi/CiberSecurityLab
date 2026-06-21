@@ -379,7 +379,7 @@
             </div>
         </section>
 
-        <!-- SECCIÓN UNIDAD 2-->
+        <!-- SECCIÓN UNIDAD 2 y 3-->
         <section id="ud02" class="unit-section fade-in block">
             <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
                 <h2 class="text-3xl font-bold text-slate-800">Criptografía y Seguridad - 3 - Cifrado y autenticación en la práctica</h2>
@@ -607,8 +607,8 @@
             </div>
         </section>
 
-        <!-- SECCIÓN UNIDAD 4-->
-        <section id="ud04" class="unit-section fade-in block">
+        <!-- SECCIÓN UNIDAD 5-->
+        <section id="ud05" class="unit-section fade-in block">
             <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
                 <h2 class="text-3xl font-bold text-slate-800">Análisis completo del despliegue NGFW y soluciones técnicas oficiales.</h2>
                 <p class="text-slate-600 mt-2">Firewalls</p>
@@ -1073,6 +1073,239 @@
                 </div>
             </div>
         </section>
+
+        <!-- SECCIÓN UNIDAD 5-->
+        <section id="ud02" class="unit-section fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">Criptografía y Seguridad - 3 - Cifrado y autenticación en la práctica</h2>
+                <p class="text-slate-600 mt-2"></p>
+            </div>
+
+            <!-- CASO PRÁCTICO 9: CP09: Uso de ARP spoofing en una red corporativa Enunciado -->
+            <div id="ud09-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🕵️‍♂️ Caso Práctico 9: ARP Spoofing en Red Corporativa</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual de la protección contra suplantación en Capa 2, matriz de requisitos (DAI/Snooping), flujo de detección de envenenamiento ARP y panel de validación de seguridad de red.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Verificar integridad ARP (DAI)</li>
+                                    <li>Monitorización continua IP-MAC</li>
+                                    <li>Alertas ante inconsistencias</li>
+                                    <li>Registro de eventos</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Baja latencia (wire-speed)</li>
+                                    <li>Alta disponibilidad (Switching)</li>
+                                    <li>Bajo impacto operacional</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>DAI y DHCP Snooping en switches</li>
+                                    <li>ARP estático en críticos</li>
+                                    <li>Integración log-SIEM (correlación)</li>
+                                    <li>Configuración puertos Confianza/No Confianza</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Bloqueo de Ataque ARP</h4>
+                        <div class="flex flex-col space-y-2 text-xs font-mono">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Switch Gestionable (DAI)</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">📡 Switch inspecciona mensajes ARP</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🔍 Detecta inconsistencia IP-MAC / Violoación</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-red-100 border border-red-300 p-2 rounded text-center font-bold text-red-800">🛑 Bloqueo automático y registro</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🚨 Alerta enviada al SOC</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">👤 Administrador aísla atacante</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center"><span>🤔 Asociación inusual</span> <span>➔ 📝 Revisión manual</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚔️</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Test Inyección</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Uso de ettercap/arpspoof (Red Teaming)</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📋</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Auditoría Tablas</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Revisión cíclica de caches ARP (Switches/Hosts)</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🧪</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Lab Controlado</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Validación de DAI/Snooping en escenarios</span>
+                            </div>
+
+                            <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🧩</span>
+                                <span class="text-xs font-bold text-purple-800 uppercase">Correlación SIEM</span>
+                                <span class="text-[11px] text-purple-600 mt-1">Análisis automatizado para detección temprana</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 10: CP10: Implementación de IPSec entre sedes -->
+            <!-- El código completo que te di antes va aquí, sin la clase 'hidden' -->
+            
+            <div id="ud10-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🌍 Caso Práctico 10: Implementación de IPSec entre sedes</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual para la implementación de VPNs robustas, matriz de requisitos, flujo de establecimiento de túnel IKEv2 y panel de validación de tráfico cifrado.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Establecer túneles seguros (Sedes)</li>
+                                    <li>Confidencialidad, Integridad, Autenticación</li>
+                                    <li>Renegociación IKEv2 automática</li>
+                                    <li>Reconexión ante caídas</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Baja latencia (Tiempo real)</li>
+                                    <li>Alta disponibilidad (Failover/Redundancia)</li>
+                                    <li>Escalabilidad y Estabilidad</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Interoperabilidad multivendor (Cisco/Fortinet/Juniper)</li>
+                                    <li>Algoritmos AES-GCM / SHA-2 + PFS</li>
+                                    <li>Gestión centralizada de claves y políticas</li>
+                                    <li>Monitoreo de estado e integración SIEM</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Establecimiento IPSec</h4>
+                        
+                        <div class="flex flex-col space-y-2 text-xs font-mono mt-4">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Gateway VPN de cada sede</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">🤝 IKEv2: Intercambio parámetros seguridad</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🆔 Verificación identidad (Cert/PSK)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🔑 Negociación algoritmos y SA (Fase 1/2)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">🔒 Tráfico cifrado circula por túnel</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Fallo autenticación</span> <span>➔ 🛑 Rechazo automático</span></div>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Incompatibilidad</span> <span>➔ 💔 Negociación fallida</span></div>
+                                <div class="flex justify-between items-center"><span>⏳ Desincronización</span> <span>➔ 🔄 Reintentos IKEv2</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🧩</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Interoperabilidad</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Test distintos equipos y firmwares</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚡</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Test Failover</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Validar reconexión automática</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔓</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Validación Cifrado</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Análisis de paquetes (Sniffing)</span>
+                            </div>
+
+                            <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📈</span>
+                                <span class="text-xs font-bold text-purple-800 uppercase">Logs y Latencia</span>
+                                <span class="text-[11px] text-purple-600 mt-1">Monitorizar logs y rendimiento bajo carga</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud02-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global de Respuesta: Introducción a la Seguridad</h3>
+                    <p class="text-slate-300 text-sm">Usa esta plantilla para responder a cualquier pregunta general sobre fundamentos de seguridad.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3">💡 Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li><strong>[COMPLETAR LISTA]</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3">⚙️ Ejemplos de Tecnologías Base</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>[COMPLETAR LISTA]</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- -->
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden">
             Selecciona una unidad del menú lateral.
