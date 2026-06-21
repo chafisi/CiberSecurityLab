@@ -689,6 +689,319 @@
             </div>
         </section>
 
+                <!-- ========================================== -->
+        <!-- UNIDAD 3: CIFRADO Y AUTENTICACIÓN EN LA PRÁCTICA (COMPLETA) -->
+        <!-- ========================================== -->
+        <section id="ud03" class="unit-section hidden fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">3. Cifrado y autenticación en la práctica</h2>
+                <p class="text-slate-600 mt-2">Infraestructura de Clave Pública (PKI), certificados digitales y firma electrónica.</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 5: PKI Y AUTORIDADES CA (VISIBLE) -->
+            <div id="ud03-case1" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-emerald-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 05</span>
+                                <h3 class="text-2xl font-bold mb-2">Diseño e Implementación de una PKI Corporativa</h3>
+                                <p class="opacity-90">Una multinacional necesita establecer su propia Autoridad de Certificación (CA) Raíz y subordinada para emitir certificados a empleados y servidores.</p>
+                            </div>
+                            <i class="ph ph-shield-check text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Emitir certificados, Revocar certificados (CRL/OCSP), Validar cadenas de confianza, Gestionar políticas de emisión.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Tiempo emisión < 5s, Disponibilidad CA Raíz 99.99% (offline), Latencia validación OCSP < 200ms, Resiliencia ante ataque DDoS.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">HSM FIPS 140-2 Nivel 3+, Software Microsoft ADCS o EJBCA, Protocolos SCEP/EST, Algoritmos ECDSA P-384, Soporte CRL/OCSP Stapling.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">eIDAS (Reglamento UE nº 910/2014), NIST SP 800-57 (Gestión claves), Política de Certificados (CP) y Prácticas de Emisión (CPS).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Emisión de Certificado</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                    <circle cx="20" cy="100" r="30" fill="#059669" class="flow-node"/>
+                                    <text x="20" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">SOLICITUD CSR</text>
+                                    
+                                    <rect x="100" y="70" width="80" height="60" rx="5" fill="#d97706" class="flow-node"/>
+                                    <text x="140" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">VALIDAR IDENTIDAD</text>
+
+                                    <polygon points="200,70 240,100 200,130" fill="#dc2626" class="flow-node"/>
+                                    <text x="220" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">¿APROBADO?</text>
+
+                                    <rect x="270" y="70" width="80" height="60" rx="5" fill="#06b6d4" class="flow-node"/>
+                                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">FIRMAR + EMITIR</text>
+
+                                    <line x1="50" y1="100" x2="100" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="180" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="240" y1="100" x2="270" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    
+                                    <text x="140" y="90" fill="#64748b" font-size="8">Sí</text>
+                                    <text x="220" y="145" fill="#64748b" font-size="8">No → Rechazar</text>
+                                </svg>
+                                <div class="mt-2 text-xs text-slate-500 italic text-center">Proceso de solicitud y emisión de certificado digital</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Seguridad HSM</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">Nivel 3</div>
+                                    <div class="text-xs text-green-600 mt-1">Claves protegidas físicamente</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Disponibilidad CA</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">99.99%</div>
+                                    <div class="text-xs text-blue-600 mt-1">Raíz Offline + Subordinada Online</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Revocación</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">OCSP Live</div>
+                                    <div class="text-xs text-purple-600 mt-1">Respuesta inmediata</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Conformidad eIDAS</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">100%</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 6: FIRMA ELECTRÓNICA (VISIBLE) -->
+            <div id="ud03-case2" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 06</span>
+                                <h3 class="text-2xl font-bold mb-2">Implementación de Firma Electrónica Avanzada</h3>
+                                <p class="opacity-90">Adopción de firma digital para contratos y facturas electrónicas, garantizando integridad, autenticidad y no repudio con validez legal.</p>
+                            </div>
+                            <i class="ph ph-signature text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Generar huella digital (hash), Aplicar firma con clave privada, Verificar firma y cadena, Archivar sello de tiempo (TSA), Validar revocación al momento.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Latencia firma < 2s (UX), Integridad 100% (cualquier bit change invalida), Retención documentos ≥ 5 años, Compatibilidad multiplataforma.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">Formato PDF/A-3, CMS/PAdES (Advanced Electronic Signatures), RFC 3161 (Timestamping), Certificados Qualified (QES), Algoritmo SHA-256/ECDSA.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">eIDAS Art. 25 (Efecto legal), Ley 6/2020 (España), Reglamento Delegado UE 2016/711, Admisibilidad probatoria en juicio.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUZO) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Firma y Validación</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                    <circle cx="20" cy="100" r="30" fill="#4f46e5" class="flow-node"/>
+                                    <text x="20" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">DOCUMENTO</text>
+                                    
+                                    <rect x="100" y="70" width="80" height="60" rx="5" fill="#ec4899" class="flow-node"/>
+                                    <text x="140" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">HASH + SIGNA</text>
+
+                                    <polygon points="200,70 240,100 200,130" fill="#f59e0b" class="flow-node"/>
+                                    <text x="220" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">¿CERT VÁLIDO?</text>
+
+                                    <rect x="270" y="70" width="80" height="60" rx="5" fill="#10b981" class="flow-node"/>
+                                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">ARCHIVAR + TSA</text>
+
+                                    <line x1="50" y1="100" x2="100" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="180" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="240" y1="100" x2="270" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    
+                                    <text x="140" y="90" fill="#64748b" font-size="8">Sí</text>
+                                    <text x="220" y="145" fill="#64748b" font-size="8">No → Error</text>
+                                </svg>
+                                <div class="mt-2 text-xs text-slate-500 italic text-center">Flujo completo desde documento hasta validación legal</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Tipo Firma</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">QES</div>
+                                    <div class="text-xs text-green-600 mt-1">Signatura Electrónica Cualificada</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Integridad</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">✓ 100%</div>
+                                    <div class="text-xs text-blue-600 mt-1">Hash SHA-256 verificado</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Sello Tiempo</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">✓ TSA</div>
+                                    <div class="text-xs text-purple-600 mt-1">RFC 3161 compliant</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Validez Legal</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">Alta</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud03-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-emerald-800 to-indigo-800 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Patrón Global</span>
+                            <h3 class="text-xl font-bold mb-2">🏛️ Respuestas Tipo: PKI y Firma Digital</h3>
+                            <p class="text-slate-300 text-sm">Guía rápida para preguntas sobre infraestructura de confianza y validez legal.</p>
+                        </div>
+                        <i class="ph ph-seal-check text-5xl opacity-80"></i>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3 flex items-center"><i class="ph ph-sparkle mr-2"></i>Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>Cadena de Confianza:</strong> Raíz (Trust Anchor) → Intermedia → Final (Usuario/Servidor).</li>
+                            <li><strong>Revocación:</strong> Es vital mencionar CRL (Listas) y OCSP (Online) como mecanismos complementarios.</li>
+                            <li><strong>Tipo de Firmas eIDAS:</strong> Simple (baja seguridad), Avanzada (F.A.), Cualificada (F.C., igual a manuscrita).</li>
+                            <li><strong>Sello de Tiempo:</strong> Necesario para probar que la firma existía en un momento X (anti-replay y validez futura).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3 flex items-center"><i class="ph ph-gear mr-2"></i>Componentes Técnicos Clave</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>HSM:</strong> Hardware Security Module, obligatorio para proteger la clave de la CA Raíz.</li>
+                            <li><strong>X.509 v3:</strong> Formato estándar de certificado (Subject, Issuer, Serial, Validity, Extensions/KU/EKU).</li>
+                            <li><strong>EKU (Extended Key Usage):</strong> Define uso (Servidor Web, Cliente, Código, Email).</li>
+                            <li><strong>OID:</strong> Identificadores únicos para algoritmos y tipos de certificación.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-200 mb-6">
+                    <h4 class="font-bold text-indigo-800 mb-3 flex items-center"><i class="ph ph-scale mr-2"></i>Niveles de Firma según eIDAS</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-indigo-100 text-indigo-900 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2">Nivel</th>
+                                    <th class="px-3 py-2">Identificación</th>
+                                    <th class="px-3 py-2">Características</th>
+                                    <th class="px-3 py-2">Ejemplo</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-indigo-100">
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Simple</td>
+                                    <td class="px-3 py-2">Débil o baja</td>
+                                    <td class="px-3 py-2">Sin garantía alta de origen</td>
+                                    <td class="px-3 py-2">Firma scaneada, checkbox</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Avanzada (FEA)</td>
+                                    <td class="px-3 py-2">Única identificación</td>
+                                    <td class="px-3 py-2">Control exclusivo firma, vinculado datos</td>
+                                    <td class="px-3 py-2">Certificado cualificado no presencial</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Cualificada (FEC)</td>
+                                    <td class="px-3 py-2">Muy Alta</td>
+                                    <td class="px-3 py-2">Dispositivo cualificado (token/biométrico)</td>
+                                    <td class="px-3 py-2">DNIe3+ / Cl@ve PIN con Token</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                    <h4 class="font-bold text-amber-800 mb-3 flex items-center"><i class="ph ph-warning mr-2"></i>Preguntas Frecuentes en Exámenes</h4>
+                    <ol class="list-decimal list-inside text-sm text-amber-900 space-y-1">
+                        <li><strong>"¿Quién emite el certificado?"</strong>: Una Autoridad de Certificación (CA) confiable.</li>
+                        <li><strong>"¿Qué pasa si se filtra la clave privada?"</strong>: Debe revocarse inmediatamente mediante OCSP/CRL.</li>
+                        <li><strong>"¿Es lo mismo cifrar que firmar?"</strong>: No. Cifrar usa clave pública del receptor (confidencialidad). Firmar usa clave privada del remitente (integridad/no repudio).</li>
+                        <li><strong>"¿Por qué la CA Raíz suele estar offline?"</strong>: Para minimizar el riesgo de compromiso. Solo enciende para emitir intermedias.</li>
+                        <li><strong>"¿Qué es el 'Chain of Trust'?"</strong>: La validación recursiva desde el certificado final hasta la raíz de confianza.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
+            <i class="ph ph-info text-4xl mb-2"></i>
+            <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
+        </div>
+
         <!-- Las unidades 3-12 seguirán el mismo patrón que ud01 y ud02 -->
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
             <i class="ph ph-info text-4xl mb-2"></i>
