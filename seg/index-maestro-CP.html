@@ -50,8 +50,8 @@
                 <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category">1. Introducción</li>
                 <li class="nav-item"><button onclick="switchUnit('ud01')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Introducción a la seguridad</button></li>
                 <!-- Submenú visible (solo decorativo ahora, ya que todo se ve) -->
-                <li class="submenu-item pl-8 text-xs text-slate-500">• CP01: Ransomware</li>
-                <li class="submenu-item pl-8 text-xs text-slate-500">• CP02: Fuga de Datos</li>
+                <li class="submenu-item pl-8 text-xs text-slate-500">• CP01: Ransomware en un hospital comarcal</li>
+                <li class="submenu-item pl-8 text-xs text-slate-500">• CP02: Fuga de datos por credenciales reutilizadas</li>
                 <li class="submenu-item pl-8 text-xs text-slate-500">• Patrón Global</li>
 
                 <!-- UNIDAD 2 y 3 -->
@@ -257,97 +257,7 @@
             <!-- El código completo que te di antes va aquí, sin la clase 'hidden' -->
             <!-- CASO PRÁCTICO 2: FUGA DE DATOS (RELLENO NUEVO) -->
             <div id="ud01-case2" class="case-container hidden mb-8">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-amber-600 text-white p-6">
-                        <h3 class="text-2xl font-bold mb-2">Caso Práctico 2: Fuga de Datos por Amenaza Interna</h3>
-                        <p class="opacity-90">Un empleado descontento descarga bases de datos sensibles de clientes antes de ser despedido, utilizando credenciales válidas.</p>
-                    </div>
-                    
-                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <!-- 1. REQUISITOS (MATRIZ) -->
-                        <div>
-                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
-                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
-                                <table class="min-w-full text-sm">
-                                    <thead class="bg-slate-100">
-                                        <tr>
-                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
-                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="border-b border-slate-100 matrix-row">
-                                            <td class="px-4 py-3 font-bold text-green-700">Funcionales</td>
-                                            <td class="px-4 py-3 text-slate-700">Detectar descargas masivas, Bloquear cuentas en tiempo real, Alertar a seguridad, Preservar evidencias forenses.</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100 matrix-row">
-                                            <td class="px-4 py-3 font-bold text-blue-700">No Funcionales</td>
-                                            <td class="px-4 py-3 text-slate-700">Latencia &lt; 100ms en detección, Tasa de falsos positivos &lt; 1%, Disponibilidad del sistema de monitoreo 99.99%.</td>
-                                        </tr>
-                                        <tr class="border-b border-slate-100 matrix-row">
-                                            <td class="px-4 py-3 font-bold text-purple-700">Técnicos</td>
-                                            <td class="px-4 py-3 text-slate-700">DLP (Data Loss Prevention), UEBA (User Behavior Analytics), SIEM correlación, Logs de base de datos (SQL Audit), Control DLP en egress.</td>
-                                        </tr>
-                                        <tr class="matrix-row">
-                                            <td class="px-4 py-3 font-bold text-yellow-700">Legales</td>
-                                            <td class="px-4 py-3 text-slate-700">RGPD (Art. 33 Notificación Brecha), LOPDGDD, Ley de Secretos Empresariales, Normativa ISO 27001 (A.8 Accesos).</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- 2. CASO DE USO (FLUJO) -->
-                        <div>
-                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Detección</h4>
-                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
-                                <svg viewBox="0 0 400 200" class="w-full h-auto">
-                                    <circle cx="20" cy="100" r="30" fill="#3b82f6" class="flow-node"/>
-                                    <text x="20" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">ACCESO USUARIO</text>
-                                    <rect x="100" y="70" width="80" height="60" rx="5" fill="#8b5cf6" class="flow-node"/>
-                                    <text x="140" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">ANÁLISIS UEBA</text>
-                                    <polygon points="200,70 240,100 200,130" fill="#ef4444" class="flow-node"/>
-                                    <text x="220" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">¿ANOMALÍA?</text>
-                                    <rect x="270" y="70" width="80" height="60" rx="5" fill="#10b981" class="flow-node"/>
-                                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">BLOQUEO + ALERTA</text>
-                                    <line x1="50" y1="100" x2="100" y2="100" stroke="#cbd5e1" stroke-width="2"/>
-                                    <line x1="180" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="2"/>
-                                    <line x1="240" y1="100" x2="270" y2="100" stroke="#cbd5e1" stroke-width="2"/>
-                                </svg>
-                                <div class="mt-2 text-xs text-slate-500 italic text-center">Análisis de comportamiento anómalo en tiempo real</div>
-                            </div>
-                        </div>
-
-                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
-                        <div class="lg:col-span-2">
-                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
-                                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Detección</div>
-                                    <div class="text-2xl font-bold text-red-600 mt-1">2m 30s</div>
-                                    <div class="text-xs text-red-600 mt-1">Objetivo: &lt; 5m</div>
-                                </div>
-                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
-                                    <div class="text-xs text-slate-500 uppercase font-bold">Datos Protegidos</div>
-                                    <div class="text-2xl font-bold text-green-600 mt-1">100%</div>
-                                    <div class="text-xs text-green-600 mt-1">Sin exfiltración exitosa</div>
-                                </div>
-                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
-                                    <div class="text-xs text-slate-500 uppercase font-bold">Evidencia Forense</div>
-                                    <div class="text-2xl font-bold text-purple-600 mt-1">✓ Completa</div>
-                                    <div class="text-xs text-purple-600 mt-1">Logs intactos y firmados</div>
-                                </div>
-                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
-                                    <div class="text-xs text-slate-500 uppercase font-bold">Conformidad RGPD</div>
-                                    <div class="text-2xl font-bold text-indigo-600 mt-1">92%</div>
-                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
-                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 92%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
 
             <!-- PATRÓN GLOBAL (PLANTILLA) -->
@@ -361,18 +271,13 @@
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                         <h4 class="font-bold text-green-700 mb-3">💡 Puntos Clave (Palabras Mágicas)</h4>
                         <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                            <li><strong>Triángulo CIA:</strong> Confidencialidad, Integridad, Disponibilidad (siempre mencionarlos).</li>
-                            <li><strong>Gestión de Riesgos:</strong> Identificar, Evaluar, Tratar, Monitorizar.</li>
-                            <li><strong>Respuesta Incidentes:</strong> Preparación, Detección, Contención, Erradicación, Recuperación, Lecciones aprendidas.</li>
+                            <li><strong>[COMPLETAR LISTA]</li>
                         </ul>
                     </div>
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                         <h4 class="font-bold text-blue-700 mb-3">⚙️ Ejemplos de Tecnologías Base</h4>
                         <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                            <li>Cortafuegos (Perimetral/Host-based).</li>
-                            <li>Antivirus/EDR básicos.</li>
-                            <li>Políticas de Contraseñas (MFA básico).</li>
-                            <li>Backups físicos y lógicos.</li>
+                            <li>[COMPLETAR LISTA]</li>
                         </ul>
                     </div>
                 </div>
