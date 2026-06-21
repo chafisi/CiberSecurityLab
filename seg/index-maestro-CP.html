@@ -65,6 +65,8 @@
                 <!-- UNIDAD 4 -->
                 <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">4 - Sistemas cortafuegos</li>
                 <li class="nav-item"><button onclick="switchUnit('ud04')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Sistemas cortafuegos</button></li>
+                <li class="submenu-item pl-8 text-xs text-slate-500">• CP05: Configuración errónea en un firewall perimetral</li>
+                <li class="submenu-item pl-8 text-xs text-slate-500">• CP06: Migración a cortafuegos de próxima generación (NGFW)</li>                
                 <li class="submenu-item pl-8 text-xs text-slate-500">• CP07: Uso de Snort en una universidad</li>
                 <li class="submenu-item pl-8 text-xs text-slate-500">• CP08: Falsos positivos en un IPS financiero</li>
                 <li class="submenu-item pl-8 text-xs text-slate-500">• Patrón Global</li>
@@ -612,11 +614,12 @@
                 <p class="text-slate-600 mt-2"></p>
             </div>
 
-            <!-- CASO PRÁCTICO 5: DES -->
+            <!-- CASO PRÁCTICO 5: firewall erroneo -->
             <div id="ud05-pat" class="pattern-container">
                 <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
                     <h3 class="text-xl font-bold mb-2">🔥 Caso Práctico 5: Configuración Errónea en Firewall Perimetral</h3>
                     <p class="text-slate-300 text-sm">Análisis visual para la prevención de errores de configuración, matriz de requisitos de seguridad, flujo de gestión de reglas (despliegue seguro) y panel de validación de políticas.</p>
+                    <p>En una empresa mediana del sector financiero, una mala configuración en el cortafuegos perimetral dejó expuesto a Internet un puerto asociado a la base de datos corporativa. Aunque existían credenciales, la reutilización de contraseñas y la falta de segmentación permitieron que los atacantes obtuvieran acceso mediante fuerza bruta. El incidente provocó exfiltración de datos sensibles, interrupción de varios servicios internos y un impacto operativo significativo. La auditoría posterior reveló que no existían procedimientos formales para validar reglas del firewall, la gestión se realizaba de forma manual, no había revisión por pares, y no existía un proceso automatizado de detección de puertos expuestos.    </p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -711,13 +714,13 @@
                 </div>
             </div>
 
-            <!-- CASO PRÁCTICO 4: Diginoar certificados -->
+            <!-- CASO PRÁCTICO 6: Migración NGFW-->
             <!-- El código completo que te di antes va aquí, sin la clase 'hidden' -->
             
-            <div id="ud04-pat" class="pattern-container">
+            <div id="ud06-pat" class="pattern-container">
                 <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
-                    <h3 class="text-xl font-bold mb-2">🛡️ Caso Práctico 4: Brecha por certificados falsificados (DigiNotar)</h3>
-                    <p class="text-slate-300 text-sm">Análisis visual de la protección de infraestructuras PKI, matriz de requisitos de validación, flujo de verificación de certificados y panel de auditoría (Certificate Transparency y OCSP/CRL).</p>
+                    <h3 class="text-xl font-bold mb-2">🚀 Caso Práctico 6: Migración a NGFW (Next-Generation Firewall)</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual de la transición a cortafuegos de nueva generación, matriz de requisitos (DPI, App-ID), flujo de detección de aplicaciones evasivas y panel de validación de rendimiento.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -728,50 +731,54 @@
                             <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
                                 <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
                                 <ul class="list-disc pl-4 text-green-900 space-y-1">
-                                    <li>Validar certificados (OCSP/CRL)</li>
-                                    <li>Registrar intentos de emisión/acceso</li>
-                                    <li>Alertas ante dominios no autorizados</li>
+                                    <li>Inspección profunda de paquetes (DPI)</li>
+                                    <li>Identificar apps (cifradas/evasivas)</li>
+                                    <li>Bloqueo automático según políticas</li>
+                                    <li>Reportes detallados de actividad sospechosa</li>
                                 </ul>
                             </div>
                             <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
                                 <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
                                 <ul class="list-disc pl-4 text-blue-900 space-y-1">
-                                    <li>Alta disponibilidad (OCSP, CRL)</li>
-                                    <li>Baja latencia en verificación</li>
+                                    <li>Rendimiento DPI sin latencia crítica</li>
+                                    <li>Escalabilidad para picos de tráfico</li>
+                                    <li>Alertas claras y bajos Falsos Positivos</li>
+                                    <li>Interfaz de gestión intuitiva</li>
                                 </ul>
                             </div>
                             <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
                                 <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
                                 <ul class="list-disc pl-4 text-purple-900 space-y-1">
-                                    <li>Certificate Transparency y monitorización de logs públicos</li>
-                                    <li>Endurecer CA: HSM, MFA y aislamiento estricto</li>
-                                    <li>Segmentar red para el entorno de emisión</li>
+                                    <li>Integración SIEM y automatización de despliegue</li>
+                                    <li>Control granular (usuario, app, categoría, contenido)</li>
+                                    <li>Inspección TLS/SSL en escenarios permitidos</li>
+                                    <li>Actualizaciones frecuentes (firmas, heurística)</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Validación de Certificado</h4>
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Detección (App no autorizada)</h4>
                         <div class="flex flex-col space-y-2 text-xs font-mono">
                             <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
-                                <span>Actor: Navegador web / Dispositivo</span>
+                                <span>Actor: NGFW / Equipo de seguridad</span>
                             </div>
                             
-                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">🌐 Usuario accede a sitio HTTPS</div>
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">👤 Empleado intenta usar Tor / VPN no autorizada</div>
                             <div class="text-center text-slate-400">⬇️</div>
-                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">📄 Navegador recibe certificado del servidor</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🔍 NGFW analiza tráfico con DPI (Identifica patrón)</div>
                             <div class="text-center text-slate-400">⬇️</div>
-                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🔗 Valida cadena de confianza (CA Raíz)</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🛑 Bloqueo automático según políticas</div>
                             <div class="text-center text-slate-400">⬇️</div>
-                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🔍 Consulta estado mediante OCSP o CRL</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🚨 Genera alerta al SOC</div>
                             <div class="text-center text-slate-400">⬇️</div>
-                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Establece conexión cifrada (Válido)</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">📝 Registro para análisis y auditoría</div>
                             
                             <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
                                 <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
-                                <div class="flex justify-between items-center mb-1"><span>❌ Certificado Revocado</span> <span>➔ 🛑 Conexión Bloqueada</span></div>
-                                <div class="flex justify-between items-center"><span>💀 CA Comprometida</span> <span>➔ 🚫 Advertencia crítica y bloqueo</span></div>
+                                <div class="flex justify-between items-center mb-1"><span>❌ App legítima mal clasificada</span> <span>➔ 🛡️ Revisión de reglas / Whitelisting</span></div>
+                                <div class="flex justify-between items-center"><span>🔄 Falso Positivo Recurrente</span> <span>➔ ⚙️ Reentrenamiento de firmas</span></div>
                             </div>
                         </div>
                     </div>
@@ -781,27 +788,261 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                             
                             <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
-                                <span class="text-3xl mb-2">📜</span>
-                                <span class="text-xs font-bold text-slate-700 uppercase">Transparency Logs</span>
-                                <span class="text-[11px] text-slate-500 mt-1">Supervisión continua de registros públicos (CT)</span>
-                            </div>
-
-                            <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
                                 <span class="text-3xl mb-2">🥷</span>
-                                <span class="text-xs font-bold text-red-800 uppercase">Pentest a la PKI</span>
-                                <span class="text-[11px] text-red-600 mt-1">Pruebas de intrusión en el entorno de emisión CA</span>
-                            </div>
-
-                            <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
-                                <span class="text-3xl mb-2">🎭</span>
-                                <span class="text-xs font-bold text-amber-800 uppercase">Simulación MITM</span>
-                                <span class="text-[11px] text-amber-600 mt-1">Verificar la detección de certificados ilegítimos</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Test de Evasión</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Pruebas con Tor, VPNs, proxies y túneles SSH</span>
                             </div>
 
                             <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
                                 <span class="text-3xl mb-2">⚡</span>
-                                <span class="text-xs font-bold text-blue-800 uppercase">Test OCSP / CRL</span>
-                                <span class="text-[11px] text-blue-600 mt-1">Validar disponibilidad y robustez criptográfica</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Test Rendimiento</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Verificar latencia de DPI en servicios críticos</span>
+                            </div>
+
+                            <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🎯</span>
+                                <span class="text-xs font-bold text-amber-800 uppercase">Tuning SOC</span>
+                                <span class="text-[11px] text-amber-600 mt-1">Ajuste de sensibilidad para reducir falsos positivos</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔄</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Auditoría Políticas</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Actualizar cobertura contra nuevas apps evasivas</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud02-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global de Respuesta: Introducción a la Seguridad</h3>
+                    <p class="text-slate-300 text-sm">Usa esta plantilla para responder a cualquier pregunta general sobre fundamentos de seguridad.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3">💡 Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li><strong>[COMPLETAR LISTA]</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3">⚙️ Ejemplos de Tecnologías Base</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>[COMPLETAR LISTA]</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN UNIDAD 5-->
+        <section id="ud04" class="unit-section fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">5 - Sistemas para la detección de intrusiones IDS/IPS</h2>
+                <p class="text-slate-600 mt-2">Detección de intrusiones</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 9: • CP09: Uso de ARP spoofing en una red corporativa Enunciado -->
+            <div id="ud05-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🔥 Caso Práctico 5: Configuración Errónea en Firewall Perimetral</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual para la prevención de errores de configuración, matriz de requisitos de seguridad, flujo de gestión de reglas (despliegue seguro) y panel de validación de políticas.</p>
+                    <p>En una empresa mediana del sector financiero, una mala configuración en el cortafuegos perimetral dejó expuesto a Internet un puerto asociado a la base de datos corporativa. Aunque existían credenciales, la reutilización de contraseñas y la falta de segmentación permitieron que los atacantes obtuvieran acceso mediante fuerza bruta. El incidente provocó exfiltración de datos sensibles, interrupción de varios servicios internos y un impacto operativo significativo. La auditoría posterior reveló que no existían procedimientos formales para validar reglas del firewall, la gestión se realizaba de forma manual, no había revisión por pares, y no existía un proceso automatizado de detección de puertos expuestos.    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Validar reglas antes de producción</li>
+                                    <li>Mantener registro de cambios (historial)</li>
+                                    <li>Alertas por puertos no autorizados</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Alta disponibilidad (≥99,9%)</li>
+                                    <li>Baja latencia en el filtrado</li>
+                                    <li>Interfaz clara y resistente a errores</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Segmentación (BD, frontend, administración)</li>
+                                    <li>Autenticación fuerte (MFA y RBAC)</li>
+                                    <li>Automatización de pruebas y uso de entorno <em>staging</em></li>
+                                    <li>Principio de mínimo privilegio en políticas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Gestión Segura de Reglas</h4>
+                        <div class="flex flex-col space-y-2 text-xs font-mono">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Administrador de seguridad</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">✍️ Propone nueva regla de firewall</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">👥 Revisión por pares (Peer Review)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">⚙️ Validación automatizada (Análisis)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🧪 Aplicación en entorno de pruebas (Staging)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">🚀 Despliegue en producción y Registro</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Regla Insegura/Redundante</span> <span>➔ 🛑 Rechazo y justificación</span></div>
+                                <div class="flex justify-between items-center"><span>💥 Fallo de Rendimiento</span> <span>➔ 🔙 Rollback automático</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📋</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Auditoría Periódica</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Revisión de reglas y políticas de firewall</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔍</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Escaneos de Red</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Nmap, Nessus para detectar puertos expuestos</span>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🥷</span>
+                                <span class="text-xs font-bold text-red-800 uppercase">Pentest Interno</span>
+                                <span class="text-[11px] text-red-600 mt-1">Verificar la segmentación de la red real</span>
+                            </div>
+
+                            <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚖️</span>
+                                <span class="text-xs font-bold text-amber-800 uppercase">Config Drift</span>
+                                <span class="text-[11px] text-amber-600 mt-1">Comparar arquitectura prevista vs configuración real</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO • CP10: Implementación de IPSec entre sedes-->
+            <!-- El código completo que te di antes va aquí, sin la clase 'hidden' -->
+            
+            <div id="ud06-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🚀 Caso Práctico 6: Migración a NGFW (Next-Generation Firewall)</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual de la transición a cortafuegos de nueva generación, matriz de requisitos (DPI, App-ID), flujo de detección de aplicaciones evasivas y panel de validación de rendimiento.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Inspección profunda de paquetes (DPI)</li>
+                                    <li>Identificar apps (cifradas/evasivas)</li>
+                                    <li>Bloqueo automático según políticas</li>
+                                    <li>Reportes detallados de actividad sospechosa</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Rendimiento DPI sin latencia crítica</li>
+                                    <li>Escalabilidad para picos de tráfico</li>
+                                    <li>Alertas claras y bajos Falsos Positivos</li>
+                                    <li>Interfaz de gestión intuitiva</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Integración SIEM y automatización de despliegue</li>
+                                    <li>Control granular (usuario, app, categoría, contenido)</li>
+                                    <li>Inspección TLS/SSL en escenarios permitidos</li>
+                                    <li>Actualizaciones frecuentes (firmas, heurística)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Detección (App no autorizada)</h4>
+                        <div class="flex flex-col space-y-2 text-xs font-mono">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: NGFW / Equipo de seguridad</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">👤 Empleado intenta usar Tor / VPN no autorizada</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🔍 NGFW analiza tráfico con DPI (Identifica patrón)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🛑 Bloqueo automático según políticas</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🚨 Genera alerta al SOC</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">📝 Registro para análisis y auditoría</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ App legítima mal clasificada</span> <span>➔ 🛡️ Revisión de reglas / Whitelisting</span></div>
+                                <div class="flex justify-between items-center"><span>🔄 Falso Positivo Recurrente</span> <span>➔ ⚙️ Reentrenamiento de firmas</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🥷</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Test de Evasión</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Pruebas con Tor, VPNs, proxies y túneles SSH</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚡</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Test Rendimiento</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Verificar latencia de DPI en servicios críticos</span>
+                            </div>
+
+                            <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🎯</span>
+                                <span class="text-xs font-bold text-amber-800 uppercase">Tuning SOC</span>
+                                <span class="text-[11px] text-amber-600 mt-1">Ajuste de sensibilidad para reducir falsos positivos</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔄</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Auditoría Políticas</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Actualizar cobertura contra nuevas apps evasivas</span>
                             </div>
 
                         </div>
