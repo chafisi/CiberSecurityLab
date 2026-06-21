@@ -2413,6 +2413,363 @@
             </div>
         </section>
 
+
+                <!-- ========================================== -->
+        <!-- UNIDAD 8: CODIFICACIÓN DE LA FUENTE (COMPLETA) -->
+        <!-- ========================================== -->
+        <section id="ud08" class="unit-section hidden fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">8. Codificación de la fuente</h2>
+                <p class="text-slate-600 mt-2">Técnicas de compresión de datos, entropía, algoritmos Huffman/LZW y codecs multimídia.</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 15: COMPRESIÓN SIN PÉRDIDA (VISIBLE) -->
+            <div id="ud08-case1" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-emerald-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 15</span>
+                                <h3 class="text-2xl font-bold mb-2">Compresión Sin Pérdida para Datos Críticos</h3>
+                                <p class="opacity-90">Implementación de algoritmo Huffman para comprimir archivos de log y bases de datos SQL, garantizando que cada bit original pueda ser recuperado exactamente tras la descompresión.</p>
+                            </div>
+                            <i class="ph ph-file-zip text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Analizar frecuencia de símbolos, Construir árbol binario óptimo, Asignar códigos prefijo-free, Empaquetar flujo de bits, Reconstruir origen exacto al descomprimir.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Ratio compresión ≥ 40% (texto repetitivo), Entropía maximizada, Tiempo codificación/decodificación simétrico, Overhead CPU bajo (≤ 15%).</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">Algoritmo Huffman (estático/adaptativo), LZW (Lempel-Ziv-Welch), Deflate (ZIP/GZIP), Aritmética Coding, Diccionarios dinámicos.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">Normativa de retención de datos (logs comprados deben ser legibles por ley), estándares ISO/IEC 11172 (MPEG) parte de compresión, Licencias de software (patentes LZW históricas).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO TEXTUAL CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Compresión Huffman</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner space-y-3">
+                                
+                                <div class="flex items-start">
+                                    <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">Actor</span>
+                                    <p class="text-sm text-slate-700"><strong>Sistema de Archivos:</strong> Necesita guardar un archivo de texto gigante "DATA.LOG" ocupando menos espacio sin perder ni un solo carácter.</p>
+                                </div>
+                                
+                                <hr class="border-slate-200">
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-start">
+                                        <span class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded text-sm mr-3">1️⃣ Análisis de Frecuencia</span>
+                                        <p class="text-sm text-slate-700"><strong>Escaneo:</strong> El algoritmo cuenta cada símbolo. Ej: 'E' aparece 50 veces, 'Z' solo 1 vez, 'A' 20 veces.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">2️⃣ Construcción del Árbol</span>
+                                        <p class="text-sm text-slate-700"><strong>Lógica:</strong> Se crea un árbol binario. Los símbolos más frecuentes están más cerca de la raíz (códigos cortos), los raros en las hojas profundas (códigos largos).</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-sm mr-3">3️⃣ Asignación de Códigos</span>
+                                        <p class="text-sm text-slate-700"><strong>Mapeo:</strong> Caminando del padre a hijo izquierdo = '0', derecho = '1'. Resultado: 'E' → `0`, 'Z' → `11101`. ¡Ningún código es prefijo de otro!</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">4️⃣ Sustitución y Empaque</span>
+                                        <p class="text-sm text-slate-700"><strong>Compresión:</strong> Se reemplazan todos los caracteres originales por sus nuevas cadenas de bits. Se guarda el árbol (o tabla) al inicio del archivo.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded text-sm mr-3">5️⃣ Descompresión Inversa</span>
+                                        <p class="text-sm text-slate-700"><strong>Recuperación:</strong> Al leer, se usa el árbol guardado. Cada bit guía por el árbol hasta llegar a una hoja (carácter original). ¡Reconstrucción 100% exacta!</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 bg-emerald-50 border-l-4 border-emerald-400 text-xs text-emerald-800">
+                                    ✅ <em>Clave:</em> La compresión sin pérdida funciona explotando la redundancia estadística. Si el archivo ya es aleatorio (entropía alta), no se puede comprimir mucho. Ideal para texto, código, JSON.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Tamaño Original</div>
+                                    <div class="text-2xl font-bold text-slate-600 mt-1">10 MB</div>
+                                    <div class="text-xs text-slate-600 mt-1">Archivo LOG crujido</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Tamaño Comprimido</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">5.2 MB</div>
+                                    <div class="text-xs text-green-600 mt-1">Ahorro: 48%</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Integridad</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">100%</div>
+                                    <div class="text-xs text-blue-600 mt-1">Hash MD5 idéntico tras unzip</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Entropía</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">Baja</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 30%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 16: COMPRESIÓN CON PÉRDIDA (VISIBLE) -->
+            <div id="ud08-case2" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-fuchsia-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 16</span>
+                                <h3 class="text-2xl font-bold mb-2">Compresión Con Pérdida para Multimedia Streaming</h3>
+                                <p class="opacity-90">Optimización de archivos de audio y video para streaming web, utilizando técnicas de eliminación de información imperceptible al ojo humano (transformada DCT, sub-muestreo de crominancia).</p>
+                            </div>
+                            <i class="ph ph-video-camera text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Transformar espacio a frecuencia (DCT), Cuantificar coeficientes (redondeo agresivo), Eliminar frecuencias inaudibles/invisibles, Codificar residuos, Generar stream continuo.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Ratio compresión > 90% (ej. DVD a Web), Latencia de buffering < 2s, Calidad perceptiva (PSNR/SSIM) > 40dB, Compatibilidad universal (H.264/H.265, AAC).</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">Codecs: MP3 (Audio), H.264/AVC, H.265/HEVC, VP9, AV1. Técnicas: Transformada Cosinus Discreta (DCT), Sub-muestreo 4:2:0, Inter-frame prediction (P/B frames).</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">Propiedad intelectual de codecs (patentes MPEG-LA, Apple), DRM (Gestión de Derechos Digitales), Normativas de accesibilidad (subtítulos obligatorios en ciertos formatos).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUZO TEXTUAL CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Compresión de Video (H.264)</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner space-y-3">
+                                
+                                <div class="flex items-start">
+                                    <span class="bg-fuchsia-100 text-fuchsia-700 font-bold px-2 py-1 rounded text-sm mr-3">Actor</span>
+                                    <p class="text-sm text-slate-700"><strong>Streaming Service:</strong> Debe transmitir un evento en vivo en 4K pero el ancho de banda del usuario es limitado (5 Mbps).</p>
+                                </div>
+                                
+                                <hr class="border-slate-200">
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-start">
+                                        <span class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded text-sm mr-3">1️⃣ Transformación Espacial</span>
+                                        <p class="text-sm text-slate-700"><strong>DCT:** Se divide la imagen en bloques 8x8 píxeles. Se convierte de valores de color (RGB/YUV) a coeficientes de frecuencia (bajas = detalles grandes, altas = detalles finos/ruido).</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">2️⃣ Cuantización (La Pérdida)</span>
+                                        <p class="text-sm text-slate-700"><strong>Reducción:</strong> Se dividen los coeficientes por un valor grande y se redondean. Muchos coeficientes de alta frecuencia (detalles finos que el ojo apenas ve) se vuelven CERO. ¡Aquí se pierde info!</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-sm mr-3">3️⃣ Predicción Temporal</span>
+                                        <p class="text-sm text-slate-700"><strong>Eficiencia:</strong> En lugar de enviar todo el cuadro (Frame), solo se envían las diferencias respecto al cuadro anterior (Motion Estimation). Solo se codifican objetos en movimiento.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">4️⃣ Codificación Entropía</span>
+                                        <p class="text-sm text-slate-700"><strong>Compactación final:</strong> Se aplica CAVLC o CABAC a los ceros y unos resultantes. Los bloques llenos de ceros se comprimen muchísimo.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded text-sm mr-3">5️⃣ Stream Adaptativo</span>
+                                        <p class="text-sm text-slate-700"><strong>Resultado:</strong> Se genera un bitrate menor. El decodificador reconstruye la imagen usando los datos recibidos; la calidad parece buena aunque faltan datos invisibles.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 bg-fuchsia-50 border-l-4 border-fuchsia-400 text-xs text-fuchsia-800">
+                                    ⚠️ <em>Clave:</em> La pérdida es irreversible. Una vez cuantificado, ese dato no existe. El objetivo es que la pérdida sea imperceptible para el humano (psicovisual) o inaudible (psicoacústica).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Bitrate Orig.</div>
+                                    <div class="text-2xl font-bold text-slate-600 mt-1">20 Mbps</div>
+                                    <div class="text-xs text-slate-600 mt-1">Raw 4K Uncompressed</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Bitrate Final</div>
+                                    <div class="text-2xl font-bold text-fuchsia-600 mt-1">6 Mbps</div>
+                                    <div class="text-xs text-fuchsia-600 mt-1">H.265 HEVC Optimizado</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Calidad Visual</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">SSIM 0.98</div>
+                                    <div class="text-xs text-blue-600 mt-1">Indistinguible a simple vista</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Ahorro Almacen.</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">70%</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud08-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-emerald-800 to-fuchsia-800 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Patrón Global</span>
+                            <h3 class="text-xl font-bold mb-2">📦 Respuestas Tipo: Compresión de Datos</h3>
+                            <p class="text-slate-300 text-sm">Guía rápida para entender entropía, algoritmos y cuándo usar cada tipo de compresión.</p>
+                        </div>
+                        <i class="ph ph-compress text-5xl opacity-80"></i>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3 flex items-center"><i class="ph ph-sparkle mr-2"></i>Conceptos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>Entropía:</strong> Medida de incertidumbre o información promedio. Máxima entropía = aleatoriedad pura (imposible comprimir). Minima entropía = mucha redundancia (fácil comprimir).</li>
+                            <li><strong>Diccionario vs. Estadístico:</strong> LZW/ZIP usan diccionarios (repitiendo patrones). Huffman/Aritmético usan estadísticas (símbolos frecuentes = bits menos). Combinados son lo mejor (Deflate).</li>
+                            <li><strong>Cuantización:</strong> Paso irreversibel donde se descarta información. Es el corazón de la compresión con pérdida.</li>
+                            <li><strong>Psico-acústica / Psico-visuales:</strong> Modelos que explotan limitaciones humanas (no oímos frecuencias muy agudas/bajas juntas, no vemos cambio de color tan rápido como brillo).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3 flex items-center"><i class="ph ph-gear mr-2"></i>Formatos y Codecs Comunes</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>Sin Pérdida:</strong> ZIP, GZIP, PNG (imágenes simples), FLAC (audio), ALAC. Recuperación bit-a-bit.</li>
+                            <li><strong>Con Pérdida:</strong> JPEG (fotos), MP3 (audio), H.264/HEVC/AV1 (video). Uso masivo en internet.</li>
+                            <li><strong>Híbridos:</strong> Algunos formatos soportan ambos modos o niveles ajustables de pérdida.</li>
+                            <li><strong>Codecs Modernos:</strong> AV1 (open source, superior a H.265), Opus (audio de baja latencia).</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-200 mb-6">
+                    <h4 class="font-bold text-emerald-800 mb-3 flex items-center"><i class="ph ph-chart-pie-slice mr-2"></i>Comparativa: Sin Pérdida vs. Con Pérdida</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-emerald-100 text-emerald-900 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2">Característica</th>
+                                    <th class="px-3 py-2">Sin Pérdida (Lossless)</th>
+                                    <th class="px-3 py-2">Con Pérdida (Lossy)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-emerald-100">
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Información Original</td>
+                                    <td class="px-3 py-2">Totalmente recuperable</td>
+                                    <td class="px-3 py-2">Parcialmente irrecuperable</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Ratio Compresión</td>
+                                    <td class="px-3 py-2">Bajo/Medio (2:1 a 5:1)</td>
+                                    <td class="px-3 py-2">Alto (10:1 a 50:1+)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Tipo de Datos</td>
+                                    <td class="px-3 py-2">Texto, Código, DB, Archivos ejecutables</td>
+                                    <td class="px-3 py-2">Audio, Imágenes, Video</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Complejidad</td>
+                                    <td class="px-3 py-2">Generalmente menor</td>
+                                    <td class="px-3 py-2">Mayor (requiere modelos complejos)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-fuchsia-50 p-6 rounded-xl border border-fuchsia-200 mb-6">
+                    <h4 class="font-bold text-fuchsia-800 mb-3 flex items-center"><i class="ph ph-lightbulb mr-2"></i>¿Por qué no usar siempre Lossless?</h4>
+                    <div class="text-sm text-fuchsia-900 space-y-2">
+                        <p>Si bien lossless es perfecto, la realidad del ancho de banda y almacenamiento nos obliga a usar lossy para multimedia. Imagina streaming Netflix en lossless: necesitarías 100 Mbps constantes por usuario. Con lossy inteligente (H.265), bastan 15-20 Mbps para 4K excelente.</p>
+                        <p><strong>Regla de oro:</strong> Usa Lossless si un solo bit cambiado rompe la función (código, finanzas, salud). Usa Lossy si la percepción humana importa más que el dato crudo (entretenimiento).</p>
+                    </div>
+                </div>
+                
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                    <h4 class="font-bold text-amber-800 mb-3 flex items-center"><i class="ph ph-warning mr-2"></i>Preguntas Frecuentes de Examen</h4>
+                    <ol class="list-decimal list-inside text-sm text-amber-900 space-y-1">
+                        <li><strong>"¿Qué es el código prefijo-free?"</strong>: Que ningún código asignado a un símbolo comienza con otro código asignado. Esto permite decodificar el flujo de bits sin comas ni separadores, mirando bit a bit.</li>
+                        <li><strong>"¿Por qué JPEG tiene artefactos cuadrados?"</strong>: Porque trabaja con bloques de 8x8 píxeles (DCT). Si la compresión es muy agresiva, los bordes de estos bloques se notan (blocking artifacts).</li>
+                        <li><strong>"¿Qué diferencia hay entre compresión espacial y temporal?"</strong>: Espacial = comprime dentro de una sola imagen (redundancia de colores adyacentes). Temporal = comprime entre imágenes consecutivas (cosas que no se mueven).</li>
+                        <li><strong>"¿El formato PNG es con o sin pérdida?"</strong>: Sin pérdida. Para fotos suele usarse JPG (con pérdida) porque el ratio es mejor, pero PNG es ideal para gráficos con texto o líneas nítidas.</li>
+                        <li><strong>"¿Qué es la entropía máxima?"</strong>: Cuando todos los símbolos aparecen con igual probabilidad. En ese caso, cualquier intento de compresión estadística falla o incluso agranda el archivo.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
+            <i class="ph ph-info text-4xl mb-2"></i>
+            <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
+        </div>
+        
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
             <i class="ph ph-info text-4xl mb-2"></i>
             <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
