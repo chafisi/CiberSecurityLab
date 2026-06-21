@@ -1832,8 +1832,8 @@
         <!-- SECCIÓN UNIDAD 8-->
         <section id="ud08" class="unit-section fade-in block">
             <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
-                <h2 class="text-3xl font-bold text-slate-800">UD 7: Seguridad en Capa de Aplicación</h2>
-                <p class="text-slate-600 mt-2">Capa aplicación</p>
+                <h2 class="text-3xl font-bold text-slate-800">UD 8: Codificación de la fuente</h2>
+                <p class="text-slate-600 mt-2"></p>
             </div>
 
             <!-- CASO PRÁCTICO 15-16:  -->
@@ -1863,7 +1863,80 @@
                                 <ul class="list-disc pl-4 text-blue-900 space-y-1">
                                     <li>Latencia mínima</li>
                                     <li>Calidad perceptual</li>
-                                    <li>
+                                    <li>Evitar patrones correlacionables</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>JPEG con codificación Huffman</li>
+                                    <li>TLS 1.3 (AES-GCM / ChaCha20)</li>
+                                    <li>Normalización de tamaños (Padding uniforme)</li>
+                                    <li>Eliminación de metadatos (EXIF)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Subida Segura (JPEG)</h4>
+                        
+                        <div class="flex flex-col space-y-2 text-xs font-mono mt-4">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Cliente y Servidor</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">📤 Usuario sube imagen</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">⚙️ Compresión Huffman + Limpieza EXIF</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🔒 Cifrado TLS 1.3 (Canal Seguro)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🏗️ Aplicar Padding Uniforme</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Servidor recibe y procesa</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Metadatos sensibles</span> <span>➔ 🧹 Normalización/limpieza</span></div>
+                                <div class="flex justify-between items-center"><span>⚠️ Tamaño revela info</span> <span>➔ 📏 Padding uniforme antes cifrado</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🌊</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Análisis Canal Lateral</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Comparativa ciphertext length vs resoluciones</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚡</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Evaluación Rendimiento</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Ratio ahorro ancho de banda (JPEG vs PNG/RAW)</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🔐</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Verificación TLS</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Validar cifrado robusto sin fallback</span>
+                            </div>
+
+                            <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🕵️</span>
+                                <span class="text-xs font-bold text-purple-800 uppercase">Auditoría Privacidad</span>
+                                <span class="text-[11px] text-purple-600 mt-1">Chequear eliminación EXIF + Padding</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
 
             <div id="ud16-pat" class="pattern-container">
                 <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
@@ -1964,6 +2037,205 @@
 
         </section>
 
+        <!-- SECCIÓN UNIDAD 9-->
+        <section id="ud09" class="unit-section fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">UD 9: Codificación Canal</h2>
+                <p class="text-slate-600 mt-2"></p>
+            </div>
+
+            <!-- CASO PRÁCTICO 17-18:  -->
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud17-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">💿 Caso Práctico 17: Reed-Solomon en Discos Ópticos</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual para la integridad y disponibilidad de datos, matriz de requisitos de corrección, flujo de reconstrucción automática (Reed-Solomon) y panel de validación de vida útil.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Detectar errores físicos en bloques</li>
+                                    <li>Reconstruir bytes (Reed-Solomon)</li>
+                                    <li>Registrar métricas (BER, C1/C2)</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Flujo continuo sin paradas</li>
+                                    <li>Tolerancia al deterioro moderado</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Implementación RS (parámetros n, k)</li>
+                                    <li>Lectura láser con reintentos/buffering</li>
+                                    <li>Verificación periódica C1/C2</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Recuperación (Bloque dañado)</h4>
+                        
+                        <div class="flex flex-col space-y-2 text-xs font-mono mt-4">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Decodificador óptico</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">🔍 Lector identifica bloque ilegible</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🧠 Decodificador RS localiza errores</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🏗️ Reconstruye bytes faltantes</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Lectura continua (Sin pausa)</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center"><span>❌ Errores > Capacidad RS</span> <span>➔ 🛑 Error irrecuperable / Aviso</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">💾</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Test Deterioro</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Pruebas con soportes dañados físicamente</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🧪</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Simulación RS</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Herramientas de inyección de errores</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📜</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Auditoría Larga</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Verificación de soportes de archivo</span>
+                            </div>
+
+                            <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📈</span>
+                                <span class="text-xs font-bold text-purple-800 uppercase">Análisis Estadístico</span>
+                                <span class="text-[11px] text-purple-600 mt-1">Errores corregidos vs vida útil</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="ud18-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">📡 Caso Práctico 18: LDPC en Wi-Fi/5G frente a Jamming</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual para la disponibilidad en entornos hostiles, matriz de requisitos de corrección de errores (LDPC), flujo de decodificación ante interferencia y panel de validación de robustez de enlace.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Corregir errores (LDPC)</li>
+                                    <li>Comunicación en SNR reducida</li>
+                                    <li>Detectar/registrar Jamming</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Baja latencia (procesamiento)</li>
+                                    <li>Alta fiabilidad en ruido</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Belief Propagation (LDPC)</li>
+                                    <li>Tasas de código y bloques optimizados</li>
+                                    <li>Integración con WPA3 / 5G-NAS</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Decodificación (Jamming)</h4>
+                        
+                        <div class="flex flex-col space-y-2 text-xs font-mono mt-4">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Receptor inalámbrico</span>
+                            </div>
+                            
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">📡 Receptor detecta ruido/interferencia</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">📈 Tasa error sube (Tasa LDPC ajusta)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">⚙️ Activa iteraciones LDPC adicionales</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Reconstrucción exitosa / Enlace estable</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center"><span>❌ Jamming extremo</span> <span>➔ 🔌 Handover / Cambiar modulación</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🧪</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Test Laboratorio</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Generadores de ruido e interferencia</span>
+                            </div>
+
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📉</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Medición BER/SNR</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Escenarios de degradación controlada</span>
+                            </div>
+
+                            <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🥷</span>
+                                <span class="text-xs font-bold text-red-800 uppercase">Simulación Jamming</span>
+                                <span class="text-[11px] text-red-600 mt-1">Umbrales de tolerancia de enlace</span>
+                            </div>
+
+                            <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🏭</span>
+                                <span class="text-xs font-bold text-emerald-800 uppercase">Pruebas Campo</span>
+                                <span class="text-[11px] text-emerald-600 mt-1">Entornos industriales/urbanos ruidosos</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
         <!-- -->
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden">
             Selecciona una unidad del menú lateral.
