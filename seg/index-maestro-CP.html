@@ -1018,24 +1018,57 @@
             </div>
 
             <!-- PATRÓN GLOBAL (PLANTILLA) -->
-            <div id="ud02-pat" class="pattern-container">
-                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
-                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global de Respuesta: Introducción a la Seguridad</h3>
-                    <p class="text-slate-300 text-sm">Usa esta plantilla para responder a cualquier pregunta general sobre fundamentos de seguridad.</p>
+            <div id="ud07-patron-global" class="pattern-container fade-in">
+                <div class="bg-gradient-to-r from-orange-800 to-orange-950 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global: Seguridad en Capa de Aplicación</h3>
+                    <p class="text-orange-200 text-sm">Plantilla de análisis para cualquier servicio, API o plataforma web. Úsala como estructura mental ante preguntas generales de diseño seguro.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-green-700 mb-3">💡 Puntos Clave (Palabras Mágicas)</h4>
-                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                            <li><strong>[COMPLETAR LISTA]</li>
+                    <div class="bg-white p-6 rounded-xl border border-orange-200 shadow-sm">
+                        <h4 class="font-bold text-orange-900 mb-4 flex items-center gap-2">💡 Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="space-y-2 text-sm text-slate-700">
+                            <li class="flex items-start gap-2"><span>✅</span> <strong>Input Validation:</strong> "Nunca confíes en el usuario". Saneamiento en el servidor.</li>
+                            <li class="flex items-start gap-2"><span>✅</span> <strong>Least Privilege:</strong> El proceso/usuario solo accede a lo estrictamente necesario.</li>
+                            <li class="flex items-start gap-2"><span>✅</span> <strong>Defense in Depth:</strong> WAF + Código Seguro + Autenticación.</li>
+                            <li class="flex items-start gap-2"><span>✅</span> <strong>Session Management:</strong> Rotación, expiración y flags <em>Secure/HttpOnly</em>.</li>
+                            <li class="flex items-start gap-2"><span>✅</span> <strong>Fail-Safe Defaults:</strong> Si el control de seguridad falla, el acceso se deniega por defecto.</li>
+                            <li class="flex items-start gap-2"><span>✅</span> <strong>Logging & Monitoring:</strong> Auditoría de acciones (no solo errores).</li>
                         </ul>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-blue-700 mb-3">⚙️ Ejemplos de Tecnologías Base</h4>
-                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
-                            <li>[COMPLETAR LISTA]</li>
-                        </ul>
+
+                    <div class="bg-white p-6 rounded-xl border border-orange-200 shadow-sm">
+                        <h4 class="font-bold text-orange-900 mb-4 flex items-center gap-2">⚙️ Ejemplos de Tecnologías Base</h4>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
+                                <span class="text-lg">🛡️</span>
+                                <div>
+                                    <strong class="text-xs block text-slate-500 uppercase">Protección</strong>
+                                    <span class="text-sm font-semibold">WAF (Web Application Firewall)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
+                                <span class="text-lg">🔑</span>
+                                <div>
+                                    <strong class="text-xs block text-slate-500 uppercase">Identidad</strong>
+                                    <span class="text-sm font-semibold">MFA / FIDO2 / WebAuthn</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
+                                <span class="text-lg">🚀</span>
+                                <div>
+                                    <strong class="text-xs block text-slate-500 uppercase">DevSecOps</strong>
+                                    <span class="text-sm font-semibold">SAST/DAST + CI/CD Pipelines</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded border">
+                                <span class="text-lg">📜</span>
+                                <div>
+                                    <strong class="text-xs block text-slate-500 uppercase">Gestión Certs</strong>
+                                    <span class="text-sm font-semibold">ACME (Let's Encrypt) / PKI</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
