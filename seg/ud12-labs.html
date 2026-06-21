@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 12 - Laboratorios Prácticos | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Estilos específicos */
+        .lab-header { background: linear-gradient(to right, #f59e0b, #d97706); }
+        
+        /* Consent Simulator */
+        .consent-option { transition: all 0.3s; cursor: pointer; }
+        .consent-option.selected { background-color: #eff6ff; border-color: #3b82f6; transform: scale(1.02); }
+        .consent-option.error { border-color: #ef4444; animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        /* Dark Pattern Detection */
+        .pattern-card { transition: all 0.3s; opacity: 0.7; cursor: pointer; }
+        .pattern-card:hover { opacity: 1; transform: scale(1.05); }
+        .pattern-card.found { opacity: 1; border-color: #10b981; background-color: #ecfdf5; pointer-events: none; }
+
+        /* Banner Mockup Styles */
+        .banner-mockup {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Console Output */
+        .audit-console { font-family: 'Courier New', monospace; font-size: 13px; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-amber-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-amber-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 12: Labs Europa</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category mb-2">Laboratorios RGPD</li>
+                <li class="nav-item"><button onclick="switchSection('sec7')" id="btn-sec7" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-red-500 bg-slate-800 text-white tab-btn text-red-400 font-bold">1. Consentimiento Granular (AEPD)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec8')" id="btn-sec8" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-blue-400 font-bold">2. Detector de Dark Patterns (CNIL)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec9')" id="btn-sec9" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn text-green-400 font-bold">3. Auditoría Inspectora (EUROPE)</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Navegación</li>
+                <li class="nav-item"><button onclick="window.location.href='ud12-teorica-practica.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-amber-400">← Volver a Teoría y Casos</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-100 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 7: CONSENTIMIENTO GRANULAR -->
+        <section id="sec7" class="main-section fade-in">
+            <div class="lab-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">1. Laboratorio: Configuración de Consentimiento Granular</h2>
+                <p class="opacity-90">Configura un banner conforme al RGPD (caso AEPD). Cada opción incorrecta genera una sanción potencial.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
+                    <!-- Panel de Configuración -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-3">🔧 Configuración del Sistema</h4>
+                        <p class="text-sm text-slate-600 mb-4">Marca/O desmarca las opciones para configurar tu sistema. Las configuraciones INCORRECTAS se marcarán en rojo.</p>
+                        
+                        <div class="space-y-3">
+                            <div id="opt-consent-type" class="p-3 border rounded bg-white consent-option flex justify-between items-center" onclick="toggleOpt('consentType')">
+                                <div>
+                                    <div class="font-bold text-slate-700">📋 Tipo de Consentimiento</div>
+                                    <div class="text-xs text-slate-500">Casillas premarcadas (silencio = consentimiento)</div>
+                                </div>
+                                <input type="checkbox" id="check-consent" class="w-5 h-5 accent-red-500">
+                            </div>
+
+                            <div id="opt-reject-easy" class="p-3 border rounded bg-white consent-option flex justify-between items-center" onclick="toggleOpt('rejectEasy')">
+                                <div>
+                                    <div class="font-bold text-slate-700">🚫 Rechazar Fácil</div>
+                                    <div class="text-xs text-slate-500">Botón "Rechazar" igual de visible que "Aceptar"</div>
+                                </div>
+                                <input type="checkbox" id="check-reject" checked class="w-5 h-5 accent-green-500">
+                            </div>
+
+                            <div id="opt-granular" class="p-3 border rounded bg-white consent-option flex justify-between items-center" onclick="toggleOpt('granular')">
+                                <div>
+                                    <div class="font-bold text-slate-700">🎯 Granularidad</div>
+                                    <div class="text-xs text-slate-500">Opciones separadas por finalidad (marketing, analytics, seguridad)</div>
+                                </div>
+                                <input type="checkbox" id="check-granular" checked class="w-5 h-5 accent-green-500">
+                            </div>
+
+                            <div id="opt-logs" class="p-3 border rounded bg-white consent-option flex justify-between items-center" onclick="toggleOpt('logs')">
+                                <div>
+                                    <div class="font-bold text-slate-700">📝 Trazabilidad</div>
+                                    <div class="text-xs text-slate-500">Registro completo con timestamp y versión de política</div>
+                                </div>
+                                <input type="checkbox" id="check-logs" checked class="w-5 h-5 accent-green-500">
+                            </div>
+                        </div>
+                        
+                        <button onclick="validateConsent()" class="mt-6 w-full py-3 bg-amber-600 text-white rounded font-bold hover:bg-amber-700 transition">Validar Configuración RGPD</button>
+                    </div>
+
+                    <!-- Visualización Preview -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-3">🖼️ Preview del Banner</h4>
+                        <div class="bg-gray-100 rounded-xl p-6 border border-gray-300 min-h-[300px] flex flex-col justify-center">
+                            <div class="banner-mockup">
+                                <h6 class="font-bold text-slate-800 text-sm mb-2">🍪 Gestión de Cookies</h6>
+                                <p class="text-xs text-slate-600 mb-3">Usamos cookies propias y de terceros. Puedes personalizar.</p>
+                                <div class="space-y-2 mb-3" id="preview-options">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" disabled id="preview-analytics" class="mr-2 w-4 h-4">
+                                        <label class="text-xs">Analíticas (necesarias)</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="preview-marketing" class="mr-2 w-4 h-4">
+                                        <label class="text-xs">Marketing (personalización)</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="preview-social" class="mr-2 w-4 h-4">
+                                        <label class="text-xs">Redes Sociales</label>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Personalizar</button>
+                                    <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Aceptar Todo</button>
+                                    <button class="col-span-2 w-full px-3 py-2 border-2 border-red-400 text-red-600 text-xs font-bold rounded hover:bg-red-50" id="preview-reject">Rechazar Todo</button>
+                                </div>
+                            </div>
+                            
+                            <div id="validationResult" class="hidden mt-4 p-4 rounded-lg border-2 text-center animate-fade-in">
+                                <!-- Resultado dinámico -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: DARK PATTERN HUNTER -->
+        <section id="sec8" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">2. Laboratorio: Cazador de Dark Patterns (CNIL)</h2>
+                <p class="opacity-90">Analiza 3 diseños de banners e identifica los patrones oscuros según las guías de la CNIL.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-5xl mx-auto">
+                <div class="mb-6 flex justify-between items-center bg-cyan-50 p-4 rounded border border-cyan-200">
+                    <div>
+                        <h3 class="font-bold text-cyan-900 text-lg">🕵️ Misión CNIL</h3>
+                        <p class="text-sm text-cyan-800">Detecta los dark patterns. Cuantos más encuentres, mejor calificación obtendrás.</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-cyan-600 font-bold uppercase">Puntuación</div>
+                        <div class="text-2xl font-black text-cyan-600" id="patternScore">0 / 5</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Diseño a Analizar -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-3">📱 Diseño a Auditar (Vista Simulada)</h4>
+                        <div class="bg-gray-100 rounded-xl p-6 border border-gray-300 min-h-[250px] flex flex-col justify-center">
+                            <div class="banner-mockup" id="bannerTarget">
+                                <h6 class="font-bold text-slate-800 text-sm mb-2">🍪 Preferencias de Cookies</h6>
+                                <p class="text-xs text-slate-600 mb-3">Continuar navegando implica aceptar nuestras cookies.</p>
+                                <div class="space-y-2 mb-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked disabled class="mr-2 w-4 h-4">
+                                        <label class="text-xs line-through decoration-1 text-slate-400">Cookies esenciales</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" checked class="mr-4 w-4 h-4 border-4 border-purple-200" style="border-color: #a855f7 !important;">
+                                        <label class="text-xs">Publicidad personalizada</label>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="col-span-2 w-full px-3 py-3 bg-purple-600 text-white text-base font-bold rounded shadow-lg hover:bg-purple-700">ACCEPT ALL 🟢</button>
+                                    <button class="opacity-20 text-[10px] px-2 py-1 bg-gray-100 text-gray-400 rounded hover:bg-gray-200">no thanks</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Patrones -->
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-3">⚠️ Patrones Sospechosos (Selecciona los presentes)</h4>
+                        <p class="text-xs text-slate-500 mb-3">Haz clic en cada patrón para marcarlo como encontrado.</p>
+                        
+                        <div class="space-y-2">
+                            <div id="pattern1" class="p-3 border rounded bg-white pattern-card flex justify-between items-center" onclick="foundPattern('p1')">
+                                <div>
+                                    <div class="font-bold text-slate-700 text-sm">📤 Casillas Premarcadas</div>
+                                    <div class="text-xs text-slate-500">Consentimiento sin acción explícita</div>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center" id="p1-icon">○</div>
+                            </div>
+                            <div id="pattern2" class="p-3 border rounded bg-white pattern-card flex justify-between items-center" onclick="foundPattern('p2')">
+                                <div>
+                                    <div class="font-bold text-slate-700 text-sm">👀 Botón Rechazar Oculto</div>
+                                    <div class="text-xs text-slate-500">Opacidad reducida, tamaño pequeño</div>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center" id="p2-icon">○</div>
+                            </div>
+                            <div id="pattern3" class="p-3 border rounded bg-white pattern-card flex justify-between items-center" onclick="foundPattern('p3')">
+                                <div>
+                                    <div class="font-bold text-slate-700 text-sm">🗣️ Lenguaje Engañoso</div>
+                                    <div class="text-xs text-slate-500">"Continuar implica aceptar" (sin opción clara)</div>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center" id="p3-icon">○</div>
+                            </div>
+                            <div id="pattern4" class="p-3 border rounded bg-white pattern-card flex justify-between items-center" onclick="foundPattern('p4')">
+                                <div>
+                                    <div class="font-bold text-slate-700 text-sm">⚡ Asimetría Visual</div>
+                                    <div class="text-xs text-slate-500">Aceptar mucho más destacado que Rechazar</div>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center" id="p4-icon">○</div>
+                            </div>
+                            <div id="pattern5" class="p-3 border rounded bg-white pattern-card flex justify-between items-center" onclick="foundPattern('p5')">
+                                <div>
+                                    <div class="font-bold text-slate-700 text-sm">🚫 Sin Panel Granular</div>
+                                    <div class="text-xs text-slate-500">Solo "Todo o Nada", sin opciones intermedias</div>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center" id="p5-icon">○</div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="submitPatterns()" class="mt-4 w-full py-2 bg-cyan-600 text-white rounded font-bold hover:bg-cyan-700 transition">Enviar Informe a CNIL</button>
+                    </div>
+                </div>
+
+                <div id="patternResult" class="hidden mt-6 p-6 rounded-lg border-2 text-center animate-fade-in bg-cyan-50 border-cyan-500 text-cyan-800 font-bold">
+                    <!-- Resultado dinámico -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: AUDITORÍA INSPECTORA -->
+        <section id="sec9" class="main-section hidden fade-in">
+            <div class="lab-header bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">3. Laboratorio: Auditoría Inspectora UE (AEPD/CNIL)</h2>
+                <p class="opacity-90">Actúa como inspector europeo. Valida cumplimiento de plazos, registros y derechos ARSOPL.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Panel de Control Inspector -->
+                    <div class="lg:col-span-1 space-y-3">
+                        <h4 class="font-bold text-slate-800 mb-3">📋 Checklist de Inspección</h4>
+                        
+                        <div id="check1" class="p-3 border rounded bg-white flex justify-between items-center" onclick="runCheck('logs')">
+                            <div>
+                                <div class="font-bold text-slate-700 text-sm">Verificar Logs de Consentimiento</div>
+                                <div class="text-xs text-slate-500">Timestamp + ID Usuario + Versión</div>
+                            </div>
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200">✓ Verificar</button>
+                        </div>
+
+                        <div id="check2" class="p-3 border rounded bg-white flex justify-between items-center" onclick="runCheck('arsopt')">
+                            <div>
+                                <div class="font-bold text-slate-700 text-sm">Prueba Derechos ARSOPL</div>
+                                <div class="text-xs text-slate-500">Tiempo de respuesta < 30 días</div>
+                            </div>
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200">✓ Ejecutar</button>
+                        </div>
+
+                        <div id="check3" class="p-3 border rounded bg-white flex justify-between items-center" onclick="runCheck('breach')">
+                            <div>
+                                <div class="font-bold text-slate-700 text-sm">Simular Notificación Brecha</div>
+                                <div class="text-xs text-slate-500">Plazo máximo 72 horas</div>
+                            </div>
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200">✓ Probar</button>
+                        </div>
+
+                        <div id="check4" class="p-3 border rounded bg-white flex justify-between items-center" onclick="runCheck('interface')">
+                            <div>
+                                <div class="font-bold text-slate-700 text-sm">Revisar Interfaz (UI)</div>
+                                <div class="text-xs text-slate-500">Ausencia de dark patterns</div>
+                            </div>
+                            <button class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded hover:bg-blue-200">✓ Auditar</button>
+                        </div>
+                        
+                        <button onclick="generateAuditReport()" class="mt-4 w-full py-2 bg-green-600 text-white rounded font-bold hover:bg-green-700 transition">Generar Informe Final</button>
+                    </div>
+
+                    <!-- Consola de Auditoría -->
+                    <div class="lg:col-span-2 bg-slate-900 rounded-xl p-6 text-white font-mono text-sm relative overflow-hidden">
+                        <div class="absolute top-2 right-2 text-xs text-slate-500">Terminal Inspectores UE</div>
+                        <div id="auditConsole" class="space-y-2 h-80 overflow-y-auto custom-scrollbar pr-2 audit-console">
+                            <div class="text-green-400">> Sistema de Auditoría Iniciado...</div>
+                            <div class="text-cyan-400">> Conectado a bases de datos AEPD & CNIL</div>
+                            <div class="text-yellow-400">> Esperando verificaciones del inspector...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="auditReport" class="hidden p-6 rounded-lg border-2 text-center animate-fade-in bg-green-50 border-green-500 text-green-800 font-bold">
+                    <!-- Informe generado -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(btn.id === 'btn-sec7' && sectionId !== 'sec7') btn.classList.add('text-red-400');
+                if(btn.id === 'btn-sec8' && sectionId !== 'sec8') btn.classList.add('text-blue-400');
+                if(btn.id === 'btn-sec9' && sectionId !== 'sec9') btn.classList.add('text-green-400');
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-red-400', 'text-blue-400', 'text-green-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // ==========================================
+        // LABORATORIO 1: CONSENTIMIENTO GRADUAL
+        // ==========================================
+        let optState = {
+            consentType: false,  // True = CASILLAS PREMARCADAS (INCORRECTO)
+            rejectEasy: true,    // True = OK
+            granular: true,      // True = OK
+            logs: true           // True = OK
+        };
+
+        function toggleOpt(type) {
+            const checkbox = document.getElementById(`check-${type.charAt(0).toLowerCase() + type.slice(1)}`);
+            checkbox.checked = !checkbox.checked;
+            optState[type] = checkbox.checked;
+            
+            const card = document.getElementById(`opt-${type}`);
+            if (!checkbox.checked) {
+                card.classList.remove('selected');
+                if (type === 'consentType') card.classList.add('error');
+            } else {
+                card.classList.add('selected');
+                card.classList.remove('error');
+            }
+        }
+
+        function validateConsent() {
+            const resultDiv = document.getElementById('validationResult');
+            resultDiv.className = "mt-4 p-4 rounded-lg border-2 text-center animate-fade-in";
+            
+            const errors = [];
+            const checks = [];
+            
+            // Validaciones
+            if (optState.consentType) {
+                errors.push("❌ CASILLAS PREMARCADAS: El silencio no es consentimiento válido (RGPD Art. 4)");
+                document.getElementById('check-consent').parentElement.classList.add('error');
+            } else {
+                checks.push("✅ Consentimiento activo requerido");
+            }
+            
+            if (!optState.rejectEasy) {
+                errors.push("❌ RECHAZAR DIFÍCIL: El botón de rechazo debe ser tan visible como aceptar");
+                document.getElementById('check-reject').parentElement.classList.add('error');
+            } else {
+                checks.push("✅ Rechazar accesible");
+            }
+            
+            if (!optState.granular) {
+                errors.push("❌ FALTA GRANULARIDAD: Opciones deben estar separadas por finalidad");
+            } else {
+                checks.push("✅ Consentimiento granular");
+            }
+            
+            if (!optState.logs) {
+                errors.push("❌ SIN TRAZABILIDAD: Los logs son obligatorios para demostrar cumplimiento");
+            } else {
+                checks.push("✅ Trazabilidad verificada");
+            }
+            
+            if (errors.length > 0) {
+                resultDiv.className += " bg-red-100 border-red-500 text-red-800";
+                resultDiv.innerHTML = `<h3 class='text-xl font-bold'>⚠️ CONFIGURACIÓN NO CONFORME</h3><p class='mt-2'>Se han detectado ${errors.length} incumplimientos:</p><ul class='list-disc list-inside text-sm mt-2 text-left'><li>${errors.join('</li><li>')}</li></ul>`;
+            } else {
+                resultDiv.className += " bg-green-100 border-green-500 text-green-800";
+                resultDiv.innerHTML = `<h3 class='text-xl font-bold'>✅ CONFIGURACIÓN RGPD VALIDADA</h3><p class='mt-2'>Cumplimiento verificable ante AEPD/EDPB. Sin riesgos de sanción.</p><ul class='list-disc list-inside text-sm mt-2 text-left'><li>${checks.join('</li><li>')}</li></ul>`;
+            }
+        }
+
+        // ==========================================
+        // LABORATORIO 2: DARK PATTERN HUNTER
+        // ==========================================
+        let foundPatterns = [];
+        const correctPatterns = ['p1', 'p2', 'p3', 'p4', 'p5'];
+
+        function foundPattern(patternId) {
+            const card = document.getElementById(patternId);
+            const icon = document.getElementById(`${patternId}-icon`);
+            
+            if (card.classList.contains('found')) return;
+            
+            card.classList.add('found');
+            icon.innerText = "✓";
+            icon.className = "w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center";
+            foundPatterns.push(patternId);
+            updateScore();
+        }
+
+        function updateScore() {
+            document.getElementById('patternScore').innerText = `${foundPatterns.length} / 5`;
+        }
+
+        function submitPatterns() {
+            const resultDiv = document.getElementById('patternResult');
+            
+            if (foundPatterns.length === 5) {
+                resultDiv.className = "mt-6 p-6 rounded-lg border-2 text-center animate-fade-in bg-green-50 border-green-500 text-green-800 font-bold";
+                resultDiv.innerHTML = "<h3 class='text-xl font-bold'>🏅 INFORME EXCELENTE A LA CNIL</h3><p class='mt-2'>Has identificado TODOS los dark patterns correctamente. Estructura conforme.</p>";
+            } else if (foundPatterns.length >= 3) {
+                resultDiv.className = "mt-6 p-6 rounded-lg border-2 text-center animate-fade-in bg-blue-50 border-blue-500 text-blue-800 font-bold";
+                resultDiv.innerHTML = `<h3 class='text-xl font-bold'>✅ INFORME ACEPTABLE</h3><p class='mt-2'>Has detectado ${foundPatterns.length}/5 patrones. Hay margen de mejora.</p>`;
+            } else {
+                resultDiv.className = "mt-6 p-6 rounded-lg border-2 text-center animate-fade-in bg-red-50 border-red-500 text-red-800 font-bold";
+                resultDiv.innerHTML = `<h3 class='text-xl font-bold'>❌ INFORME INCOMPLETO</h3><p class='mt-2'>Solo ${foundPatterns.length}/5 patrones identificados. Riesgo alto de sanción CNIL.</p>`;
+            }
+        }
+
+        // ==========================================
+        // LABORATORIO 3: AUDITORÍA INSPECTORA
+        // ==========================================
+        let auditChecks = {
+            logs: false,
+            arsopt: false,
+            breach: false,
+            interface: false
+        };
+
+        function runCheck(checkType) {
+            const consoleDiv = document.getElementById('auditConsole');
+            let message = "";
+            let color = "text-slate-400";
+            
+            switch(checkType) {
+                case 'logs':
+                    message = "> VERIFICANDO LOGS DE CONSENTIMIENTO...<br>> ✅ Timestamps válidos (RFC 3339)<br>> ✅ ID usuario asociados<br>> ✅ Versiones políticas registradas";
+                    color = "text-green-400";
+                    auditChecks.logs = true;
+                    break;
+                case 'arsopt':
+                    message = "> SIMULANDO SOLICITUD ARSOPL...<br>> ⏱️ Respuesta en 14 días hábiles<br>> ✅ Cumple plazo legal (< 30 días)<br>> ✅ Trazabilidad de solicitud completa";
+                    color = "text-green-400";
+                    auditChecks.arsopt = true;
+                    break;
+                case 'breach':
+                    message = "> SIMULANDO NOTIFICACIÓN DE BRECHA...<br>> ⚠️ Detección: Hace 48 horas<br>> ✅ Notificación dentro de 72h<br>> ✅ Documentación técnica adjunta";
+                    color = "text-yellow-400";
+                    auditChecks.breach = true;
+                    break;
+                case 'interface':
+                    message = "> AUDITANDO INTERFAZ USUARIO...<br>> ✅ Ausencia de dark patterns<br>> ✅ Botones equivalentes<br>> ✅ Textos informativos claros";
+                    color = "text-green-400";
+                    auditChecks.interface = true;
+                    break;
+            }
+            
+            const div = document.createElement('div');
+            div.className = color;
+            div.innerHTML = message;
+            consoleDiv.appendChild(div);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        function generateAuditReport() {
+            const reportDiv = document.getElementById('auditReport');
+            const completed = Object.values(auditChecks).filter(v => v).length;
+            
+            if (completed === 4) {
+                reportDiv.className = "mt-6 p-6 rounded-lg border-2 text-center animate-fade-in bg-green-50 border-green-500 text-green-800 font-bold";
+                reportDiv.innerHTML = "<h3 class='text-xl font-bold'>🏆 INFORME FINAL: CUMPLIMIENTO TOTAL</h3><p class='mt-2'>La organización ha superado la inspección europea. Sin observaciones críticas.</p><p class='text-sm mt-2'>Inspeccionado por: AEPD-CNIL Joint Team - Ref: EU-AUDIT-2024-001</p>";
+            } else {
+                reportDiv.className = "mt-6 p-6 rounded-lg border-2 text-center animate-fade-in bg-yellow-50 border-yellow-500 text-yellow-800 font-bold";
+                reportDiv.innerHTML = `<h3 class='text-xl font-bold'>⚠️ INFORME PARCIAL: OBSERVACIONES DETECTADAS</h3><p class='mt-2'>${4 - completed} áreas requieren corrección antes de próxima visita.</p><p class='text-sm mt-2'>Inspeccionado por: AEPD-CNIL Joint Team - Ref: EU-AUDIT-2024-001</p>`;
+            }
+        }
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec7');
+        };
+    </script>
+</body>
+</html>
