@@ -997,6 +997,325 @@
             </div>
         </section>
 
+                <!-- ========================================== -->
+        <!-- UNIDAD 4: SISTEMAS CORTAFUEGOS (COMPLETA) -->
+        <!-- ========================================== -->
+        <section id="ud04" class="unit-section hidden fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">4. Sistemas cortafuegos</h2>
+                <p class="text-slate-600 mt-2">Control de tráfico, políticas de seguridad, NAT y segmentación de red.</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 7: REGLAS FIREWALL PERIMETRAL (VISIBLE) -->
+            <div id="ud04-case1" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-rose-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 07</span>
+                                <h3 class="text-2xl font-bold mb-2">Diseño de Políticas de Seguridad Perimetral</h3>
+                                <p class="opacity-90">Configuración de un firewall Next-Generation (NGFW) para proteger la red corporativa, definiendo reglas de entrada/salida y zonas DMZ.</p>
+                            </div>
+                            <i class="ph ph-shield-check text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Permitir/Denegar tráfico por IP/Puerto, Inspección estado (Stateful), Bloqueo ataques DoS, Registro (Logging) de tráfico denegado, Control de aplicaciones (Layer 7).</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Throughput > 1 Gbps, Latencia < 1ms, Disponibilidad 99.99% (HA Active-Active), Capacidad logs ≥ 6 meses, Tiempos de respuesta a incidentes < 5s.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">Paquetes (Packet Filter), Stateful Inspection, Application Layer Filtering (Layer 7), IPS integrado, SSL/TLS Decryption, Zone-Based Policy.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">Reglamento ePrivacy (Conservación logs), ENS (Nivel Medio/Alto), LOPDGDD (Protección datos empleados), PCI-DSS (Segmentación red pagos).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Evaluación de Reglas</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                    <circle cx="20" cy="100" r="30" fill="#e11d48" class="flow-node"/>
+                                    <text x="20" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">PAQUETE</text>
+                                    
+                                    <rect x="100" y="70" width="80" height="60" rx="5" fill="#f59e0b" class="flow-node"/>
+                                    <text x="140" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">CHECK LISTA</text>
+
+                                    <polygon points="200,70 240,100 200,130" fill="#dc2626" class="flow-node"/>
+                                    <text x="220" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">¿REGLA MATCH?</text>
+
+                                    <rect x="270" y="70" width="80" height="60" rx="5" fill="#10b981" class="flow-node"/>
+                                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">ACCION: ALLOW/DENY</text>
+
+                                    <line x1="50" y1="100" x2="100" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="180" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="240" y1="100" x2="270" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    
+                                    <text x="140" y="90" fill="#64748b" font-size="8">No → Siguiente regla</text>
+                                    <text x="220" y="145" fill="#64748b" font-size="8">Default Deny All</text>
+                                </svg>
+                                <div class="mt-2 text-xs text-slate-500 italic text-center">Lógica de evaluación secuencial de reglas (Top-down)</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Reglas Activas</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">142</div>
+                                    <div class="text-xs text-green-600 mt-1">Optimizadas sin conflictos</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Bloqueos Diarios</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">85k+</div>
+                                    <div class="text-xs text-blue-600 mt-1">Tentativas escaneo/bloqueo</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Inspección SSL</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">Activa</div>
+                                    <div class="text-xs text-purple-600 mt-1">Deep Packet Inspection</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Respuesta</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">< 1ms</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 98%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 8: NAT Y PORT FORWARDING (VISIBLE) -->
+            <div id="ud04-case2" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-teal-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 08</span>
+                                <h3 class="text-2xl font-bold mb-2">Implementación de NAT y Port Forwarding Seguro</h3>
+                                <p class="opacity-90">Configuración de traducción de direcciones (NAT/SNAT/DNAT) para expor servicios internos (Web, SSH) de forma segura y ocultar la red interna.</p>
+                            </div>
+                            <i class="ph ph-arrows-left-right text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Traducir IPs privadas a públicas (SNAT), Redirigir puertos específicos (DNAT/Port Forwarding), Ocultar topología interna, Gestionar conexiones salientes múltiples.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Concurrencia máxima sesiones > 1M, Tiempo de vida sesión TCP/UDP configurable, Overhead CPU < 2%, Sin pérdida de paquetes en alta carga.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">Masquerading (SNAT Dinámico), Static NAT (1:1), PAT (Port Address Translation), Hairpinning (NAT Loopback), ALG (Application Layer Gateway) para FTP/SIP.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">Reserva de direcciones IPv4/RIR, Normativa de telecomunicaciones, Cumplimiento auditorías de red, Política de uso aceptable (AUP).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUZO) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Traducción NAT</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                    <circle cx="20" cy="100" r="30" fill="#0d9488" class="flow-node"/>
+                                    <text x="20" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">CLIENTE</text>
+                                    
+                                    <rect x="100" y="70" width="80" height="60" rx="5" fill="#f59e0b" class="flow-node"/>
+                                    <text x="140" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">VER REGLA DNAT</text>
+
+                                    <polygon points="200,70 240,100 200,130" fill="#0891b2" class="flow-node"/>
+                                    <text x="220" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">¿PUERTO EXTERNO?</text>
+
+                                    <rect x="270" y="70" width="80" height="60" rx="5" fill="#10b981" class="flow-node"/>
+                                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">REESCRIBIR + ENCAMINAR</text>
+
+                                    <line x1="50" y1="100" x2="100" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="180" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="240" y1="100" x2="270" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    
+                                    <text x="140" y="90" fill="#64748b" font-size="8">Sí</text>
+                                    <text x="220" y="145" fill="#64748b" font-size="8">No → SNAT salida</text>
+                                </svg>
+                                <div class="mt-2 text-xs text-slate-500 italic text-center">Transformación de cabeceras IP (Origen/Destino)</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Sesiones Activas</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">45k</div>
+                                    <div class="text-xs text-green-600 mt-1">Capacidad total: 1M</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Puertos Expuestos</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">3</div>
+                                    <div class="text-xs text-blue-600 mt-1">Web(443), SSH(22), Mail(25)</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Seguridad Externa</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">✓ Alta</div>
+                                    <div class="text-xs text-purple-600 mt-1">IP Interna oculta</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Eficiencia NAT</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">99%</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 99%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud04-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-rose-800 to-teal-800 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Patrón Global</span>
+                            <h3 class="text-xl font-bold mb-2">🛡️ Respuestas Tipo: Cortafuegos y NAT</h3>
+                            <p class="text-slate-300 text-sm">Guía rápida para preguntas sobre protección perimetral y gestión de tráfico.</p>
+                        </div>
+                        <i class="ph ph-fire text-5xl opacity-80"></i>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3 flex items-center"><i class="ph ph-sparkle mr-2"></i>Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>Principio Mínimo Privilegio:</strong> "Deny All" por defecto, solo permitir lo explícitamente necesario.</li>
+                            <li><strong>Zonas de Seguridad:</strong> LAN (Trusted), WAN (Untrusted), DMZ (Semi-trusted). Niveles de confianza distintos.</li>
+                            <li><strong>Inspección de Estado (Stateful):</strong> El firewall recuerda el contexto de la conexión (no solo paquetes sueltos).</li>
+                            <li><strong>Diferencia NAT vs Firewall:</strong> NAT oculta/trasladan IPs; Firewall decide permitir/denegar tráfico basado en reglas.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3 flex items-center"><i class="ph ph-gear mr-2"></i>Tecnologías y Conceptos</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>NAT Tipos:</strong> SNAT (Source - Saliente), DNAT (Destino - Entrante/Port Forwarding), Masquerading (Dinámico).</li>
+                            <li><strong>NGFW (Next Gen):</strong> Capa 7 (App-aware), DLP integrado, IPS/IDS, Identidad de usuario (User-ID).</li>
+                            <li><strong>Hairpinning:</strong> Acceder al servicio interno desde dentro usando la IP pública (loopback NAT).</li>
+                            <li><strong>High Availability (HA):</strong> Clusters Activo-Activo o Activo-Pasivo para redundancia.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-teal-50 p-6 rounded-xl border border-teal-200 mb-6">
+                    <h4 class="font-bold text-teal-800 mb-3 flex items-center"><i class="ph ph-table mr-2"></i>Tipos de Cortafuegos Evolutivos</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-teal-100 text-teal-900 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2">Tipo</th>
+                                    <th class="px-3 py-2">Capas OSI</th>
+                                    <th class="px-3 py-2">Característica</th>
+                                    <th class="px-3 py-2">Ventaja/Desventaja</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-teal-100">
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Estático</td>
+                                    <td class="px-3 py-2">Red/Transporte (3-4)</td>
+                                    <td class="px-3 py-2">Filtrado por IP/Puerto simple</td>
+                                    <td class="px-3 py-2">+ Rápido / - Poco seguro</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Stateful</td>
+                                    <td class="px-3 py-2">Red/Transporte (3-4)</td>
+                                    <td class="px-3 py-2">Memoria de estado de conexión</td>
+                                    <td class="px-3 py-2">+ Más seguro / - Mayor CPU</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Proxy/App</td>
+                                    <td class="px-3 py-2">Aplicación (7)</td>
+                                    <td class="px-3 py-2">Intermediario, entiende protocolo</td>
+                                    <td class="px-3 py-2">+ Muy seguro / - Latencia alta</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">NGFW</td>
+                                    <td class="px-3 py-2">2-7 (Todo)</td>
+                                    <td class="px-3 py-2">IPS, App Control, User-ID</td>
+                                    <td class="px-3 py-2">+ Completo / - Costoso</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                    <h4 class="font-bold text-amber-800 mb-3 flex items-center"><i class="ph ph-warning mr-2"></i>Errores Comunes en Configuración</h4>
+                    <ol class="list-decimal list-inside text-sm text-amber-900 space-y-1">
+                        <li><strong>"Any/Any" permisivo:</strong> NUNCA poner una regla que permita todo sin motivo específico. Rompe el principio de menor privilegio.</li>
+                        <li><strong>Orden de reglas incorrecto:</strong> Las reglas se evalúan de arriba a abajo. Si ponas "Deny Todo" arriba, las permitidas abajo nunca se usan.</li>
+                        <li><strong>NAT sin Firewall:</strong> La NAT no es un método de seguridad por sí mismo (no es un firewall). Siempre debe combinarse con reglas de acceso.</li>
+                        <li><strong>Olvidar la regla de retorno:</strong> En firewalls stateful suele ser automático, pero en filtros estáticos debes permitir el tráfico de respuesta explícitamente.</li>
+                        <li><strong>No auditar logs:</strong> Un firewall sin logging es ciego ante intentos de intrusión o malas configuraciones.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
+            <i class="ph ph-info text-4xl mb-2"></i>
+            <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
+        </div>
+        
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
             <i class="ph ph-info text-4xl mb-2"></i>
             <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
