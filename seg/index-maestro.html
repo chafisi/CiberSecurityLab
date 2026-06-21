@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soluciones Maestras - Seguridad Informática (UD01-UD12)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconos Phosphor -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        /* Animaciones */
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Estilos específicos */
+        .nav-item.active { background-color: #eff6ff; color: #1d4ed8; border-right: 4px solid #1d4ed8; font-weight: bold; }
+        .nav-category { text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        /* Visual Elements */
+        .matrix-row:nth-child(even) { background-color: #f8fafc; }
+        .flow-node { transition: all 0.3s; }
+        .flow-node:hover { transform: scale(1.05); z-index: 10; }
+        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- MENU LATERAL -->
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col h-full shadow-lg z-40 shrink-0">
+        <div class="p-6 border-b border-slate-200 bg-slate-900 text-white">
+            <h1 class="text-xl font-black tracking-tight">Soluciones <span class="text-blue-400">Maestras</span></h1>
+            <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Guía Integral UD01-12</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <!-- Generado dinámicamente o hardcodeado para control total -->
+                
+                <!-- UNIDAD 1 -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category">1. Introducción</li>
+                <li class="nav-item"><button onclick="switchUnit('ud01')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Introducción a la seguridad</button></li>
+                <li class="nav-item hidden submenu-ud01 pl-8"><button onclick="showCase('ud01-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP01: Ransomware</button></li>
+                <li class="nav-item hidden submenu-ud01 pl-8"><button onclick="showCase('ud01-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP02: Fuga de Datos</button></li>
+                <li class="nav-item hidden submenu-ud01 pl-8"><button onclick="showPattern('ud01-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 2 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">2. Criptografía</li>
+                <li class="nav-item"><button onclick="switchUnit('ud02')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Criptografía y Seguridad</button></li>
+                <li class="nav-item hidden submenu-ud02 pl-8"><button onclick="showCase('ud02-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP03: Cifrado Simétrico</button></li>
+                <li class="nav-item hidden submenu-ud02 pl-8"><button onclick="showCase('ud02-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP04: Cifrado Asimétrico</button></li>
+                <li class="nav-item hidden submenu-ud02 pl-8"><button onclick="showPattern('ud02-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 3 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">3. Cifrado en Práctica</li>
+                <li class="nav-item"><button onclick="switchUnit('ud03')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Cifrado y autenticación</button></li>
+                <li class="nav-item hidden submenu-ud03 pl-8"><button onclick="showCase('ud03-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP05: PKI / CA</button></li>
+                <li class="nav-item hidden submenu-ud03 pl-8"><button onclick="showCase('ud03-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP06: Firma Digital</button></li>
+                <li class="nav-item hidden submenu-ud03 pl-8"><button onclick="showPattern('ud03-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 4 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">4. Cortafuegos</li>
+                <li class="nav-item"><button onclick="switchUnit('ud04')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Sistemas cortafuegos</button></li>
+                <li class="nav-item hidden submenu-ud04 pl-8"><button onclick="showCase('ud04-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP07: Reglas Firewall</button></li>
+                <li class="nav-item hidden submenu-ud04 pl-8"><button onclick="showCase('ud04-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP08: NAT</button></li>
+                <li class="nav-item hidden submenu-ud04 pl-8"><button onclick="showPattern('ud04-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 5 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">5. IDS/IPS</li>
+                <li class="nav-item"><button onclick="switchUnit('ud05')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Detección de intrusiones</button></li>
+                <li class="nav-item hidden submenu-ud05 pl-8"><button onclick="showCase('ud05-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP09: Detección Firmas</button></li>
+                <li class="nav-item hidden submenu-ud05 pl-8"><button onclick="showCase('ud05-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP10: Anomalías</button></li>
+                <li class="nav-item hidden submenu-ud05 pl-8"><button onclick="showPattern('ud05-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 6 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">6. Capa Red</li>
+                <li class="nav-item"><button onclick="switchUnit('ud06')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Seguridad en capa comunicación</button></li>
+                <li class="nav-item hidden submenu-ud06 pl-8"><button onclick="showCase('ud06-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP11: IPsec / Túneles</button></li>
+                <li class="nav-item hidden submenu-ud06 pl-8"><button onclick="showCase('ud06-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP12: Protección DoS</button></li>
+                <li class="nav-item hidden submenu-ud06 pl-8"><button onclick="showPattern('ud06-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 7 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">7. Capa Aplicación</li>
+                <li class="nav-item"><button onclick="switchUnit('ud07')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Seguridad en capa aplicación</button></li>
+                <li class="nav-item hidden submenu-ud07 pl-8"><button onclick="showCase('ud07-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP13: OWASP SQLi</button></li>
+                <li class="nav-item hidden submenu-ud07 pl-8"><button onclick="showCase('ud07-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP14: XSS / CSRF</button></li>
+                <li class="nav-item hidden submenu-ud07 pl-8"><button onclick="showPattern('ud07-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 8 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">8. Codificación Fuente</li>
+                <li class="nav-item"><button onclick="switchUnit('ud08')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Codificación de la fuente</button></li>
+                <li class="nav-item hidden submenu-ud08 pl-8"><button onclick="showCase('ud08-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP15: Compresión Sin Pérdida</button></li>
+                <li class="nav-item hidden submenu-ud08 pl-8"><button onclick="showCase('ud08-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP16: Compresión Con Pérdida</button></li>
+                <li class="nav-item hidden submenu-ud08 pl-8"><button onclick="showPattern('ud08-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 9 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">9. Compresión/Canal</li>
+                <li class="nav-item"><button onclick="switchUnit('ud09')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Compresión y Codificación Canal</button></li>
+                <li class="nav-item hidden submenu-ud09 pl-8"><button onclick="showCase('ud09-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP17: SGSI / Riesgos</button></li>
+                <li class="nav-item hidden submenu-ud09 pl-8"><button onclick="showCase('ud09-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP18: Continuidad Negocio</button></li>
+                <li class="nav-item hidden submenu-ud09 pl-8"><button onclick="showPattern('ud09-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 10 (Esqueleto) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">10. Gestión Seg.</li>
+                <li class="nav-item"><button onclick="switchUnit('ud10')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Gestión de la Seguridad</button></li>
+                <li class="nav-item hidden submenu-ud10 pl-8"><button onclick="showCase('ud10-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP19: Normativa Andorra</button></li>
+                <li class="nav-item hidden submenu-ud10 pl-8"><button onclick="showCase('ud10-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP20: Inf. Críticas</button></li>
+                <li class="nav-item hidden submenu-ud10 pl-8"><button onclick="showPattern('ud10-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 11 (Completas) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">11. Legislación Andorra</li>
+                <li class="nav-item"><button onclick="switchUnit('ud11')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Sistema legislativo AD</button></li>
+                <li class="nav-item hidden submenu-ud11 pl-8"><button onclick="showCase('ud11-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP21: Sanción APDA</button></li>
+                <li class="nav-item hidden submenu-ud11 pl-8"><button onclick="showCase('ud11-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP22: Europol</button></li>
+                <li class="nav-item hidden submenu-ud11 pl-8"><button onclick="showPattern('ud11-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+
+                <!-- UNIDAD 12 (Completas) -->
+                <li class="px-4 pt-4 pb-1 text-xs font-bold text-slate-500 nav-category mt-4">12. Comparativa UE</li>
+                <li class="nav-item"><button onclick="switchUnit('ud12')" class="unit-btn w-full text-left px-6 py-2 hover:bg-slate-50 transition border-l-4 border-transparent text-sm">Comparativas legislativas EU</button></li>
+                <li class="nav-item hidden submenu-ud12 pl-8"><button onclick="showCase('ud12-case1')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP23: RGPD España</button></li>
+                <li class="nav-item hidden submenu-ud12 pl-8"><button onclick="showCase('ud12-case2')" class="case-btn w-full text-left px-6 py-1 hover:bg-blue-50 text-xs text-blue-700">CP24: CNIL Francia</button></li>
+                <li class="nav-item hidden submenu-ud12 pl-8"><button onclick="showPattern('ud12-pat')" class="pattern-btn w-full text-left px-6 py-1 hover:bg-amber-50 text-xs text-amber-700">📋 Patrón Global</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-8 relative custom-scrollbar" id="mainContent">
+        
+        <!-- ========================================== -->
+        <!-- UNIDAD 1: INTRODUCCIÓN (COMPLETA Y EJEMPLO) -->
+        <!-- ========================================== -->
+        <section id="ud01" class="unit-section fade-in">
+            <div class="mb-8 pb-4 border-b border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800">1. Introducción a la Seguridad Informática</h2>
+                <p class="text-slate-600 mt-2">Fundamentos, triángulo CIA y gestión inicial de riesgos.</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 1: RANSOMWARE (RELLENO COMPLETO) -->
+            <div id="ud01-case1" class="case-container block">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+                    <div class="bg-red-600 text-white p-6">
+                        <h3 class="text-2xl font-bold mb-2">Caso Práctico 1: Análisis y Respuesta ante Ransomware</h3>
+                        <p class="opacity-90">Una empresa de logística sufre un ataque de ransomware que cifra sus servidores de base de datos y bloquea el acceso a la red.</p>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Aislar infectados, Bloquear tráfico C2, Restaurar desde backup, Notificar a autoridades.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">RTO &lt; 4h (Tiempo recuperación), RPO = 24h (Pérdida datos máx), Disponibilidad &gt; 99.9% post-incidente.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">EDR (Endpoint Detection), Network Segmentation (VLANs), Backups inmutables, SIEM log analysis.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">RGPD (Notificación brecha 72h), ENS (Nivel Alto), Ley de ciberseguridad nacional.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Respuesta</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner">
+                                <!-- SVG Flow Diagram Simple -->
+                                <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                    <!-- Nodes -->
+                                    <circle cx="20" cy="100" r="30" fill="#ef4444" class="flow-node"/>
+                                    <text x="20" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">DETECCIÓN</text>
+                                    
+                                    <rect x="100" y="70" width="80" height="60" rx="5" fill="#f59e0b" class="flow-node"/>
+                                    <text x="140" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">AISLAR</text>
+
+                                    <polygon points="200,70 240,100 200,130" fill="#3b82f6" class="flow-node"/>
+                                    <text x="220" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">¿BACKUP?</text>
+
+                                    <rect x="270" y="70" width="80" height="60" rx="5" fill="#10b981" class="flow-node"/>
+                                    <text x="310" y="105" text-anchor="middle" fill="white" font-size="10" font-weight="bold">RESTAURAR</text>
+
+                                    <!-- Arrows -->
+                                    <line x1="50" y1="100" x2="100" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="180" y1="100" x2="200" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    <line x1="240" y1="100" x2="270" y2="100" stroke="#cbd5e1" stroke-width="2"/>
+                                    
+                                    <!-- Labels on arrows -->
+                                    <text x="140" y="90" fill="#64748b" font-size="8">Sí</text>
+                                    <text x="220" y="145" fill="#64748b" font-size="8">No → Investigar</text>
+                                </svg>
+                                <div class="mt-2 text-xs text-slate-500 italic text-center">Diagrama simplificado del flujo de contención</div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Logs Verificados</div>
+                                    <div class="text-2xl font-bold text-green-600 mt-1">100%</div>
+                                    <div class="text-xs text-green-600 mt-1">Sin falsos positivos</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Tiempo Respuesta</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">2h 15m</div>
+                                    <div class="text-xs text-blue-600 mt-1">Objetivo: &lt; 4h</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Integridad Hash</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">✓ OK</div>
+                                    <div class="text-xs text-purple-600 mt-1">Backups validados</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Conformidad Global</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">85%</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 2: FUGA DATOS (ESQUELETO PARA TÚ) -->
+            <div id="ud01-case2" class="case-container hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-6">
+                    <div class="bg-amber-600 text-white p-6 mb-4">
+                        <h3 class="text-2xl font-bold mb-2">Caso Práctico 2: Fuga de Datos (Insider Threat)</h3>
+                        <p class="opacity-90">Empleado descontento descargando bases de datos de clientes antes de ser despedido.</p>
+                    </div>
+                    <!-- AQUI INCORPORAS EL CÓDIGO DEL CASO 2 -->
+                    <div class="p-4 bg-slate-50 rounded border border-dashed border-slate-300 text-center text-slate-500">
+                        <i class="ph ph-code text-3xl mb-2"></i>
+                        <p>Pegar aquí la estructura completa (Matriz, Flujo, Dashboard) similar al Caso 1.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud01-pat" class="pattern-container hidden">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global de Respuesta: Introducción a la Seguridad</h3>
+                    <p class="text-slate-300 text-sm">Usa esta plantilla para responder a cualquier pregunta general sobre fundamentos de seguridad.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3">💡 Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li><strong>Triángulo CIA:</strong> Confidencialidad, Integridad, Disponibilidad (siempre mencionarlos).</li>
+                            <li><strong>Gestión de Riesgos:</strong> Identificar, Evaluar, Tratar, Monitorizar.</li>
+                            <li><strong>Respuesta Incidentes:</strong> Preparación, Detección, Contención, Erradicación, Recuperación, Lecciones aprendidas.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3">⚙️ Ejemplos de Tecnologías Base</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>Cortafuegos (Perimetral/Host-based).</li>
+                            <li>Antivirus/EDR básicos.</li>
+                            <li>Políticas de Contraseñas (MFA básico).</li>
+                            <li>Backups físicos y lógicos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botones de Navegación Interna UD1 -->
+            <div class="mt-8 flex justify-end space-x-2">
+                <button onclick="document.getElementById('ud01-case1').classList.remove('hidden'); document.getElementById('ud01-case2').classList.add('hidden'); document.getElementById('ud01-pat').classList.add('hidden');" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 rounded text-sm font-bold">📋 Volver al Índice</button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- UNIDAD 2: CRIPTOGRAFÍA (ESQUELETO) -->
+        <!-- ========================================== -->
+        <section id="ud02" class="unit-section hidden fade-in">
+            <div class="mb-8 pb-4 border-b border-slate-200">
+                <h2 class="text-3xl font-bold text-slate-800">2. Criptografía y Seguridad</h2>
+                <p class="text-slate-600 mt-2">Algoritmos, claves y protección de información.</p>
+            </div>
+
+            <div class="p-8 bg-amber-50 rounded-xl border-2 border-amber-200 text-center">
+                <h3 class="text-2xl font-bold text-amber-800 mb-4">🏗️ Estructura Lista para Rellenar</h3>
+                <p class="text-amber-700 mb-6">Aquí irán los casos 3 y 4. Copia y pega la estructura del Caso 1 de la Unidad 1 y adapta los contenidos técnicos (AES, RSA, etc.).</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto text-left">
+                    <div class="bg-white p-4 rounded shadow border-l-4 border-red-500">
+                        <strong>Caso 3: Cifrado Simétrico</strong>
+                        <p class="text-xs mt-2 text-slate-500">Matriz (DES/AES), Flujo (Key Exchange), Dashboard (Fuerza Bruta).</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow border-l-4 border-blue-500">
+                        <strong>Caso 4: Cifrado Asimétrico</strong>
+                        <p class="text-xs mt-2 text-slate-500">Matriz (RSA/ECC), Flujo (PKI), Dashboard (Validación Firma).</p>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow border-l-4 border-yellow-500">
+                        <strong>Patrón Global</strong>
+                        <p class="text-xs mt-2 text-slate-500">Claves Públicas/Privadas, Hashing, No repudio.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Aquí insertarás el código real más tarde -->
+        </section>
+
+        <!-- NOTA: Las unidades 3 a 12 seguirán el mismo patrón que la UD02. 
+             Solo debes ocultar/showear según el ID. 
+             He dejado la UD11 y UD12 listas para recibir tus archivos completados si los tienes, 
+             o puedes usar esta plantilla base para todos. -->
+
+        <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm">
+            Selecciona una unidad del menú lateral para ver su contenido.
+        </div>
+
+    </main>
+
+    <script>
+        // Lógica de Navegación
+        function switchUnit(unitId) {
+            // Ocultar todas las unidades
+            document.querySelectorAll('.unit-section').forEach(el => el.classList.add('hidden'));
+            // Mostrar la seleccionada
+            const selectedSection = document.getElementById(unitId);
+            if(selectedSection) {
+                selectedSection.classList.remove('hidden');
+                // Reset submenús (opcional, si quieres que se cierren)
+                document.querySelectorAll('.submenu-' + unitId).forEach(el => el.style.display = 'block');
+            }
+        }
+
+        function showCase(caseId) {
+            // Primero mostrar la unidad padre
+            const parts = caseId.split('-');
+            switchUnit(parts[0]);
+            
+            // Ocultar otros casos y patrones en esa unidad
+            const parentContainer = document.getElementById(parts[0]);
+            parentContainer.querySelectorAll('.case-container, .pattern-container').forEach(el => el.classList.add('hidden'));
+            
+            // Mostrar el caso específico
+            const target = document.getElementById(caseId);
+            if(target) {
+                target.classList.remove('hidden');
+                // Scroll suave
+                target.scrollIntoView({behavior: "smooth", block: "start"});
+            }
+        }
+
+        function showPattern(patternId) {
+            const parts = patternId.split('-');
+            switchUnit(parts[0]);
+            
+            // Ocultar casos
+            const parentContainer = document.getElementById(parts[0]);
+            parentContainer.querySelectorAll('.case-container').forEach(el => el.classList.add('hidden'));
+            
+            // Mostrar patrón
+            const target = document.getElementById(patternId);
+            if(target) {
+                target.classList.remove('hidden');
+                target.scrollIntoView({behavior: "smooth", block: "start"});
+            }
+        }
+
+        // Inicializar: Mostrar Unidad 1 por defecto
+        window.onload = function() {
+            switchUnit('ud01');
+        };
+    </script>
+</body>
+</html>
