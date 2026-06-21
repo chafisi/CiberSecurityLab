@@ -385,116 +385,102 @@
             </div>
 
             <!-- CASO PRÁCTICO 3: DES -->
-            <div id="ud01-case3" class="case-container">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-
-                    <div id="ud01-pat" class="pattern-container">
-                        <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
-                            <h3 class="text-xl font-bold mb-2">🏥 Caso Práctico 3: Ataque al algoritmo DES y transición hacia AES</h3>
-                            <p class="text-slate-300 text-sm">Durante más de dos décadas, DES fue el estándar. Con clave de 56 bits, quedó obsoleto. En 1998, EFF demostró que DES podía romperse en menos de 3 días. Esto aceleró la adopción de AES (claves 128, 192, 256 bits) por parte del NIST en 2001.</p>
+            <div id="ud01-case4" class="case-container hidden mb-8">
+                <div id="ud04-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🛡️ Caso Práctico 4: Brecha por certificados falsificados (DigiNotar)</h3>
+                    <p class="text-slate-300 text-sm">Análisis visual de la protección de infraestructuras PKI, matriz de requisitos de validación, flujo de verificación de certificados y panel de auditoría (Certificate Transparency y OCSP/CRL).</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                    <li>Validar certificados (OCSP/CRL)</li>
+                                    <li>Registrar intentos de emisión/acceso</li>
+                                    <li>Alertas ante dominios no autorizados</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                    <li>Alta disponibilidad (OCSP, CRL)</li>
+                                    <li>Baja latencia en verificación</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                    <li>Certificate Transparency y monitorización de logs públicos</li>
+                                    <li>Endurecer CA: HSM, MFA y aislamiento estricto</li>
+                                    <li>Segmentar red para el entorno de emisión</li>
+                                </ul>
+                            </div>
                         </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Validación de Certificado</h4>
+                        <div class="flex flex-col space-y-2 text-xs font-mono">
+                            <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                <span>Actor: Navegador web / Dispositivo</span>
+                            </div>
                             
-                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                                <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
-                                <div class="grid grid-cols-2 gap-3 text-xs">
-                                    <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
-                                        <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
-                                        <ul class="list-disc pl-4 text-green-900 space-y-1">
-                                            <li>Monitorizar correos (Phishing)</li>
-                                            <li>Aislar actividad sospechosa</li>
-                                            <li>Mantener backups restaurables</li>
-                                            <li>Alertar anomalías clínicas</li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
-                                        <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
-                                        <ul class="list-disc pl-4 text-blue-900 space-y-1">
-                                            <li>Disponibilidad > 99,5%</li>
-                                            <li>RTO < X horas (Restauración)</li>
-                                            <li>SLA Alertas < 5 minutos</li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg">
-                                        <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
-                                        <ul class="list-disc pl-4 text-purple-900 space-y-1">
-                                            <li>Segmentación (Clínica/IoT/Admin)</li>
-                                            <li>EDR y Antimalware</li>
-                                            <li>Backups cifrados múltiple punto</li>
-                                            <li>Parcheo automatizado</li>
-                                        </ul>
-                                    </div>
-                                    <div class="bg-orange-50 border border-orange-200 p-3 rounded-lg">
-                                        <div class="font-bold text-orange-800 mb-2 flex items-center gap-1"><span>🟠</span> LEGALES</div>
-                                        <ul class="list-disc pl-4 text-orange-900 space-y-1">
-                                            <li>RGPD/HIPAA (Brecha < 72h)</li>
-                                            <li>Preservación de evidencias (Forense)</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                            <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">🌐 Usuario accede a sitio HTTPS</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">📄 Navegador recibe certificado del servidor</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-purple-100 border border-purple-300 p-2 rounded text-center font-bold text-purple-800">🔗 Valida cadena de confianza (CA Raíz)</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🔍 Consulta estado mediante OCSP o CRL</div>
+                            <div class="text-center text-slate-400">⬇️</div>
+                            <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Establece conexión cifrada (Válido)</div>
+                            
+                            <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                <div class="flex justify-between items-center mb-1"><span>❌ Certificado Revocado</span> <span>➔ 🛑 Conexión Bloqueada</span></div>
+                                <div class="flex justify-between items-center"><span>💀 CA Comprometida</span> <span>➔ 🚫 Advertencia crítica y bloqueo</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                            
+                            <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">📜</span>
+                                <span class="text-xs font-bold text-slate-700 uppercase">Transparency Logs</span>
+                                <span class="text-[11px] text-slate-500 mt-1">Supervisión continua de registros públicos (CT)</span>
                             </div>
 
-                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                                <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Respuesta (Ransomware)</h4>
-                                <div class="flex flex-col space-y-2 text-xs font-mono">
-                                    <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
-                                        <span>Actor: SOC / Equipo de Seguridad</span>
-                                    </div>
-                                    
-                                    <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">👁️ Detección (Cifrado masivo)</div>
-                                    <div class="text-center text-slate-400">⬇️</div>
-                                    <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🛡️ Aislamiento EDR Automático</div>
-                                    <div class="text-center text-slate-400">⬇️</div>
-                                    <div class="bg-red-100 border border-red-300 p-2 rounded text-center font-bold text-red-800">🚨 Alerta Inmediata al SOC</div>
-                                    <div class="text-center text-slate-400">⬇️</div>
-                                    <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">⚙️ Activar Protocolo Contención</div>
-                                    <div class="text-center text-slate-400">⬇️</div>
-                                    <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Restauración desde Backup Verificado</div>
-                                    
-                                    <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
-                                        <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
-                                        <div class="flex justify-between items-center mb-1"><span>❌ Fallo Backup</span> <span>➔ 📝 Plan Continuidad Manual</span></div>
-                                        <div class="flex justify-between items-center"><span>🦠 Expansión</span> <span>➔ 🔌 Apagado Controlado</span></div>
-                                    </div>
-                                </div>
+                            <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🥷</span>
+                                <span class="text-xs font-bold text-red-800 uppercase">Pentest a la PKI</span>
+                                <span class="text-[11px] text-red-600 mt-1">Pruebas de intrusión en el entorno de emisión CA</span>
                             </div>
 
-                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
-                                <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
-                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                                    
-                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
-                                        <span class="text-3xl mb-2">👥</span>
-                                        <span class="text-xs font-bold text-slate-700 uppercase">Comité Revisión</span>
-                                        <span class="text-[11px] text-slate-500 mt-1">Alineación con directivos y clínicos</span>
-                                    </div>
+                            <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">🎭</span>
+                                <span class="text-xs font-bold text-amber-800 uppercase">Simulación MITM</span>
+                                <span class="text-[11px] text-amber-600 mt-1">Verificar la detección de certificados ilegítimos</span>
+                            </div>
 
-                                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
-                                        <span class="text-3xl mb-2">💾</span>
-                                        <span class="text-xs font-bold text-emerald-800 uppercase">Test de Backup</span>
-                                        <span class="text-[11px] text-emerald-600 mt-1">Prueba mensual de restauración RTO</span>
-                                    </div>
-
-                                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
-                                        <span class="text-3xl mb-2">🎣</span>
-                                        <span class="text-xs font-bold text-amber-800 uppercase">Simulación Phishing</span>
-                                        <span class="text-[11px] text-amber-600 mt-1">Auditoría de concienciación de personal</span>
-                                    </div>
-
-                                    <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
-                                        <span class="text-3xl mb-2">🥷</span>
-                                        <span class="text-xs font-bold text-red-800 uppercase">Pentest Interno</span>
-                                        <span class="text-[11px] text-red-600 mt-1">Validar segmentación y escalado de privilegios</span>
-                                    </div>
-
-                                </div>
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                <span class="text-3xl mb-2">⚡</span>
+                                <span class="text-xs font-bold text-blue-800 uppercase">Test OCSP / CRL</span>
+                                <span class="text-[11px] text-blue-600 mt-1">Validar disponibilidad y robustez criptográfica</span>
                             </div>
 
                         </div>
                     </div>
-                </div>    
-                    
+
+                </div>
+            </div>  
             </div>
 
             <!-- CASO PRÁCTICO 4: Diginoar certificados -->
