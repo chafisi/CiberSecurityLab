@@ -3113,6 +3113,359 @@
             </div>
         </section>
 
+                <!-- ========================================== -->
+        <!-- UNIDAD 10: GESTIÓN DE LA SEGURIDAD (CORREGIDA - SGSI) -->
+        <!-- ========================================== -->
+        <section id="ud10" class="unit-section hidden fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">10. Gestión de la Seguridad</h2>
+                <p class="text-slate-600 mt-2">Sistemas de Gestión (SGSI), norma ISO 27001, análisis de riesgos y continuidad del negocio.</p>
+            </div>
+
+            <!-- CASO PRÁCTICO 19: IMPLEMENTACIÓN DE SGSI (ISO 27001) (VISIBLE) -->
+            <div id="ud10-case1" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-emerald-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 19</span>
+                                <h3 class="text-2xl font-bold mb-2">Implementación de un Sistema de Gestión (SGSI) según ISO 27001</h3>
+                                <p class="opacity-90">Una empresa multinacional desea certificar su seguridad. Debe establecer un SGSI basado en la norma ISO 27001, definiendo políticas, identificando activos y gestionando riesgos mediante el ciclo PDCA.</p>
+                            </div>
+                            <i class="ph ph-file-check text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Identificar y valorar activos, Evaluar riesgos inherentes y residuales, Seleccionar controles del Anexo A, Definir política de seguridad, Realizar auditorías internas.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Metodología estandarizada (Ej: MEHARI, OCTAVE), Riesgo residual dentro del apetito de riesgo, Documentación actualizada trimestralmente, Trazabilidad de decisiones de tratamiento.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">ISO/IEC 27001:2022 (Norma principal), ISO/IEC 27005 (Gestión de riesgos), SoDA (Declaración de Aplicabilidad), Matrices de riesgo cualitativas/cuantitativas, Herramientas GRC.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">RGPD (Responsabilidad proactiva), Ley Sarbanes-Oxley (si cotiza), Normativa sectorial (bancaria/salud), Contratos con clientes que exigen certificación ISO.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUJO TEXTUAL SIN NEGRITAS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Implementación del SGSI</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner space-y-3">
+                                
+                                <div class="flex items-start">
+                                    <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">Actor</span>
+                                    <p class="text-sm text-slate-700">Director de Seguridad (CISO) y equipo de gestión de riesgos encargados de alcanzar la certificación ISO 27001.</p>
+                                </div>
+                                
+                                <hr class="border-slate-200">
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-start">
+                                        <span class="bg-indigo-100 text-indigo-700 font-bold px-2 py-1 rounded text-sm mr-3">1️⃣ Planificación (Plan)</span>
+                                        <p class="text-sm text-slate-700">Se define el alcance del SGSI. Se realiza el inventario de activos (hardware, software, datos, personal) y se asignan propietarios y valores de criticidad.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-purple-100 text-purple-700 font-bold px-2 py-1 rounded text-sm mr-3">2️⃣ Evaluación de Riesgos</span>
+                                        <p class="text-sm text-slate-700">Para cada activo crítico, se identifican amenazas (ej: ransomware) y vulnerabilidades (ej: backup no inmutable). Se calcula el riesgo inicial (Probabilidad x Impacto).</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-pink-100 text-pink-700 font-bold px-2 py-1 rounded text-sm mr-3">3️⃣ Tratamiento del Riesgo</span>
+                                        <p class="text-sm text-slate-700">Se seleccionan controles del Anexo A de la ISO 27001 para mitigar los riesgos inaceptables. Ej: Implementar EDR, cifrado de discos, y formación a empleados.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">4️⃣ Implementación (Do)</span>
+                                        <p class="text-sm text-slate-700">Se ejecutan los controles seleccionados. Se redactan políticas, procedimientos y se asignan recursos. Se realiza la declaración SoDA justificando controles aplicados o excluidos.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-cyan-100 text-cyan-700 font-bold px-2 py-1 rounded text-sm mr-3">5️⃣ Verificación y Mejora (Check/Act)</span>
+                                        <p class="text-sm text-slate-700">Se realizan auditorías internas para verificar eficacia. Si hay incidencias, se toman acciones correctivas. Finalmente, se solicita la auditoría externa de certificación.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 bg-emerald-50 border-l-4 border-emerald-400 text-xs text-emerald-800">
+                                    💡 Clave: La norma ISO 27001 no prescribe tecnologías específicas, sino un marco de gestión. El éxito depende del compromiso de la dirección y la mejora continua (Ciclo PDCA).
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Activos Inventariados</div>
+                                    <div class="text-2xl font-bold text-emerald-600 mt-1">1,500+</div>
+                                    <div class="text-xs text-emerald-600 mt-1">Cobertura 100%</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Riesgos Altos</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">5 → 0</div>
+                                    <div class="text-xs text-blue-600 mt-1">Mitigados completamente</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Controles Aplicados</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">85/93</div>
+                                    <div class="text-xs text-purple-600 mt-1">SoDA aprobada</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Certificación</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">✓ Obtenida</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CASO PRÁCTICO 20: CONTINUIDAD DE NEGOCIO (BCP) (VISIBLE) -->
+            <div id="ud10-case2" class="case-container mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-orange-600 text-white p-6">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Caso Práctico 20</span>
+                                <h3 class="text-2xl font-bold mb-2">Plan de Continuidad del Negocio (BCP) ante Desastres</h3>
+                                <p class="opacity-90">Desarrollo e implementación de un Plan de Continuidad de Negocio (BCP) basado en ISO 22301 para garantizar la operatividad crítica tras un desastre mayor, definiendo RTO, RPO y estrategias de recuperación.</p>
+                            </div>
+                            <i class="ph ph-lifebuoy text-5xl opacity-80"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- 1. REQUISITOS (MATRIZ CON EMOJIS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-list-checks mr-2 text-green-600"></i> 1. Matriz de Requisitos</h4>
+                            <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+                                <table class="min-w-full text-sm">
+                                    <thead class="bg-slate-100">
+                                        <tr>
+                                            <th class="px-4 py-2 font-bold text-slate-700 w-1/4">Categoría</th>
+                                            <th class="px-4 py-2 font-bold text-slate-700">Detalles (Verbos/Métricas/Tecnologías)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-green-700">🔹 Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">Realizar Análisis de Impacto al Negocio (BIA), Definir RTO/RPO por proceso crítico, Establecer equipo de crisis, Activar sitio secundario (Warm/Hot site), Comunicar stakeholders.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-blue-700">📊 No Funcionales</td>
+                                            <td class="px-4 py-3 text-slate-700">RTO (Tiempo Recuperación) ≤ 4h para servicios críticos, RPO (Pérdida Datos) ≤ 1h, Tiempo de activación sitio DR < 30min, Cumplimiento SLA contractual durante fallo.</td>
+                                        </tr>
+                                        <tr class="border-b border-slate-100 matrix-row">
+                                            <td class="px-4 py-3 font-bold text-purple-700">⚙️ Técnicos</td>
+                                            <td class="px-4 py-3 text-slate-700">ISO 22301 (Seguridad Societal - BC), Replicación síncrona/asíncrona, Snapshot VM, Cloud DR (AWS/Azure Site Recovery), Procedimientos manuales de contingencia, Sistemas redundantes geográficamente.</td>
+                                        </tr>
+                                        <tr class="matrix-row">
+                                            <td class="px-4 py-3 font-bold text-yellow-700">⚖️ Legales</td>
+                                            <td class="px-4 py-3 text-slate-700">Ley de Sociedades de Capital (deber de diligencia), Contratos de nivel de servicio (SLA), Regulaciones bancarias (continuidad operativa), GDPR (disponibilidad datos).</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 2. CASO DE USO (FLUZO TEXTUAL SIN NEGRITAS) -->
+                        <div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-flow-arrow mr-2 text-blue-600"></i> 2. Flujo de Activación del BCP</h4>
+                            <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-inner space-y-3">
+                                
+                                <div class="flex items-start">
+                                    <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">Actor</span>
+                                    <p class="text-sm text-slate-700">Director de TI / Equipo de Crisis encargado de gestionar una emergencia crítica donde el data center principal queda inhabilitado.</p>
+                                </div>
+                                
+                                <hr class="border-slate-200">
+                                
+                                <div class="space-y-2">
+                                    <div class="flex items-start">
+                                        <span class="bg-red-100 text-red-700 font-bold px-2 py-1 rounded text-sm mr-3">1️⃣ Detección y Declaración</span>
+                                        <p class="text-sm text-slate-700">Incidente grave detectado (ej: incendio). El CISO evalúa daños y declara formalmente "Desastre Mayor", activando el plan BCP y convocando al Comité de Crisis.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-orange-100 text-orange-700 font-bold px-2 py-1 rounded text-sm mr-3">2️⃣ Evaluación de Impacto (BIA)</span>
+                                        <p class="text-sm text-slate-700">Se consulta el BIA predefinido. Se priorizan servicios: Core Bancario (RTO=2h) antes que Email (RTO=24h). Se decide recuperar primero lo crítico para la supervivencia.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-amber-100 text-amber-700 font-bold px-2 py-1 rounded text-sm mr-3">3️⃣ Activación del Sitio DR</span>
+                                        <p class="text-sm text-slate-700">Se activa el sitio secundario (Warm Site). Se restauran las últimas copias seguras (cumpliendo RPO de 1 hora). Los servidores se levantan siguiendo procedimientos automatizados o manuales.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-emerald-100 text-emerald-700 font-bold px-2 py-1 rounded text-sm mr-3">4️⃣ Redirección de Tráfico</span>
+                                        <p class="text-sm text-slate-700">Se ejecuta el conmutador (failover): se actualizan registros DNS y balanceadores para dirigir tráfico de usuarios hacia el sitio seguro. Se comunica a clientes sobre posibles latencias.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-start">
+                                        <span class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded text-sm mr-3">5️⃣ Recuperación y Retorno (Failback)</span>
+                                        <p class="text-sm text-slate-700">Una vez reparado el sitio principal, se realiza la migración inversa controlada durante horas de menor actividad, verificando integridad de datos y estabilidad del sistema original.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 bg-orange-50 border-l-4 border-orange-400 text-xs text-orange-800">
+                                    ⚠️ Clave: Un plan BCP no sirve si no se prueba. Las empresas realizan simulacros ("Tabletop exercises") semestrales. Sin práctica, es probable que falle cuando sea necesario.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. VALIDACIÓN (DASHBOARD) -->
+                        <div class="lg:col-span-2">
+                            <h4 class="font-bold text-lg text-slate-800 mb-4 flex items-center"><i class="ph ph-chart-bar mr-2 text-indigo-600"></i> 3. Validación y KPIs</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">RTO Cumplido</div>
+                                    <div class="text-2xl font-bold text-emerald-600 mt-1">1h 45m</div>
+                                    <div class="text-xs text-emerald-600 mt-1">Objetivo: 2h (Excedido)</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">RPO Cumplido</div>
+                                    <div class="text-2xl font-bold text-blue-600 mt-1">15 min</div>
+                                    <div class="text-xs text-blue-600 mt-1">Pérdida mínima de datos</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Simulacro Anual</div>
+                                    <div class="text-2xl font-bold text-purple-600 mt-1">✓ OK</div>
+                                    <div class="text-xs text-purple-600 mt-1">Realizado hace 3 meses</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm kpi-card">
+                                    <div class="text-xs text-slate-500 uppercase font-bold">Disponibilidad Global</div>
+                                    <div class="text-2xl font-bold text-indigo-600 mt-1">99.99%</div>
+                                    <div class="w-full bg-slate-200 rounded-full h-2 mt-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 99.99%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud10-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-emerald-800 to-orange-800 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-white/20 text-xs font-bold rounded-full mb-2">Patrón Global</span>
+                            <h3 class="text-xl font-bold mb-2">🛡️ Respuestas Tipo: Gestión de Seguridad y Continuidad</h3>
+                            <p class="text-slate-300 text-sm">Guía rápida para ISO 27001, gestión de riesgos y planes de recuperación.</p>
+                        </div>
+                        <i class="ph ph-cards text-5xl opacity-80"></i>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-emerald-700 mb-3 flex items-center"><i class="ph ph-sparkle mr-2"></i>Conceptos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>BIA (Business Impact Analysis):</strong> Estudio previo para entender qué procesos son vitales y cuánto daño causa su interrupción. Es la base del BCP.</li>
+                            <li><strong>RTO (Recovery Time Objective):</strong> ¿Cuánto tiempo máximo puedo estar parado? (Ej: 4 horas). Define la velocidad necesaria de recuperación.</li>
+                            <li><strong>RPO (Recovery Point Objective):</strong> ¿Cuántos datos me permito perder? (Ej: 1 hora de datos). Define la frecuencia de backups.</li>
+                            <li><strong>Anexo A (ISO 27001):</strong> Lista de 93 controles recomendados. No hay que aplicarlos todos, solo los relevantes al riesgo identificado.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3 flex items-center"><i class="ph ph-gear mr-2"></i>Normativas y Estructuras</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                            <li><strong>ISO/IEC 27001:</strong> Norma internacional para SGSI. Certificable.</li>
+                            <li><strong>ISO/IEC 27005:</strong> Guía específica para gestión de riesgos de seguridad.</li>
+                            <li><strong>ISO 22301:</strong> Norma para Sistemas de Gestión de Continuidad de Negocio (BCMS).</li>
+                            <li><strong>ENS (Esquema Nacional de Seguridad):</strong> Normativa española equivalente/adaptada a la administración pública.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-200 mb-6">
+                    <h4 class="font-bold text-emerald-800 mb-3 flex items-center"><i class="ph ph-chart-pie-slice mr-2"></i>Comparativa: Sin Pérdida vs. Con Pérdida (Tipos de Sitios DR)</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-emerald-100 text-emerald-900 font-bold">
+                                <tr>
+                                    <th class="px-3 py-2">Tipo de Sitio</th>
+                                    <th class="px-3 py-2">Características</th>
+                                    <th class="px-3 py-2">Ventaja / Desventaja</th>
+                                    <th class="px-3 py-2">RTO Típico</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-emerald-100">
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Cold Site</td>
+                                    <td class="px-3 py-2">Solo espacio físico, energía y aire acondicionado. Sin equipos ni datos.</td>
+                                    <td class="px-3 py-2">+ Barato / - Lento (semanas para configurar)</td>
+                                    <td class="px-3 py-2">Semana(s)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Warm Site</td>
+                                    <td class="px-3 py-2">Equipos instalados pero apagados/inactivos. Datos replicados periódicamente.</td>
+                                    <td class="px-3 py-2">+ Equilibrado / - Requiere configuración inicial</td>
+                                    <td class="px-3 py-2">Horas (4-24h)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Hot Site</td>
+                                    <td class="px-3 py-2">Réplica exacta en tiempo real. Todo activo y sincronizado.</td>
+                                    <td class="px-3 py-2">+ Inmediato / - Muy Costoso</td>
+                                    <td class="px-3 py-2">Minutos (< 1h)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2 font-bold">Cloud DR</td>
+                                    <td class="px-3 py-2">Uso de infraestructura cloud bajo demanda (IaaS) para recuperación.</td>
+                                    <td class="px-3 py-2">+ Escalable y flexible / - Dependencia red</td>
+                                    <td class="px-3 py-2">Variable (Min-Horas)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                    <h4 class="font-bold text-amber-800 mb-3 flex items-center"><i class="ph ph-warning mr-2"></i>Preguntas Frecuentes de Examen</h4>
+                    <ol class="list-decimal list-inside text-sm text-amber-900 space-y-1">
+                        <li><strong>"¿Cuál es la diferencia entre BCP y DRP?"</strong>: BCP (Continuidad) se enfoca en mantener el negocio funcionando (procedimientos humanos, alternativas). DRP (Recuperación) se enfoca en restaurar la tecnología (IT) después del golpe. DRP es parte del BCP.</li>
+                        <li><strong>"¿Qué pasa si el RTO es 0?"</strong>: Implica necesidad de tolerancia a fallos (Fault Tolerance) total, no solo recuperación. Necesitas sistemas espejo en tiempo real (Active-Active).</li>
+                        <li><strong>"¿Por qué el BIA es el primer paso?"</strong>: Porque no puedes proteger lo que no conoces ni priorizar. Sin saber qué es crítico y cuánto cuesta pararse, no puedes definir RTO/RPO adecuados.</li>
+                        <li><strong>"¿Qué significa 'Risk Appetite'?"</strong>: Es la cantidad y tipo de riesgo que una organización está dispuesta a aceptar en pos de sus objetivos. El tratamiento de riesgos busca ajustar el riesgo residual a este apetito.</li>
+                        <li><strong>"¿Son obligatorios los ejercicios de simulacro?"</strong>: Según ISO 27001 y 22301, sí. Los procedimientos deben probarse regularmente para asegurar que funcionan y que el personal sabe qué hacer.</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
+            <i class="ph ph-info text-4xl mb-2"></i>
+            <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
+        </div>
+
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden fade-in">
             <i class="ph ph-info text-4xl mb-2"></i>
             <p>Selecciona otra unidad del menú lateral.<br>Cada una seguirá el mismo patrón visual.</p>
