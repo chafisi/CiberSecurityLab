@@ -257,11 +257,100 @@
             <!-- El código completo que te di antes va aquí, sin la clase 'hidden' -->
             <!-- CASO PRÁCTICO 2: FUGA DE DATOS (RELLENO NUEVO) -->
             <div id="ud01-case2" class="case-container hidden mb-8">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-amber-600 text-white p-6">
-                        <h3 class="text-2xl font-bold mb-2">Caso Práctico [x]: Rellenar caso</h3>
-                        <p class="opacity-90">[Rellenar enunciado]</p>
-                    </div>    
+                <div id="ud02-pat" class="pattern-container">
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                        <h3 class="text-xl font-bold mb-2">🔐 Caso Práctico 2: Fuga de datos por credenciales reutilizadas</h3>
+                        <p class="text-slate-300 text-sm">Análisis visual para la prevención de ataques de Credential Stuffing, matriz de requisitos de autenticación, flujo de login seguro (MFA) y panel de validación de eficacia.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                    <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                    <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                        <li>Implementar MFA</li>
+                                        <li>Bloqueo temporal (intentos fallidos)</li>
+                                        <li>Detección accesos anómalos (comportamiento)</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                    <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                    <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                        <li>Tiempo autenticación < 2s</li>
+                                        <li>Alta disponibilidad (> 99,9%)</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                    <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                    <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                        <li>Hashing seguro (Argon2, bcrypt)</li>
+                                        <li>Detección por IP, reputación, geolocalización</li>
+                                        <li>Integración con SIEM (correlación de eventos)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Autenticación Segura</h4>
+                            <div class="flex flex-col space-y-2 text-xs font-mono">
+                                <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                    <span>Actor: Cliente de la plataforma</span>
+                                </div>
+                                
+                                <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">👤 Introduce Credenciales (User/Pass)</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🔐 Verifica Pass & Solicita MFA</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">📱 Valida 2FA (SMS/App/Llave)</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-green-100 border border-green-300 p-2 rounded text-center font-bold text-green-800">✅ Acceso Concedido</div>
+                                
+                                <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                    <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                    <div class="flex justify-between items-center mb-1"><span>❌ Contraseña Error</span> <span>➔ ⏱️ Bloqueo Temporal</span></div>
+                                    <div class="flex justify-between items-center mb-1"><span>❌ Fallo MFA</span> <span>➔ 🚫 Acceso Denegado</span></div>
+                                    <div class="flex justify-between items-center"><span>🕵️ Inicio Sospechoso</span> <span>➔ 🧩 Requerir CAPTCHA/Email</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                            <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                
+                                <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">🔨</span>
+                                    <span class="text-xs font-bold text-slate-700 uppercase">Test Fuerza Bruta</span>
+                                    <span class="text-[11px] text-slate-500 mt-1">Verificar eficacia de política de bloqueo temporal</span>
+                                </div>
+
+                                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">📱</span>
+                                    <span class="text-xs font-bold text-emerald-800 uppercase">Pruebas Funcionales</span>
+                                    <span class="text-[11px] text-emerald-600 mt-1">Validar todos los métodos del flujo MFA</span>
+                                </div>
+
+                                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">📋</span>
+                                    <span class="text-xs font-bold text-blue-800 uppercase">Revisión de Logs</span>
+                                    <span class="text-[11px] text-blue-600 mt-1">Confirmar detección de accesos anómalos</span>
+                                </div>
+
+                                <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">🥷</span>
+                                    <span class="text-xs font-bold text-red-800 uppercase">Simulación de Ataque</span>
+                                    <span class="text-[11px] text-red-600 mt-1">Test controlado de Credential Stuffing</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>    
             </div>
 
             <!-- PATRÓN GLOBAL (PLANTILLA) -->
