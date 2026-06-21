@@ -377,7 +377,251 @@
             </div>
         </section>
 
+        <!-- SECCIÓN UNIDAD 2-->
+        <section id="ud02" class="unit-section fade-in block">
+            <div class="mb-8 pb-4 border-b border-slate-200 sticky top-0 bg-slate-50 z-10">
+                <h2 class="text-3xl font-bold text-slate-800">Criptografía y Seguridad - 3 - Cifrado y autenticación en la práctica</h2>
+                <p class="text-slate-600 mt-2"></p>
+            </div>
 
+            <!-- CASO PRÁCTICO 1: RANSOMWARE (VISIBLE) -->
+            <div id="ud01-case1" class="case-container">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+
+                    <div id="ud01-pat" class="pattern-container">
+                        <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                            <h3 class="text-xl font-bold mb-2">🏥 Caso Práctico 3: Ataque al algoritmo DES y transición hacia AES</h3>
+                            <p class="text-slate-300 text-sm">Durante más de dos décadas, DES fue el estándar. Con clave de 56 bits, quedó obsoleto. En 1998, EFF demostró que DES podía romperse en menos de 3 días. Esto aceleró la adopción de AES (claves 128, 192, 256 bits) por parte del NIST en 2001.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                                <div class="grid grid-cols-2 gap-3 text-xs">
+                                    <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                        <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                        <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                            <li>Monitorizar correos (Phishing)</li>
+                                            <li>Aislar actividad sospechosa</li>
+                                            <li>Mantener backups restaurables</li>
+                                            <li>Alertar anomalías clínicas</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                        <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                        <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                            <li>Disponibilidad > 99,5%</li>
+                                            <li>RTO < X horas (Restauración)</li>
+                                            <li>SLA Alertas < 5 minutos</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg">
+                                        <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                        <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                            <li>Segmentación (Clínica/IoT/Admin)</li>
+                                            <li>EDR y Antimalware</li>
+                                            <li>Backups cifrados múltiple punto</li>
+                                            <li>Parcheo automatizado</li>
+                                        </ul>
+                                    </div>
+                                    <div class="bg-orange-50 border border-orange-200 p-3 rounded-lg">
+                                        <div class="font-bold text-orange-800 mb-2 flex items-center gap-1"><span>🟠</span> LEGALES</div>
+                                        <ul class="list-disc pl-4 text-orange-900 space-y-1">
+                                            <li>RGPD/HIPAA (Brecha < 72h)</li>
+                                            <li>Preservación de evidencias (Forense)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Respuesta (Ransomware)</h4>
+                                <div class="flex flex-col space-y-2 text-xs font-mono">
+                                    <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                        <span>Actor: SOC / Equipo de Seguridad</span>
+                                    </div>
+                                    
+                                    <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">👁️ Detección (Cifrado masivo)</div>
+                                    <div class="text-center text-slate-400">⬇️</div>
+                                    <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">🛡️ Aislamiento EDR Automático</div>
+                                    <div class="text-center text-slate-400">⬇️</div>
+                                    <div class="bg-red-100 border border-red-300 p-2 rounded text-center font-bold text-red-800">🚨 Alerta Inmediata al SOC</div>
+                                    <div class="text-center text-slate-400">⬇️</div>
+                                    <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">⚙️ Activar Protocolo Contención</div>
+                                    <div class="text-center text-slate-400">⬇️</div>
+                                    <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Restauración desde Backup Verificado</div>
+                                    
+                                    <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                        <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                        <div class="flex justify-between items-center mb-1"><span>❌ Fallo Backup</span> <span>➔ 📝 Plan Continuidad Manual</span></div>
+                                        <div class="flex justify-between items-center"><span>🦠 Expansión</span> <span>➔ 🔌 Apagado Controlado</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                                <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                    
+                                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                        <span class="text-3xl mb-2">👥</span>
+                                        <span class="text-xs font-bold text-slate-700 uppercase">Comité Revisión</span>
+                                        <span class="text-[11px] text-slate-500 mt-1">Alineación con directivos y clínicos</span>
+                                    </div>
+
+                                    <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                        <span class="text-3xl mb-2">💾</span>
+                                        <span class="text-xs font-bold text-emerald-800 uppercase">Test de Backup</span>
+                                        <span class="text-[11px] text-emerald-600 mt-1">Prueba mensual de restauración RTO</span>
+                                    </div>
+
+                                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                        <span class="text-3xl mb-2">🎣</span>
+                                        <span class="text-xs font-bold text-amber-800 uppercase">Simulación Phishing</span>
+                                        <span class="text-[11px] text-amber-600 mt-1">Auditoría de concienciación de personal</span>
+                                    </div>
+
+                                    <div class="bg-red-50 border border-red-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                        <span class="text-3xl mb-2">🥷</span>
+                                        <span class="text-xs font-bold text-red-800 uppercase">Pentest Interno</span>
+                                        <span class="text-[11px] text-red-600 mt-1">Validar segmentación y escalado de privilegios</span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>    
+                    
+            </div>
+
+            <!-- CASO PRÁCTICO 2: FUGA DE DATOS (ESQUELETO LISTO PARA RELLENAR) -->
+            <!-- El código completo que te di antes va aquí, sin la clase 'hidden' -->
+            <!-- CASO PRÁCTICO 2: FUGA DE DATOS (RELLENO NUEVO) -->
+            <div id="ud01-case2" class="case-container hidden mb-8">
+                <div id="ud03-pat" class="pattern-container">
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                        <h3 class="text-xl font-bold mb-2">🛡️ Caso Práctico 3: Ataque al algoritmo DES y transición hacia AES</h3>
+                        <p class="text-slate-300 text-sm">Análisis visual de la obsolescencia criptográfica, matriz de requisitos para la transición a cifrado robusto, flujo de actualización y validación de normativas NIST/ENISA.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">💡 1. Matriz de Requisitos</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                <div class="bg-green-50 border border-green-200 p-3 rounded-lg">
+                                    <div class="font-bold text-green-800 mb-2 flex items-center gap-1"><span>🟢</span> FUNCIONALES</div>
+                                    <ul class="list-disc pl-4 text-green-900 space-y-1">
+                                        <li>Algoritmos oficiales (recomendados)</li>
+                                        <li>Actualización modular sin interrupciones</li>
+                                        <li>Auditoría/registro de algoritmos y claves</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                    <div class="font-bold text-blue-800 mb-2 flex items-center gap-1"><span>🔵</span> NO FUNC.</div>
+                                    <ul class="list-disc pl-4 text-blue-900 space-y-1">
+                                        <li>Tiempos de cifrado / Rendimiento</li>
+                                        <li>Compatibilidad temporal (Sistemas heredados)</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-purple-50 border border-purple-200 p-3 rounded-lg sm:col-span-2">
+                                    <div class="font-bold text-purple-800 mb-2 flex items-center gap-1"><span>🟣</span> TÉCNICOS</div>
+                                    <ul class="list-disc pl-4 text-purple-900 space-y-1">
+                                        <li>Sustituir DES por AES (128/192/256 bits)</li>
+                                        <li>Emplear librerías probadas (OpenSSL, libsodium)</li>
+                                        <li>Análisis periódico del estado criptográfico</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">🔄 2. Flujo de Actualización Criptográfica</h4>
+                            
+                            <div class="flex flex-col space-y-2 text-xs font-mono mt-4">
+                                <div class="flex items-center gap-2 text-slate-500 font-bold mb-1">
+                                    <span>Actor: Administrador de seguridad / Equipo TI</span>
+                                </div>
+                                
+                                <div class="bg-slate-100 border border-slate-300 p-2 rounded text-center font-bold text-slate-700">⚠️ Sistema detecta algoritmo inseguro (DES)</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-red-100 border border-red-300 p-2 rounded text-center font-bold text-red-800">🚨 Genera alerta al Administrador</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-indigo-100 border border-indigo-300 p-2 rounded text-center font-bold text-indigo-800">⚙️ Selección nuevo algoritmo (AES/SHA-256)</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-amber-100 border border-amber-300 p-2 rounded text-center font-bold text-amber-800">🔄 Aplica actualización y migra datos/claves</div>
+                                <div class="text-center text-slate-400">⬇️</div>
+                                <div class="bg-emerald-100 border border-emerald-300 p-2 rounded text-center font-bold text-emerald-800">✅ Valida compatibilidad y documenta</div>
+                                
+                                <div class="mt-4 p-3 border border-dashed border-red-300 bg-red-50 rounded text-[11px]">
+                                    <span class="font-bold text-red-700 block mb-1">⚠️ EXCEPCIONES:</span>
+                                    <div class="flex justify-between items-center mb-1"><span>❌ Incompatible (Heredado)</span> <span>➔ 🛡️ Activar plan mitigación / gateway</span></div>
+                                    <div class="flex justify-between items-center"><span>❌ Fallo Migración</span> <span>➔ 🔙 Restauración desde copia segura</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm md:col-span-2">
+                            <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">📊 3. Dashboard de Validación</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                
+                                <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">📋</span>
+                                    <span class="text-xs font-bold text-slate-700 uppercase">Auditoría Periódica</span>
+                                    <span class="text-[11px] text-slate-500 mt-1">Verificar uso exclusivo de algoritmos vigentes</span>
+                                </div>
+
+                                <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">🤖</span>
+                                    <span class="text-xs font-bold text-blue-800 uppercase">Análisis Automatizado</span>
+                                    <span class="text-[11px] text-blue-600 mt-1">Uso de testssl.sh y scripts internos</span>
+                                </div>
+
+                                <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">⚡</span>
+                                    <span class="text-xs font-bold text-emerald-800 uppercase">Test Rendimiento</span>
+                                    <span class="text-[11px] text-emerald-600 mt-1">Asegurar que AES cumple requisitos operativos</span>
+                                </div>
+
+                                <div class="bg-purple-50 border border-purple-200 p-4 rounded-lg flex flex-col items-center justify-center">
+                                    <span class="text-3xl mb-2">⚖️</span>
+                                    <span class="text-xs font-bold text-purple-800 uppercase">Compliance</span>
+                                    <span class="text-[11px] text-purple-600 mt-1">Revisión de normativas NIST / ENISA</span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>   
+            </div>
+
+            <!-- PATRÓN GLOBAL (PLANTILLA) -->
+            <div id="ud01-pat" class="pattern-container">
+                <div class="bg-gradient-to-r from-slate-800 to-slate-900 text-white rounded-xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold mb-2">🛠️ Patrón Global de Respuesta: Introducción a la Seguridad</h3>
+                    <p class="text-slate-300 text-sm">Usa esta plantilla para responder a cualquier pregunta general sobre fundamentos de seguridad.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-green-700 mb-3">💡 Puntos Clave (Palabras Mágicas)</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li><strong>[COMPLETAR LISTA]</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <h4 class="font-bold text-blue-700 mb-3">⚙️ Ejemplos de Tecnologías Base</h4>
+                        <ul class="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <li>[COMPLETAR LISTA]</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
         <!-- -->
         <div id="placeholder-content" class="text-center text-slate-400 mt-10 text-sm hidden">
             Selecciona una unidad del menú lateral.
