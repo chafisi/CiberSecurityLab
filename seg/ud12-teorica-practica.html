@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unidad 12 - Comparativas Legislativas Europeas | CiberMaster</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animaciones base */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Scrollbars */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Sidebar responsivo */
+        @media (max-width: 768px) {
+            .sidebar-mobile { position: fixed; transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar-mobile.open { transform: translateX(0); }
+        }
+
+        /* Estilos específicos para casos prácticos */
+        .case-header { background: linear-gradient(to right, #f59e0b, #d97706); }
+        .visual-box { box-shadow: inset 0 0 20px rgba(0,0,0,0.05); }
+        
+        /* Diagram Flow Arrows */
+        .flow-arrow::after {
+            content: '➜';
+            display: inline-block;
+            margin: 0 8px;
+            color: #64748b;
+        }
+        .flow-arrow:last-child::after { content: ''; }
+        
+        /* Estilo específico para el banner visual */
+        .banner-mockup {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <button onclick="toggleSidebar()" class="md:hidden fixed top-4 right-4 z-50 bg-amber-600 text-white p-2 rounded-lg shadow-lg">
+        ☰ Menú
+    </button>
+
+    <aside id="sidebar" class="w-72 bg-slate-900 text-slate-300 flex flex-col h-full shadow-2xl z-40 shrink-0 sidebar-mobile md:relative">
+        <div class="p-6 border-b border-slate-800 bg-slate-950 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Ciber<span class="text-amber-500">Master</span></h1>
+                <p class="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-bold">UD 12: Europa</p>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-white font-bold text-xl">×</button>
+        </div>
+        
+        <div class="p-4 border-b border-slate-800">
+            <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar ley o país..." class="w-full bg-slate-800 text-white rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 transition border border-slate-700">
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            <ul class="space-y-1" id="navMenu">
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider nav-category">Marco Europeo</li>
+                <li class="nav-item"><button onclick="switchSection('sec1')" id="btn-sec1" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-amber-500 bg-slate-800 text-white tab-btn">1. Panorama & Armonización UE</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec2')" id="btn-sec2" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">2. RGPD & Autoridades (AEPD/CNIL)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec3')" id="btn-sec3" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">3. Ciberseguridad (NIS2/DORA)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">4. Legislación Nacional Comparada</button></li>
+                
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Casos Prácticos</li>
+                <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-red-400 font-semibold tab-btn">5. Caso 23: Sanción AEPD (Consentimiento)</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-blue-400 font-semibold tab-btn">6. Caso 24: CNIL (Cookies & Dark Patterns)</button></li>
+
+                <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Herramientas E2E</li>
+                <li class="nav-item"><button onclick="window.location.href='ud12-labs.html'" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-green-400 font-bold">🎯 Laboratorios Interactivos (Próximamente)</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-slate-50 p-6 md:p-12 relative" id="mainContent">
+        
+        <!-- SECCIÓN 1: PANORAMA EUROPEO -->
+        <section id="sec1" class="main-section fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-amber-500 pb-2 inline-block">1. Panorama General & Armonización en la UE</h2>
+            <p class="text-slate-600 mb-6">La ciberlegislación europea busca garantizar un nivel uniforme de seguridad digital y confianza en el mercado único mediante la armonización progresiva.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Instrumentos Clave -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
+                    <h3 class="font-bold text-lg text-indigo-900 mb-3">📜 Instrumentos Legislativos Clave</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>RGPD (2016/679):</strong> Protección de datos personales (aplicación directa).</li>
+                        <li><strong>NIS2 (2022/2555):</strong> Seguridad de redes y sistemas esenciales.</li>
+                        <li><strong>eIDAS (910/2014):</strong> Identificación electrónica y servicios de confianza.</li>
+                        <li><strong>DORA (2022/2554):</strong> Resiliencia operativa digital en finanzas.</li>
+                        <li><strong>Cyber Resilience Act:</strong> Seguridad por diseño en productos digitales.</li>
+                    </ul>
+                </div>
+                <!-- Rol Institucional -->
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-emerald-500">
+                    <h3 class="font-bold text-lg text-emerald-900 mb-3">🏛️ Instituciones de la UE</h3>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Comisión Europea:</strong> Propone normativas y supervisa.</li>
+                        <li><strong>Parlamento Europeo:</strong> Aproba leyes y defiende derechos digitales.</li>
+                        <li><strong>ENISA:</strong> Agencia de Ciberseguridad (asesoría técnica y certificación).</li>
+                        <li><strong>EDPB:</strong> Comité Europeo de Protección de Datos (coordinación de autoridades).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 p-6 rounded-xl border border-amber-200">
+                <h3 class="font-bold text-amber-800 mb-3">⚠️ Desafíos de la Aplicación Homogénea</h3>
+                <p class="text-sm text-slate-700">A pesar de las normas comunes, persisten diferencias en capacidades administrativas, recursos y cultura de cumplimiento entre estados miembros, lo que crea "brechas regulatorias" que deben ser cerradas con cooperación reforzada.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: RGPD & AUTORIDADES -->
+        <section id="sec2" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-amber-500 pb-2 inline-block">2. Protección de Datos: RGPD y Autoridades Nacionales</h2>
+            <p class="text-slate-600 mb-6">El RGPD es el estándar global. Su aplicación se vigila a través de autoridades independientes en cada país.</p>
+
+            <div class="mb-8 bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                <h3 class="font-bold text-purple-900 mb-4">Pilares del RGPD</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-purple-50 text-purple-800 font-bold">
+                            <tr>
+                                <th class="px-3 py-2">Concepto</th>
+                                <th class="px-3 py-2">Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-purple-100">
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Responsabilidad Proactiva</td>
+                                <td class="px-3 py-2">Demostrar cumplimiento mediante documentación, auditorías y registros.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Evaluación de Impacto (DPIA)</td>
+                                <td class="px-3 py-2">Obligatoria para tratamientos de alto riesgo (publicidad, biometría).</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Notificación de Brechas</td>
+                                <td class="px-3 py-2">Plazo máximo de 72 horas a la autoridad competente.</td>
+                            </tr>
+                            <tr>
+                                <td class="px-3 py-2 font-bold">Sanciones</td>
+                                <td class="px-3 py-2">Hasta 20M€ o 4% del volumen de negocio anual (lo que sea mayor).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- España -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-2">🇪🇸 España: AEPD</h4>
+                    <p class="text-xs text-slate-600 mb-2">Conocida por orientación pedagógica y guías técnicas.</p>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>LOPDGDD (complementa RGPD).</li>
+                        <li>Enfoque en derechos digitales (desconexión).</li>
+                    </ul>
+                </div>
+                <!-- Francia -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-2">🇫🇷 Francia: CNIL</h4>
+                    <p class="text-xs text-slate-600 mb-2">Pionera en sanciones millonarias y ética de la IA.</p>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>Guías estrictas sobre Cookies y Dark Patterns.</li>
+                        <li>Multas históricas a Google/Amazon.</li>
+                    </ul>
+                </div>
+                <!-- Alemania -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-2">🇩🇪 Alemania: BfDI</h4>
+                    <p class="text-xs text-slate-600 mb-2">Fuerte énfasis en control estatal y privacidad histórica.</p>
+                    <ul class="text-xs space-y-1 text-slate-600">
+                        <li>BDSG (ley nacional complementaria).</li>
+                        <li>Protección rigurosa frente a vigilancia.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: CIBERSEGURIDAD (NIS2/DORA) -->
+        <section id="sec3" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-amber-500 pb-2 inline-block">3. Ciberseguridad: NIS2 y Normativas Sectoriales</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- NIS2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">🛡️ Directiva NIS2 (2022/2555)</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li><strong>Ampliación:</strong> Incluye nuevos sectores (energía, banca, cloud, salud).</li>
+                        <li><strong>Responsabilidad:</strong> La alta dirección puede ser sancionada personalmente.</li>
+                        <li><strong>Gestión de Riesgos:</strong> Políticas integrales y registros auditables obligatorios.</li>
+                        <li><strong>Sanciones:</strong> Hasta 10M€ o 2% del volumen de negocio.</li>
+                    </ul>
+                </div>
+                <!-- DORA -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-3">💶 DORA (2022/2554)</h4>
+                    <p class="text-sm text-slate-700 mb-3">Digital Operational Resilience Act para el sector financiero.</p>
+                    <ul class="list-disc list-inside text-sm text-slate-700 space-y-2">
+                        <li>Gobernanza del riesgo TIC activa por parte del consejo.</li>
+                        <li>Pruebas avanzadas (Threat-Led Penetration Testing).</li>
+                        <li>Gestión estricta de terceros proveedores TIC.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 p-6 rounded-xl border border-blue-200">
+                <h3 class="font-bold text-blue-800 mb-3">🌐 Cooperación Transfronteriza</h3>
+                <p class="text-sm text-slate-700">Redes como <strong>CSIRT Network</strong> y <strong>CyCLONe</strong> coordinan la respuesta ante crisis de gran escala, asegurando que un ataque en un país no desborde sus capacidades sin apoyo europeo.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: LEGISLACIÓN NACIONAL -->
+        <section id="sec4" class="main-section hidden fade-in">
+            <h2 class="text-3xl font-bold text-slate-800 mb-6 border-b-2 border-amber-500 pb-2 inline-block">4. Legislación Nacional Comparada</h2>
+            <p class="text-slate-600 mb-6">Aunque hay armonización, cada país adapta las directivas según su tradición jurídica y prioridades estratégicas.</p>
+
+            <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
+                <table class="min-w-full text-sm text-left">
+                    <thead class="bg-slate-100 text-slate-800 font-bold">
+                        <tr>
+                            <th class="px-4 py-3">País</th>
+                            <th class="px-4 py-3">Enfoque Principal</th>
+                            <th class="px-4 py-3">Normativa Clave</th>
+                            <th class="px-4 py-3">Organismo</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr>
+                            <td class="px-4 py-3 font-bold">España</td>
+                            <td class="px-4 py-3">Integración jurídico-técnica.</td>
+                            <td class="px-4 py-3">LOPDGDD, ENS, Estrategia Nacional.</td>
+                            <td class="px-4 py-3">AEPD, CCN-CERT, INCIBE.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-bold">Francia</td>
+                            <td class="px-4 py-3">Autonomía estratégica y sanción ejemplar.</td>
+                            <td class="px-4 py-3">CNIL Guidelines, Loi LPM.</td>
+                            <td class="px-4 py-3">CNIL, ANSSI.</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-bold">Alemania</td>
+                            <td class="px-4 py-3">Precisión institucional y privacidad histórica.</td>
+                            <td class="px-4 py-3">IT-Sicherheitsgesetz 2.0, BDSG.</td>
+                            <td class="px-4 py-3">BSI, BfDI.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: CASO PRÁCTICO 23 (ESPAÑA/AEPD) -->
+        <section id="sec5" class="main-section hidden fade-in">
+            <div class="case-header text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">5. Caso Práctico 23: Aplicación del RGPD en España (Sanción a Tech)</h2>
+                <p class="opacity-90">Falta de consentimiento válido y violación del principio de minimización.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-8">
+                <div class="mb-6 border-l-4 border-red-400 bg-red-50/50 p-5 rounded-r-lg">
+                    <h4 class="font-bold text-red-900 mb-4 text-lg">ENUNCIADO COMPLETO</h4>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        Desde la entrada en vigor del RGPD en 2018, la Agencia Española de Protección de Datos (AEPD) ha ejercido un papel especialmente activo en su aplicación. Uno de los casos más mediáticos fue la sanción impuesta a una gran empresa tecnológica por realizar tratamientos de datos con fines publicitarios sin consentimiento informado ni válido.
+                    </p>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        La resolución —de varios millones de euros— concluyó que la empresa había vulnerado el principio de minimización de datos, además de incumplir las obligaciones de transparencia, información previa y gestión adecuada del consentimiento. El caso subraya que incluso plataformas globales deben adaptar sus operaciones al RGPD cuando tratan datos de ciudadanos europeos.
+                    </p>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        En términos operativos, el incidente impulsó mejoras en:
+                    </p>
+                    <ul class="list-disc list-inside text-slate-700 ml-4 mb-4 font-medium">
+                        <li>mecanismos de consentimiento granular,</li>
+                        <li>trazabilidad de accesos,</li>
+                        <li>auditorías internas y externas,</li>
+                        <li>y estructuras de cumplimiento normativo en grandes corporaciones.</li>
+                    </ul>
+                    
+                    <div class="mt-6 space-y-6">
+                        <!-- Pregunta 1 -->
+                        <div>
+                            <h5 class="font-bold text-red-900 text-sm uppercase mb-2">Pregunta 1: Clasificar los requisitos legales y técnicos necesarios para cumplir el RGPD en grandes plataformas digitales.</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-white p-3 rounded border border-red-100">
+                                    <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Obtener consentimiento explícito, granular e informado para cada finalidad.</li>
+                                        <li>Facilitar el ejercicio de los derechos ARSOPL: acceso, rectificación, supresión, oposición, portabilidad y limitación.</li>
+                                        <li>Registrar y documentar la base legitimadora correspondiente a cada tratamiento.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-red-100">
+                                    <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Interfaces claras, accesibles y libres de dark patterns.</li>
+                                        <li>Experiencia de usuario conforme al RGPD: rechazar debe ser tan sencillo como aceptar.</li>
+                                        <li>Transparencia continua sobre finalidades, destinatarios y plazos de conservación.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-red-100">
+                                    <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Sistemas robustos de gestión del consentimiento con trazabilidad completa.</li>
+                                        <li>Auditorías periódicas sobre tratamientos, accesos y transferencias.</li>
+                                        <li>Logs cifrados, segregación de roles y monitorización de incidentes.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-red-100">
+                                    <span class="block font-bold text-yellow-700 mb-1">⚖️ Legales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Cumplimiento estricto del RGPD y, cuando corresponda, de la LOPDGDD.</li>
+                                        <li>Cooperación efectiva con la AEPD y el Comité Europeo de Protección de Datos (EDPB).</li>
+                                        <li>Mantenimiento completo de la documentación del tratamiento (registro, DPIA, políticas internas).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 2 -->
+                        <div>
+                            <h5 class="font-bold text-red-900 text-sm uppercase mb-2">Pregunta 2: Elaborar un caso de uso sobre la gestión del consentimiento conforme al RGPD.</h5>
+                            <div class="bg-white p-4 rounded border border-red-100 text-sm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                    <div><strong>Caso de uso:</strong> Gestión del consentimiento conforme al RGPD</div>
+                                    <div><strong>Actor:</strong> Usuario / Plataforma digital.</div>
+                                </div>
+                                
+                                <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3 flow-arrow-list">
+                                    <li>El usuario accede por primera vez a la plataforma.</li>
+                                    <li>Se muestra un banner de consentimiento claro, informado y granular, con finalidades separadas.</li>
+                                    <li>El usuario acepta o rechaza parcialmente las finalidades.</li>
+                                    <li>El sistema registra la decisión con marca temporal y la vincula a su identificador.</li>
+                                    <li>La plataforma aplica las preferencias y ofrece un panel para modificar o retirar el consentimiento en cualquier momento.</li>
+                                </ol>
+                                <p class="font-bold text-slate-800 mb-1">Excepciones:</p>
+                                <ul class="list-disc list-inside text-slate-700 text-xs">
+                                    <li>El usuario retira el consentimiento → el tratamiento se detiene de inmediato y se registran los cambios.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 3 -->
+                        <div>
+                            <h5 class="font-bold text-red-900 text-sm uppercase mb-2">Pregunta 3: Describir métodos para validar el cumplimiento normativo ante auditorías de la AEPD o del EDPB.</h5>
+                            <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-red-100 text-sm">
+                                <li>Revisión periódica de logs de consentimiento y de los mecanismos de registro.</li>
+                                <li>Auditorías internas y externas según los criterios de la AEPD y del EDPB.</li>
+                                <li>Pruebas de transparencia: verificación de que la información ofrecida al usuario es clara, completa y actualizada.</li>
+                                <li>Simulaciones del ejercicio de derechos ARSOPL para comprobar tiempos de respuesta, trazabilidad y eficacia.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMEN VISUAL -->
+                <div class="mt-8 visual-box p-6 rounded-xl bg-gradient-to-br from-slate-50 to-red-50 border border-red-200">
+                    <h4 class="font-bold text-center text-red-900 mb-4">⚠️ Análisis Visual: Fallo vs. Solución en Consentimiento</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Problema -->
+                        <div class="bg-red-50 p-4 rounded border border-red-200">
+                            <h5 class="font-bold text-red-700 mb-2 text-center">❌ Lo que FALLÓ</h5>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Consentimiento Vago</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Minimización Vulnerada</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Sin Info Previa Clara</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Transparencia Nula</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Gestión Deficiente</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Multas Millonarias</span>
+                            </div>
+                        </div>
+                        <!-- Solución -->
+                        <div class="bg-green-50 p-4 rounded border border-green-200">
+                            <h5 class="font-bold text-green-700 mb-2 text-center">✅ La Solución Requerida</h5>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Consentimiento Granular</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Finalidad Específica</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Trazabilidad Completa</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Logs Auditables</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Panel de Control</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Derechos ARSOPL Activos</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-4 italic">*"Las plataformas globales deben adaptar sus operaciones al RGPD cuando tratan datos de ciudadanos europeos."*</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: CASO PRÁCTICO 24 (FRANCIA/CNIL) -->
+        <section id="sec6" class="main-section hidden fade-in">
+            <div class="case-header bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-6 rounded-xl shadow-lg mb-8">
+                <h2 class="text-3xl font-bold mb-2">6. Caso Práctico 24: Actuaciones de la CNIL (Cookies & Dark Patterns)</h2>
+                <p class="opacity-90">Sanciones por interfaces engañosas y falta de opción de rechazo fácil.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 mb-8">
+                <div class="mb-6 border-l-4 border-blue-400 bg-blue-50/50 p-5 rounded-r-lg">
+                    <h4 class="font-bold text-blue-900 mb-4 text-lg">ENUNCIADO COMPLETO</h4>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        La Commission Nationale de l’Informatique et des Libertés (CNIL) ha sancionado en varias ocasiones a grandes plataformas digitales por prácticas contrarias al RGPD y a la Directiva ePrivacy. En particular, en 2022 dos compañías recibieron multas millonarias por desplegar cookies sin consentimiento y utilizar interfaz oscura (dark patterns) que dificultaba o hacía menos accesible la opción de rechazar publicidad personalizada.
+                    </p>
+                    <p class="text-slate-800 font-semibold mb-4">
+                        La CNIL determinó que dichas prácticas vulneraban los principios de consentimiento libre, específico e informado, y obligó a rediseñar los sistemas de consentimiento, implementar paneles de configuración de privacidad verdaderamente granulares y asegurar el registro adecuado del consentimiento.
+                    </p>
+                    <p class="text-slate-800 font-semibold">
+                        El caso dejó claro que la privacidad influye directamente en el diseño de interfaces y que el cumplimiento normativo exige coordinación entre juristas, diseñadores UX/UI, desarrolladores y equipos de seguridad.
+                    </p>
+                    
+                    <div class="mt-6 space-y-6">
+                        <!-- Pregunta 1 -->
+                        <div>
+                            <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">Pregunta 1: Clasificar los requisitos necesarios para la gestión adecuada de cookies conforme al RGPD y a las guías de la CNIL.</h5>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-white p-3 rounded border border-blue-100">
+                                    <span class="block font-bold text-green-700 mb-1">🟢 Funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Solicitar consentimiento expreso para todas las cookies no esenciales.</li>
+                                        <li>Ofrecer un botón "Rechazar todo" tan visible y accesible como "Aceptar todo".</li>
+                                        <li>Incluir un panel granular que permita seleccionar finalidades específicas.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-blue-100">
+                                    <span class="block font-bold text-blue-700 mb-1">🔵 No funcionales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Garantizar usabilidad óptima, evitando cualquier forma de inducción o engaño.</li>
+                                        <li>Transparencia total sobre finalidades, terceros y tiempos de conservación.</li>
+                                        <li>Experiencia coherente y uniforme entre dispositivos (web, móvil, tablet).</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-blue-100">
+                                    <span class="block font-bold text-purple-700 mb-1">🟣 Técnicos</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Mecanismos verificables de registro, revocación y actualización del consentimiento.</li>
+                                        <li>Carga diferida de cookies no esenciales hasta obtener autorización.</li>
+                                        <li>Herramientas automáticas de auditoría para comprobar qué cookies se activan realmente.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white p-3 rounded border border-blue-100">
+                                    <span class="block font-bold text-yellow-700 mb-1">⚖️ Legales</span>
+                                    <ul class="list-disc list-inside text-slate-700 text-xs">
+                                        <li>Cumplimiento del RGPD y de la Directiva ePrivacy.</li>
+                                        <li>Observancia estricta de las guías de la CNIL y del EDPB.</li>
+                                        <li>Mantenimiento de documentación probatoria del consentimiento y del diseño del sistema.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 2 -->
+                        <div>
+                            <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">Pregunta 2: Elaborar un caso de uso sobre un banner de consentimiento diseñado sin dark patterns.</h5>
+                            <div class="bg-white p-4 rounded border border-blue-100 text-sm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                                    <div><strong>Caso de uso:</strong> Banner de consentimiento sin dark patterns</div>
+                                    <div><strong>Actor:</strong> Usuario / Sitio web.</div>
+                                </div>
+                                
+                                <p class="font-bold text-slate-800 mb-2">Flujo principal:</p>
+                                <ol class="list-decimal list-inside text-slate-700 space-y-1 mb-3 flow-arrow-list">
+                                    <li>El usuario accede a la página web.</li>
+                                    <li>Aparece un banner con tres opciones claras y equivalentes: "Aceptar todo", "Rechazar todo", "Configurar / Personalizar".</li>
+                                    <li>El usuario elige una de las opciones.</li>
+                                    <li>El sistema aplica la configuración, registra la decisión y bloquea o habilita cookies según corresponda.</li>
+                                    <li>El usuario puede modificar su elección en un panel accesible desde el pie de página o configuración de privacidad.</li>
+                                </ol>
+                                <p class="font-bold text-slate-800 mb-1">Excepciones:</p>
+                                <ul class="list-disc list-inside text-slate-700 text-xs">
+                                    <li>El usuario retira su consentimiento → el sistema elimina cookies no esenciales y actualiza el registro.</li>
+                                </ul>
+                            </div>
+                            
+                            <!-- Mockup Visual del Banner -->
+                            <div class="mt-4 p-4 bg-slate-100 rounded border border-slate-300">
+                                <div class="text-center text-xs text-slate-500 mb-2">Ejemplo de Diseño Conforme (UX Ética)</div>
+                                <div class="banner-mockup">
+                                    <h6 class="font-bold text-slate-800 text-sm mb-2">🍪 Gestión de Cookies</h6>
+                                    <p class="text-xs text-slate-600 mb-3">Usamos cookies propias y de terceros para mejorar su experiencia. Puede aceptar todas o personalizar.</p>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button class="px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Personalizar</button>
+                                        <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">Aceptar Todo</button>
+                                        <button class="col-span-2 w-full px-3 py-2 border-2 border-red-400 text-red-600 text-xs font-bold rounded hover:bg-red-50">Rechazar Todo</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pregunta 3 -->
+                        <div>
+                            <h5 class="font-bold text-blue-900 text-sm uppercase mb-2">Pregunta 3: Describir métodos para validar la conformidad del sistema ante una inspección de la CNIL.</h5>
+                            <ul class="list-disc list-inside text-slate-700 space-y-2 bg-white p-4 rounded border border-blue-100 text-sm">
+                                <li>Análisis automatizado del tráfico para comprobar qué cookies se cargan antes y después del consentimiento.</li>
+                                <li>Pruebas de usabilidad para identificar y corregir potenciales dark patterns.</li>
+                                <li>Auditoría legal del texto informativo, granularidad de finalidades y mecanismos de revocación.</li>
+                                <li>Revisión de logs de consentimiento, incluyendo marcas temporales, cambios y retiradas.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMEN VISUAL -->
+                <div class="mt-8 visual-box p-6 rounded-xl bg-gradient-to-br from-slate-50 to-blue-50 border border-blue-200">
+                    <h4 class="font-bold text-center text-blue-900 mb-4">👁️ Análisis Visual: Dark Patterns vs. Ética</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Problema -->
+                        <div class="bg-red-50 p-4 rounded border border-red-200">
+                            <h5 class="font-bold text-red-700 mb-2 text-center">❌ Dark Patterns (No Conforme)</h5>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Botón Rechazar Oculto</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Consentimiento Forzado</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Casillas Premarcadas</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Falta de Libre Albedrío</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Texto Engañoso</span>
+                                <span class="text-red-400">→</span>
+                                <span class="bg-red-200 text-red-800 px-2 py-1 rounded">Multas CNIL</span>
+                            </div>
+                        </div>
+                        <!-- Solución -->
+                        <div class="bg-green-50 p-4 rounded border border-green-200">
+                            <h5 class="font-bold text-green-700 mb-2 text-center">✅ Diseño Ético (Conforme)</h5>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Botones Equivalientes</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Libertad de Elección</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs mb-2">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Panel Granular</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Control Específico</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Carga Diferida</span>
+                                <span class="text-green-400">→</span>
+                                <span class="bg-green-200 text-green-800 px-2 py-1 rounded">Privacidad por Defecto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-xs text-slate-500 mt-4 italic">*"La privacidad influye directamente en el diseño de interfaces."</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // UI CORE & NAVEGACIÓN
+        // ==========================================
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function switchSection(sectionId) {
+            document.querySelectorAll('.main-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+            document.getElementById('mainContent').scrollTop = 0;
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-violet-500', 'bg-slate-800', 'text-white');
+                btn.classList.add('border-transparent');
+                if(['btn-sec5', 'btn-sec6'].includes(btn.id)) {
+                     if(btn.id === 'btn-sec5' && sectionId !== 'sec5') btn.classList.add('text-red-400');
+                     if(btn.id === 'btn-sec6' && sectionId !== 'sec6') btn.classList.add('text-blue-400');
+                }
+            });
+
+            const currentBtn = document.getElementById('btn-' + sectionId);
+            if(currentBtn) {
+                currentBtn.classList.remove('border-transparent', 'text-red-400', 'text-blue-400');
+                currentBtn.classList.add('border-violet-500', 'bg-slate-800', 'text-white');
+            }
+            
+            if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
+        }
+
+        // Buscador
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(term) ? 'block' : 'none';
+            });
+        });
+
+        // Inicializar
+        window.onload = function() {
+            switchSection('sec1');
+        };
+    </script>
+</body>
+</html>
