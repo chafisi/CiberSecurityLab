@@ -451,6 +451,212 @@
             </div>
         </section>
 
+        <!-- ==========================================
+             ESTRATEGIA MAESTRA: PATRONES DE RESPUESTA PRO
+             ========================================== -->
+        <section id="modelos-patron" class="mb-12 shadow-lg rounded-xl overflow-hidden border border-slate-300 bg-white">
+            <div class="bg-slate-800 text-white p-4 font-black text-xl flex items-center gap-2">
+                <span>🧠</span> HACKEANDO EL EXAMEN: Despliegue de Patrones de Respuesta
+            </div>
+            <div class="p-6 bg-slate-50">
+                <p class="text-sm text-slate-600 mb-6 font-medium">No memorices cada caso desde cero; memoriza la <strong>plantilla de respuesta</strong>. Si identificas el bloque de la pregunta, el 80% se autocompleta con estas reglas universales:</p>
+
+                <div class="space-y-6">
+                    
+                    <!-- LEYES UNIVERSALES VERTICALES -->
+                    <div class="bg-white p-5 rounded-lg border border-slate-300 shadow-sm">
+                        <h3 class="font-bold text-slate-800 mb-4 uppercase text-sm border-b pb-2">🧩 Leyes Universales de Clasificación de Requisitos</h3>
+                        <div class="space-y-4 text-sm">
+                            <div class="flex flex-col sm:flex-row gap-2 items-start">
+                                <span class="bg-green-100 text-green-800 font-bold px-3 py-1 rounded min-w-[60px] text-center">RF</span>
+                                <div>
+                                    <strong class="text-slate-800 block">Funcionales: Qué debe hacer exactamente el sistema.</strong>
+                                    <em class="text-slate-500 text-xs">Truco: Invierte el ataque. Si el ataque roba -> RF es "Cifrar/MFA". Si paraliza -> RF es "Aislar/Restaurar". Usa siempre verbos de acción directa.</em>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row gap-2 items-start">
+                                <span class="bg-blue-100 text-blue-800 font-bold px-3 py-1 rounded min-w-[60px] text-center">RNF</span>
+                                <div>
+                                    <strong class="text-slate-800 block">No Funcionales: Cómo de bien debe hacerlo (Métricas/Calidad).</strong>
+                                    <em class="text-slate-500 text-xs">Truco: Atacan al negocio. Usa siempre "Alta Disponibilidad (>99%)", "Latencia nula/Wire-speed", "Usabilidad transparente", "Tiempos mínimos (RTO/MTTR)".</em>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row gap-2 items-start">
+                                <span class="bg-purple-100 text-purple-800 font-bold px-3 py-1 rounded min-w-[60px] text-center">T</span>
+                                <div>
+                                    <strong class="text-slate-800 block">Técnicos: Tecnologías, algoritmos y protocolos reales.</strong>
+                                    <em class="text-slate-500 text-xs">Truco: Aquí van las siglas duras (AES, WAF, EDR, SIEM, IKEv2). Si dudas en monitorización, pon "Integración con SIEM y Syslog" (aplica casi siempre).</em>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row gap-2 items-start">
+                                <span class="bg-orange-100 text-orange-800 font-bold px-3 py-1 rounded min-w-[60px] text-center">L</span>
+                                <div>
+                                    <strong class="text-slate-800 block">Legales: Marco normativo y compliance.</strong>
+                                    <em class="text-slate-500 text-xs">Truco: "RGPD" para datos personales/europeos. "ENS / ISO 27001" para procesos y auditorías. "PSD2 / DORA" si lees la palabra 'Finanzas/Banca/Pagos'.</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PATRONES POR BLOQUE -->
+                    <h3 class="font-bold text-slate-800 uppercase text-sm border-b pb-2 mt-8">🛠️ Modelos por Bloque Temático</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <!-- Bloque A -->
+                        <div class="bg-white border-t-4 border-red-600 p-4 rounded-lg shadow-sm text-sm">
+                            <h4 class="font-bold text-red-700 mb-3 uppercase border-b border-red-100 pb-1">🚨 A: Incidentes Base</h4>
+                            
+                            <strong class="text-xs text-slate-500 block mb-1">Técnicas (Requisito Técnico - T):</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 mb-3 space-y-1">
+                                <li>EDR y Segmentación L2/L3 (Caso 1)</li>
+                                <li>Backups Inmutables (Caso 1)</li>
+                                <li>MFA y Hashes Argon2 (Caso 2)</li>
+                                <li>SCA / SAST / CVSS (Caso 20)</li>
+                            </ul>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Flujo Táctico:</strong>
+                            <div class="bg-slate-900 p-2 rounded text-xs font-mono mb-3 space-y-1">
+                                <div class="text-red-400">[ Detecta Ataque / CVE ]</div>
+                                <div class="text-orange-400">[ Aísla Red / Contiene ]</div>
+                                <div class="text-blue-400">[ Mitiga / Parchea / Bloquea ]</div>
+                                <div class="text-green-400">[ Restaura Servicio Operativo ]</div>
+                                <div class="text-purple-400">[ Exc: Plan Manual / Bypass ]</div>
+                            </div>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Validación:</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                <li>Simulacros de Phishing</li>
+                                <li>Pruebas de Restauración (Restore)</li>
+                                <li>Escáneres Automatizados (SCA)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Bloque B -->
+                        <div class="bg-white border-t-4 border-blue-600 p-4 rounded-lg shadow-sm text-sm">
+                            <h4 class="font-bold text-blue-700 mb-3 uppercase border-b border-blue-100 pb-1">🔑 B: Cripto y PKI</h4>
+                            
+                            <strong class="text-xs text-slate-500 block mb-1">Técnicas (Requisito Técnico - T):</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 mb-3 space-y-1">
+                                <li>AES-256 / OpenSSL (Caso 3)</li>
+                                <li>CT Logs / OCSP / CRL (Caso 4)</li>
+                                <li>ACME / Let's Encrypt (Caso 13)</li>
+                                <li>FIDO2 / WebAuthn (Caso 14)</li>
+                            </ul>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Flujo Táctico:</strong>
+                            <div class="bg-slate-900 p-2 rounded text-xs font-mono mb-3 space-y-1">
+                                <div class="text-blue-400">[ Inicia Conexión / Petición ]</div>
+                                <div class="text-orange-400">[ Valida Identidad / Certificado ]</div>
+                                <div class="text-green-400">[ Negocia Claves / Firma Desafío ]</div>
+                                <div class="text-purple-400">[ Establece Canal Seguro ]</div>
+                                <div class="text-red-400">[ Exc: Cert Revocado -> Bloquea ]</div>
+                            </div>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Validación:</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                <li>Herramientas `testssl.sh`</li>
+                                <li>Escaneo `Qualys SSL Labs`</li>
+                                <li>Simulacro Phishing MitM (AitM)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Bloque C -->
+                        <div class="bg-white border-t-4 border-purple-600 p-4 rounded-lg shadow-sm text-sm">
+                            <h4 class="font-bold text-purple-700 mb-3 uppercase border-b border-purple-100 pb-1">🧱 C: Redes (L2-L4)</h4>
+                            
+                            <strong class="text-xs text-slate-500 block mb-1">Técnicas (Requisito Técnico - T):</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 mb-3 space-y-1">
+                                <li>Staging de Reglas (Caso 5)</li>
+                                <li>NGFW, DPI y App-ID (Caso 6)</li>
+                                <li>Snort IDS pasivo / SPAN (Caso 7)</li>
+                                <li>DAI y DHCP Snooping (Caso 9)</li>
+                                <li>IPSec, IKEv2, AES-GCM (Caso 10)</li>
+                            </ul>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Flujo Táctico:</strong>
+                            <div class="bg-slate-900 p-2 rounded text-xs font-mono mb-3 space-y-1">
+                                <div class="text-blue-400">[ Tráfico Entra al Perímetro ]</div>
+                                <div class="text-orange-400">[ Motor Inspecciona Firmas/Tablas ]</div>
+                                <div class="text-green-400">[ Coincidencia / Anomalía ]</div>
+                                <div class="text-purple-400">[ Ejecuta Acción: Alerta o Bloquea ]</div>
+                                <div class="text-red-400">[ Exc: Falso Positivo -> Tuning ]</div>
+                            </div>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Validación:</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                <li>Escaneo `Nmap` (Puertos)</li>
+                                <li>Inyección `Ettercap` (ARP)</li>
+                                <li>Análisis `Wireshark` / Traffic Replay</li>
+                            </ul>
+                        </div>
+
+                        <!-- Bloque D -->
+                        <div class="bg-white border-t-4 border-orange-500 p-4 rounded-lg shadow-sm text-sm">
+                            <h4 class="font-bold text-orange-600 mb-3 uppercase border-b border-orange-100 pb-1">🌐 D: AppSec (L7)</h4>
+                            
+                            <strong class="text-xs text-slate-500 block mb-1">Técnicas (Requisito Técnico - T):</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 mb-3 space-y-1">
+                                <li>WAF, CSP, Cookies Seguras (Caso 12)</li>
+                                <li>Compresión Huffman / Padding (Caso 15)</li>
+                                <li>Aislamiento HPACK (Caso 16)</li>
+                                <li>Algoritmos Reed-Solomon (Caso 17)</li>
+                                <li>LDPC / Belief Propagation (Caso 18)</li>
+                            </ul>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Flujo Táctico:</strong>
+                            <div class="bg-slate-900 p-2 rounded text-xs font-mono mb-3 space-y-1">
+                                <div class="text-blue-400">[ Recibe Input / Carga Archivo ]</div>
+                                <div class="text-orange-400">[ Sanitiza / Analiza / Comprime ]</div>
+                                <div class="text-green-400">[ Codifica Output / Cifra Fuerte ]</div>
+                                <div class="text-purple-400">[ Envía / Restaura Respuesta Segura ]</div>
+                                <div class="text-red-400">[ Exc: Ataque Oráculo -> Aplica Padding ]</div>
+                            </div>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Validación:</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                <li>Pentest DAST (`BurpSuite` / `ZAP`)</li>
+                                <li>Test de Canal Lateral (Tamaño payload)</li>
+                                <li>Test de Tolerancia a Ruido (SNR)</li>
+                            </ul>
+                        </div>
+
+                        <!-- Bloque E -->
+                        <div class="bg-white border-t-4 border-emerald-600 p-4 rounded-lg shadow-sm text-sm">
+                            <h4 class="font-bold text-emerald-700 mb-3 uppercase border-b border-emerald-100 pb-1">⚖️ E: GRC y Legal</h4>
+                            
+                            <strong class="text-xs text-slate-500 block mb-1">Técnicas (Requisito Técnico - T):</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 mb-3 space-y-1">
+                                <li>SIEM e Inventario Activos (Caso 19)</li>
+                                <li>EIPD y Hardware (Audio OFF) (Caso 21)</li>
+                                <li>Hash SHA-2 / Sellado (Caso 22)</li>
+                                <li>Logs de Consentimiento (Caso 23)</li>
+                                <li>Tag Manager de Bloqueo (Caso 24)</li>
+                            </ul>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Flujo Táctico:</strong>
+                            <div class="bg-slate-900 p-2 rounded text-xs font-mono mb-3 space-y-1">
+                                <div class="text-blue-400">[ Identifica Riesgo / Muestra Info ]</div>
+                                <div class="text-orange-400">[ Pide Permiso / Ejecuta PDCA ]</div>
+                                <div class="text-green-400">[ Registra Decisión Criptográficamente ]</div>
+                                <div class="text-purple-400">[ Tratamiento Seguro de Datos ]</div>
+                                <div class="text-red-400">[ Exc: Retira Consentimiento -> Cesa ]</div>
+                            </div>
+
+                            <strong class="text-xs text-slate-500 block mb-1">Validación:</strong>
+                            <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                <li>Auditorías Reglamentarias (ISO)</li>
+                                <li>Simulacro de Derechos (ARSOPL)</li>
+                                <li>Test de Usabilidad Interfaz (UX)</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 </body>
 </html>
