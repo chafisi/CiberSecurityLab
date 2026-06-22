@@ -3,241 +3,451 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheat Sheet: 24 Casos Ciberseguridad</title>
+    <title>Cheat Sheet: 24 Casos Ciberseguridad PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: all 0.2s ease-in-out; }
+        .req-list li { display: flex; align-items: flex-start; margin-bottom: 0.25rem; }
+        .req-badge { min-width: 2.5rem; font-weight: 700; font-size: 0.70rem; padding: 0.1rem 0.3rem; border-radius: 0.25rem; margin-right: 0.5rem; text-align: center; }
     </style>
 </head>
 <body class="bg-slate-100 p-4 md:p-8 font-sans text-slate-800">
 
-    <div class="max-w-7xl mx-auto">
-        <header class="mb-8 text-center">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight uppercase">Cheat Sheet Táctico: 24 Casos Prácticos</h1>
-            <p class="text-slate-500 mt-2 font-medium">Esquema Mental Acelerado: Requisitos, Flujos y Validación</p>
+    <div class="max-w-7xl mx-auto space-y-10">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight uppercase">Esquema Mental Táctico: 24 Casos</h1>
+            <p class="text-slate-500 mt-2 font-medium">Requisitos en línea, Flujos, Validación y Glosarios por Bloque</p>
         </header>
 
-        <section class="mb-10">
-            <div class="bg-red-800 text-white p-3 rounded-t-xl font-bold text-lg flex items-center gap-2">
+        <section class="shadow-lg rounded-xl overflow-hidden border border-red-200">
+            <div class="bg-red-800 text-white p-4 font-bold text-lg flex items-center gap-2">
                 <span>🚨</span> BLOQUE A: Amenazas Base y Gestión de Incidentes
             </div>
-            <div class="bg-red-50 border border-red-200 rounded-b-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-red-50 p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 
-                <div class="bg-white p-4 rounded border border-red-100 card-hover text-sm">
-                    <h3 class="font-bold text-red-700 mb-2">1. Ransomware (Hospital)</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Aislar/Backups 
-                        <span class="text-blue-700 text-xs font-bold">[NF]</span> RTO<4h / Disp. 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> EDR / Segmentación L2/L3 
-                        <span class="text-orange-700 text-xs font-bold">[L]</span> RGPD</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> SOC ➔ Detecta cifrado ➔ EDR Aísla ➔ Restaura Backup ➔ (Exc: Continuidad Manual)
+                <div class="bg-white p-4 rounded-lg border border-red-100 card-hover text-sm">
+                    <h3 class="font-bold text-red-700 mb-3 border-b pb-1">1. Ransomware (Hospital)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Monitorizar, aislar red, restaurar backups.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>RTO < 4h, disponibilidad clínica (99%).</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>EDR, segmentación L2/L3, backups inmutables.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD (datos salud), Notificación brechas (72h).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-xs font-mono">
+                        <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> Detecta cifrado ➔ EDR aísla ➔ Activa SOC ➔ Restaura Backup ➔ (Exc: Continuidad manual)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Simulacro Phishing, Test Restore Backups.</div>
+                    <div class="text-xs"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Simulacro Phishing, Test Restore.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-red-100 card-hover text-sm">
-                    <h3 class="font-bold text-red-700 mb-2">2. Credential Stuffing</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> MFA/Bloqueo 
-                        <span class="text-blue-700 text-xs font-bold">[NF]</span> Auth <2s 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> Argon2/Bcrypt / SIEM 
-                        <span class="text-orange-700 text-xs font-bold">[L]</span> PSD2/RGPD</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> Usuario ➔ Loguea ➔ Solicita MFA ➔ Accede ➔ (Exc: CAPTCHA/Bloqueo temporal)
+                <div class="bg-white p-4 rounded-lg border border-red-100 card-hover text-sm">
+                    <h3 class="font-bold text-red-700 mb-3 border-b pb-1">2. Credential Stuffing</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Exigir MFA, bloquear cuentas tras N fallos.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Auth < 2s, alta escalabilidad portal web.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Argon2/bcrypt, análisis heurístico, WAF.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>PSD2 (Banca), RGPD (Integridad).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-xs font-mono">
+                        <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> Usuario loguea ➔ Pide MFA ➔ Valida ➔ (Exc: Bloqueo por fuerza bruta)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Hydra/Burp (Fuerza bruta), Test Funcional MFA.</div>
+                    <div class="text-xs"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Hydra/Burp (Fuerza bruta).</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-red-100 card-hover text-sm">
-                    <h3 class="font-bold text-red-700 mb-2">20. 0-Day (Log4Shell)</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Inventario/Evaluar 
-                        <span class="text-blue-700 text-xs font-bold">[NF]</span> Reducir MTTR 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> SCA/SAST / Monitor CVE 
-                        <span class="text-orange-700 text-xs font-bold">[L]</span> DORA/ISO 31000</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> Riesgos ➔ Detecta CVE ➔ Evalúa impacto ➔ Parchea/Aísla ➔ (Exc: Control compensatorio)
+                <div class="bg-white p-4 rounded-lg border border-red-100 card-hover text-sm">
+                    <h3 class="font-bold text-red-700 mb-3 border-b pb-1">20. 0-Day (Log4Shell)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Evaluar riesgo, inventariar dependencias, parchear.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Reducir MTTR crítico, gobernanza fluida.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>SCA, SAST, monitorización CVSS, IPS.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>NIST RMF, DORA (Resiliencia financiera).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-xs font-mono">
+                        <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> Detecta CVE ➔ Identifica activos ➔ Parchea/Aísla ➔ (Exc: Mitigación temporal sin parche)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Escáner SCA Automático, Auditoría Riesgo Residual.</div>
+                    <div class="text-xs"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Escáner SCA, Auditoría riesgo residual.</div>
                 </div>
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-red-200">
+                <strong>📖 Glosario Bloque A:</strong> 
+                <span class="mr-2"><strong>RTO:</strong> Recovery Time Objective.</span>
+                <span class="mr-2"><strong>EDR:</strong> Endpoint Detection & Response.</span>
+                <span class="mr-2"><strong>SOC:</strong> Security Operations Center.</span>
+                <span class="mr-2"><strong>MFA:</strong> Multi-Factor Authentication.</span>
+                <span class="mr-2"><strong>MTTR:</strong> Mean Time To Respond/Repair.</span>
+                <span class="mr-2"><strong>SCA:</strong> Software Composition Analysis.</span>
+                <span class="mr-2"><strong>SAST:</strong> Static App Sec Testing.</span>
+                <span class="mr-2"><strong>CVE/CVSS:</strong> Common Vulnerabilities & Exposures / Scoring System.</span>
+                <span><strong>DORA:</strong> Digital Operational Resilience Act.</span>
             </div>
         </section>
 
-        <section class="mb-10">
-            <div class="bg-blue-800 text-white p-3 rounded-t-xl font-bold text-lg flex items-center gap-2">
+        <section class="shadow-lg rounded-xl overflow-hidden border border-blue-200">
+            <div class="bg-blue-800 text-white p-4 font-bold text-lg flex items-center gap-2">
                 <span>🔑</span> BLOQUE B: Criptografía, Identidad y PKI
             </div>
-            <div class="bg-blue-50 border border-blue-200 rounded-b-xl p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-blue-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 
-                <div class="bg-white p-4 rounded border border-blue-100 card-hover text-sm">
-                    <h3 class="font-bold text-blue-700 mb-2">3. Transición DES a AES</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> OpenSSL/AES-256 
-                        <span class="text-blue-700 text-xs font-bold">[NF]</span> Compatibilidad</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Admin ➔ Detecta obsoleto ➔ Migra AES ➔ (Exc: Mitiga legacy)
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm">
+                    <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">3. Transición DES a AES</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Usar algos vigentes, auditar longitudes.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Rendimiento sin latencia, compatibilidad.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>OpenSSL, AES-256, SHA-256.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>Esquema Nacional Seguridad (ENS), NIST.</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Detecta obsoleto ➔ Migra a AES ➔ (Exc: Fallo migración -> Restore)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> testssl.sh (Análisis criptográfico).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> testssl.sh (Análisis cripto).</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-blue-100 card-hover text-sm">
-                    <h3 class="font-bold text-blue-700 mb-2">4. Certificados Falsos</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> Cert. Transparency / OCSP 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Revocación rápida</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Navegador ➔ Valida CA ➔ Consulta CRL ➔ (Exc: Bloquea MitM)
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm">
+                    <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">4. Certificados Falsos</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Validar estado cert, generar alertas.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Baja latencia en verificación (OCSP).</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Cert Transparency (CT), OCSP, CRL.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>eIDAS (Firmas y certs europeos).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Navegador recibe Cert ➔ Valida OCSP/CT ➔ (Exc: Revocado -> Bloquea)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Pentest CA, Monitorización CT Logs.</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Monitorización CT Logs.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-blue-100 card-hover text-sm">
-                    <h3 class="font-bold text-blue-700 mb-2">13. Certs. Caducados</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> ACME / Let's Encrypt 
-                        <span class="text-blue-700 text-xs font-bold">[NF]</span> Cero interrupciones</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> PKI ➔ Detecta expiración ➔ ACME renueva ➔ (Exc: Alerta manual)
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm">
+                    <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">13. Certs. Caducados</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Supervisar caducidad, renovar auto.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Zero-downtime, confiabilidad total.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>ACME (Let's Encrypt), PKI, Scripts.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD (Cifrado en tránsito), PCI-DSS.</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Detecta expiración ➔ ACME renueva ➔ Despliega ➔ (Exc: Fallo -> Alerta manual)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Qualys SSL Labs (Validación TLS).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Qualys SSL Labs.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-blue-100 card-hover text-sm">
-                    <h3 class="font-bold text-blue-700 mb-2">14. MFA Robusto FIDO2</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> WebAuthn / Hardware Key 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Anti-Phishing</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Usuario ➔ Pide token ➔ Firma HW ➔ (Exc: Llave perdida)
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm">
+                    <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">14. MFA Robusto FIDO2</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Autenticar FIDO2, registro seguro.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Usabilidad alta, multi-dispositivo.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>WebAuthn, Hardware Keys, Cripto Asim.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>PSD2, RGPD (Biometría si aplica).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Loguea ➔ Pide Llave HW ➔ Firma Cripto ➔ (Exc: Llave perdida -> Revoca)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Simulacro Phishing MitM (AitM).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Simulacros Phishing MitM.</div>
                 </div>
+
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-blue-200">
+                <strong>📖 Glosario Bloque B:</strong> 
+                <span class="mr-2"><strong>AES/DES:</strong> Advanced / Data Encryption Standard.</span>
+                <span class="mr-2"><strong>PKI:</strong> Public Key Infrastructure.</span>
+                <span class="mr-2"><strong>CRL/OCSP:</strong> Cert Revocation List / Online Cert Status Protocol.</span>
+                <span class="mr-2"><strong>CT:</strong> Certificate Transparency.</span>
+                <span class="mr-2"><strong>ACME:</strong> Auto Cert Management Environment.</span>
+                <span class="mr-2"><strong>FIDO2/WebAuthn:</strong> Fast IDentity Online / API web de Auth.</span>
+                <span><strong>eIDAS:</strong> Regulación EU Identidad/Firmas Electrónicas.</span>
             </div>
         </section>
 
-        <section class="mb-10">
-            <div class="bg-purple-800 text-white p-3 rounded-t-xl font-bold text-lg flex items-center gap-2">
+        <section class="shadow-lg rounded-xl overflow-hidden border border-purple-200">
+            <div class="bg-purple-800 text-white p-4 font-bold text-lg flex items-center gap-2">
                 <span>🧱</span> BLOQUE C: Seguridad Perimetral y Redes (L2-L4)
             </div>
-            <div class="bg-purple-50 border border-purple-200 rounded-b-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-purple-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 
-                <div class="bg-white p-4 rounded border border-purple-100 card-hover text-sm">
-                    <h3 class="font-bold text-purple-700 mb-2">5 & 6. Firewall & NGFW</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Reglas previas / DPI 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> Staging / App-ID / SIEM</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Admin ➔ Prueba Staging ➔ NGFW DPI ➔ Bloquea Tor/VPN ➔ (Exc: Falso Positivo)
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm">
+                    <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">5. Errores Firewall</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Validar reglas previas, registro cambios.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Disponibilidad 99.9%, interfaz segura.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Segmentación, Staging, MFA Admin.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>ISO 27001 (Control accesos/cambios).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Propone regla ➔ Revisa/Prueba ➔ Despliega ➔ (Exc: Fallo -> Rollback)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Nmap (Escaneo), Config Drift.</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Nmap, Config Drift Detection.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-purple-100 card-hover text-sm">
-                    <h3 class="font-bold text-purple-700 mb-2">7 & 8. IDS (Snort) / IPS</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-blue-700 text-xs font-bold">[NF]</span> Baja tasa FP / Disp. 99% 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> SPAN/TAP / Firmas</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Snort ➔ Detecta SYN Scan ➔ IPS Bloquea ➔ (Exc: Tráfico Legítimo)
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm">
+                    <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">6. Migración a NGFW</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Inspección DPI, bloquear evasivas (Tor).</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Rendimiento sin latencia DPI, escalable.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>App-ID, descifrado SSL, Integración SIEM.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD (Auditoría de navegación corporativa).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Usuario lanza VPN ➔ NGFW DPI detecta ➔ Bloquea ➔ (Exc: Falso Positivo)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Traffic Replay, Tuning de reglas.</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Test Evasión (Pentest), Tuning SOC.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-purple-100 card-hover text-sm">
-                    <h3 class="font-bold text-purple-700 mb-2">9 & 10. ARP (L2) & IPSec (L3)</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> DAI / IKEv2 / AES-GCM / PFS</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo 9:</strong> Switch ➔ DAI valida MAC ➔ Drop. <br>
-                        <strong class="text-slate-700 block">🔄 Flujo 10:</strong> Sedes ➔ Negocian IKEv2 ➔ Túnel ESP.
+                <div class="bg-white p-4 rounded border-lg border-purple-100 card-hover text-sm">
+                    <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">7. Snort IDS (Uni)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Detectar firmas/escaneos, generar alertas.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>No perder paquetes (wire-speed).</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Puerto SPAN/TAP, Preprocessors, Syslog.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>ENS (Monitorización contínua).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Snort lee tráfico ➔ Detecta SYN ➔ Alerta SIEM ➔ (Exc: Tráfico IT legítimo)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Ettercap (Test ARP), Wireshark (Test Túnel).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Escaneo con Nmap/Masscan.</div>
                 </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm">
+                    <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">8. IPS Financiero</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Bloqueo real-time, modo alerta previo.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Baja tasa FP, alta estabilidad.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Heurística, Despliegue gradual.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>PCI-DSS (Protección datos tarjeta).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Regla en modo alerta ➔ Evalúa FP ➔ Pasa a Bloqueo ➔ (Exc: Corta servicio -> Rollback)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Traffic Replay, Tuning iterativo.</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm">
+                    <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">9. ARP Spoofing</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Verificar IP-MAC, bloquear suplantación.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Latencia nula en Capa 2.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Dynamic ARP Inspection (DAI), DHCP Snooping.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD (Prevenir fuga de datos locales).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Switch lee ARP ➔ Valida contra tabla ➔ Inconsistencia -> Drop.
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Ataque con Ettercap/arpspoof.</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm">
+                    <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">10. IPSec VPN</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Túnel cifrado, renegociar auto claves.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Estabilidad de enlace, failover.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>IKEv2, AES-GCM, SHA-2, PFS (Forward Secrecy).</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD (Transferencia de datos segura).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> GW Negocia IKEv2 ➔ Autentica ➔ Abre túnel ESP ➔ (Exc: Falla Auth -> Cierra)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Wireshark (Comprobar payload cifrado).</div>
+                </div>
+
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-purple-200">
+                <strong>📖 Glosario Bloque C:</strong> 
+                <span class="mr-2"><strong>DPI:</strong> Deep Packet Inspection.</span>
+                <span class="mr-2"><strong>NGFW:</strong> Next-Gen Firewall.</span>
+                <span class="mr-2"><strong>FP:</strong> Falso Positivo.</span>
+                <span class="mr-2"><strong>IDS/IPS:</strong> Intrusion Detection / Prevention System.</span>
+                <span class="mr-2"><strong>DAI:</strong> Dynamic ARP Inspection.</span>
+                <span class="mr-2"><strong>IKEv2 / ESP:</strong> Internet Key Exchange / Encapsulating Sec Payload (IPSec).</span>
+                <span><strong>PFS:</strong> Perfect Forward Secrecy.</span>
             </div>
         </section>
 
-        <section class="mb-10">
-            <div class="bg-orange-800 text-white p-3 rounded-t-xl font-bold text-lg flex items-center gap-2">
+        <section class="shadow-lg rounded-xl overflow-hidden border border-orange-200">
+            <div class="bg-orange-800 text-white p-4 font-bold text-lg flex items-center gap-2">
                 <span>🌐</span> BLOQUE D: AppSec y Transmisión de Información (L7)
             </div>
-            <div class="bg-orange-50 border border-orange-200 rounded-b-xl p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-orange-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 
-                <div class="bg-white p-4 rounded border border-orange-100 card-hover text-sm">
-                    <h3 class="font-bold text-orange-700 mb-2">11/12. Patches & XSS</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Sanear Input / Flujo CI-CD 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> WAF / CSP / Cookies HttpOnly</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Servidor ➔ Sanitiza input ➔ Codifica salida ➔ (Exc: Payload bloqueado)
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm">
+                    <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">11. Equifax (Parches)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Flujo formal parcheo, detectar dependencias.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Minimizar MTTP, cero regresiones.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>SCA, Nessus, Pipeline CI/CD, Staging.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD, PCI-DSS (Cumplimiento parches).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Detecta vulne ➔ Prueba Staging ➔ CI/CD Despliega ➔ (Exc: Fallo -> Mitigación WAF)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> BurpSuite (DAST XSS), Nessus (SCA).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> KPIs de Parcheo (MTTP), Pentest.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-orange-100 card-hover text-sm">
-                    <h3 class="font-bold text-orange-700 mb-2">15/16. Huffman & CRIME</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> TLS 1.3 / Padding Random / No HPACK co-compress</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> App ➔ Aísla secretos ➔ Comprime ➔ Cifra ➔ (Exc: Tamaño revela info -> Padding)
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm">
+                    <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">12. Robo vía XSS</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Sanear inputs, codificar salidas, proteger session.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Rendimiento fluido, Mínimos FP.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>CSP, Cookies HttpOnly/Secure, SAST.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>PSD2, RGPD (Token = Dato personal).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Introduce dato ➔ App Sanitiza/Codifica ➔ Emite HTTP ➔ (Exc: Payload -> Drop/Alerta)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Oráculos de longitud (Variación Ciphertext).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> BurpSuite (DAST XSS), ZAP.</div>
                 </div>
 
-                <div class="bg-white p-4 rounded border border-orange-100 card-hover text-sm">
-                    <h3 class="font-bold text-orange-700 mb-2">17/18. Reed-Solomon & LDPC</h3>
-                    <div class="mb-2"><strong class="text-xs bg-slate-100 px-1 rounded">📦 REQ:</strong> 
-                        <span class="text-green-700 text-xs font-bold">[F]</span> Corregir BER 
-                        <span class="text-purple-700 text-xs font-bold">[T]</span> Parámetros RS / Belief Propagation 5G</div>
-                    <div class="mb-2 bg-slate-50 p-2 rounded text-xs font-mono">
-                        <strong class="text-slate-700 block">🔄 Flujo:</strong> Receptor ➔ Sube Ruido ➔ Itera LDPC/RS ➔ (Exc: Jamming extremo -> Handover)
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm">
+                    <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">15. Huffman (JPEG)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Comprimir antes de cifrar, limpiar metadata.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Calidad perceptual, baja latencia.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>JPEG Huffman, TLS 1.3, Padding uniforme.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD (Privacidad por Diseño).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Sube img ➔ Quita EXIF ➔ Comprime ➔ Cifra TLS ➔ (Exc: Oráculo longitud -> Pone Padding)
                     </div>
-                    <div class="text-xs"><strong class="text-xs bg-slate-100 px-1 rounded">✅ VAL:</strong> Generador Ruido (Test SNR/Jamming).</div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Análisis Canal Lateral (Tamaño Ciphertext).</div>
                 </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm">
+                    <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">16. CRIME (Compresión)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Separar secretos de inputs, NO co-comprimir.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Rendimiento sin TLS compression.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>HPACK context isolation, Padding Random.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>ISO 27001, RGPD (Evitar fuga cookies).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Req HTTP/2 ➔ Aísla cookies ➔ Cifra sin compresión TLS ➔ (Exc: HTTP/2 inseguro -> Padding)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Escáner de Vulnerabilidad Oráculo.</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm">
+                    <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">17. Reed-Solomon</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Detectar/Corregir bits corruptos, loguear BER.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Flujo lectura continuo, sin paradas.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Algoritmo RS (n, k), Buffering óptico.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>ENS/Leyes archivo (Retención íntegra a largo plazo).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Lee CD/DVD ➔ Detecta daño físico ➔ RS Reconstruye bytes ➔ (Exc: Daño masivo -> Ilegible)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Test físico (Discos dañados controlados).</div>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm">
+                    <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">18. LDPC (Wi-Fi/5G)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Corregir errores bajo ruido, detectar Jamming.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Baja latencia proceso, resiliencia alta SNR.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Belief Propagation, Iteraciones LDPC, WPA3.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>Normativas de telecomunicaciones (Disponibilidad).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Detecta ruido ➔ Itera LDPC ➔ Reconstruye señal ➔ (Exc: Jamming extremo -> Handover)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Generador de Ruido SNR Lab.</div>
+                </div>
+
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-orange-200">
+                <strong>📖 Glosario Bloque D:</strong> 
+                <span class="mr-2"><strong>CI/CD:</strong> Cont. Integration / Deployment.</span>
+                <span class="mr-2"><strong>MTTP:</strong> Mean Time To Patch.</span>
+                <span class="mr-2"><strong>XSS:</strong> Cross-Site Scripting.</span>
+                <span class="mr-2"><strong>CSP:</strong> Content Security Policy.</span>
+                <span class="mr-2"><strong>HPACK:</strong> HTTP/2 Header Compression.</span>
+                <span class="mr-2"><strong>RS/LDPC:</strong> Reed-Solomon / Low-Density Parity-Check.</span>
+                <span><strong>SNR/BER:</strong> Signal-to-Noise Ratio / Bit Error Rate.</span>
             </div>
         </section>
 
-        <section class="mb-10">
-            <div class="bg-emerald-800 text-white p-3 rounded-t-xl font-bold text-lg flex items-center gap-2">
+        <section class="shadow-lg rounded-xl overflow-hidden border border-emerald-200">
+            <div class="bg-emerald-800 text-white p-4 font-bold text-lg flex items-center gap-2">
                 <span>⚖️</span> BLOQUE E: GRC, Legal y Marco Normativo
             </div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded-b-xl p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="bg-emerald-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 
-                <div class="bg-white p-3 rounded border border-emerald-100 card-hover text-xs">
-                    <h3 class="font-bold text-emerald-800 mb-1">19. ISO 27001 (PDCA)</h3>
-                    <span class="block mb-1 font-bold text-slate-700">Flujo:</span>
-                    <span class="font-mono text-[10px]">Plan(Activos)➔ Do(Políticas)➔ Check(KPIs)➔ Act(Mejora).</span>
-                    <div class="mt-2 text-[10px]"><strong class="bg-slate-100 px-1">✅ VAL:</strong> Auditoría interna, KPIs Madurez.</div>
+                <div class="bg-white p-4 rounded-lg border border-emerald-100 card-hover text-sm">
+                    <h3 class="font-bold text-emerald-800 mb-3 border-b pb-1">19. ISO 27001 (SGSI Uni)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Evaluar riesgos, documentar políticas, ciclo PDCA.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Coordinación interdepartamental, continuidad.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>SIEM, Repositorio documental, Inventarios.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>ISO/IEC 27001, RGPD Estudiantes.</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo PDCA:</strong> PLAN (Activos) ➔ DO (Políticas) ➔ CHECK (Auditoría) ➔ ACT (Mejora)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> KPIs Madurez, Auditoría Externa.</div>
                 </div>
 
-                <div class="bg-white p-3 rounded border border-emerald-100 card-hover text-xs">
-                    <h3 class="font-bold text-emerald-800 mb-1">21. APDA (Llei 29/2021)</h3>
-                    <span class="block mb-1 font-bold text-slate-700">Flujo CCTV:</span>
-                    <span class="font-mono text-[10px]">EIPD➔ Instala SIN audio➔ Registro Actividades.</span>
-                    <div class="mt-2 text-[10px]"><strong class="bg-slate-100 px-1">✅ VAL:</strong> Revisión EIPD, Verificación Audio OFF.</div>
+                <div class="bg-white p-4 rounded-lg border border-emerald-100 card-hover text-sm">
+                    <h3 class="font-bold text-emerald-800 mb-3 border-b pb-1">21. APDA (Videovigilancia)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Informar con carteles, registrar actividades (RAT).</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Minimización (sin audio, ángulos justos).</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Audio desactivado HW, Cifrado grabaciones.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>Llei 29/2021 Andorra (Equiv. RGPD).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Detecta necesidad ➔ EIPD ➔ Instala (sin audio) ➔ (Exc: Ejercicio derecho ARSO -> Responde legal)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Revisión EIPD, Verificación HW Audio.</div>
                 </div>
 
-                <div class="bg-white p-3 rounded border border-emerald-100 card-hover text-xs">
-                    <h3 class="font-bold text-emerald-800 mb-1">22. Convenio Budapest</h3>
-                    <span class="block mb-1 font-bold text-slate-700">Flujo Cooperación:</span>
-                    <span class="font-mono text-[10px]">Europol pide➔ Preservación Rápida (Hash)➔ MLAT.</span>
-                    <div class="mt-2 text-[10px]"><strong class="bg-slate-100 px-1">✅ VAL:</strong> Cadena Custodia, Sellos Temporales.</div>
+                <div class="bg-white p-4 rounded-lg border border-emerald-100 card-hover text-sm">
+                    <h3 class="font-bold text-emerald-800 mb-3 border-b pb-1">22. Europol (Cooperación)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Preservar datos rápido, cooperar internacional.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Rapidez 24/7 (Punto de contacto).</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Hashing (SHA-2), Sellos Temporales, Custodia.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>Convenio Budapest, MLAT, LOPD.</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Europol pide ➔ Policía preserva ➔ Firma Hash ➔ (Exc: Fuera país -> MLAT)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Cadena Custodia, Trazabilidad forense.</div>
                 </div>
 
-                <div class="bg-white p-3 rounded border border-emerald-100 card-hover text-xs">
-                    <h3 class="font-bold text-emerald-800 mb-1">23. AEPD (Consent.)</h3>
-                    <span class="block mb-1 font-bold text-slate-700">Flujo RGPD:</span>
-                    <span class="font-mono text-[10px]">Banner Granular➔ Usuario Acepta➔ Registra Consentimiento.</span>
-                    <div class="mt-2 text-[10px]"><strong class="bg-slate-100 px-1">✅ VAL:</strong> Logs Consentimiento, Simulacro ARSOPL.</div>
+                <div class="bg-white p-4 rounded-lg border border-emerald-100 card-hover text-sm">
+                    <h3 class="font-bold text-emerald-800 mb-3 border-b pb-1">23. AEPD (Consentimiento)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Consentimiento granular explícito, facilitar ARSOPL.</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Transparencia, lenguaje claro.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Logs Inmutables Consentimiento, CRM Seguro.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD / LOPDGDD España.</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Muestra Banner ➔ Usuario Elige ➔ Loguea timestamp ➔ (Exc: Usuario retira -> Cesa uso)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Simulacro ARSOPL, Auditoría Base Legal.</div>
                 </div>
 
-                <div class="bg-white p-3 rounded border border-emerald-100 card-hover text-xs">
-                    <h3 class="font-bold text-emerald-800 mb-1">24. CNIL (Dark Pat.)</h3>
-                    <span class="block mb-1 font-bold text-slate-700">Flujo ePrivacy:</span>
-                    <span class="font-mono text-[10px]">"Rechazar Todo" visible➔ Bloquea scripts no esenciales.</span>
-                    <div class="mt-2 text-[10px]"><strong class="bg-slate-100 px-1">✅ VAL:</strong> Análisis Tráfico Automatizado (UX test).</div>
+                <div class="bg-white p-4 rounded-lg border border-emerald-100 card-hover text-sm">
+                    <h3 class="font-bold text-emerald-800 mb-3 border-b pb-1">24. CNIL (Dark Patterns)</h3>
+                    <ul class="req-list text-xs mb-3">
+                        <li><span class="req-badge bg-green-100 text-green-700">RF</span>Botón "Rechazar todo" equivalente a "Aceptar".</li>
+                        <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span>Ausencia de manipulación visual UX/UI.</li>
+                        <li><span class="req-badge bg-purple-100 text-purple-700">T</span>Tag Manager Bloqueo, Control Scripts.</li>
+                        <li><span class="req-badge bg-orange-100 text-orange-700">L</span>RGPD, ePrivacy (Francia).</li>
+                    </ul>
+                    <div class="mb-3 bg-slate-50 p-2 rounded text-[11px] font-mono">
+                        <strong>🔄 Flujo:</strong> Muestra Banner neutro ➔ Usuario Rechaza ➔ Bloquea Scripts ➔ (Exc: Navegación limpia)
+                    </div>
+                    <div class="text-[11px]"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> Test Usabilidad (UX), Auto-scanner Cookies.</div>
                 </div>
 
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-emerald-200">
+                <strong>📖 Glosario Bloque E:</strong> 
+                <span class="mr-2"><strong>GRC:</strong> Governance, Risk & Compliance.</span>
+                <span class="mr-2"><strong>SGSI:</strong> Sistema Gestión Seg. Info.</span>
+                <span class="mr-2"><strong>PDCA:</strong> Plan-Do-Check-Act.</span>
+                <span class="mr-2"><strong>APDA/AEPD/CNIL:</strong> Agencias de Protección de Datos (Andorra/España/Francia).</span>
+                <span class="mr-2"><strong>EIPD:</strong> Evaluación de Impacto (DPIA).</span>
+                <span class="mr-2"><strong>MLAT:</strong> Mutual Legal Assistance Treaty.</span>
+                <span><strong>ARSOPL:</strong> Acceso, Rect., Supresión, Oposición, Portab., Limitación.</span>
             </div>
         </section>
 
