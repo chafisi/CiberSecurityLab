@@ -615,7 +615,102 @@
 
                 </div>
             </div>
-        </section>    
+        </section>
+        
+        <section id="examenes-reales-2" class="mb-12 shadow-xl rounded-xl overflow-hidden border border-indigo-300 bg-white">
+            <div class="bg-indigo-900 text-white p-4 font-black text-xl flex items-center gap-2">
+                <span>🏭</span> EXÁMENES REALES: Casos Industriales y Avanzados
+            </div>
+            <div class="p-6 bg-indigo-50/50">
+                <p class="text-sm text-indigo-800 mb-6 font-medium">Segunda batería de preguntas de examen. Atención a los casos OT/IoT, donde los requisitos de disponibilidad (no parar la planta) y normativas (IEC 62443 / NIS2) son críticos.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 3: IDS basado en ML en IoT Industrial</h3>
+                                <span class="bg-purple-100 text-purple-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">OT / SCADA / IA</span>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
+                                <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
+                                <p class="text-[11px] text-slate-600 italic">Una planta industrial desplegó un sistema IDS basado en técnicas de machine learning para identificar anomalías en redes IoT y sistemas SCADA. El objetivo era detectar comportamientos ofensivos que los IDS tradicionales basados en firmas no eran capaces de identificar. El sistema detectó desviaciones sutiles en sensores y PLCs como tráfico fuera de horario, cambios inesperados en patrones de comunicación o comandos anómalos. Esto permitió aislar dispositivos comprometidos antes de impactar la producción. El caso demuestra el valor del ML para detectar 0-days, así como los retos: datos representativos, modelos ajustados al contexto y personal OT/ML especializado.</p>
+                            </div>
+
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
+                            <div class="space-y-3 mb-5">
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Analizar el comportamiento de dispositivos IoT, sensores, actuadores y PLCs en tiempo real.</li>
+                                        <li>Crear una línea base (profiling) del comportamiento normal de la planta.</li>
+                                        <li>Detectar anomalías mediante modelos estadísticos o algoritmos de Machine Learning (ML).</li>
+                                        <li>Generar alertas tempranas para el equipo de OT (Operational Technology) facilitando el aislamiento.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Operación 100% pasiva: no debe introducir latencia en la red de control industrial.</li>
+                                        <li>Minimizar la tasa de Falsos Positivos (FP) para no provocar paradas innecesarias de producción.</li>
+                                        <li>Alta resiliencia frente a entornos con datos ruidosos o incompletos.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Despliegue fuera de línea mediante puertos SPAN/Network TAPs.</li>
+                                        <li>Deep Packet Inspection (DPI) para protocolos industriales (Modbus TCP, DNP3, OPC UA).</li>
+                                        <li>Algoritmos ML de detección de anomalías (ej. Isolation Forest, Autoencoders).</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Cumplimiento del estándar IEC 62443 (Ciberseguridad en redes y sistemas industriales).</li>
+                                        <li>Directiva europea NIS2 (por tratarse de infraestructura crítica u operador esencial).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Detección Anomalías IoT</h4>
+                            <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div class="text-slate-400 mb-1">Actor: Sistema IDS-ML / Operador OT</div>
+                                <div class="text-slate-300">[1] El sistema IDS monitoriza el tráfico industrial pasivamente (SPAN).</div>
+                                <div class="text-slate-300">[2] El motor ML perfila la línea base de operaciones (horarios, comandos habituales).</div>
+                                <div class="text-slate-300">[3] El IDS detecta una desviación sutil (ej. escritura en PLC fuera de turno).</div>
+                                <div class="text-slate-300">[4] Se genera una alerta de criticidad alta en el dashboard del SOC/OT.</div>
+                                <div class="text-slate-300">[5] El operador OT valida la alerta y aísla lógicamente el sensor sin parar la planta.</div>
+                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc] Datos incompletos o ruidosos: Aumentan los falsos positivos; el modelo requiere ajuste/limpieza.</div>
+                                <div class="text-red-400">[Exc] Ataques camuflados: El malware imita el tráfico normal; requiere modelos híbridos (firmas + ML).</div>
+                            </div>
+
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                            <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100">
+                                <ul class="list-disc pl-4 text-slate-700 space-y-1">
+                                    <li>Entrenar y probar el modelo con <em>datasets</em> reales del entorno industrial, no simulados.</li>
+                                    <li>Crear escenarios de ataque controlados (Red Teaming) contra PLCs, sensores y SCADA.</li>
+                                    <li>Evaluar periódicamente métricas del modelo (Precisión, <em>Recall</em>, F1-Score) y monitorizar la lista de falsos positivos.</li>
+                                    <li>Validar la integración OT/IT mediante pruebas de respuesta coordinadas ante alertas.</li>
+                                    <li>Revisar la escalabilidad del modelo ante cambios operativos (cambio de turnos, estaciones, ciclos de producción).</li>
+                                    <li>Verificar que las alertas generadas sean accionables y no saturen de ruido al equipo OT.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-5 rounded-lg border border-dashed border-slate-300 flex items-center justify-center text-slate-400 min-h-[500px]">
+                        <div class="text-center">
+                            <span class="text-4xl block mb-2">➕</span>
+                            <p class="font-bold text-sm">Esperando siguiente caso de examen...</p>
+                            <p class="text-xs mt-1">Pasa el texto del Ejercicio 4 para agregarlo a la parrilla.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
            
             <!-- ==========================================
              ESTRATEGIA MAESTRA: PATRONES DE RESPUESTA 1
