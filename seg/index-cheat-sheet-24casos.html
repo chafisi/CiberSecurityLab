@@ -460,7 +460,7 @@
                 <p class="text-sm text-indigo-800 mb-6 font-medium">Recopilación de preguntas de examen reales. Aquí el nivel de detalle es máximo para memorizar la respuesta exacta esperada por el tribunal/evaluador.</p>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
+                    <!-- Pregunta 1 - USB-->
                     <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-center mb-3 border-b border-indigo-100 pb-2">
@@ -510,14 +510,58 @@
                             </ul>
                         </div>
                     </div>
+                    <!-- Pregunta 2 - Whatsapp-->
+                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-3 border-b border-indigo-100 pb-2">
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 2: E2EE en WhatsApp y Signal</h3>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded uppercase">Criptografía / Privacidad</span>
+                            </div>
+                            
+                            <p class="text-[11px] text-slate-500 mb-4 italic">Contexto: Cifrado Extremo a Extremo (E2EE) para evitar interceptación. Uso de criptografía de curva elíptica, claves efímeras y el debate legal sobre las puertas traseras gubernamentales (Client-side scanning).</p>
 
-                    <div class="bg-slate-50 p-5 rounded-lg border border-dashed border-slate-300 flex items-center justify-center text-slate-400">
-                        <div class="text-center">
-                            <span class="text-4xl block mb-2">➕</span>
-                            <p class="font-bold text-sm">Esperando siguiente caso de examen...</p>
-                            <p class="text-xs mt-1">Pasa el texto del siguiente ejercicio para agregarlo a la parrilla.</p>
+                            <ul class="req-list text-xs mb-4 space-y-2">
+                                <li>
+                                    <span class="req-badge bg-green-100 text-green-700">RF</span>
+                                    <div>Garantizar confidencialidad estricta (solo emisor/receptor pueden leer). Rotación automática de claves por cada mensaje. Mecanismo para verificar la identidad del contacto.</div>
+                                </li>
+                                <li>
+                                    <span class="req-badge bg-blue-100 text-blue-700">RNF</span>
+                                    <div>Transparencia y usabilidad (el usuario no debe notar el proceso criptográfico). Baja latencia en el cifrado/descifrado móvil. Escalabilidad masiva.</div>
+                                </li>
+                                <li>
+                                    <span class="req-badge bg-purple-100 text-purple-700">T</span>
+                                    <div>Protocolo Signal: Intercambio de claves X3DH. Algoritmo Double Ratchet (Perfect Forward Secrecy / Future Secrecy). Criptografía de Curva Elíptica (Curve25519). Cifrado de carga útil con AES-GCM.</div>
+                                </li>
+                                <li>
+                                    <span class="req-badge bg-orange-100 text-orange-700">L</span>
+                                    <div>RGPD (Privacidad desde el Diseño y por Defecto). Directiva ePrivacy. Principio de minimización (el servidor solo gestiona metadatos, no el contenido).</div>
+                                </li>
+                            </ul>
+
+                            <div class="mb-4 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <strong class="text-indigo-300 block mb-1 uppercase text-[10px]">🔄 Flujo: Intercambio de mensajes E2EE</strong>
+                                <div class="text-slate-300">[1] Alice desea enviar un mensaje a Bob.</div>
+                                <div class="text-slate-300">[2] Alice obtiene las pre-claves públicas de Bob desde el servidor (X3DH).</div>
+                                <div class="text-slate-300">[3] Alice deriva el secreto compartido, cifra el mensaje y lo envía.</div>
+                                <div class="text-slate-300">[4] El servidor enruta el mensaje cifrado (no puede leerlo).</div>
+                                <div class="text-slate-300">[5] Bob recibe, descifra y ambos rotan sus claves (Double Ratchet).</div>
+                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc 1] Intento de MitM -> Falla la validación visual de códigos QR (Safety Numbers).</div>
+                                <div class="text-red-400">[Exc 2] Servidor comprometido -> Solo expone metadatos, no el texto en claro.</div>
+                            </div>
+                        </div>
+
+                        <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100 mt-4">
+                            <strong class="text-indigo-800 block mb-1">✅ Métodos de Validación:</strong>
+                            <ul class="list-disc pl-4 text-slate-700 space-y-1">
+                                <li>Auditorías de código fuente (si es Open Source, como Signal) sobre la biblioteca criptográfica.</li>
+                                <li>Análisis de tráfico de red (con Wireshark) para verificar que la carga útil (payload) viaja cifrada y no en texto claro.</li>
+                                <li>Verificación "Out-of-Band" (OOB): Comprobación manual de los números de seguridad / Códigos QR entre usuarios para evitar ataques Man-in-the-Middle.</li>
+                                <li>Pruebas de Pentesting en el endpoint (App móvil) para asegurar que las claves privadas están en el <em>Secure Enclave/Keystore</em> del dispositivo.</li>
+                            </ul>
                         </div>
                     </div>
+                    
 
                 </div>
             </div>
