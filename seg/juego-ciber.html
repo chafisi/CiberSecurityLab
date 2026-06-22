@@ -20,138 +20,374 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 crt">
 
-    <div id="game-container" class="w-full max-w-4xl bg-slate-900 border border-slate-700 rounded-lg shadow-2xl overflow-hidden relative z-10">
+    <div id="game-container" class="w-full max-w-5xl bg-slate-900 border border-slate-700 rounded-lg shadow-2xl overflow-hidden relative z-10">
         
+        <!-- Header -->
         <header class="bg-slate-800 p-4 border-b border-slate-700 flex justify-between items-center">
             <div>
-                <h1 class="text-xl font-bold text-sky-400">CYBERGUARD_OS v1.0</h1>
-                <p id="block-indicator" class="text-xs text-slate-400 mt-1">Cargando módulos...</p>
+                <h1 class="text-xl font-bold text-sky-400">CYBERGUARD_OS v2.0</h1>
+                <p id="block-indicator" class="text-xs text-slate-400 mt-1">Esperando inicialización...</p>
             </div>
             <div class="text-right">
                 <div class="text-sm">INTEGRIDAD: <span id="health" class="text-green-400 font-bold">100%</span></div>
-                <div class="text-sm">CASOS RESUELTOS: <span id="score" class="text-sky-400 font-bold">0</span></div>
+                <div class="text-sm">AMENAZAS MITIGADAS: <span id="score" class="text-sky-400 font-bold">0</span> / 24</div>
             </div>
         </header>
 
-        <div class="p-6 min-h-[400px] flex flex-col justify-center">
+        <!-- Main Screen -->
+        <div class="p-6 min-h-[450px] flex flex-col justify-center">
             
-            <div id="intro-screen" class="text-center">
-                <h2 class="text-3xl font-bold text-red-500 mb-4 glitch">ALERTA DEL SISTEMA</h2>
-                <p class="mb-6 text-slate-300">Bienvenido CISO. Hemos detectado 24 amenazas inminentes distribuidas en 5 vectores diferentes. Debes aplicar las contramedidas exactas para evitar el colapso.</p>
-                <button onclick="startGame()" class="px-6 py-3 bg-sky-600 text-white font-bold rounded hover:bg-sky-500 transition shadow-[0_0_15px_rgba(2,132,199,0.5)]">INICIAR DEFENSA</button>
+            <!-- Intro / End Screen -->
+            <div id="intro-screen" class="text-center max-w-2xl mx-auto">
+                <h2 class="text-4xl font-bold text-red-500 mb-4 glitch">ALERTA GLOBAL</h2>
+                <p class="mb-6 text-slate-300">Bienvenido CISO. Hemos detectado 24 amenazas inminentes distribuidas en todos los vectores de nuestra infraestructura. Debes aplicar las contramedidas exactas de tu temario para evitar el colapso. Un error grave restará 15% de integridad a la red.</p>
+                <button onclick="startGame()" class="px-8 py-4 bg-sky-600 text-white font-bold rounded hover:bg-sky-500 transition shadow-[0_0_15px_rgba(2,132,199,0.5)]">INICIAR DEFENSA PROTOCOLO 24</button>
             </div>
 
+            <!-- Game Screen -->
             <div id="play-screen" class="hidden">
+                <!-- Threat Area -->
                 <div class="bg-red-950/30 border border-red-900/50 rounded p-4 mb-6">
                     <div class="flex items-center gap-2 text-red-400 font-bold mb-2">
-                        <span class="animate-pulse">⚠️</span> INCIDENTE DETECTADO
+                        <span class="animate-pulse">⚠️</span> INCIDENTE EN PROGRESO
                     </div>
                     <h2 id="threat-title" class="text-xl font-bold text-white mb-2">Titulo Amenaza</h2>
-                    <p id="threat-desc" class="text-sm text-slate-300">Descripción detallada de la amenaza que está ocurriendo en este momento en la red.</p>
+                    <p id="threat-desc" class="text-sm text-slate-300">Descripción de la amenaza...</p>
                 </div>
 
+                <!-- Defense Options -->
                 <h3 class="text-sm text-sky-400 mb-3">>_ SELECCIONA CONTRAMEDIDA TÉCNICA:</h3>
                 <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    </div>
+                    <!-- Botones inyectados por JS -->
+                </div>
             </div>
 
+            <!-- Report Screen (AAR) -->
             <div id="report-screen" class="hidden">
                 <div class="bg-emerald-950/30 border border-emerald-900/50 rounded p-4 mb-6">
-                    <h2 class="text-xl font-bold text-emerald-400 mb-2">✔️ AMENAZA NEUTRALIZADA</h2>
+                    <h2 class="text-xl font-bold text-emerald-400 mb-2">✔️ INCIDENTE NEUTRALIZADO</h2>
                     
                     <div class="mt-4 space-y-4">
                         <div>
-                            <h4 class="text-xs text-slate-400 uppercase">Flujo de Defensa Aplicado:</h4>
-                            <p id="report-flow" class="text-sm text-emerald-200 font-mono bg-slate-950 p-2 rounded mt-1"></p>
+                            <h4 class="text-xs text-slate-400 uppercase">Flujo Táctico (Caso de Uso):</h4>
+                            <p id="report-flow" class="text-sm text-emerald-200 font-mono bg-slate-950 p-3 rounded mt-1"></p>
                         </div>
                         <div>
-                            <h4 class="text-xs text-slate-400 uppercase">Auditoría / Validación:</h4>
-                            <p id="report-val" class="text-sm text-emerald-200 font-mono bg-slate-950 p-2 rounded mt-1"></p>
+                            <h4 class="text-xs text-slate-400 uppercase">Validación / Auditoría:</h4>
+                            <p id="report-val" class="text-sm text-sky-200 font-mono bg-slate-950 p-3 rounded mt-1"></p>
                         </div>
                     </div>
                 </div>
-                <button onclick="nextCase()" class="w-full py-3 btn-cyber text-sky-400 font-bold rounded">>_ SIGUIENTE INCIDENTE</button>
+                <button onclick="nextCase()" class="w-full py-3 btn-cyber text-sky-400 font-bold rounded uppercase">>_ Continuar Escaneo de Red</button>
             </div>
 
         </div>
     </div>
 
     <script>
-        // BBDD DEL JUEGO (Prototipo con 1 caso por bloque)
+        // BBDD DEL JUEGO COMPLETA: LOS 24 CASOS
         const gameData = [
+            // BLOQUE A
             {
-                bloque: "BLOQUE A: Amenazas y Respuesta",
-                title: "1. Infección Masiva en Hospital Comarcal",
-                desc: "Un administrativo ha abierto un PDF malicioso. Los servidores de historias clínicas están cifrándose rápidamente. El servicio asistencial está cayendo.",
+                bloque: "BLOQUE A: Amenazas y Respuesta", title: "1. Ransomware en Hospital Comarcal",
+                desc: "Un PDF malicioso ha comprometido el endpoint de admisiones. El cifrado se está propagando hacia los servidores clínicos afectando la disponibilidad (RTO comprometido).",
                 options: [
-                    { text: "Implementar WAF y filtrar tráfico web entrante.", correct: false },
-                    { text: "Aislar la red con EDR y restaurar backups inmutables.", correct: true },
-                    { text: "Acelerar los procesos de cifrado con AES-256.", correct: false },
-                    { text: "Generar un reporte a la AEPD inmediatamente.", correct: false }
+                    { text: "Implementar un WAF para filtrar las peticiones SQL maliciosas de red.", correct: false },
+                    { text: "Aislar con EDR, aplicar segmentación L2/L3 y restaurar backups inmutables.", correct: true },
+                    { text: "Configurar IPSec IKEv2 entre el hospital y la nube.", correct: false },
+                    { text: "Aplicar codificación Huffman a los historiales médicos.", correct: false }
                 ],
-                flow: "EDR aísla endpoints -> SOC interviene -> Restauración desde Backup offline -> Reanudación (RTO < 4h).",
-                val: "Simulacros de Phishing + Test de Restauración de Copias de Seguridad."
+                flow: "Detecta cifrado -> EDR aísla equipo -> SOC interviene -> Restaura Backup.",
+                val: "Simulacros de Phishing y Pruebas periódicas de restauración de backups."
             },
             {
-                bloque: "BLOQUE B: Criptografía e Identidad",
-                title: "14. Ataque Adversary-in-the-Middle (Phishing)",
-                desc: "Los atacantes han creado un portal corporativo clonado. Están robando contraseñas y códigos SMS OTP en tiempo real.",
+                bloque: "BLOQUE A: Amenazas y Respuesta", title: "2. Credential Stuffing en E-Commerce",
+                desc: "Picos masivos de intentos de login desde múltiples IPs utilizando diccionarios filtrados en la Dark Web.",
                 options: [
-                    { text: "Exigir MFA basado en Hardware (FIDO2 / WebAuthn).", correct: true },
-                    { text: "Forzar el cambio de contraseñas cada 30 días.", correct: false },
-                    { text: "Activar validación OCSP para certificados.", correct: false },
-                    { text: "Implantar inspección profunda de paquetes (DPI).", correct: false }
+                    { text: "Implantar MFA, bloquear tras intentos fallidos y usar hashes Argon2/Bcrypt.", correct: true },
+                    { text: "Activar Dynamic ARP Inspection (DAI) en los switches.", correct: false },
+                    { text: "Desplegar cifrado AES-256 en las bases de datos de productos.", correct: false },
+                    { text: "Desactivar la compresión TLS para evitar fugas de sesión.", correct: false }
                 ],
-                flow: "Usuario loguea -> Challenge FIDO2 -> Llave HW firma desafío -> Acceso seguro sin exponer secretos.",
-                val: "Simulacros de Phishing AitM para comprobar la resistencia del sistema MFA."
+                flow: "Usuario loguea -> Sistema exige MFA -> Validación correcta -> Acceso concedido (Exc: Bloqueo por fuerza bruta).",
+                val: "Pruebas con Hydra/Burp Suite (Fuerza Bruta) y Test de flujo MFA."
             },
             {
-                bloque: "BLOQUE C: Seguridad Perimetral",
-                title: "9. Envenenamiento de Tablas MAC (Capa 2)",
-                desc: "Tráfico de la red local está siendo redirigido hacia el equipo de un atacante mediante respuestas falsas a nivel de enlace.",
+                bloque: "BLOQUE A: Amenazas y Respuesta", title: "20. Vulnerabilidad 0-Day (Log4Shell)",
+                desc: "Se ha publicado un CVE crítico en una librería de terceros. Explotación activa en la industria financiera.",
                 options: [
-                    { text: "Implementar túneles IPSec con IKEv2.", correct: false },
-                    { text: "Instalar Snort IDS en un puerto SPAN.", correct: false },
-                    { text: "Activar Dynamic ARP Inspection (DAI) y DHCP Snooping.", correct: true },
-                    { text: "Configurar un Next-Gen Firewall (NGFW).", correct: false }
+                    { text: "Cifrar las bases de datos en reposo y tránsito.", correct: false },
+                    { text: "Desplegar herramientas SCA/SAST, inventariar dependencias y parchear.", correct: true },
+                    { text: "Configurar un IDS Snort en modo SPAN.", correct: false },
+                    { text: "Sustituir el algoritmo DES por AES.", correct: false }
                 ],
-                flow: "Switch intercepta mensaje ARP -> DAI valida contra base de datos DHCP -> Paquete ilegítimo es descartado (Drop).",
-                val: "Test de inyección en laboratorio utilizando Ettercap o arpspoof."
+                flow: "Detecta CVE -> Identifica activos dependientes (SCA) -> Aplica parche o aísla -> Registra riesgo.",
+                val: "Auditoría de riesgo residual y Escaneo automatizado SCA continuo."
+            },
+            // BLOQUE B
+            {
+                bloque: "BLOQUE B: Criptografía, Identidad y PKI", title: "3. Transición de Algoritmos Criptográficos",
+                desc: "Auditores detectan que sistemas heredados del gobierno siguen usando DES (claves de 56 bits).",
+                options: [
+                    { text: "Ocultar la red en VLANs segmentadas.", correct: false },
+                    { text: "Renovar los certificados digitales con Let's Encrypt.", correct: false },
+                    { text: "Implementar autenticación FIDO2.", correct: false },
+                    { text: "Migrar a AES-256 (OpenSSL) manteniendo compatibilidad inicial sin latencia.", correct: true }
+                ],
+                flow: "Detecta algoritmo obsoleto -> Elige AES-256 -> Migra datos -> Documenta cambios.",
+                val: "Auditorías criptográficas usando testssl.sh y cumplimiento del NIST."
             },
             {
-                bloque: "BLOQUE D: Aplicaciones L7",
-                title: "12. Inyección de Código en Banca Online",
-                desc: "Un campo de comentarios no sanitizado está permitiendo a los atacantes robar cookies de sesión de otros clientes.",
+                bloque: "BLOQUE B: Criptografía, Identidad y PKI", title: "4. Emisión de Certificados Falsos",
+                desc: "Una CA comprometida ha emitido certificados ilegítimos para dominios corporativos. Riesgo inminente de MitM.",
                 options: [
-                    { text: "Desactivar la compresión TLS (Evitar CRIME).", correct: false },
-                    { text: "Aplicar codificación Huffman y Padding.", correct: false },
+                    { text: "Bloquear puertos 80 y 443 en el perímetro.", correct: false },
+                    { text: "Monitorizar Certificate Transparency (CT) y forzar revocación vía OCSP/CRL.", correct: true },
+                    { text: "Cambiar de RSA a criptografía de curva elíptica.", correct: false },
+                    { text: "Aplicar la Llei 29/2021 de protección de datos.", correct: false }
+                ],
+                flow: "Navegador recibe Certificado -> Valida OCSP/CT -> Si revocado, bloquea conexión.",
+                val: "Monitorización continua de CT Logs y Pentest sobre la CA interna."
+            },
+            {
+                bloque: "BLOQUE B: Criptografía, Identidad y PKI", title: "13. Certificados Caducados (Caída de Servicio)",
+                desc: "Los servicios de comunicación interna (ej. Teams) fallan por falta de renovación de un certificado TLS clave.",
+                options: [
+                    { text: "Reducir la latencia desactivando el escaneo DPI.", correct: false },
+                    { text: "Automatizar la renovación zero-downtime usando el protocolo ACME y scripts.", correct: true },
+                    { text: "Aplicar políticas de Content Security Policy (CSP).", correct: false },
+                    { text: "Corregir los bits erróneos con algoritmos Reed-Solomon.", correct: false }
+                ],
+                flow: "PKI detecta expiración inminente -> ACME renueva automáticamente -> Despliegue sin cortes.",
+                val: "Escaneo periódico con Qualys SSL Labs y Alertas a 30 días."
+            },
+            {
+                bloque: "BLOQUE B: Criptografía, Identidad y PKI", title: "14. Autenticación contra Phishing",
+                desc: "Empleados están cayendo en clones de portales corporativos. Los atacantes roban usuarios y SMS OTP (AitM).",
+                options: [
+                    { text: "Implementar autenticación robusta WebAuthn y llaves de hardware FIDO2.", correct: true },
+                    { text: "Hacer un filtrado de cabeceras HTTP.", correct: false },
+                    { text: "Incrementar la rotación de contraseñas a 15 días.", correct: false },
+                    { text: "Implantar un SIEM para correlación de logs.", correct: false }
+                ],
+                flow: "Usuario inserta PIN/Pass -> Solicita llave FIDO2 -> Hardware firma desafío -> Sistema valida firma cripto.",
+                val: "Simulacros de Phishing AitM y Test de compatibilidad multi-dispositivo."
+            },
+            // BLOQUE C
+            {
+                bloque: "BLOQUE C: Seguridad Perimetral y Redes", title: "5. Configuración Errónea en Firewall",
+                desc: "Una regla mal aplicada ha expuesto bases de datos internas a la red pública (Internet).",
+                options: [
+                    { text: "Parchear el servidor web usando CI/CD.", correct: false },
+                    { text: "Implementar autenticación FIDO2 en el portal web.", correct: false },
+                    { text: "Segmentar, obligar Staging de reglas y requerir MFA para administradores.", correct: true },
+                    { text: "Revisar las grabaciones de la cámara de seguridad (CCTV).", correct: false }
+                ],
+                flow: "Admin propone regla -> Se evalúa en Staging -> Se despliega (Rollback automático si hay fallo).",
+                val: "Escaneo de puertos (Nmap) y Detección de Config Drift."
+            },
+            {
+                bloque: "BLOQUE C: Seguridad Perimetral y Redes", title: "6. Evasión de Filtros (Tor/VPN)",
+                desc: "Tráfico malicioso disfrazado por puertos estándar (80/443) está evadiendo las reglas básicas de L3/L4 del cortafuegos clásico.",
+                options: [
+                    { text: "Desplegar Dynamic ARP Inspection (DAI).", correct: false },
+                    { text: "Sustituir Firewall por un NGFW con App-ID, DPI y descifrado SSL.", correct: true },
+                    { text: "Desactivar compresión HPACK en HTTP/2.", correct: false },
+                    { text: "Solicitar asistencia judicial a Europol (Budapest).", correct: false }
+                ],
+                flow: "VPN interna inicia -> NGFW hace DPI/Descifrado -> Detecta aplicación no permitida -> Bloquea (Drop).",
+                val: "Test de evasión (Pentesting Perimetral) y revisión en SIEM."
+            },
+            {
+                bloque: "BLOQUE C: Seguridad Perimetral y Redes", title: "7. Despliegue de IDS (Snort)",
+                desc: "Universidad necesita detectar escaneos y ataques conocidos (firmas) sin interrumpir ni retrasar el flujo masivo de tráfico.",
+                options: [
+                    { text: "Configurar un proxy inverso y WAF.", correct: false },
+                    { text: "Implementar IPSec IKEv2 en todos los equipos de alumnos.", correct: false },
+                    { text: "Exigir MFA para acceder a la red Wi-Fi.", correct: false },
+                    { text: "Instalar Snort en modo pasivo conectado a un puerto SPAN/TAP de la red troncal.", correct: true }
+                ],
+                flow: "Snort inspecciona tráfico -> Coincide firma (ej. SYN Scan) -> Envía alerta al SIEM -> No corta tráfico.",
+                val: "Uso de Nmap/Masscan controlados para verificar generación de alertas."
+            },
+            {
+                bloque: "BLOQUE C: Seguridad Perimetral y Redes", title: "8. Caída Operativa por Falsos Positivos",
+                desc: "El IPS de la entidad financiera ha bloqueado transacciones legítimas por coincidir con patrones mal configurados.",
+                options: [
+                    { text: "Desplegar la regla en 'modo alerta', evaluar FP y aplicar heurística antes de bloquear.", correct: true },
+                    { text: "Desactivar el IPS y depender del antivirus.", correct: false },
+                    { text: "Cambiar de IPSec a TLS 1.3.", correct: false },
+                    { text: "Eliminar todos los metadatos EXIF del tráfico.", correct: false }
+                ],
+                flow: "Regla se crea en modo alerta -> SOC evalúa Falsos Positivos (Tuning) -> Cambia a modo Bloqueo activo.",
+                val: "Traffic Replay de transacciones legítimas (PCAP) para sintonizar."
+            },
+            {
+                bloque: "BLOQUE C: Seguridad Perimetral y Redes", title: "9. Envenenamiento ARP (ARP Spoofing)",
+                desc: "Un dispositivo en la Capa 2 está emitiendo respuestas gratuitas falsas para redirigir tráfico interno a su tarjeta de red.",
+                options: [
+                    { text: "Aislar la red con un WAF perimetral.", correct: false },
+                    { text: "Instalar certificados digitales en todos los switches.", correct: false },
+                    { text: "Habilitar Dynamic ARP Inspection (DAI) y DHCP Snooping en los switches de acceso.", correct: true },
+                    { text: "Aplicar la directiva europea ePrivacy.", correct: false }
+                ],
+                flow: "Switch intercepta paquete ARP -> Compara con tabla vinculante (DHCP) -> MAC/IP incoherente -> DROP al paquete.",
+                val: "Herramientas de inyección L2 (Ettercap, arpspoof) en entorno controlado."
+            },
+            {
+                bloque: "BLOQUE C: Seguridad Perimetral y Redes", title: "10. Conectividad Segura entre Sedes",
+                desc: "Dos oficinas geográficamente dispersas necesitan comunicarse sobre Internet asegurando integridad y confidencialidad.",
+                options: [
+                    { text: "Implementar túneles IPSec con IKEv2, AES-GCM y PFS (Forward Secrecy).", correct: true },
+                    { text: "Utilizar algoritmos RS (Reed-Solomon) para el cifrado.", correct: false },
+                    { text: "Renovar el certificado web con ACME.", correct: false },
+                    { text: "Instalar Snort en cada extremo.", correct: false }
+                ],
+                flow: "Gateways inician IKEv2 -> Autenticación exitosa -> Negocian SAs -> Establecen túnel cifrado ESP.",
+                val: "Captura con Wireshark verificando que el payload ESP está cifrado y sin fugas."
+            },
+            // BLOQUE D
+            {
+                bloque: "BLOQUE D: AppSec y Transmisión L7", title: "11. Brecha Equifax (Dependencias)",
+                desc: "Explotación de una vulnerabilidad web grave (ej. Struts) por falta de actualización en los componentes de la aplicación.",
+                options: [
+                    { text: "Reducir la latencia con compresión HTTP.", correct: false },
+                    { text: "Implantar un ciclo CI/CD con SCA, pruebas en staging y despliegue rápido.", correct: true },
+                    { text: "Configurar un NGFW con App-ID estricto.", correct: false },
+                    { text: "Solicitar consentimiento granular (RGPD).", correct: false }
+                ],
+                flow: "Herramienta SCA detecta fallo dependencias -> Equipo parchea -> Prueba en Staging -> Despliega CI/CD.",
+                val: "Auditoría de KPIs de mitigación (Reducción del MTTP) y Pentest Web."
+            },
+            {
+                bloque: "BLOQUE D: AppSec y Transmisión L7", title: "12. Inyección XSS y Robo de Sesiones",
+                desc: "Un atacante ha insertado scripts maliciosos en la sección de comentarios, secuestrando los tokens de sesión de otros usuarios.",
+                options: [
+                    { text: "Activar DAI y DHCP Snooping en el backend.", correct: false },
+                    { text: "Sanitizar inputs, codificar salidas según contexto, aplicar CSP y Cookies HttpOnly.", correct: true },
+                    { text: "Uso de IPSec para la conexión cliente-servidor.", correct: false },
+                    { text: "Desplegar un IDS pasivo para generar alertas.", correct: false }
+                ],
+                flow: "App recibe Input -> Backend sanitiza -> Respuesta codifica salida -> Browser bloquea ejecuciones no autorizadas (CSP).",
+                val: "Análisis SAST del código fuente y DAST (BurpSuite/ZAP)."
+            },
+            {
+                bloque: "BLOQUE D: AppSec y Transmisión L7", title: "15. Transmisión Segura y Compresión JPEG",
+                desc: "Subida de archivos de imagen por canales seguros. Riesgo de filtrar información por el tamaño resultante o metadatos.",
+                options: [
+                    { text: "Aplicar primero codificación Huffman, eliminar EXIF, cifrar en TLS 1.3 y normalizar tamaño.", correct: true },
+                    { text: "Cifrar primero la imagen y luego aplicar Huffman.", correct: false },
+                    { text: "Desactivar AES y migrar a algoritmos DES.", correct: false },
+                    { text: "Instalar EDR en el servidor de imágenes.", correct: false }
+                ],
+                flow: "Recibe Img -> Elimina Metadata -> Comprime Huffman -> Aplica Padding -> Cifra Canal TLS.",
+                val: "Análisis de Canal Lateral (Comparar Ciphertext Length vs Contenido Original)."
+            },
+            {
+                bloque: "BLOQUE D: AppSec y Transmisión L7", title: "16. Filtración por Oráculos (Ataque CRIME)",
+                desc: "Atacantes observan variaciones de longitud en las respuestas TLS comprimidas para adivinar el contenido de cookies sensibles.",
+                options: [
+                    { text: "Aplicar autenticación FIDO2.", correct: false },
+                    { text: "Desactivar co-compresión TLS, separar contextos HPACK y aplicar Padding Random.", correct: true },
+                    { text: "Implementar inspección profunda DPI.", correct: false },
+                    { text: "Cambiar certificados con Let's Encrypt.", correct: false }
+                ],
+                flow: "Cliente HTTP/2 Petición -> Servidor aísla headers sensibles -> Cifra en TLS 1.3 sin comprimir -> Devuelve respuesta.",
+                val: "Análisis automático de tráfico y Herramientas escáner de oráculos de longitud."
+            },
+            {
+                bloque: "BLOQUE D: AppSec y Transmisión L7", title: "17. Corrupción en Discos Ópticos (Archivo)",
+                desc: "Deterioro físico de soportes de archivo a largo plazo, generando errores de lectura por ráfagas (BER elevado).",
+                options: [
+                    { text: "Usar algoritmos de corrección Reed-Solomon con parámetros óptimos de redundancia.", correct: true },
+                    { text: "Desplegar cifrado de curva elíptica.", correct: false },
+                    { text: "Implantar un SIEM para guardar los logs de disco.", correct: false },
+                    { text: "Aplicar bloqueo temporal a la cuenta de usuario.", correct: false }
+                ],
+                flow: "Láser detecta bloque ilegible -> Decodificador RS analiza símbolos -> Reconstruye bytes -> Reproducción continua sin pausa.",
+                val: "Pruebas de estrés físico con discos controladamente rayados."
+            },
+            {
+                bloque: "BLOQUE D: AppSec y Transmisión L7", title: "18. Ataque Jamming en Redes 5G/Wi-Fi",
+                desc: "Aumento drástico del ruido ambiental (baja SNR) intencionado que corrompe la transmisión inalámbrica.",
+                options: [
+                    { text: "Actualizar la política CSP (Content Security).", correct: false },
+                    { text: "Aplicar algoritmos LDPC con belief propagation e iteraciones adicionales.", correct: true },
                     { text: "Migrar el sistema a ISO 27001.", correct: false },
-                    { text: "Sanitizar inputs, codificar salidas y usar cookies HttpOnly.", correct: true }
+                    { text: "Implementar IPSec con IKEv2.", correct: false }
                 ],
-                flow: "App valida input -> WAF filtra -> Backend sanitiza -> Salida codificada -> Sesión protegida (HttpOnly).",
-                val: "Escaneo DAST automático (OWASP ZAP) y Pentest manual con payloads polimórficos."
+                flow: "Receptor detecta ruido alto -> Activa más iteraciones LDPC -> Logra decodificar -> (Exc: Jamming extremo -> Handover).",
+                val: "Test en laboratorio con generadores de Ruido RF/Interferencia Controlada."
+            },
+            // BLOQUE E
+            {
+                bloque: "BLOQUE E: GRC, Legal y Normativo", title: "19. Implantación SGSI en Universidad",
+                desc: "La Universidad necesita formalizar su seguridad, documentar controles y mejorar la gestión de riesgos institucional.",
+                options: [
+                    { text: "Instalar un clúster de NGFW.", correct: false },
+                    { text: "Bloquear puertos de descarga P2P.", correct: false },
+                    { text: "Implantar un modelo basado en ISO 27001 ejecutando el ciclo PDCA continuo.", correct: true },
+                    { text: "Implementar MFA en todos los estudiantes.", correct: false }
+                ],
+                flow: "PLAN (Evalúa Riesgos) -> DO (Despliega Políticas) -> CHECK (Audita/KPI) -> ACT (Corrige/Mejora).",
+                val: "Auditorías internas, Revisión por la Dirección y Certificación externa 27001."
             },
             {
-                bloque: "BLOQUE E: GRC y Legal",
-                title: "21. Auditoría Sorpresa de la APDA",
-                desc: "La Agencia detecta cámaras de seguridad instaladas en los probadores y con micrófonos activados.",
+                bloque: "BLOQUE E: GRC, Legal y Normativo", title: "21. Instalación de CCTV (Andorra)",
+                desc: "Una tienda instala videovigilancia. Debe cumplir la normativa de privacidad local evitando sanciones como las de la APDA.",
                 options: [
-                    { text: "Realizar EIPD, desactivar audio y reubicar cámaras.", correct: true },
-                    { text: "Hashificar las grabaciones con SHA-2 para Europol.", correct: false },
-                    { text: "Añadir un banner de 'Rechazar todo' (Cookies).", correct: false },
-                    { text: "Cifrar el audio usando algoritmos AES-GCM.", correct: false }
+                    { text: "Desplegar TLS 1.3 con AES-GCM.", correct: false },
+                    { text: "Identificar necesidad, realizar EIPD, mantener registro y asegurar desactivación de Audio (Llei 29/2021).", correct: true },
+                    { text: "Sustituir algoritmos DES por AES.", correct: false },
+                    { text: "Obtener consentimiento granular por cada cliente que entra.", correct: false }
                 ],
-                flow: "Identifica riesgo -> Ejecuta EIPD -> Minimiza datos (Desactiva Audio por HW) -> Informa con cartelería.",
-                val: "Auditoría técnica (comprobar micrófonos apagados) y Revisión documental del RAT."
+                flow: "Detecta riesgo físico -> Ejecuta EIPD -> Instala cámaras (Micrófonos OFF/Hardware capado) -> Carteles informativos.",
+                val: "Auditoría legal del Registro de Actividades y Verificación física de Audio OFF."
+            },
+            {
+                bloque: "BLOQUE E: GRC, Legal y Normativo", title: "22. Ciberdelincuencia Transfronteriza",
+                desc: "Europol requiere la obtención y mantenimiento de evidencias de una red de fraude que opera en Andorra.",
+                options: [
+                    { text: "Usar un WAF perimetral para aislar la red andorrana.", correct: false },
+                    { text: "Bloquear todas las conexiones de salida del país.", correct: false },
+                    { text: "Preservación rápida (Art 29 Budapest), hashing de evidencias y sellado temporal, manteniendo cadena de custodia.", correct: true },
+                    { text: "Borrar los datos basándose en el derecho al olvido (RGPD).", correct: false }
+                ],
+                flow: "Europol solicita (Punto 24/7) -> Policía preserva sistema -> Aplica hash/timestamp -> Inicia vía MLAT.",
+                val: "Revisión rigurosa de Cadena de Custodia y Compatibilidad forense internacional."
+            },
+            {
+                bloque: "BLOQUE E: GRC, Legal y Normativo", title: "23. Consentimiento y Sanción AEPD",
+                desc: "Una plataforma web traza y perfila usuarios para publicidad sin ofrecer opciones claras y separadas.",
+                options: [
+                    { text: "Ofrecer un banner con consentimiento explícito, granular y gestionar derechos ARSOPL de forma accesible.", correct: true },
+                    { text: "Activar el descifrado SSL en el NGFW perimetral.", correct: false },
+                    { text: "Forzar autenticación FIDO2 a todos los visitantes.", correct: false },
+                    { text: "Instalar Snort para detectar el tráfico publicitario.", correct: false }
+                ],
+                flow: "Visita web -> Muestra Banner granular -> Usuario acepta/rechaza partes -> Loguea fecha y IP criptográficamente.",
+                val: "Auditorías de logs de consentimiento y Simulacros de peticiones ARSOPL."
+            },
+            {
+                bloque: "BLOQUE E: GRC, Legal y Normativo", title: "24. Interfaz Oscura (Dark Patterns) - CNIL",
+                desc: "Un medio online oculta la opción de rechazar cookies tras 4 menús, violando la Directiva ePrivacy y el RGPD.",
+                options: [
+                    { text: "Cifrar las cookies en la base de datos.", correct: false },
+                    { text: "Implementar co-compresión TLS para evitar fugas.", correct: false },
+                    { text: "Modificar UX/UI para que el botón 'Rechazar todo' sea idéntico en nivel y visibilidad al 'Aceptar todo'.", correct: true },
+                    { text: "Implantar segmentación de redes clínicas L2.", correct: false }
+                ],
+                flow: "Despliegue Banner equilibrado UX -> Usuario pulsa Rechazar -> Tag Manager bloquea inyecciones no esenciales.",
+                val: "Tests de Usabilidad (UX), Inspección automatizada de carga previa de cookies."
             }
         ];
 
-        // VARIABLES DE ESTADO
+        // VARIABLES DE ESTADO Y MEZCLADOR
         let currentLevel = 0;
         let health = 100;
         let score = 0;
+        let caseOrder = []; // Para jugar los 24 en orden aleatorio
 
-        // ELEMENTOS DOM
         const screens = {
             intro: document.getElementById('intro-screen'),
             play: document.getElementById('play-screen'),
@@ -162,39 +398,40 @@
             currentLevel = 0;
             health = 100;
             score = 0;
+            // Barajar el orden de los 24 casos para que cada partida sea única
+            caseOrder = [...Array(gameData.length).keys()].sort(() => Math.random() - 0.5);
+            
             updateHUD();
             switchScreen('play');
             loadCase();
         }
 
         function loadCase() {
-            if (currentLevel >= gameData.length) {
+            if (currentLevel >= caseOrder.length) {
                 gameComplete();
                 return;
             }
 
-            const currentData = gameData[currentLevel];
+            const currentData = gameData[caseOrder[currentLevel]];
             document.getElementById('block-indicator').innerText = `>> ${currentData.bloque}`;
             document.getElementById('threat-title').innerText = currentData.title;
             document.getElementById('threat-desc').innerText = currentData.desc;
 
             const optionsGrid = document.getElementById('options-grid');
-            optionsGrid.innerHTML = ''; // Limpiar opciones
+            optionsGrid.innerHTML = ''; 
 
-            // Barajar opciones (Fisher-Yates)
             const shuffledOptions = [...currentData.options].sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach((opt, index) => {
                 const btn = document.createElement('button');
-                btn.className = 'btn-cyber p-3 text-left text-sm text-slate-300 rounded focus:outline-none';
-                btn.innerText = `[${index + 1}] ${opt.text}`;
+                btn.className = 'btn-cyber p-3 text-left text-sm text-slate-300 rounded focus:outline-none flex items-start gap-2';
+                btn.innerHTML = `<span class="text-sky-500 font-bold">[${index + 1}]</span> <span>${opt.text}</span>`;
                 btn.onclick = () => handleAnswer(opt.correct, btn);
                 optionsGrid.appendChild(btn);
             });
         }
 
         function handleAnswer(isCorrect, btnElement) {
-            // Deshabilitar todos los botones
             const buttons = document.querySelectorAll('#options-grid button');
             buttons.forEach(b => b.disabled = true);
 
@@ -205,26 +442,26 @@
                 setTimeout(() => showReport(), 1000);
             } else {
                 btnElement.classList.add('wrong');
-                health -= 25; // Pierde salud
+                health -= 15; // 15% de daño por error
                 updateHUD();
                 
                 if (health <= 0) {
                     setTimeout(() => gameOver(), 1000);
                 } else {
-                    // Mostrar cuál era la correcta
+                    // Marcar la respuesta correcta visualmente
                     buttons.forEach(b => {
-                        const optText = b.innerText.substring(4); // Quitar el [1] 
-                        const isThisCorrect = gameData[currentLevel].options.find(o => o.text === optText)?.correct;
+                        const optText = b.querySelector('span:nth-child(2)').innerText;
+                        const isThisCorrect = gameData[caseOrder[currentLevel]].options.find(o => o.text === optText)?.correct;
                         if(isThisCorrect) b.classList.add('correct');
                     });
-                    setTimeout(() => showReport(), 2000); // Dar más tiempo si falla para que lea la correcta
+                    setTimeout(() => showReport(), 2500);
                 }
             }
         }
 
         function showReport() {
             switchScreen('report');
-            const currentData = gameData[currentLevel];
+            const currentData = gameData[caseOrder[currentLevel]];
             document.getElementById('report-flow').innerText = currentData.flow;
             document.getElementById('report-val').innerText = currentData.val;
         }
@@ -237,7 +474,7 @@
 
         function updateHUD() {
             document.getElementById('health').innerText = `${health}%`;
-            document.getElementById('health').className = `font-bold ${health > 50 ? 'text-green-400' : 'text-red-500'}`;
+            document.getElementById('health').className = `font-bold ${health > 50 ? 'text-green-400' : (health > 20 ? 'text-yellow-400' : 'text-red-500')}`;
             document.getElementById('score').innerText = score;
         }
 
@@ -248,22 +485,25 @@
 
         function gameComplete() {
             screens.play.classList.add('hidden');
+            screens.report.classList.add('hidden');
             screens.intro.classList.remove('hidden');
             screens.intro.innerHTML = `
-                <h2 class="text-4xl font-bold text-green-400 mb-4">SISTEMA ASEGURADO</h2>
-                <p class="mb-6 text-slate-300">Has sobrevivido a la auditoría. Tu red es impenetrable.</p>
-                <div class="text-2xl text-sky-400 mb-6">Puntuación: ${score} / ${gameData.length}</div>
-                <button onclick="startGame()" class="px-6 py-3 bg-sky-600 text-white font-bold rounded hover:bg-sky-500">JUGAR DE NUEVO</button>
+                <h2 class="text-5xl font-bold text-green-400 mb-4">INFRAESTRUCTURA ASEGURADA</h2>
+                <p class="mb-6 text-slate-300 text-lg">Excelente trabajo, CISO. Has defendido los 24 vectores de ataque aplicando rigor técnico, táctico y legal.</p>
+                <div class="text-3xl text-sky-400 mb-8 border border-sky-400 inline-block px-6 py-3 rounded bg-sky-950/30">Puntuación Final: ${score} / 24 <br><span class="text-sm text-green-400">Integridad Restante: ${health}%</span></div><br>
+                <button onclick="startGame()" class="px-8 py-4 bg-sky-600 text-white font-bold rounded hover:bg-sky-500 transition shadow-[0_0_15px_rgba(2,132,199,0.5)]">REINICIAR SIMULACIÓN</button>
             `;
         }
 
         function gameOver() {
             screens.play.classList.add('hidden');
+            screens.report.classList.add('hidden');
             screens.intro.classList.remove('hidden');
             screens.intro.innerHTML = `
-                <h2 class="text-4xl font-bold text-red-600 mb-4 glitch">BRECHA CRÍTICA</h2>
-                <p class="mb-6 text-slate-300">La integridad de la red ha llegado a 0%. Has sido despedido como CISO.</p>
-                <button onclick="startGame()" class="px-6 py-3 bg-red-800 text-white font-bold rounded hover:bg-red-700">REINICIAR SISTEMAS</button>
+                <h2 class="text-5xl font-bold text-red-600 mb-4 glitch">BRECHA MASIVA DETECTADA</h2>
+                <p class="mb-6 text-slate-300 text-lg">La integridad de la red ha caído por debajo de los límites operativos. Los sistemas han sido comprometidos. Estás despedido.</p>
+                <div class="text-2xl text-slate-400 mb-8">Casos resueltos antes del colapso: <span class="text-red-400 font-bold">${score}</span></div>
+                <button onclick="startGame()" class="px-8 py-4 bg-red-800 text-white font-bold rounded hover:bg-red-700 transition shadow-[0_0_15px_rgba(220,38,38,0.5)]">REINICIAR PROTOCOLO CISO</button>
             `;
         }
     </script>
