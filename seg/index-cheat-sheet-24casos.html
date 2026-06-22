@@ -451,6 +451,77 @@
             </div>
         </section>
 
+         </section>
+        <!-- ==========================================
+             ESTRATEGIA MAESTRA: PATRONES DE RESPUESTA 1
+             ========================================== -->
+        <section id="modelos-patron" class="mb-12 shadow-lg rounded-xl overflow-hidden border border-slate-300 bg-white">
+            <div class="bg-slate-800 text-white p-4 font-black text-xl flex items-center gap-2">
+                <span>🧠</span> HACKEANDO EL EXAMEN: Patrones de Respuesta por Bloque (1)
+            </div>
+            <div class="p-6 bg-slate-50">
+                <p class="text-sm text-slate-600 mb-6 font-medium">No memorices cada caso; memoriza la <strong>plantilla de respuesta</strong>. Si identificas a qué bloque pertenece la pregunta, el 80% de la respuesta se autocompleta con estas reglas universales:</p>
+
+                <div class="space-y-6">
+                    
+                    <!-- REGLAS GENERALES -->
+                    <div class="bg-slate-100 p-4 rounded-lg border border-slate-300">
+                        <h3 class="font-bold text-slate-800 mb-2 uppercase text-sm border-b pb-1">🧩 Leyes Universales de Clasificación</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                            <div><strong class="text-green-600 bg-green-100 px-1 rounded">RF (Funcionales):</strong> Qué debe hacer el sistema. <em>Truco: Invierte el ataque. Si el ataque roba -> RF es "Cifrar/Ocultar". Si el ataque paraliza -> RF es "Aislar/Restaurar". Verbos de acción directa.</em></div>
+                            <div><strong class="text-blue-600 bg-blue-100 px-1 rounded">RNF (No Funcionales):</strong> Cómo de bien debe hacerlo. <em>Truco: Siempre usa "Disponibilidad >99%", "Latencia casi nula (wire-speed)", "Usabilidad (no afectar al negocio)", "MTTR/RTO bajos".</em></div>
+                            <div><strong class="text-purple-600 bg-purple-100 px-1 rounded">T (Técnicos):</strong> Con qué tecnología se hace. <em>Truco: Aquí van las siglas técnicas (AES, WAF, EDR, SIEM). Si dudas, pon "Integración con SIEM" que aplica al 90% de los casos.</em></div>
+                            <div><strong class="text-orange-600 bg-orange-100 px-1 rounded">L (Legales):</strong> Qué ley obliga a hacerlo. <em>Truco: "RGPD" es el comodín para datos. "ISO 27001/ENS" para procesos y "PSD2 / DORA" si lees la palabra 'Banca/Finanzas'.</em></div>
+                        </div>
+                    </div>
+
+                    <!-- PATRONES POR BLOQUE -->
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                        
+                        <!-- Bloque A -->
+                        <div class="bg-white border-t-4 border-red-600 p-3 rounded shadow-sm text-xs">
+                            <h4 class="font-bold text-red-700 mb-2 uppercase">🚨 A: Incidentes</h4>
+                            <p class="mb-1"><strong class="text-slate-700">Técnicas Comunes:</strong> EDR, Backups, MFA, SIEM.</p>
+                            <p class="mb-1"><strong class="text-slate-700">Flujo Base:</strong> Detecta -> Aísla -> Mitiga -> Restaura -> (Exc: Plan Manual).</p>
+                            <p><strong class="text-slate-700">Validación Común:</strong> Simulacros (Phishing/Restore) y Pentest.</p>
+                        </div>
+
+                        <!-- Bloque B -->
+                        <div class="bg-white border-t-4 border-blue-600 p-3 rounded shadow-sm text-xs">
+                            <h4 class="font-bold text-blue-700 mb-2 uppercase">🔑 B: Cripto y PKI</h4>
+                            <p class="mb-1"><strong class="text-slate-700">Técnicas Comunes:</strong> AES-256, FIDO2, ACME, CT/OCSP.</p>
+                            <p class="mb-1"><strong class="text-slate-700">Flujo Base:</strong> Inicia conexión -> Valida Identidad/Cert -> Negocia Claves -> (Exc: Revoca/Cierra).</p>
+                            <p><strong class="text-slate-700">Validación Común:</strong> `testssl.sh`, SSL Labs, Revisión de Logs.</p>
+                        </div>
+
+                        <!-- Bloque C -->
+                        <div class="bg-white border-t-4 border-purple-600 p-3 rounded shadow-sm text-xs">
+                            <h4 class="font-bold text-purple-700 mb-2 uppercase">🧱 C: Redes (L2-L4)</h4>
+                            <p class="mb-1"><strong class="text-slate-700">Técnicas Comunes:</strong> NGFW (DPI), Snort, IPSec, DAI.</p>
+                            <p class="mb-1"><strong class="text-slate-700">Flujo Base:</strong> Tráfico entra -> Motor analiza firmas -> Coincide -> Bloquea/Alerta -> (Exc: Falso Positivo).</p>
+                            <p><strong class="text-slate-700">Validación Común:</strong> `Nmap` (puertos), `Wireshark` (túneles), Inyección de tráfico.</p>
+                        </div>
+
+                        <!-- Bloque D -->
+                        <div class="bg-white border-t-4 border-orange-500 p-3 rounded shadow-sm text-xs">
+                            <h4 class="font-bold text-orange-600 mb-2 uppercase">🌐 D: AppSec (L7)</h4>
+                            <p class="mb-1"><strong class="text-slate-700">Técnicas Comunes:</strong> WAF, CSP, SAST/DAST, Padding.</p>
+                            <p class="mb-1"><strong class="text-slate-700">Flujo Base:</strong> Recibe Input -> Sanitiza/Evalúa -> Codifica Output -> Envía -> (Exc: Drop Payload).</p>
+                            <p><strong class="text-slate-700">Validación Común:</strong> `BurpSuite`/`ZAP` (Pentest web) o Test Canal Lateral.</p>
+                        </div>
+
+                        <!-- Bloque E -->
+                        <div class="bg-white border-t-4 border-emerald-600 p-3 rounded shadow-sm text-xs">
+                            <h4 class="font-bold text-emerald-700 mb-2 uppercase">⚖️ E: GRC y Legal</h4>
+                            <p class="mb-1"><strong class="text-slate-700">Técnicas Comunes:</strong> Logs inmutables, Hashing (SHA-2), EIPD.</p>
+                            <p class="mb-1"><strong class="text-slate-700">Flujo Base:</strong> PDCA (Plan -> Do -> Check -> Act) o Muestra Info -> Pide Permiso -> Registra.</p>
+                            <p><strong class="text-slate-700">Validación Común:</strong> Auditorías internas/externas, Revisión documental.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
         <!-- ==========================================
              ESTRATEGIA MAESTRA: PATRONES DE RESPUESTA PRO
              ========================================== -->
