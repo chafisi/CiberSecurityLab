@@ -700,11 +700,78 @@
                         </div>
                     </div>
 
-                    <div class="bg-slate-50 p-5 rounded-lg border border-dashed border-slate-300 flex items-center justify-center text-slate-400 min-h-[500px]">
-                        <div class="text-center">
-                            <span class="text-4xl block mb-2">➕</span>
-                            <p class="font-bold text-sm">Esperando siguiente caso de examen...</p>
-                            <p class="text-xs mt-1">Pasa el texto del Ejercicio 4 para agregarlo a la parrilla.</p>
+                    <!-- EXAMEN 4: MITM EN WI-FI PÚBLICO (EVIL TWIN) -->
+                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 4: MitM en Wi-Fi Público</h3>
+                                <span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Redes Inalámbricas</span>
+                            </div>
+                            
+                            <!-- ENUNCIADO -->
+                            <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
+                                <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
+                                <p class="text-[11px] text-slate-600 italic">En 2021, investigadores demostraron lo sencillo que resulta ejecutar un ataque Man in the Middle (MITM) en redes Wi-Fi públicas que usan WEP, WPA débil o configuraciones obsoletas. Mediante un punto de acceso falso (Evil Twin) montado en una cafetería, lograron capturar credenciales e interceptar tráfico de decenas de usuarios que se conectaron a la red sin verificar su autenticidad. La demostración subrayó la persistencia de infraestructuras inalámbricas desactualizadas y la necesidad urgente de migrar a WPA3, reforzar mecanismos antifraude (detección de Rogue AP) y promover el uso de VPN en redes abiertas.</p>
+                            </div>
+
+                            <!-- 1. CLASIFICACIÓN DE REQUISITOS -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
+                            <div class="space-y-3 mb-5">
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Autenticación segura mediante WPA3 o WPA2-Enterprise con EAP.</li>
+                                        <li>Detección y alertado de puntos de acceso falsos (Rogue AP Detection).</li>
+                                        <li>Cifrado automático del tráfico inalámbrico desde el momento de asociación.</li>
+                                        <li>Aplicar aislamiento de clientes (Client Isolation) para evitar ataques laterales.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Alta escalabilidad y gestión de conexiones masivas concurrentes sin pérdida de rendimiento.</li>
+                                        <li>Roaming transparente (Fast BSS Transition) sin cortes en la conexión segura.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Protocolo WPA3-SAE (Simultaneous Authentication of Equals) contra ataques de diccionario.</li>
+                                        <li>WIDS/WIPS (Wireless Intrusion Detection/Prevention System).</li>
+                                        <li>Autenticación 802.1X con servidor RADIUS (EAP-TLS).</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>RGPD (Protección de los datos personales en tránsito de los usuarios conectados).</li>
+                                        <li>Términos y Condiciones / Políticas de Uso Aceptable (AUP) en portales cautivos.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- 2. CASO DE USO -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Autenticación Segura en Wi-Fi</h4>
+                            <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div class="text-slate-400 mb-1">Actor: Usuario Móvil y Servidor RADIUS</div>
+                                <div class="text-slate-300">[1] El usuario selecciona la red corporativa/segura.</div>
+                                <div class="text-slate-300">[2] El Access Point (AP) bloquea el tráfico de datos y reenvía la petición al servidor RADIUS (802.1X).</div>
+                                <div class="text-slate-300">[3] El servidor valida las credenciales o el certificado digital del cliente (EAP-TLS).</div>
+                                <div class="text-slate-300">[4] Tras el éxito, se negocian claves de sesión únicas y el usuario accede cifrado.</div>
+                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc] AP Falso detectado (MAC Spoofing): El WIPS bloquea el SSID fraudulento y alerta al SOC.</div>
+                                <div class="text-red-400">[Exc] Credenciales erróneas/Certificado revocado: Acceso denegado, se registra el intento.</div>
+                            </div>
+
+                            <!-- 3. VALIDACIÓN -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                            <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100">
+                                <ul class="list-disc pl-4 text-slate-700 space-y-1">
+                                    <li>Pentesting inalámbrico (usando suites como <em>Aircrack-ng</em> o <em>Kismet</em>) para verificar la detección de un Evil Twin en tiempo real.</li>
+                                    <li>Auditoría de protocolos para asegurar que no se permiten "Downgrade Attacks" (forzar a WEP/WPA).</li>
+                                    <li>Comprobación activa del "Client Isolation" intentando hacer ping o ataques laterales entre dos dispositivos de la misma red pública.</li>
+                                    <li>Verificación de las políticas corporativas que obliguen al uso de VPN en redes abiertas (MDM o políticas de endpoint).</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
