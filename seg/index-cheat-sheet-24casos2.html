@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Mode: 24 Casos Ciberseguridad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: all 0.2s ease-in-out; }
+        .req-list li { display: flex; align-items: flex-start; margin-bottom: 0.5rem; }
+        .req-badge { min-width: 2.5rem; font-weight: 700; font-size: 0.70rem; padding: 0.1rem 0.3rem; border-radius: 0.25rem; margin-right: 0.5rem; text-align: center; cursor: default; }
+        
+        /* Interactive "Secret" Styles */
+        .secret {
+            background-color: #cbd5e1;
+            color: transparent;
+            filter: blur(4px);
+            border-radius: 0.25rem;
+            padding: 0 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            display: inline-block;
+            min-width: 100px;
+        }
+        .secret:hover {
+            background-color: #94a3b8;
+            filter: blur(2px);
+        }
+        .secret.revealed {
+            background-color: transparent;
+            color: inherit;
+            filter: none;
+            cursor: default;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 p-4 md:p-8 font-sans text-slate-800">
+
+    <div class="max-w-7xl mx-auto space-y-10">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight uppercase">Modo Estudio: 24 Casos</h1>
+            <p class="text-slate-500 mt-2 font-medium">Haz clic en los bloques borrosos para revelar las respuestas. ¡Pon a prueba tu memoria!</p>
+            <div class="mt-4 flex justify-center gap-4">
+                <button onclick="hideAll()" class="bg-slate-800 text-white px-4 py-2 rounded font-bold hover:bg-slate-700 transition">🔒 Ocultar Todo (Reiniciar)</button>
+                <button onclick="revealAll()" class="bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-500 transition">🔓 Revelar Todo</button>
+            </div>
+        </header>
+
+        <section class="shadow-lg rounded-xl overflow-hidden border border-red-200 bg-white">
+            <div class="bg-red-800 text-white p-4 font-bold text-lg flex items-center gap-2">
+                <span>🚨</span> BLOQUE A: Amenazas Base y Gestión de Incidentes
+            </div>
+            <div class="bg-red-50 p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <div class="bg-white p-4 rounded-lg border border-red-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-red-700 mb-3 border-b pb-1">1. Ransomware (Hospital)</h3>
+                        <ul class="req-list text-xs mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Monitorizar, aislar red, restaurar backups.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">RTO &lt; 4h, disponibilidad clínica (99%).</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">EDR, segmentación L2/L3, backups inmutables.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD (datos salud), Notificación brechas (72h).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-xs font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Detecta cifrado</span> ➔ <span class="secret">EDR aísla</span> ➔ <span class="secret">Activa SOC</span> ➔ <span class="secret">Restaura Backup</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Continuidad manual</span></span>
+                        </div>
+                        <div class="text-xs mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Simulacro Phishing, Test Restore.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar Caso</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-red-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-red-700 mb-3 border-b pb-1">2. Credential Stuffing</h3>
+                        <ul class="req-list text-xs mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Exigir MFA, bloquear cuentas tras N fallos.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Auth &lt; 2s, alta escalabilidad portal web.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Argon2/bcrypt, análisis heurístico, WAF.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">PSD2 (Banca), RGPD (Integridad).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-xs font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Usuario loguea</span> ➔ <span class="secret">Pide MFA</span> ➔ <span class="secret">Valida</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Bloqueo por fuerza bruta</span></span>
+                        </div>
+                        <div class="text-xs mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Hydra/Burp (Fuerza bruta).</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar Caso</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-red-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-red-700 mb-3 border-b pb-1">20. 0-Day (Log4Shell)</h3>
+                        <ul class="req-list text-xs mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Evaluar riesgo, inventariar dependencias, parchear.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Reducir MTTR crítico, gobernanza fluida.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">SCA, SAST, monitorización CVSS, IPS.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">NIST RMF, DORA (Resiliencia financiera).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-xs font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Detecta CVE</span> ➔ <span class="secret">Identifica activos</span> ➔ <span class="secret">Parchea/Aísla</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Mitigación temporal sin parche</span></span>
+                        </div>
+                        <div class="text-xs mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Escáner SCA, Auditoría riesgo residual.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar Caso</button>
+                </div>
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-red-200 text-center">
+                <strong>📖 Glosario:</strong> RTO (Recovery Time Obj), EDR (Endpoint Det. & Resp.), SOC, MFA, MTTR, SCA (Soft. Comp. Analysis), SAST, CVE, DORA.
+            </div>
+        </section>
+
+        <section class="shadow-lg rounded-xl overflow-hidden border border-blue-200 bg-white">
+            <div class="bg-blue-800 text-white p-4 font-bold text-lg flex items-center gap-2">
+                <span>🔑</span> BLOQUE B: Criptografía, Identidad y PKI
+            </div>
+            <div class="bg-blue-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">3. Transición DES a AES</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Usar algos vigentes, auditar longitudes.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Rendimiento sin latencia, compatibilidad.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">OpenSSL, AES-256, SHA-256.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ENS, NIST.</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Detecta obsoleto</span> ➔ <span class="secret">Migra a AES</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Fallo migración -> Restore</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">testssl.sh (Análisis cripto).</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">4. Certificados Falsos</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Validar estado cert, generar alertas.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Baja latencia en verificación (OCSP).</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Cert Transparency (CT), OCSP, CRL.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">eIDAS (Firmas europeas).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Navegador recibe Cert</span> ➔ <span class="secret">Valida OCSP/CT</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Revocado -> Bloquea</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Monitorización CT Logs.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">13. Certs. Caducados</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Supervisar caducidad, renovar auto.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Zero-downtime, confiabilidad total.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">ACME (Let's Encrypt), PKI, Scripts.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD (Cifrado), PCI-DSS.</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Detecta expiración</span> ➔ <span class="secret">ACME renueva</span> ➔ <span class="secret">Despliega</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Fallo -> Alerta manual</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Qualys SSL Labs.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-blue-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-blue-700 mb-3 border-b pb-1">14. MFA FIDO2</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Autenticar FIDO2, registro seguro.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Usabilidad alta, multi-dispositivo.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">WebAuthn, Hardware Keys, Cripto Asim.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">PSD2, RGPD (Biometría).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Loguea</span> ➔ <span class="secret">Pide Llave HW</span> ➔ <span class="secret">Firma Cripto</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Llave perdida -> Revoca</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Simulacros Phishing MitM.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-blue-200 text-center">
+                <strong>📖 Glosario:</strong> PKI, CRL/OCSP, CT (Cert Transparency), ACME, FIDO2/WebAuthn, eIDAS.
+            </div>
+        </section>
+
+        <section class="shadow-lg rounded-xl overflow-hidden border border-purple-200 bg-white">
+            <div class="bg-purple-800 text-white p-4 font-bold text-lg flex items-center gap-2">
+                <span>🧱</span> BLOQUE C: Seguridad Perimetral y Redes (L2-L4)
+            </div>
+            <div class="bg-purple-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">5. Errores Firewall</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Validar reglas previas, registro cambios.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Disponibilidad 99.9%, interfaz segura.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Segmentación, Staging, MFA Admin.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ISO 27001 (Control accesos).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Propone regla</span> ➔ <span class="secret">Revisa/Prueba</span> ➔ <span class="secret">Despliega</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Fallo -> Rollback</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Nmap, Config Drift Detection.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">6. Migración NGFW</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Inspección DPI, bloquear evasivas (Tor).</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Rendimiento sin latencia DPI, escalable.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">App-ID, descifrado SSL, Integración SIEM.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD (Auditoría de navegación).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Usuario lanza VPN</span> ➔ <span class="secret">NGFW DPI detecta</span> ➔ <span class="secret">Bloquea</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Falso Positivo</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Test Evasión (Pentest), Tuning SOC.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">7. Snort IDS</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Detectar firmas/escaneos, generar alertas.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">No perder paquetes (wire-speed).</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Puerto SPAN/TAP, Preprocessors, Syslog.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ENS (Monitorización contínua).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Snort lee tráfico</span> ➔ <span class="secret">Detecta SYN</span> ➔ <span class="secret">Alerta SIEM</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Tráfico IT legítimo</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Escaneo con Nmap/Masscan.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">8. IPS Financiero</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Bloqueo real-time, modo alerta previo.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Baja tasa FP, alta estabilidad.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Heurística, Despliegue gradual.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">PCI-DSS (Protección tarjeta).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Regla alerta</span> ➔ <span class="secret">Evalúa FP</span> ➔ <span class="secret">Pasa a Bloqueo</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Corta servicio -> Rollback</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Traffic Replay, Tuning iterativo.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">9. ARP Spoofing</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Verificar IP-MAC, bloquear suplantación.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Latencia nula en Capa 2.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Dynamic ARP Inspection (DAI), DHCP Snoop.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD (Prevenir fuga locales).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Switch lee ARP</span> ➔ <span class="secret">Valida tabla</span> ➔ <span class="secret">Drop inconsistente</span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Ataque con Ettercap/arpspoof.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-purple-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-3 border-b pb-1">10. IPSec VPN</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Túnel cifrado, renegociar auto claves.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Estabilidad de enlace, failover.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">IKEv2, AES-GCM, SHA-2, PFS.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD (Transferencia segura).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">GW Negocia IKEv2</span> ➔ <span class="secret">Autentica</span> ➔ <span class="secret">Túnel ESP</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Falla Auth -> Cierra</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Wireshark (Payload cifrado).</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-purple-200 text-center">
+                <strong>📖 Glosario:</strong> DPI (Deep Packet Insp), NGFW, FP (Falso Positivo), IDS/IPS, DAI, IKEv2/ESP, PFS (Perfect Forward Secrecy).
+            </div>
+        </section>
+
+        <section class="shadow-lg rounded-xl overflow-hidden border border-orange-200 bg-white">
+            <div class="bg-orange-800 text-white p-4 font-bold text-lg flex items-center gap-2">
+                <span>🌐</span> BLOQUE D: AppSec y Transmisión de Información (L7)
+            </div>
+            <div class="bg-orange-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">11. Equifax (Parches)</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Flujo formal parcheo, detectar dependencias.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Minimizar MTTP, cero regresiones.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">SCA, Nessus, Pipeline CI/CD, Staging.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD, PCI-DSS (Cumplimiento parches).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Detecta vulne</span> ➔ <span class="secret">Prueba Staging</span> ➔ <span class="secret">CI/CD Despliega</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Fallo -> Mitigación WAF</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">KPIs de Parcheo (MTTP), Pentest.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">12. Robo vía XSS</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Sanear inputs, codificar salidas, sesión.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Rendimiento fluido, Mínimos FP.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">CSP, Cookies HttpOnly/Secure, SAST.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">PSD2, RGPD (Token = Dato personal).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Mete dato</span> ➔ <span class="secret">App Sanitiza/Codifica</span> ➔ <span class="secret">Emite HTTP</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Payload -> Drop/Alerta</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">BurpSuite (DAST XSS), ZAP.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">15. Huffman (JPEG)</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Comprimir antes de cifrar, limpiar metadata.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Calidad perceptual, baja latencia.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">JPEG Huffman, TLS 1.3, Padding uniforme.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD (Privacidad por Diseño).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Sube img</span> ➔ <span class="secret">Quita EXIF</span> ➔ <span class="secret">Comprime</span> ➔ <span class="secret">Cifra TLS</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Oráculo -> Pone Padding</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Análisis Canal Lateral (Tamaño Ciphertext).</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">16. CRIME</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Separar secretos de inputs, NO co-comprimir.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Rendimiento sin TLS compression.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">HPACK context iso, Padding Random.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ISO 27001, RGPD (Evitar fuga cookies).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Req HTTP/2</span> ➔ <span class="secret">Aísla cookies</span> ➔ <span class="secret">Cifra sin TLS comp</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">HTTP/2 inseguro -> Padding</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Escáner Vulnerabilidad Oráculo.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">17. Reed-Solomon</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Detectar/Corregir bits corruptos, loguear BER.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Flujo lectura continuo, sin paradas.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Algoritmo RS (n, k), Buffering óptico.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ENS (Retención íntegra a largo plazo).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Lee CD</span> ➔ <span class="secret">Detecta daño</span> ➔ <span class="secret">RS Reconstruye</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Daño masivo -> Ilegible</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Test físico (Discos dañados).</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg border border-orange-100 card-hover text-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-orange-700 mb-3 border-b pb-1">18. LDPC (Wi-Fi/5G)</h3>
+                        <ul class="req-list text-[11px] mb-3">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Corregir errores bajo ruido, detectar Jamming.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Baja latencia proceso, resiliencia alta SNR.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Belief Propagation, Iteraciones LDPC, WPA3.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">Normativas telecomunicaciones (Disp.).</span></li>
+                        </ul>
+                        <div class="mb-3 bg-slate-50 p-2 rounded text-[10px] font-mono">
+                            <strong class="text-slate-700 block mb-1">🔄 Flujo:</strong> 
+                            <span class="secret">Detecta ruido</span> ➔ <span class="secret">Itera LDPC</span> ➔ <span class="secret">Reconstruye</span><br>
+                            <span class="text-red-600 mt-1 block">Exp: <span class="secret">Jamming extremo -> Handover</span></span>
+                        </div>
+                        <div class="text-[11px] mb-3"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Generador Ruido SNR Lab.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-xs py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-orange-200 text-center">
+                <strong>📖 Glosario:</strong> CI/CD, MTTP, XSS, CSP, HPACK, RS (Reed-Solomon), LDPC (Low-Density Parity-Check), SNR/BER.
+            </div>
+        </section>
+
+        <section class="shadow-lg rounded-xl overflow-hidden border border-emerald-200 bg-white">
+            <div class="bg-emerald-800 text-white p-4 font-bold text-lg flex items-center gap-2">
+                <span>⚖️</span> BLOQUE E: GRC, Legal y Marco Normativo
+            </div>
+            <div class="bg-emerald-50 p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                
+                <div class="bg-white p-3 rounded-lg border border-emerald-100 card-hover text-xs flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-2 border-b pb-1">19. ISO 27001</h3>
+                        <ul class="req-list mb-2 text-[10px]">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Evaluar riesgos, doc políticas.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Continuidad.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">SIEM, Inventarios.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ISO/IEC 27001, RGPD.</span></li>
+                        </ul>
+                        <div class="mb-2 bg-slate-50 p-1 rounded font-mono text-[9px]">
+                            <strong>🔄 PDCA:</strong> <span class="secret">PLAN</span>➔<span class="secret">DO</span>➔<span class="secret">CHECK</span>➔<span class="secret">ACT</span>
+                        </div>
+                        <div class="mb-2"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Auditoría, KPIs.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-[10px] py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-3 rounded-lg border border-emerald-100 card-hover text-xs flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-2 border-b pb-1">21. APDA (CCTV)</h3>
+                        <ul class="req-list mb-2 text-[10px]">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Informar, RAT.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Minimización (sin audio).</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Audio OFF HW, Cifrado.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">Llei 29/2021 Andorra.</span></li>
+                        </ul>
+                        <div class="mb-2 bg-slate-50 p-1 rounded font-mono text-[9px]">
+                            <strong>🔄 Flujo:</strong> <span class="secret">EIPD</span>➔<span class="secret">Instala sin audio</span>
+                        </div>
+                        <div class="mb-2"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Verificar HW Audio.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-[10px] py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-3 rounded-lg border border-emerald-100 card-hover text-xs flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-2 border-b pb-1">22. Europol</h3>
+                        <ul class="req-list mb-2 text-[10px]">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Preservar rápido datos.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Rapidez 24/7.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Hash SHA-2, Sellos.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">Convenio Budapest, MLAT.</span></li>
+                        </ul>
+                        <div class="mb-2 bg-slate-50 p-1 rounded font-mono text-[9px]">
+                            <strong>🔄 Flujo:</strong> <span class="secret">Pide</span>➔<span class="secret">Preserva</span>➔<span class="secret">Firma Hash</span>
+                        </div>
+                        <div class="mb-2"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Cadena Custodia.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-[10px] py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-3 rounded-lg border border-emerald-100 card-hover text-xs flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-2 border-b pb-1">23. AEPD (RGPD)</h3>
+                        <ul class="req-list mb-2 text-[10px]">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">Consentimiento granular.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Transparencia, lenguaje.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Logs Inmutables.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">RGPD / LOPDGDD España.</span></li>
+                        </ul>
+                        <div class="mb-2 bg-slate-50 p-1 rounded font-mono text-[9px]">
+                            <strong>🔄 Flujo:</strong> <span class="secret">Banner</span>➔<span class="secret">Acepta</span>➔<span class="secret">Log timestamp</span>
+                        </div>
+                        <div class="mb-2"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Simulacro ARSOPL.</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-[10px] py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+                <div class="bg-white p-3 rounded-lg border border-emerald-100 card-hover text-xs flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-emerald-800 mb-2 border-b pb-1">24. CNIL (Cookies)</h3>
+                        <ul class="req-list mb-2 text-[10px]">
+                            <li><span class="req-badge bg-green-100 text-green-700">RF</span><span class="secret">"Rechazar todo" visible.</span></li>
+                            <li><span class="req-badge bg-blue-100 text-blue-700">RNF</span><span class="secret">Sin manipulación UX/UI.</span></li>
+                            <li><span class="req-badge bg-purple-100 text-purple-700">T</span><span class="secret">Tag Manager Bloqueo.</span></li>
+                            <li><span class="req-badge bg-orange-100 text-orange-700">L</span><span class="secret">ePrivacy (Francia).</span></li>
+                        </ul>
+                        <div class="mb-2 bg-slate-50 p-1 rounded font-mono text-[9px]">
+                            <strong>🔄 Flujo:</strong> <span class="secret">Banner</span>➔<span class="secret">Rechaza</span>➔<span class="secret">Bloquea Scripts</span>
+                        </div>
+                        <div class="mb-2"><strong class="bg-slate-200 px-1 rounded">✅ VAL:</strong> <span class="secret">Test Usabilidad (UX).</span></div>
+                    </div>
+                    <button onclick="revealCard(this)" class="w-full bg-slate-200 text-slate-700 text-[10px] py-1 rounded hover:bg-slate-300">Revelar</button>
+                </div>
+
+            </div>
+            <div class="bg-slate-200 p-3 text-xs text-slate-700 border-t border-emerald-200 text-center">
+                <strong>📖 Glosario:</strong> GRC, SGSI, PDCA, APDA/AEPD/CNIL, EIPD, MLAT, ARSOPL (Acceso, Rect., Supr., Opos., Portab., Lim.).
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Lógica para hacer click en una píldora "secret"
+        document.querySelectorAll('.secret').forEach(element => {
+            element.addEventListener('click', function() {
+                this.classList.toggle('revealed');
+            });
+        });
+
+        // Revelar toda la tarjeta
+        function revealCard(btn) {
+            const card = btn.parentElement;
+            const secrets = card.querySelectorAll('.secret');
+            secrets.forEach(sec => sec.classList.add('revealed'));
+        }
+
+        // Revelar todo el documento
+        function revealAll() {
+            document.querySelectorAll('.secret').forEach(sec => sec.classList.add('revealed'));
+        }
+
+        // Ocultar todo el documento (Reiniciar)
+        function hideAll() {
+            document.querySelectorAll('.secret').forEach(sec => sec.classList.remove('revealed'));
+        }
+    </script>
+</body>
+</html>
