@@ -451,121 +451,173 @@
             </div>
         </section>
 
-        <!-- Sección preguntas para examen-->
+        <!-- ==========================================
+             SECCIÓN EXÁMENES: PREGUNTAS REALES (Índigo)
+             ========================================== -->
         <section id="examenes-reales" class="mb-12 shadow-xl rounded-xl overflow-hidden border border-indigo-300 bg-white">
             <div class="bg-indigo-900 text-white p-4 font-black text-xl flex items-center gap-2">
                 <span>📝</span> EXÁMENES REALES: Casos Extra y Simulacros
             </div>
             <div class="p-6 bg-indigo-50/50">
-                <p class="text-sm text-indigo-800 mb-6 font-medium">Recopilación de preguntas de examen reales. Aquí el nivel de detalle es máximo para memorizar la respuesta exacta esperada por el tribunal/evaluador.</p>
+                <p class="text-sm text-indigo-800 mb-6 font-medium">Recopilación de preguntas de examen reales. Aquí el nivel de detalle es máximo, con los enunciados extendidos y las respuestas estructuradas exactamente como pide el tribunal.</p>
 
+                <!-- Grid de 2 columnas para más detalle -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Pregunta 1 - USB-->
-                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-center mb-3 border-b border-indigo-100 pb-2">
-                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 3: Insider con USB no autorizado</h3>
-                                <span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded uppercase">Fuga de Datos / Malware</span>
-                            </div>
-                            
-                            <p class="text-[11px] text-slate-500 mb-4 italic">Contexto: Institución pública, empleado conecta USB con malware, extracción de proyectos estratégicos. Sin políticas, sin DLP, sin bloqueo de puertos.</p>
-
-                            <ul class="req-list text-xs mb-4 space-y-2">
-                                <li>
-                                    <span class="req-badge bg-green-100 text-green-700">RF</span>
-                                    <div>Registro y autorización previa de USBs. Monitorización de puertos en tiempo real. Alertas automáticas ante conexión no autorizada.</div>
-                                </li>
-                                <li>
-                                    <span class="req-badge bg-blue-100 text-blue-700">RNF</span>
-                                    <div>Transparencia y latencia mínima para usuarios legítimos. Alta disponibilidad (>99.9%) del agente de control en los endpoints.</div>
-                                </li>
-                                <li>
-                                    <span class="req-badge bg-purple-100 text-purple-700">T</span>
-                                    <div>Módulo Device Control (Bloqueo lógico de puertos). Agente DLP de endpoint (prevención de fuga). Integración SIEM. Deshabilitar AutoRun/AutoPlay vía GPO.</div>
-                                </li>
-                                <li>
-                                    <span class="req-badge bg-orange-100 text-orange-700">L</span>
-                                    <div>Esquema Nacional de Seguridad (ENS - por ser Institución Pública). RGPD (si aplica a datos personales). Políticas de Uso Aceptable (AUP).</div>
-                                </li>
-                            </ul>
-
-                            <div class="mb-4 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
-                                <strong class="text-indigo-300 block mb-1 uppercase text-[10px]">🔄 Flujo: Gestión de USB Autorizado</strong>
-                                <div class="text-slate-300">[1] Empleado solicita a TI registrar dispositivo USB.</div>
-                                <div class="text-slate-300">[2] TI valida dispositivo y lo registra en el control.</div>
-                                <div class="text-slate-300">[3] La estación de trabajo permite el uso del USB.</div>
-                                <div class="text-slate-300">[4] Todas las operaciones de I/O quedan registradas.</div>
-                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc 1] USB no registrado -> Sistema bloquea automáticamente.</div>
-                                <div class="text-red-400">[Exc 2] Actividad sospechosa -> Desconexión forzada + Alerta a SOC.</div>
-                            </div>
-                        </div>
-
-                        <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100">
-                            <strong class="text-indigo-800 block mb-1">✅ Métodos de Validación:</strong>
-                            <ul class="list-disc pl-4 text-slate-700 space-y-1">
-                                <li>Auditorías internas periódicas sobre el uso real de puertos USB.</li>
-                                <li>Pruebas técnicas para verificar el bloqueo efectivo de dispositivos no autorizados.</li>
-                                <li>Revisión regular de políticas con los equipos de seguridad y cumplimiento.</li>
-                                <li>Simulaciones de extracción (DLP) para validar la detección y emisión de alertas.</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Pregunta 2 - Whatsapp-->
-                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
-                        <div>
-                            <div class="flex justify-between items-center mb-3 border-b border-indigo-100 pb-2">
-                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 2: E2EE en WhatsApp y Signal</h3>
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded uppercase">Criptografía / Privacidad</span>
-                            </div>
-                            
-                            <p class="text-[11px] text-slate-500 mb-4 italic">Contexto: Cifrado Extremo a Extremo (E2EE) para evitar interceptación. Uso de criptografía de curva elíptica, claves efímeras y el debate legal sobre las puertas traseras gubernamentales (Client-side scanning).</p>
-
-                            <ul class="req-list text-xs mb-4 space-y-2">
-                                <li>
-                                    <span class="req-badge bg-green-100 text-green-700">RF</span>
-                                    <div>Garantizar confidencialidad estricta (solo emisor/receptor pueden leer). Rotación automática de claves por cada mensaje. Mecanismo para verificar la identidad del contacto.</div>
-                                </li>
-                                <li>
-                                    <span class="req-badge bg-blue-100 text-blue-700">RNF</span>
-                                    <div>Transparencia y usabilidad (el usuario no debe notar el proceso criptográfico). Baja latencia en el cifrado/descifrado móvil. Escalabilidad masiva.</div>
-                                </li>
-                                <li>
-                                    <span class="req-badge bg-purple-100 text-purple-700">T</span>
-                                    <div>Protocolo Signal: Intercambio de claves X3DH. Algoritmo Double Ratchet (Perfect Forward Secrecy / Future Secrecy). Criptografía de Curva Elíptica (Curve25519). Cifrado de carga útil con AES-GCM.</div>
-                                </li>
-                                <li>
-                                    <span class="req-badge bg-orange-100 text-orange-700">L</span>
-                                    <div>RGPD (Privacidad desde el Diseño y por Defecto). Directiva ePrivacy. Principio de minimización (el servidor solo gestiona metadatos, no el contenido).</div>
-                                </li>
-                            </ul>
-
-                            <div class="mb-4 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
-                                <strong class="text-indigo-300 block mb-1 uppercase text-[10px]">🔄 Flujo: Intercambio de mensajes E2EE</strong>
-                                <div class="text-slate-300">[1] Alice desea enviar un mensaje a Bob.</div>
-                                <div class="text-slate-300">[2] Alice obtiene las pre-claves públicas de Bob desde el servidor (X3DH).</div>
-                                <div class="text-slate-300">[3] Alice deriva el secreto compartido, cifra el mensaje y lo envía.</div>
-                                <div class="text-slate-300">[4] El servidor enruta el mensaje cifrado (no puede leerlo).</div>
-                                <div class="text-slate-300">[5] Bob recibe, descifra y ambos rotan sus claves (Double Ratchet).</div>
-                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc 1] Intento de MitM -> Falla la validación visual de códigos QR (Safety Numbers).</div>
-                                <div class="text-red-400">[Exc 2] Servidor comprometido -> Solo expone metadatos, no el texto en claro.</div>
-                            </div>
-                        </div>
-
-                        <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100 mt-4">
-                            <strong class="text-indigo-800 block mb-1">✅ Métodos de Validación:</strong>
-                            <ul class="list-disc pl-4 text-slate-700 space-y-1">
-                                <li>Auditorías de código fuente (si es Open Source, como Signal) sobre la biblioteca criptográfica.</li>
-                                <li>Análisis de tráfico de red (con Wireshark) para verificar que la carga útil (payload) viaja cifrada y no en texto claro.</li>
-                                <li>Verificación "Out-of-Band" (OOB): Comprobación manual de los números de seguridad / Códigos QR entre usuarios para evitar ataques Man-in-the-Middle.</li>
-                                <li>Pruebas de Pentesting en el endpoint (App móvil) para asegurar que las claves privadas están en el <em>Secure Enclave/Keystore</em> del dispositivo.</li>
-                            </ul>
-                        </div>
-                    </div>
                     
+                    <!-- EXAMEN 1: INSIDER USB -->
+                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 3: Insider con USB no autorizado</h3>
+                                <span class="bg-red-100 text-red-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Insider / Malware</span>
+                            </div>
+                            
+                            <!-- ENUNCIADO -->
+                            <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
+                                <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
+                                <p class="text-[11px] text-slate-600 italic">En una institución pública, un empleado conectó un dispositivo USB no autorizado que contenía malware. Al ejecutarse, el código malicioso permitió la extracción de información sensible relacionada con proyectos estratégicos del organismo. La investigación reveló la inexistencia de políticas claras sobre el uso de dispositivos externos, la falta de controles DLP (Data Loss Prevention) y la ausencia de bloqueos físicos o lógicos en los puertos USB de los equipos. Este incidente puso de manifiesto el riesgo asociado a las amenazas internas, tanto accidentales como maliciosas, cuando no existen medidas de control, monitorización y restricción adecuadas sobre medios extraíbles.</p>
+                            </div>
+
+                            <!-- 1. CLASIFICACIÓN DE REQUISITOS -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
+                            <div class="space-y-3 mb-5">
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Registro y autorización previa de dispositivos USB.</li>
+                                        <li>Monitorización del uso de puertos USB en tiempo real.</li>
+                                        <li>Generación de alertas automáticas ante cualquier conexión no autorizada.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Transparencia y latencia mínima en la lectura para usuarios legítimos.</li>
+                                        <li>Alta disponibilidad del agente de control en los endpoints (>99.9%).</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Despliegue de módulo Device Control (bloqueo lógico de puertos).</li>
+                                        <li>Implementación de agente DLP de endpoint para prevenir extracciones.</li>
+                                        <li>Integración de logs con sistema SIEM.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Cumplimiento del Esquema Nacional de Seguridad (ENS) por ser Institución Pública.</li>
+                                        <li>RGPD (si la extracción afectó a datos personales).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- 2. CASO DE USO -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Gestión USB Autorizado</h4>
+                            <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div class="text-slate-400 mb-1">Actor: Empleado autorizado</div>
+                                <div class="text-slate-300">[1] El empleado solicita al departamento TI registrar un dispositivo USB.</div>
+                                <div class="text-slate-300">[2] TI valida el dispositivo y lo registra en el sistema de control.</div>
+                                <div class="text-slate-300">[3] La estación de trabajo del empleado permite el uso del USB autorizado.</div>
+                                <div class="text-slate-300">[4] Todas las operaciones realizadas con el dispositivo quedan registradas y monitorizadas.</div>
+                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc] USB no registrado: El sistema bloquea automáticamente el dispositivo.</div>
+                                <div class="text-red-400">[Exc] Actividad sospechosa: Desconexión forzada y alerta inmediata a seguridad.</div>
+                            </div>
+
+                            <!-- 3. VALIDACIÓN -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                            <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100">
+                                <ul class="list-disc pl-4 text-slate-700 space-y-1">
+                                    <li>Auditorías internas periódicas sobre el uso real de puertos USB.</li>
+                                    <li>Pruebas técnicas para verificar el bloqueo efectivo de dispositivos no autorizados.</li>
+                                    <li>Revisión regular de políticas con los equipos de seguridad y cumplimiento.</li>
+                                    <li>Simulaciones de extracción para validar la detección del DLP y la emisión de alertas.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EXAMEN 2: E2EE WHATSAPP/SIGNAL -->
+                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 2: Cifrado E2EE en WhatsApp/Signal</h3>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Criptografía / Privacidad</span>
+                            </div>
+                            
+                            <!-- ENUNCIADO -->
+                            <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
+                                <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
+                                <p class="text-[11px] text-slate-600 italic">El cifrado de extremo a extremo (E2EE) garantiza que solo el emisor y el receptor puedan leer los mensajes. Aplicaciones como WhatsApp y Signal utilizan el protocolo Signal que combina criptografía de curva elíptica, intercambio de claves X3DH, el algoritmo Double Ratchet y claves efímeras para maximizar la seguridad y la privacidad. E2EE protege eficazmente frente a intrusiones externas o internas, pero también ha generado debates. Mientras expertos y usuarios lo consideran indispensable para la privacidad, algunos gobiernos han propuesto puertas traseras o mecanismos de escaneo del lado del cliente lo que podría comprometer la seguridad del sistema.</p>
+                            </div>
+
+                            <!-- 1. CLASIFICACIÓN DE REQUISITOS -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
+                            <div class="space-y-3 mb-5">
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Garantizar que solo emisor y receptor descifren y lean los mensajes.</li>
+                                        <li>Renovar las claves criptográficas automáticamente en cada mensaje enviado.</li>
+                                        <li>Proveer un mecanismo visual (código QR) para verificar la identidad del contacto.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Transparencia para el usuario (cifrado imperceptible durante el uso normal).</li>
+                                        <li>Baja latencia en el procesamiento de mensajes desde dispositivos móviles.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Uso del Protocolo Signal (Algoritmo Double Ratchet para rotación de claves).</li>
+                                        <li>Criptografía de Curva Elíptica (ECC) e intercambio X3DH.</li>
+                                        <li>Cifrado simétrico AES para el contenido del mensaje (payload).</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Cumplimiento del RGPD (Privacidad desde el Diseño y por Defecto).</li>
+                                        <li>Minimización de datos (El servidor de WhatsApp no almacena el contenido, solo metadatos).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- 2. CASO DE USO -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Envío de Mensaje Cifrado</h4>
+                            <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
+                                <div class="text-slate-400 mb-1">Actor: Emisor (Alice) y Receptor (Bob)</div>
+                                <div class="text-slate-300">[1] Alice redacta un mensaje y presiona enviar en la aplicación.</div>
+                                <div class="text-slate-300">[2] La App de Alice cifra el mensaje localmente usando la clave pública de Bob.</div>
+                                <div class="text-slate-300">[3] El mensaje cifrado viaja por internet hacia los servidores de la aplicación.</div>
+                                <div class="text-slate-300">[4] El servidor enruta el mensaje hacia el dispositivo de Bob (sin poder leerlo).</div>
+                                <div class="text-slate-300">[5] La App de Bob recibe el mensaje y lo descifra localmente mostrando el texto.</div>
+                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc] Intento de MitM: Falla la verificación de Códigos de Seguridad (Safety Numbers).</div>
+                                <div class="text-red-400">[Exc] Servidor comprometido: El atacante solo obtiene metadatos, no texto claro.</div>
+                            </div>
+
+                            <!-- 3. VALIDACIÓN -->
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                            <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100">
+                                <ul class="list-disc pl-4 text-slate-700 space-y-1">
+                                    <li>Auditorías de código fuente sobre la biblioteca criptográfica utilizada en la App.</li>
+                                    <li>Análisis de tráfico de red (ej. Wireshark) para confirmar que el payload viaja cifrado.</li>
+                                    <li>Pruebas de Pentesting en dispositivos móviles para asegurar el aislamiento de las claves privadas (Keystore/Secure Enclave).</li>
+                                    <li>Verificación "Out-of-Band": Comprobación presencial o por otra vía de los códigos QR entre usuarios.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
-        </section>        <!-- ==========================================
+        </section>    
+           
+            <!-- ==========================================
              ESTRATEGIA MAESTRA: PATRONES DE RESPUESTA 1
              ========================================== -->
         <section id="modelos-patron" class="mb-12 shadow-lg rounded-xl overflow-hidden border border-slate-300 bg-white">
