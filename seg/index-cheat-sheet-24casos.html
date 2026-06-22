@@ -854,25 +854,148 @@
                         </div>
                     </div>
 
-                    <!-- EXAMEN 4: MITM EN WI-FI PÚBLICO (EVIL TWIN) -->
-                    <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
+                    <!-- EXAMEN 6: LEGALIDAD -->
+                   <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
-                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 6 - No hay</h3>
-                                <span class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Pendiente</span>
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 6: Gestión Normativa Transversal</h3>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Legal / Compliance</span>
                             </div>
                             
-                            <!-- ENUNCIADO -->
                             <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
                                 <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
-                                <p class="text-[11px] text-slate-600 italic">Enunciado completo</p>
+                                <p class="text-[11px] text-slate-600 italic">Plataforma digital con CCTV (con audio), cookies no consensuadas y solicitud de Europol (Convenio Budapest) por fraude transfronterizo. ¿Gestión de cumplimiento?</p>
                             </div>
 
-                            
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
+                            <div class="space-y-3 mb-5">
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Documentar RAT específico por jurisdicción.</li>
+                                        <li>Configurar Privacidad por Diseño (Audio OFF, Consentimiento granular).</li>
+                                        <li>Atender cooperación judicial 24/7 (Budapest).</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Atención derechos ARSOPL en < 30 días.</li>
+                                        <li>Transparencia (evitar Dark Patterns).</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Cifrado de datos.</li>
+                                        <li>Logs inmutables (Audit Trails).</li>
+                                        <li>Bloqueo previo de scripts hasta consentimiento.</li>
+                                    </ul>
+                                </div>
+                                <div class="flex items-start gap-2">
+                                    <span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
+                                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
+                                        <li>Llei 29/2021, RGPD, ePrivacy, Convenio Budapest.</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Respuesta Normativa</h4>
+                            <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1 text-slate-300">
+                                <div>[1] Detecta requerimiento/inspección.</div>
+                                <div>[2] Ejecuta EIPD o ajusta parámetros (CCTV/Cookies).</div>
+                                <div>[3] Aplica medida técnica (Micrófonos OFF / Bloqueo Cookies).</div>
+                                <div>[4] Loguea decisión en RAT con timestamp.</div>
+                                <div class="text-red-400 border-t border-slate-700 pt-1">[Exc] Solicitud Europol: Preserva datos urgente (Hash) antes de entrega.</div>
+                            </div>
+
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                            <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100 text-slate-700">
+                                <ul class="list-disc pl-4 space-y-1">
+                                    <li>Auditoría externa de cumplimiento.</li>
+                                    <li>Análisis automatizado de carga de cookies.</li>
+                                    <li>Revisión de Cadena de Custodia (Europol).</li>
+                                    <li>Simulacro ARSOPL.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
                 </div>
+        </section>
+
+        <!-- ==========================================
+             SECCIÓN EXAMEN 6: SÍNTESIS LEGAL
+             ========================================== -->
+        <section id="examen-6-legal" class="mb-12 shadow-xl rounded-xl overflow-hidden border border-indigo-300 bg-white">
+            <div class="bg-indigo-900 text-white p-4 font-black text-xl flex items-center gap-2">
+                <span>⚖️</span> EXAMEN REAL: Ejercicio 6 (Síntesis Legal Global)
+            </div>
+            <div class="p-6 bg-indigo-50/50">
+                <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md">
+                    <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
+                        <h3 class="font-bold text-indigo-900 text-base">Ejercicio 6: Gestión Normativa Transversal (Andorra, RGPD, Europol)</h3>
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Legal / Compliance</span>
+                    </div>
+
+                    <!-- ENUNCIADO -->
+                    <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
+                        <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
+                        <p class="text-[11px] text-slate-600 italic">Una plataforma digital opera simultáneamente en Andorra y España. El sistema despliega videovigilancia (con audio activado), utiliza cookies de seguimiento sin consentimiento previo claro y ha recibido una solicitud de preservación urgente de datos por parte de Europol (Convenio Budapest) en relación con un fraude financiero. ¿Cómo debe gestionar el cumplimiento normativo para evitar sanciones (APDA/AEPD/CNIL)?</p>
+                    </div>
+
+                    <!-- 1. CLASIFICACIÓN -->
+                    <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
+                    <div class="space-y-3 mb-5">
+                        <div class="flex items-start gap-2"><span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
+                            <ul class="list-disc pl-4 text-xs text-slate-700">
+                                <li>Documentar RAT (Registro Actividades Tratamiento) específico por jurisdicción.</li>
+                                <li>Configurar sistemas según "Privacidad por diseño": Audio OFF en CCTV, consentimiento granular en Cookies.</li>
+                                <li>Atender solicitudes de cooperación judicial en 24/7 (Convenio Budapest).</li>
+                            </ul>
+                        </div>
+                        <div class="flex items-start gap-2"><span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
+                            <ul class="list-disc pl-4 text-xs text-slate-700">
+                                <li>Garantizar atención a derechos ARSOPL en menos de 30 días.</li>
+                                <li>Transparencia total (evitar cualquier patrón oscuro o engañoso en banners).</li>
+                            </ul>
+                        </div>
+                        <div class="flex items-start gap-2"><span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
+                            <ul class="list-disc pl-4 text-xs text-slate-700">
+                                <li>Cifrado de datos en tránsito/reposo.</li>
+                                <li>Logs inmutables (Audit Trails) para trazabilidad.</li>
+                                <li>Tag Manager configurado para bloqueo previo de cookies hasta obtener consentimiento.</li>
+                            </ul>
+                        </div>
+                        <div class="flex items-start gap-2"><span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
+                            <ul class="list-disc pl-4 text-xs text-slate-700">
+                                <li>Llei 29/2021 (Andorra), RGPD (UE), Directiva ePrivacy, Convenio Budapest (Cooperación penal).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 2. CASO DE USO -->
+                    <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Respuesta Normativa</h4>
+                    <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1 text-slate-300">
+                        <div>[1] Detecta requerimiento legal o inspección.</div>
+                        <div>[2] Ejecuta EIPD (si es alto riesgo) o ajusta parámetros (CCTV/Cookies).</div>
+                        <div>[3] Aplica medida técnica (Micrófonos OFF / Bloqueo Cookies).</div>
+                        <div>[4] Loguea decisión en RAT con timestamp inmutable.</div>
+                        <div class="text-red-400 border-t border-slate-700 pt-1">[Exc] Solicitud Europol: Preserva datos urgente (Hash) antes de entregar vía MLAT.</div>
+                    </div>
+
+                    <!-- 3. VALIDACIÓN -->
+                    <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                    <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100 text-slate-700">
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li>Auditoría externa de cumplimiento (Privacidad/Seguridad).</li>
+                            <li>Verificación técnica: Análisis automatizado de carga de cookies (antes/después del consentimiento).</li>
+                            <li>Revisión de Cadena de Custodia (Evidencias para Europol).</li>
+                            <li>Simulacro ARSOPL para comprobar tiempos de respuesta.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </section>
            
             <!-- ==========================================
