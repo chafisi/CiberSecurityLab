@@ -1325,13 +1325,13 @@
                     <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-xs">
                         <h4 class="font-bold text-slate-800 mb-2">Ex. 5: Cloud Firewall AWS</h4>
                         <div class="space-y-1 mb-2">
-                            <p><strong class="text-purple-600">[T]</strong> CSPM / IaC (Terraform).</p>
-                            <p><strong class="text-green-600">↳ [RF]</strong> Deny-All en puerto 22, auditar SGs.</p>
-                            <p><strong class="text-blue-600">↳ [RNF]</strong> Visibilidad centralizada tiempo real.</p>
-                            <p><strong class="text-orange-600">↳ [L]</strong> ISO 27001 (Modelo Responsabilidad).</p>
+                            <p><strong class="text-purple-600">[T]</strong> CSPM y Validaciones Automáticas.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Bloquear acceso a internet en puertos críticos (SSH 22).</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Automatización máxima para evitar error humano.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD y Políticas de seguridad cloud específicas.</p>
                         </div>
-                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Análisis vulnerabilidades (Nessus).</p>
-                        <p class="font-mono text-slate-500 mt-1">Flujo: Lanza config -> CSPM detecta error -> Bloquea despliegue.</p>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Escaneos automatizados propios (simulación).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Intenta abrir pt. 22 -> Validación analiza -> Detecta riesgo -> Bloquea.</p>
                     </div>
 
                 </div>
