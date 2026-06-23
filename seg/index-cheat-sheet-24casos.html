@@ -786,16 +786,17 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
+                    <!--Examen 5 firewall AWS-->
                     <div class="bg-white p-5 rounded-lg border border-indigo-200 shadow-md flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start mb-3 border-b border-indigo-100 pb-2">
-                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 5: Firewall en la nube (Security Groups)</h3>
+                                <h3 class="font-bold text-indigo-900 text-base">Ejercicio 5: Firewall en la Nube (AWS)</h3>
                                 <span class="bg-indigo-100 text-indigo-800 text-[10px] font-bold px-2 py-1 rounded uppercase shrink-0">Cloud Security</span>
                             </div>
                             
                             <div class="bg-slate-50 p-3 rounded mb-4 border border-slate-200">
                                 <strong class="text-xs text-slate-700 block mb-1">Enunciado:</strong>
-                                <p class="text-[11px] text-slate-600 italic">Una startup que operaba en AWS configuró incorrectamente sus Security Groups dejando abierto el acceso SSH (puerto 22) a internet en varias instancias críticas. Un escaneo automatizado identificó la exposición y permitió a atacantes acceder a los servidores, instalar cryptominers y robar datos de clientes. La investigación reveló la inexistencia de políticas específicas para la nube, ausencia de validaciones automáticas y falta de herramientas de CSPM. El caso ilustra cómo los errores de configuración son una de las principales causas de incidentes en entornos cloud.</p>
+                                <p class="text-[11px] text-slate-600 italic">Una startup que operaba en AWS configuró incorrectamente sus Security Groups dejando abierto el acceso SSH (puerto 22) a internet en varias instancias críticas. Un escaneo automatizado identificó la exposición y permitió a atacantes acceder a los servidores, instalar cryptominers y robar datos de clientes. La investigación posterior reveló la inexistencia de políticas de seguridad específicas para la nube, ausencia de validaciones automáticas y falta de herramientas de Cloud Security Posture Management (CSPM). El caso ilustra cómo los errores de configuración son una de las principales causas de incidentes en entornos cloud.</p>
                             </div>
 
                             <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">1. Clasificación de Requisitos</h4>
@@ -803,52 +804,50 @@
                                 <div class="flex items-start gap-2">
                                     <span class="req-badge bg-green-100 text-green-700 mt-0.5">RF</span>
                                     <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
-                                        <li>Definir reglas estrictas (Deny-All por defecto) para puertos críticos (SSH/22, RDP/3389).</li>
-                                        <li>Limitar el acceso a rangos IP específicos (VPN/Bastion) en lugar de 0.0.0.0/0.</li>
-                                        <li>Registrar y auditar toda modificación realizada en los Security Groups.</li>
+                                        <li>Definir reglas estrictas para puertos críticos (ej. SSH puerto 22, RDP, bases de datos), bloqueando su acceso público a Internet.</li>
+                                        <li>Implementar un sistema de validaciones automáticas previas a cualquier cambio en los Security Groups.</li>
+                                        <li>Establecer y aplicar políticas de seguridad específicas para el entorno de la nube.</li>
                                     </ul>
                                 </div>
                                 <div class="flex items-start gap-2">
                                     <span class="req-badge bg-blue-100 text-blue-700 mt-0.5">RNF</span>
                                     <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
-                                        <li>Agilidad en la respuesta ante configuraciones de riesgo.</li>
-                                        <li>Visibilidad total del estado de seguridad del inventario cloud en tiempo real.</li>
+                                        <li>Automatización máxima para minimizar el error de configuración humana.</li>
+                                        <li>Visibilidad continua y en tiempo real del estado de exposición de la infraestructura.</li>
                                     </ul>
                                 </div>
                                 <div class="flex items-start gap-2">
                                     <span class="req-badge bg-purple-100 text-purple-700 mt-0.5">T</span>
                                     <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
-                                        <li>Uso de herramientas CSPM (Cloud Security Posture Management).</li>
-                                        <li>Implementación de "Infrastructure as Code" (Terraform/CloudFormation) con escaneo previo.</li>
-                                        <li>AWS Config para monitorización y remediación automática de recursos.</li>
+                                        <li>Herramientas de Cloud Security Posture Management (CSPM) [mencionado en el texto].</li>
+                                        <li>AWS Security Groups configurados por defecto en modo denegación.</li>
                                     </ul>
                                 </div>
                                 <div class="flex items-start gap-2">
                                     <span class="req-badge bg-orange-100 text-orange-700 mt-0.5">L</span>
                                     <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1">
-                                        <li>Cumplimiento de los modelos de responsabilidad compartida del proveedor cloud.</li>
-                                        <li>ISO 27001 (Control de cambios y seguridad en comunicaciones).</li>
+                                        <li>RGPD / Leyes de Protección de Datos (debido al "robo de datos de clientes").</li>
+                                        <li>Políticas de seguridad internas específicas para la nube [mencionado en el texto].</li>
                                     </ul>
                                 </div>
                             </div>
 
-                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Control Acceso Seguro</h4>
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">2. Caso de Uso: Control de accesos en Security Groups</h4>
                             <div class="mb-5 bg-slate-900 p-3 rounded text-xs font-mono space-y-1">
-                                <div class="text-slate-400 mb-1">Actor: DevOps / Sistema de Seguridad Cloud</div>
-                                <div class="text-slate-300">[1] Desarrollador solicita cambio en Security Group.</div>
-                                <div class="text-slate-300">[2] Pipeline de CI/CD escanea la regla (Policy as Code).</div>
-                                <div class="text-slate-300">[3] Si la regla permite puerto 22 a internet (0.0.0.0/0), el despliegue es bloqueado.</div>
-                                <div class="text-slate-300">[4] Notificación enviada al equipo de seguridad con el error detectado.</div>
-                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc] Configuración manual fuera de pipeline: La herramienta CSPM detecta, alerta y deshace (Auto-remediación).</div>
+                                <div class="text-slate-400 mb-1">Actor: Administrador TI / Sistema de Validación</div>
+                                <div class="text-slate-300">[1] El administrador intenta modificar un Security Group para abrir el puerto 22.</div>
+                                <div class="text-slate-300">[2] El sistema de validaciones automáticas intercepta y analiza la regla solicitada.</div>
+                                <div class="text-slate-300">[3] La validación detecta que el origen es "Internet" y viola la política de seguridad cloud.</div>
+                                <div class="text-slate-300">[4] Se bloquea la configuración, evitando la exposición, y se alerta al equipo.</div>
+                                <div class="text-red-400 mt-2 border-t border-slate-700 pt-1">[Exc] Modificación manual saltando la validación: La herramienta CSPM lo detecta en su escaneo y revoca la regla.</div>
                             </div>
 
-                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Métodos de Validación</h4>
+                            <h4 class="font-bold text-indigo-800 text-xs mb-2 uppercase">3. Mecanismos para validar configuraciones</h4>
                             <div class="text-xs bg-indigo-50 p-3 rounded border border-indigo-100">
                                 <ul class="list-disc pl-4 text-slate-700 space-y-1">
-                                    <li>Monitorización continua con herramientas CSPM para detectar desviaciones (Config Drift).</li>
-                                    <li>Escaneos de vulnerabilidades periódicos (Nessus/Inspector) para confirmar puertos expuestos.</li>
-                                    <li>Auditorías de configuración mediante el uso de herramientas de "Policy as Code" (Checkov/tfsec).</li>
-                                    <li>Revisiones periódicas de los logs de acceso a la consola Cloud (CloudTrail).</li>
+                                    <li>Realizar escaneos automatizados propios (simulando el ataque descrito) para verificar que no hay puertos críticos expuestos a internet.</li>
+                                    <li>Desplegar y auditar el entorno mediante la herramienta CSPM para asegurar que cumple con las políticas de seguridad en la nube establecidas.</li>
+                                    <li>Intentar aplicar intencionadamente una regla insegura en el Security Group para comprobar que las validaciones automáticas la bloquean.</li>
                                 </ul>
                             </div>
                         </div>
