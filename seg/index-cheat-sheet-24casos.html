@@ -953,7 +953,393 @@
                 </table>
             </div>
         </section>
-           
+        <!-- ==========================================
+     SECUENCIA LÓGICA T-R-V: 24 CASOS + 5 EXÁMENES
+     ========================================== -->
+        <section id="secuencia-logica-inversa" class="mb-12 shadow-2xl rounded-xl overflow-hidden border border-slate-300 bg-slate-50">
+            <div class="bg-slate-900 text-white p-4 font-black text-xl flex items-center gap-2">
+                <span>🔄</span> INGENIERÍA INVERSA: Secuencia T -> RF -> RNF -> L
+            </div>
+            <div class="p-6">
+                <p class="text-sm text-slate-600 mb-8 font-medium">Lectura secuencial: La <strong>Tecnología (T)</strong> determina qué se puede hacer <strong>(RF)</strong>, con qué calidad <strong>(RNF)</strong> y bajo qué amparo <strong>(L)</strong>. Seguido de su <strong>Validación</strong> y <strong>Flujo</strong>.</p>
+
+                <!-- BLOQUE A -->
+                <h3 class="font-bold text-red-700 text-lg mb-4 uppercase border-b-2 border-red-200 pb-2">🚨 Bloque A: Incidentes</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-red-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">1. Ransomware</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> EDR y Backups Inmutables.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Aislar endpoint infectado y restaurar datos.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> RTO < 4h, disponibilidad clínica.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD (Notificación 72h).</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Test de Restauración (Restore).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Detecta -> EDR Aísla -> SOC -> Restaura.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-red-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">2. Credential Stuffing</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> MFA y Hashes Argon2.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Bloquear fuerza bruta, exigir doble factor.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Autenticación < 2s, alta escalabilidad.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> PSD2 (Banca).</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Hydra / Burp (Fuerza bruta).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Loguea -> Pide MFA -> Accede / Bloquea.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-red-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">20. 0-Day Log4Shell</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Herramientas SCA / SAST.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Inventariar dependencias y parchear rápido.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Minimizar MTTR (Tiempo de respuesta).</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> DORA / NIST.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Escáner de vulnerabilidades SCA.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Detecta CVE -> SCA Identifica -> Parchea.</p>
+                    </div>
+                </div>
+
+                <!-- BLOQUE B -->
+                <h3 class="font-bold text-blue-700 text-lg mb-4 uppercase border-b-2 border-blue-200 pb-2">🔑 Bloque B: Cripto y PKI</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">3. Transición DES a AES</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> AES-256 (OpenSSL).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Cifrar con algoritmo robusto vigente.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Rendimiento alto sin latencia.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ENS.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Análisis cripto (testssl.sh).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Detecta DES -> Migra a AES.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">4. Certificados Falsos</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> CT Logs y OCSP.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Validar revocación en tiempo real.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Baja latencia en validación.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> eIDAS.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Monitorizar CT Logs.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Recibe Cert -> Valida OCSP -> Bloquea.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">13. Caducidad Certs</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> ACME (Let's Encrypt).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Renovar automáticamente.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Zero-downtime.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Qualys SSL Labs.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Expira pronto -> ACME renueva -> Aplica.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-blue-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">14. MFA FIDO2</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> WebAuthn y Llaves HW.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Evitar suplantación (Anti-Phishing).</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Alta usabilidad multi-dispositivo.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> PSD2.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Simulacro Phishing AitM.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Pide token -> HW firma desafío criptográfico.</p>
+                    </div>
+                </div>
+
+                <!-- BLOQUE C -->
+                <h3 class="font-bold text-purple-700 text-lg mb-4 uppercase border-b-2 border-purple-200 pb-2">🧱 Bloque C: Redes</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">5. Config FW Errónea</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Staging y MFA para Admin.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Probar reglas antes de aplicar.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Disponibilidad 99.9%.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ISO 27001.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Config Drift Detection.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Crea regla -> Staging -> Pasa test -> Despliega.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">6. Evasión FW (Tor)</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> NGFW con DPI (Deep Packet Insp.).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Bloquear tráfico ofuscado L7.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Cero latencia en descifrado SSL.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Pentest (Test de evasión).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Entra tráfico -> DPI analiza firma L7 -> Bloquea Tor.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">7. IDS Snort Pasivo</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Snort en Puerto SPAN.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Detectar escaneos mediante firmas.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Operación Wire-speed (no frena tráfico).</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ENS.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Escaneo con Nmap.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Copia tráfico -> Snort lee -> Alerta SIEM.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">8. IPS Financiero</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Reglas Heurísticas (Modo Alerta).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Prevenir ataques bloqueando IPs.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Baja tasa de Falsos Positivos.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> PCI-DSS.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Traffic Replay (PCAP).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Modo alerta -> Tuning de FP -> Pasa a modo Bloqueo.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">9. ARP Spoofing</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> DAI y DHCP Snooping.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Verificar correspondencia IP-MAC.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Latencia nula en Capa 2.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Inyección Ettercap.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Switch lee ARP -> Valida en tabla DHCP -> Drop si falso.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-purple-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">10. IPSec VPN</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> IKEv2, AES-GCM, PFS.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Crear túnel cifrado entre sedes.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Estabilidad de enlace (Failover).</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Captura Wireshark.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Negocia IKEv2 -> Autentica -> Abre túnel ESP.</p>
+                    </div>
+                </div>
+
+                <!-- BLOQUE D -->
+                <h3 class="font-bold text-orange-600 text-lg mb-4 uppercase border-b-2 border-orange-200 pb-2">🌐 Bloque D: AppSec (L7)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">11. Equifax / Parches</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Pipeline CI/CD y SCA.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Detectar dependencias vulnerables.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Cero regresiones, MTTP mínimo.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> PCI-DSS.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Auditoría KPIs MTTP.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: SCA detecta -> Parchea local -> Prueba -> CI/CD Despliega.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">12. XSS y Sesiones</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> CSP y Cookies HttpOnly.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Sanear inputs, proteger tokens.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Mínimos FP en validación de texto.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> DAST (BurpSuite / ZAP).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Input -> Sanitiza -> Codifica salida -> CSP vigila.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">15. JPEG Seguro</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Huffman y Padding Aleatorio.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Comprimir y evitar deducción de longitud.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Calidad perceptual intacta.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD (Minimización).</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Análisis Canal Lateral.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Quita EXIF -> Comprime -> Aplica Padding -> Cifra TLS.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">16. Ataque CRIME</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Aislamiento HPACK (No co-compresión).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Separar secretos de datos de usuario.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Mantener rendimiento sin comprimir TLS.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ISO 27001.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Escáner de Oráculos.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Aísla Cookie -> Cifra respuesta SIN compresión TLS.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">17. Archivo Óptico</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Algoritmo Reed-Solomon (RS).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Detectar y corregir bits dañados.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Lectura continua sin saltos.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ENS.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Test con discos rayados.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Lee bloque -> Detecta daño -> RS Reconstruye bytes.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">18. Jamming 5G</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> LDPC (Low-Density Parity-Check).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Corregir señales bajo fuerte ruido RF.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Resiliencia a baja SNR.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> Normativa Telecomunicaciones.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Generador de Ruido SNR.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Detecta ruido -> Aumenta iteraciones LDPC -> Decodifica.</p>
+                    </div>
+                </div>
+
+                <!-- BLOQUE E -->
+                <h3 class="font-bold text-emerald-700 text-lg mb-4 uppercase border-b-2 border-emerald-200 pb-2">⚖️ Bloque E: GRC y Legal</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">19. ISO 27001</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> SIEM y Gestor de Activos.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Evaluar riesgos, PDCA.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Continuidad operativa.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ISO/IEC 27001.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Val:</strong> Auditoría interna.</p>
+                        <p class="font-mono text-slate-500 mt-1">Plan -> Do -> Check -> Act.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">21. CCTV APDA</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Audio Desactivado HW.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Realizar EIPD, cartelería.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Minimización de datos.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> Llei 29/2021 Andorra.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Val:</strong> Check físico micros.</p>
+                        <p class="font-mono text-slate-500 mt-1">EIPD -> Instala sin audio.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">22. Europol</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Hash SHA-2, Timestamp.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Preservar datos intactos.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Atención 24/7.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> Convenio Budapest.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Val:</strong> Cadena Custodia.</p>
+                        <p class="font-mono text-slate-500 mt-1">Pide -> Hash/Sella -> MLAT.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">23. Consentimiento</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Logs inmutables (CRM).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Consentimiento granular.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Transparencia ARSOPL.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Val:</strong> Simulacro ARSOPL.</p>
+                        <p class="font-mono text-slate-500 mt-1">Banner -> Acepta -> Loguea.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-emerald-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">24. Dark Patterns</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Tag Manager de Bloqueo.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Bloqueo previo scripts.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Botón 'Rechazar' igual.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ePrivacy.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Val:</strong> Test UX Visual.</p>
+                        <p class="font-mono text-slate-500 mt-1">Banner -> Rechaza -> Bloquea.</p>
+                    </div>
+                </div>
+
+                <!-- EXÁMENES REALES -->
+                <h3 class="font-bold text-indigo-700 text-lg mb-4 uppercase border-b-2 border-indigo-200 pb-2">📝 Exámenes Reales</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">Ex. 1: Insider USB</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> DLP Endpoint y Bloqueo de Puertos.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Monitorizar I/O y bloquear USB no listado.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Transparencia al usuario legítimo.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> Esquema Nacional de Seguridad (ENS).</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Prueba de extracción (DLP Test).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Inserta USB -> Valida en BD -> Bloquea/Loguea.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">Ex. 2: E2EE Signal</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> Protocolo Signal (Double Ratchet, X3DH).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Cifrado estricto y rotación de claves.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Cero latencia móvil.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD (Privacidad por diseño).</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Verificación Out-of-Band (QR).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Pide clave pública -> Cifra -> Envía -> Descifra y Rota.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">Ex. 3: IDS ML Industrial</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> IDS ML con Puerto SPAN (Anomalías).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Perfilar línea base y alertar desvíos OT.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> 100% pasivo, mínimos falsos positivos.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> IEC 62443 / NIS2.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Red Teaming en entorno PLC real.</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Aprende baseline -> Detecta anomalía -> Alerta SOC.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">Ex. 4: MitM Wi-Fi</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> WPA3 / RADIUS 802.1X / WIPS.</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Autenticar cliente y bloquear Rogue APs.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Fast Roaming sin cortes.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> RGPD.</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Pentest (Aircrack-ng Evil Twin sim).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Usuario conecta -> RADIUS valida -> WIPS monitoriza.</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border-l-4 border-indigo-500 shadow-sm text-xs">
+                        <h4 class="font-bold text-slate-800 mb-2">Ex. 5: Cloud Firewall AWS</h4>
+                        <div class="space-y-1 mb-2">
+                            <p><strong class="text-purple-600">[T]</strong> CSPM / IaC (Terraform).</p>
+                            <p><strong class="text-green-600">↳ [RF]</strong> Deny-All en puerto 22, auditar SGs.</p>
+                            <p><strong class="text-blue-600">↳ [RNF]</strong> Visibilidad centralizada tiempo real.</p>
+                            <p><strong class="text-orange-600">↳ [L]</strong> ISO 27001 (Modelo Responsabilidad).</p>
+                        </div>
+                        <p><strong class="text-slate-700 block mt-2 border-t pt-1">✅ Validación:</strong> Análisis vulnerabilidades (Nessus).</p>
+                        <p class="font-mono text-slate-500 mt-1">Flujo: Lanza config -> CSPM detecta error -> Bloquea despliegue.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        
+
             <!-- ==========================================
              ESTRATEGIA MAESTRA: PATRONES DE RESPUESTA 1
              ========================================== -->
