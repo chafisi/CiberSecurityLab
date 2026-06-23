@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz T-R-V: 29 Casos Ciberseguridad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .btn-option { transition: all 0.2s ease; border: 2px solid #e2e8f0; }
+        .btn-option:hover:not(:disabled) { border-color: #cbd5e1; background-color: #f1f5f9; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .btn-option.correct { border-color: #22c55e; background-color: #f0fdf4; color: #166534; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2); }
+        .btn-option.wrong { border-color: #ef4444; background-color: #fef2f2; color: #991b1b; }
+        .btn-option:disabled { cursor: not-allowed; opacity: 0.7; }
+        .feedback-slide-in { animation: slideIn 0.4s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div id="app-container" class="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+        
+        <header class="bg-slate-900 text-white p-6 flex justify-between items-end border-b-4 border-sky-500">
+            <div>
+                <h1 class="text-2xl font-black tracking-tight">QUIZ T-R-V <span class="text-sky-400">PRO</span></h1>
+                <p class="text-sm text-slate-400 mt-1">Identifica Tecnología (RT) y Validación (VA)</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-slate-400 font-bold mb-1 uppercase tracking-wider">Progreso</div>
+                <div class="text-xl font-black text-sky-400"><span id="current-q-num">1</span> <span class="text-slate-500 text-sm">/ 29</span></div>
+            </div>
+        </header>
+
+        <main class="p-6 md:p-8 bg-slate-50">
+            
+            <div class="mb-8">
+                <div class="inline-block bg-sky-100 text-sky-800 text-xs font-bold px-3 py-1 rounded-full mb-3 uppercase tracking-wide" id="q-category">Bloque A</div>
+                <h2 class="text-xl font-bold text-slate-800 leading-snug" id="q-scenario">Cargando escenario...</h2>
+            </div>
+
+            <div class="space-y-3 mb-8" id="options-container">
+                </div>
+
+            <div id="feedback-panel" class="hidden feedback-slide-in">
+                <div class="bg-slate-900 rounded-xl overflow-hidden shadow-lg border border-slate-700">
+                    <div class="bg-slate-800 p-3 border-b border-slate-700 flex justify-between items-center">
+                        <span class="font-bold text-white text-sm">🧠 Ingeniería Inversa del Caso</span>
+                        <span id="feedback-status" class="px-3 py-1 rounded text-xs font-bold uppercase"></span>
+                    </div>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <span class="inline-block bg-purple-900 text-purple-300 text-[10px] font-bold px-2 py-0.5 rounded mb-1">RT (Tecnología)</span>
+                                <p class="text-sm font-medium text-white" id="fb-rt"></p>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-green-900 text-green-300 text-[10px] font-bold px-2 py-0.5 rounded mb-1">RF (Funcional)</span>
+                                <p class="text-sm text-slate-300" id="fb-rf"></p>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-blue-900 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded mb-1">RNF (No Funcional)</span>
+                                <p class="text-sm text-slate-300" id="fb-rnf"></p>
+                            </div>
+                            <div>
+                                <span class="inline-block bg-orange-900 text-orange-300 text-[10px] font-bold px-2 py-0.5 rounded mb-1">L (Legal)</span>
+                                <p class="text-sm text-slate-300" id="fb-l"></p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                                <span class="inline-block bg-sky-900 text-sky-300 text-[10px] font-bold px-2 py-0.5 rounded mb-1">VA (Validación)</span>
+                                <p class="text-sm font-medium text-white" id="fb-va"></p>
+                            </div>
+                            <div class="bg-slate-800 p-3 rounded border border-slate-700">
+                                <span class="inline-block bg-slate-700 text-slate-300 text-[10px] font-bold px-2 py-0.5 rounded mb-1">Caso de Uso (Flujo)</span>
+                                <p class="text-xs font-mono text-emerald-400 mt-1" id="fb-flow"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-right">
+                    <button id="btn-next" onclick="nextQuestion()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition transform hover:-translate-y-1">Siguiente Caso ➔</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="end-screen" class="hidden w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 text-center border border-slate-200 mt-10">
+        <h2 class="text-4xl font-black text-slate-800 mb-4">¡ENTRENAMIENTO COMPLETADO!</h2>
+        <p class="text-lg text-slate-600 mb-6">Has recorrido los 29 casos aplicando ingeniería inversa.</p>
+        <div class="text-6xl font-black text-sky-500 mb-8" id="final-score">0 / 29</div>
+        <button onclick="location.reload()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 px-10 rounded-xl shadow-lg transition">Reiniciar Quiz</button>
+    </div>
+
+    <script>
+        // BASE DE DATOS MAESTRA: 24 CASOS + 5 EXTRAS
+        const db = [
+            { id: 1, cat: "A. Incidentes", sc: "Un ataque ha cifrado los servidores clínicos del hospital, paralizando las consultas. Necesitas aislar la amenaza y recuperar los datos.", rt: "EDR y Backups Inmutables offline", va: "Test de Restauración (Restore) y Simulacro Phishing", rf: "Aislar endpoint infectado y restaurar datos.", rnf: "RTO < 4h, disponibilidad clínica >99%.", l: "RGPD (Notificación brechas 72h).", flow: "Detecta -> EDR Aísla -> SOC -> Restaura Backup." },
+            { id: 2, cat: "A. Incidentes", sc: "Ataque masivo de logueo utilizando diccionarios robados de la Dark Web contra el portal de e-commerce.", rt: "MFA (Multifactor) y Hashes Argon2/Bcrypt", va: "Ataques de Fuerza Bruta con Hydra/Burp", rf: "Bloquear fuerza bruta y exigir doble factor.", rnf: "Autenticación < 2s, alta escalabilidad.", l: "PSD2 (Sistemas de pago).", flow: "Loguea -> Pide MFA -> Accede (o Bloquea por fallos)." },
+            { id: 20, cat: "A. Incidentes", sc: "Se publica una vulnerabilidad crítica (0-Day) en una librería de terceros que tu aplicación utiliza.", rt: "SCA (Software Composition Analysis) y SAST", va: "Auditoría de riesgo residual y Escáner SCA", rf: "Inventariar dependencias y parchear vulnerabilidades.", rnf: "Minimizar MTTR (Mean Time To Repair).", l: "DORA / NIST RMF.", flow: "Detecta CVE -> SCA Identifica activos -> Parchea/Aísla." },
+            { id: 3, cat: "B. Cripto & PKI", sc: "Los sistemas institucionales siguen usando DES, un algoritmo de 56 bits vulnerable. Debes actualizarlo.", rt: "AES-256 (OpenSSL)", va: "Análisis criptográfico con testssl.sh", rf: "Cifrar con algoritmo robusto vigente.", rnf: "Rendimiento alto sin latencia añadida.", l: "ENS (Esquema Nacional de Seguridad).", flow: "Detecta DES -> Selecciona AES -> Migra datos." },
+            { id: 4, cat: "B. Cripto & PKI", sc: "Una Autoridad Certificadora ha sido comprometida y está emitiendo certificados ilegítimos para tu dominio.", rt: "Certificate Transparency (CT) Logs y OCSP", va: "Monitorización continua de CT Logs", rf: "Validar revocación de certificados en tiempo real.", rnf: "Baja latencia en verificación.", l: "eIDAS.", flow: "Browser recibe Cert -> Valida OCSP/CT -> Revocado -> Bloquea." },
+            { id: 13, cat: "B. Cripto & PKI", sc: "Los servicios internos caen constantemente porque los certificados TLS expiran y se olvidan de renovarlos.", rt: "ACME (Protocolo Let's Encrypt)", va: "Escaneo con Qualys SSL Labs", rf: "Renovar certificados automáticamente.", rnf: "Zero-downtime (Cero interrupciones de servicio).", l: "RGPD (Cifrado de datos personales en tránsito).", flow: "PKI detecta expiración -> ACME renueva -> Despliega automático." },
+            { id: 14, cat: "B. Cripto & PKI", sc: "Los empleados caen en portales clonados (Phishing) y entregan sus credenciales y códigos SMS (AitM).", rt: "WebAuthn y Llaves Hardware (FIDO2)", va: "Simulacros de Phishing AitM (Adversary-in-the-Middle)", rf: "Evitar suplantación de identidad mediante hardware.", rnf: "Alta usabilidad multi-dispositivo.", l: "PSD2.", flow: "Pide token -> Hardware firma desafío criptográfico -> Accede." },
+            { id: 5, cat: "C. Redes", sc: "Una regla mal configurada en el cortafuegos expuso la base de datos a internet.", rt: "Entornos de Staging y MFA para Administradores", va: "Detección de Config Drift y Escaneo Nmap", rf: "Probar reglas antes de aplicar a producción.", rnf: "Disponibilidad 99.9% de los servicios.", l: "ISO 27001.", flow: "Crea regla -> Prueba Staging -> Pasa test -> Despliega." },
+            { id: 6, cat: "C. Redes", sc: "Tráfico malicioso disfrazado en el puerto 443 (Tor/VPN) evade las reglas de capa 4 del firewall.", rt: "NGFW con DPI (Deep Packet Inspection) y App-ID", va: "Test de evasión (Pentest de perímetro)", rf: "Inspeccionar payload y bloquear tráfico ofuscado L7.", rnf: "Cero latencia en descifrado SSL.", l: "RGPD.", flow: "Entra tráfico -> NGFW hace DPI -> Detecta firma Tor -> Bloquea." },
+            { id: 7, cat: "C. Redes", sc: "Necesitas detectar escaneos y ataques en la red troncal de la Universidad sin frenar la velocidad del tráfico masivo.", rt: "IDS Snort en modo pasivo conectado a SPAN/TAP", va: "Escaneo de reconocimiento con Nmap/Masscan", rf: "Detectar ataques mediante firmas conocidas.", rnf: "Operación Wire-speed (No pierde paquetes).", l: "ENS.", flow: "Switch copia tráfico -> Snort lee -> Coincide firma -> Alerta SIEM." },
+            { id: 8, cat: "C. Redes", sc: "Un IPS recién instalado en un banco bloquea transacciones legítimas de clientes (Falsos positivos masivos).", rt: "Reglas Heurísticas en Modo Alerta (Tuning)", va: "Traffic Replay (Inyección de archivos PCAP)", rf: "Bloquear ataques sin afectar a negocio.", rnf: "Tasa de Falsos Positivos cercana a cero.", l: "PCI-DSS.", flow: "Regla modo alerta -> SOC evalúa Falsos Positivos -> Pasa a Bloqueo." },
+            { id: 9, cat: "C. Redes", sc: "Un dispositivo interno envía respuestas ARP falsas para redirigir tráfico a su propia MAC (ARP Spoofing).", rt: "Dynamic ARP Inspection (DAI) y DHCP Snooping", va: "Ataque de inyección con Ettercap o arpspoof", rf: "Verificar correspondencia IP-MAC por puerto.", rnf: "Latencia nula en conmutación Capa 2.", l: "RGPD.", flow: "Switch recibe ARP -> Valida contra tabla DHCP -> Drop si no coincide." },
+            { id: 10, cat: "C. Redes", sc: "Debes conectar dos sucursales remotas a través de Internet asegurando total confidencialidad y rotación de claves.", rt: "IPSec con IKEv2, AES-GCM y PFS", va: "Captura con Wireshark verificando payload ESP cifrado", rf: "Crear túnel cifrado y renegociar claves (PFS).", rnf: "Estabilidad de enlace y failover.", l: "RGPD.", flow: "GWs inician IKEv2 -> Autentican -> Establecen túnel ESP." },
+            { id: 11, cat: "D. AppSec", sc: "El código de tu aplicación utiliza componentes open-source desactualizados y vulnerables (Caso Equifax).", rt: "Pipeline CI/CD con SCA integrado", va: "Auditoría de KPIs de mitigación (MTTP)", rf: "Detectar dependencias vulnerables antes de compilar.", rnf: "Cero regresiones, MTTP (Mean Time To Patch) mínimo.", l: "PCI-DSS.", flow: "SCA detecta fallo -> Dev Parchea -> Prueba Staging -> Despliega CI/CD." },
+            { id: 12, cat: "D. AppSec", sc: "Atacantes inyectan scripts en el foro para robar cookies de sesión de otros usuarios.", rt: "Content Security Policy (CSP) y Cookies HttpOnly", va: "Pentest DAST con BurpSuite o ZAP", rf: "Sanitizar inputs, codificar salidas y proteger tokens.", rnf: "Rendimiento fluido, Mínimos falsos positivos.", l: "RGPD.", flow: "App recibe Input -> Backend sanitiza -> Codifica salida -> CSP bloquea scripts." },
+            { id: 15, cat: "D. AppSec", sc: "Las imágenes subidas por TLS revelan información sensible por el tamaño del archivo cifrado (Side Channel).", rt: "Codificación Huffman, Quitar EXIF y Padding Uniforme", va: "Análisis de Canal Lateral (Comparar Ciphertext Length)", rf: "Comprimir y ofuscar tamaño real antes de cifrar.", rnf: "Calidad perceptual de la imagen intacta.", l: "RGPD (Minimización).", flow: "Recibe Img -> Elimina EXIF -> Comprime Huffman -> Añade Padding -> Cifra TLS." },
+            { id: 16, cat: "D. AppSec", sc: "Atacantes deducen cookies al comprimir cabeceras junto con contenido controlado por ellos en TLS (Ataque CRIME).", rt: "Aislamiento HPACK (No co-compresión de secretos)", va: "Escáner de Vulnerabilidades de Oráculos", rf: "Separar secretos de datos insertados por el usuario.", rnf: "Mantener rendimiento sin comprimir túnel TLS completo.", l: "ISO 27001.", flow: "Petición HTTP/2 -> Aísla Cookie en cabecera -> Cifra respuesta SIN compresión TLS." },
+            { id: 17, cat: "D. AppSec", sc: "El soporte de almacenamiento óptico (CD/DVD) se está degradando físicamente, generando errores de ráfaga al leer.", rt: "Algoritmo de corrección Reed-Solomon (RS)", va: "Pruebas físicas con discos rayados controladamente", rf: "Detectar y corregir bits corruptos al vuelo.", rnf: "Lectura continua sin paradas ni cuelgues.", l: "ENS (Conservación a largo plazo).", flow: "Láser lee bloque -> Detecta daño -> Motor RS reconstruye bytes dañados." },
+            { id: 18, cat: "D. AppSec", sc: "Una red Wi-Fi/5G sufre un ataque de Jamming que eleva el ruido (SNR baja) y corrompe los paquetes.", rt: "Algoritmos LDPC (Low-Density Parity-Check)", va: "Test en laboratorio con Generador de Ruido SNR", rf: "Corregir señales degradas bajo fuerte interferencia RF.", rnf: "Resiliencia alta a baja relación señal/ruido.", l: "Normativas Telecomunicaciones (Disponibilidad).", flow: "Detecta ruido -> Aumenta iteraciones LDPC (Belief Propagation) -> Decodifica." },
+            { id: 19, cat: "E. GRC", sc: "Una universidad necesita formalizar sus controles de seguridad, evaluar riesgos y asegurar la mejora continua.", rt: "Implantación SGSI (Sistema Gestión Seguridad Info)", va: "Auditoría Interna y Revisión KPIs de Madurez", rf: "Evaluar riesgos, documentar políticas y ciclo PDCA.", rnf: "Continuidad operativa y coordinación interdepartamental.", l: "ISO/IEC 27001.", flow: "PLAN (Evalúa) -> DO (Implementa) -> CHECK (Audita) -> ACT (Mejora)." },
+            { id: 21, cat: "E. GRC", sc: "Instalas cámaras de seguridad en una tienda. Debes cumplir la ley de Andorra para no ser sancionado por la APDA.", rt: "Desactivación de Audio HW e implantación EIPD", va: "Verificación física de micrófonos apagados y Auditoría RAT", rf: "Informar con carteles y mantener Registro de Actividades.", rnf: "Minimización (no captar más de lo necesario).", l: "Llei 29/2021 Andorra.", flow: "Detecta necesidad -> EIPD -> Instala cámaras (Micrófonos OFF) -> Pone carteles." },
+            { id: 22, cat: "E. GRC", sc: "Europol te exige preservar de urgencia los datos de un servidor andorrano por un caso de fraude.", rt: "Hashing (SHA-2) y Sellado Temporal (Timestamp)", va: "Revisión forense de Cadena de Custodia", rf: "Preservar datos intactos e inmutables rápidamente.", rnf: "Atención y disponibilidad 24/7.", l: "Convenio Budapest (Art. 29).", flow: "Europol pide -> Policía preserva -> Aplica hash/timestamp -> Entrega vía MLAT." },
+            { id: 23, cat: "E. GRC", sc: "Una plataforma publicitaria necesita cumplir la ley española sobre el tratamiento y perfilado de usuarios.", rt: "CRM con Logs inmutables de Consentimiento", va: "Simulacros de peticiones ARSOPL", rf: "Consentimiento granular y facilitar gestión derechos.", rnf: "Transparencia absoluta y lenguaje claro.", l: "RGPD / LOPDGDD España.", flow: "Usuario visita web -> Muestra Banner granular -> Acepta -> Loguea decisión con timestamp." },
+            { id: 24, cat: "E. GRC", sc: "Una web oculta el botón de rechazar cookies. La CNIL amenaza con sancionar por Dark Patterns.", rt: "Tag Manager para Bloqueo previo de scripts", va: "Test de Usabilidad UX y Análisis automático de Cookies", rf: "Botón 'Rechazar todo' visible y equivalente al de aceptar.", rnf: "Sin manipulación visual en interfaces (UX/UI limpia).", l: "ePrivacy (Francia) / RGPD.", flow: "Banner neutro -> Usuario Rechaza -> Tag Manager bloquea carga inyecciones." },
+            { id: "EX1", cat: "EXAMEN: Insider", sc: "Un empleado conecta un USB infectado extrayendo datos y metiendo malware. No había políticas ni bloqueos.", rt: "Control de Dispositivos Lógico y DLP Endpoint", va: "Pruebas de extracción de datos controladas (DLP Test)", rf: "Autorizar USBs, monitorizar I/O y bloquear el resto.", rnf: "Transparencia de uso para el usuario legítimo.", l: "Esquema Nacional de Seguridad (ENS).", flow: "Inserta USB -> Agente valida en base de datos -> Permite (o Bloquea si es desconocido)." },
+            { id: "EX2", cat: "EXAMEN: Cripto", sc: "Dos usuarios usan WhatsApp. Quieren asegurar que solo ellos lean los mensajes y que las claves roten en cada envío.", rt: "Protocolo Signal (Double Ratchet y X3DH)", va: "Verificación Out-of-Band (Escaneo de QR de seguridad)", rf: "Cifrar extremo a extremo y rotar claves automáticamente.", rnf: "Latencia imperceptible en dispositivos móviles.", l: "RGPD (Privacidad desde el Diseño).", flow: "Pide pre-claves públicas -> Deriva secreto -> Cifra mensaje -> Receptor descifra y Rota clave." },
+            { id: "EX3", cat: "EXAMEN: OT/IoT", sc: "Se necesita detectar ataques de Día Cero en PLCs de una planta industrial sin introducir latencia en la producción.", rt: "IDS basado en ML conectado pasivamente a un SPAN", va: "Ejercicios de Red Teaming en entorno PLC simulado/real", rf: "Perfilar línea base (comportamiento normal) y detectar desvíos.", rnf: "100% pasivo, Mínimos falsos positivos.", l: "IEC 62443 / NIS2.", flow: "IDS aprende tráfico -> Detecta comando anómalo -> Genera Alerta SOC -> Operador aísla." },
+            { id: "EX4", cat: "EXAMEN: Wi-Fi", sc: "Usuarios conectan a un Evil Twin (Punto de acceso falso) en una cafetería, sufriendo un ataque MitM.", rt: "WPA3, Autenticación RADIUS 802.1X y WIPS", va: "Pentest inalámbrico (Ataque Evil Twin con Aircrack-ng)", rf: "Autenticar clientes fuertemente y detectar Rogue APs.", rnf: "Fast Roaming sin cortes en la conexión segura.", l: "RGPD (Protección datos en tránsito).", flow: "Usuario conecta -> AP deriva a RADIUS -> Valida certificado -> Da acceso cifrado." },
+            { id: "EX5", cat: "EXAMEN: Cloud", sc: "Una startup en AWS dejó el puerto 22 abierto a todo Internet en sus Security Groups, sufriendo una intrusión.", rt: "CSPM (Cloud Sec Posture Management) y Policy as Code", va: "Análisis de vulnerabilidades/configuración con Nessus/Checkov", rf: "Deny-All por defecto en puertos críticos y auditar cambios.", rnf: "Visibilidad centralizada del estado cloud en tiempo real.", l: "ISO 27001 (Control de cambios).", flow: "DevOps lanza config -> CSPM/Pipeline detecta puerto 22 abierto -> Bloquea el despliegue." }
+        ];
+
+        let questions = [];
+        let currentIdx = 0;
+        let score = 0;
+
+        // INICIALIZADOR DEL JUEGO
+        function initGame() {
+            // Mezclar preguntas
+            questions = [...db].sort(() => Math.random() - 0.5);
+            currentIdx = 0;
+            score = 0;
+            document.getElementById('end-screen').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('current-q-num').innerText = currentIdx + 1;
+            document.getElementById('q-category').innerText = q.cat;
+            document.getElementById('q-scenario').innerText = `Caso ${q.id}: ${q.sc}`;
+            
+            // Generar 3 distractores aleatorios
+            let distractors = db.filter(item => item.id !== q.id).sort(() => Math.random() - 0.5).slice(0, 3);
+            
+            // Opciones: 1 correcta + 3 falsas
+            let options = [
+                { text: `<strong>RT:</strong> ${q.rt}<br><strong class="text-slate-500 mt-1 block text-xs">VA: ${q.va}</strong>`, isCorrect: true },
+                { text: `<strong>RT:</strong> ${distractors[0].rt}<br><strong class="text-slate-500 mt-1 block text-xs">VA: ${distractors[0].va}</strong>`, isCorrect: false },
+                { text: `<strong>RT:</strong> ${distractors[1].rt}<br><strong class="text-slate-500 mt-1 block text-xs">VA: ${distractors[1].va}</strong>`, isCorrect: false },
+                { text: `<strong>RT:</strong> ${distractors[2].rt}<br><strong class="text-slate-500 mt-1 block text-xs">VA: ${distractors[2].va}</strong>`, isCorrect: false }
+            ];
+
+            // Mezclar opciones
+            options.sort(() => Math.random() - 0.5);
+
+            // Renderizar botones
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-xl text-sm btn-option bg-white text-slate-700';
+                btn.innerHTML = opt.text;
+                btn.onclick = () => handleAnswer(btn, opt.isCorrect, q);
+                optContainer.appendChild(btn);
+            });
+
+            // Ocultar feedback
+            const fbPanel = document.getElementById('feedback-panel');
+            fbPanel.classList.add('hidden');
+            fbPanel.classList.remove('feedback-slide-in');
+        }
+
+        function handleAnswer(btnClicked, isCorrect, qData) {
+            // Deshabilitar todos
+            const buttons = document.getElementById('options-container').querySelectorAll('button');
+            buttons.forEach(b => {
+                b.disabled = true;
+                // Marcar la correcta visualmente siempre
+                if (b.innerHTML.includes(qData.rt)) {
+                    b.classList.add('correct');
+                }
+            });
+
+            const statusLabel = document.getElementById('feedback-status');
+
+            if (isCorrect) {
+                btnClicked.classList.add('correct');
+                statusLabel.innerText = "¡Correcto!";
+                statusLabel.className = "px-3 py-1 rounded text-xs font-bold uppercase bg-green-900 text-green-300";
+                score++;
+            } else {
+                btnClicked.classList.add('wrong');
+                statusLabel.innerText = "Error - Memoriza el esquema";
+                statusLabel.className = "px-3 py-1 rounded text-xs font-bold uppercase bg-red-900 text-red-300";
+            }
+
+            // Llenar Feedback
+            document.getElementById('fb-rt').innerText = qData.rt;
+            document.getElementById('fb-rf').innerText = qData.rf;
+            document.getElementById('fb-rnf').innerText = qData.rnf;
+            document.getElementById('fb-l').innerText = qData.l;
+            document.getElementById('fb-va').innerText = qData.va;
+            document.getElementById('fb-flow').innerText = qData.flow;
+
+            // Mostrar Panel
+            const fbPanel = document.getElementById('feedback-panel');
+            fbPanel.classList.remove('hidden');
+            // Forzar reflow para animación
+            void fbPanel.offsetWidth;
+            fbPanel.classList.add('feedback-slide-in');
+            
+            // Scroll down al botón siguiente
+            setTimeout(() => document.getElementById('btn-next').scrollIntoView({ behavior: 'smooth' }), 100);
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showEndScreen();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showEndScreen() {
+            document.getElementById('app-container').classList.add('hidden');
+            const endScreen = document.getElementById('end-screen');
+            endScreen.classList.remove('hidden');
+            
+            const percentage = Math.round((score / questions.length) * 100);
+            const colorClass = percentage > 80 ? 'text-green-500' : (percentage > 50 ? 'text-yellow-500' : 'text-red-500');
+            
+            document.getElementById('final-score').innerHTML = `<span class="${colorClass}">${score}</span> / ${questions.length}`;
+        }
+
+        // Arrancar juego
+        window.onload = initGame;
+    </script>
+</body>
+</html>
