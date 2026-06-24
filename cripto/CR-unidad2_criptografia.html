@@ -261,6 +261,40 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Caso extra para practiar AES-->
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-slate-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🔐</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 5: Cifrado Moderno (AES)</h3>
+                    </div>
+                    <span class="bg-cyan-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Resolución Simple</span>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-800 font-semibold mb-4 border-l-4 border-slate-300 pl-4">Enunciado: Alice quiere enviar un archivo seguro a Bob usando AES (el estándar actual). Explica cómo funciona, qué diferencia tiene con DES y cómo protegen la clave.</p>
+                    
+                    <h4 class="font-bold text-cyan-700 mt-4 mb-2">Solución Simplificada:</h4>
+                    <ul class="list-disc pl-5 text-sm text-slate-600 space-y-2 mb-6">
+                        <li><strong>La Clave Más Larga:</strong> Usan una clave de <strong>256 bits</strong> (muy larga), mucho más segura que los 56 bits de DES. Es casi imposible de romper por fuerza bruta.</li>
+                        <li><strong>Misma Clave (Simétrico):</strong> Como en DES, Alice y Bob comparten la misma clave secreta. La clave debe enviarse antes por un canal seguro (o usar RSA para enviarla cifrada).</li>
+                        <li><strong>Bloques Inteligentes (CBC):</strong> Dividen el archivo en bloques de 128 bits. A diferencia de DES, usan un modo llamado <strong>CBC</strong>: el bloque anterior "mezcla" con el siguiente, evitando patrones visibles en el cifrado.</li>
+                        <li><strong>Resultado:</strong> Bob recibe datos que parecen ruido aleatorio. Solo él, con la clave correcta, puede descifrarlos y recuperar el mensaje original.</li>
+                    </ul>
+
+                    <div class="bg-cyan-50 border border-cyan-200 rounded-lg p-4 mt-6">
+                        <h5 class="font-bold text-cyan-800 text-xs uppercase tracking-wide mb-2">💡 ¿Por qué es mejor que DES?</h5>
+                        <p class="text-sm text-cyan-900">AES es más rápido, usa claves más largas (seguridad) y su estructura interna (S-Boxes) es más compleja, lo que lo hace resistente a ataques modernos.</p>
+                    </div>
+
+                    <!-- Espacio para tu imagen si la tienes -->
+                    <div class="mt-6 border-t border-slate-100 pt-6 hidden">
+                        <h4 class="font-bold text-slate-700 mb-3 text-sm uppercase tracking-wide">Esquema Visual de Resolución (Opcional)</h4>
+                        <!-- <img src="img/Caso Practico 5 - AES.jpg" alt="Esquema Visual AES" class="rounded-xl shadow-md border border-slate-200 max-w-full h-auto object-cover"> -->
+                        <p class="text-xs text-slate-500 italic">Aquí iría el esquema visual de Alice/Bob/AES si tuvieras la imagen.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="sec6" class="main-section hidden fade-in">
