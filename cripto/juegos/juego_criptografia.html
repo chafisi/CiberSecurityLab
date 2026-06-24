@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Secuencias: Criptografía</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Estilos del Drag & Drop */
+        .draggable { cursor: grab; transition: all 0.2s; touch-action: none; }
+        .draggable:active { cursor: grabbing; transform: scale(1.02); z-index: 50; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+        .droppable { border: 2px dashed #cbd5e1; background-color: #f8fafc; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 0.5rem; transition: all 0.3s; }
+        .droppable.hover { border-color: #06b6d4; background-color: #ecfeff; }
+        .droppable.correct { border-color: #22c55e; background-color: #dcfce7; }
+        .droppable.wrong { border-color: #ef4444; background-color: #fee2e2; animation: shake 0.5s; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .step-card { 
+            background: white; 
+            border-left: 4px solid #3b82f6; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            color: #1e293b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <header class="max-w-4xl mx-auto mb-8 text-center fade-in">
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-2">🧩 Ordena las Secuencias</h1>
+        <p class="text-slate-600">Arrastra los pasos desordenados a su posición correcta para completar el proceso criptográfico.</p>
+        
+        <!-- Selector de Nivel -->
+        <div class="mt-6 flex flex-wrap justify-center gap-2">
+            <button onclick="loadLevel(1)" class="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">1. Primalidad (Miller-Rabin)</button>
+            <button onclick="loadLevel(2)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">2. Simétrico (DES)</button>
+            <button onclick="loadLevel(3)" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">3. Asimétrico (RSA)</button>
+            <button onclick="loadLevel(4)" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">4. Moderno (AES)</button>
+            <button onclick="loadLevel(5)" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">5. Integridad (SHA-256)</button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden fade-in" id="gameContainer">
+        <!-- El contenido se genera dinámicamente con JS -->
+    </main>
+
+    <footer class="max-w-4xl mx-auto mt-8 text-center text-slate-400 text-sm pb-8">
+        <p>Entrega 1/3: Bloque Criptografía | Análisis de Datos</p>
+    </footer>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE SECUENCIAS (CASOS 1-5)
+        // ==========================================
+        const scenarios = [
+            {
+                id: 1,
+                title: "Caso 1: Verificación de Primalidad (Miller-Rabin)",
+                desc: "Ordena los pasos para verificar si un número 'n' es primo.",
+                correctOrder: [
+                    "1️⃣ Descomposición: Expresar n-1 = d · 2^s",
+                    "2️⃣ Elección de Base: Elegir aleatorio 'a' (1 < a < n-1)",
+                    "3️⃣ Cálculo Inicial: Calcular x = a^d mod n",
+                    "4️⃣ Iteración: Si x != 1 y x != n-1, cuadrar (x²) repetidamente s veces",
+                    "5️⃣ Resultado: Si nunca llega a n-1, es COMPUESTO. Si sí, es PROBABLE PRIMO."
+                ],
+                emoji: "🧮"
+            },
+            {
+                id: 2,
+                title: "Caso 3: Cifrado Simétrico (DES)",
+                desc: "Alice y Bob usan DES. Ordena el flujo de comunicación.",
+                correctOrder: [
+                    "1️⃣ Acuerdo Previo: Alice y Bob comparten una clave secreta única (56 bits)",
+                    "2️⃣ Preparación (Alice): Divide el mensaje en bloques de 64 bits",
+                    "3️⃣ Cifrado (Alice): Aplica permutaciones y sustituciones con la clave compartida",
+                    "4️⃣ Transmisión: Envía solo los bloques cifrados (la clave NO viaja)",
+                    "5️⃣ Descifrado (Bob): Usa la misma clave para invertir el proceso y leer el texto"
+                ],
+                emoji: "🕵️‍♂️"
+            },
+            {
+                id: 3,
+                title: "Caso 4: Cifrado Asimétrico (RSA)",
+                desc: "Alice envía un mensaje seguro usando claves pública y privada.",
+                correctOrder: [
+                    "1️⃣ Generación (Bob): Crea par de claves: Pública (abre) y Privada (secreta)",
+                    "2️⃣ Distribución: Bob publica su Clave Pública libremente",
+                    "3️⃣ Cifrado (Alice): Convierte mensaje a número y cifra con Clave Pública de Bob",
+                    "4️⃣ Transmisión: Envía el texto cifrado por canal inseguro",
+                    "5️⃣ Descifrado (Bob): Recibe y aplica su Clave Privada para recuperar el mensaje original"
+                ],
+                emoji: "🔐"
+            },
+            {
+                id: 4,
+                title: "Caso 5: Cifrado Moderno (AES)",
+                desc: "Uso de estándar AES en modo CBC para alta seguridad.",
+                correctOrder: [
+                    "1️⃣ Selección: Usar AES (clave 128/256 bits) en lugar de DES",
+                    "2️⃣ Configuración: Acordar clave larga e generar IV (Vector de Inicialización) aleatorio",
+                    "3️⃣ Enlace (CBC): Mezclar primer bloque con IV antes de cifrar",
+                    "4️⃣ Encadenamiento: Cada siguiente bloque se mezcla con el anterior cifrado",
+                    "5️⃣ Final: Transmitir IV + Bloques cifrados. Bob descifra inversamente con la clave"
+                ],
+                emoji: "🛡️"
+            },
+            {
+                id: 5,
+                title: "Caso Extra: Verificación de Integridad (SHA-256)",
+                desc: "Cómo asegurar que un archivo no ha sido modificado.",
+                correctOrder: [
+                    "1️⃣ Hashing Origen: Alice calcula Hash = SHA-256(Mensaje Original)",
+                    "2️⃣ Empaquetado: Alice envía [Mensaje] + [Hash_Alice]",
+                    "3️⃣ Recepción: Bob recibe los datos",
+                    "4️⃣ Hashing Destino: Bob calcula Hash_Bob sobre el Mensaje recibido",
+                    "5️⃣ Comparación: ¿Hash_Alice == Hash_Bob? Sí -> Íntegro / No -> Alterado"
+                ],
+                emoji: "🔍"
+            }
+        ];
+
+        let currentScenario = null;
+        let draggedItem = null;
+
+        // ==========================================
+        // LÓGICA DEL JUEGO
+        // ==========================================
+        function loadLevel(id) {
+            currentScenario = scenarios[id - 1];
+            const container = document.getElementById('gameContainer');
+            
+            // Mezclar array para el estado inicial
+            const shuffled = [...currentScenario.correctOrder].sort(() => Math.random() - 0.5);
+
+            container.innerHTML = `
+                <div class="p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-4xl">${currentScenario.emoji}</span>
+                        <h2 class="text-2xl font-bold text-slate-800">${currentScenario.title}</h2>
+                    </div>
+                    <p class="text-slate-600 mb-6 bg-slate-50 p-4 rounded-lg border-l-4 border-slate-300">${currentScenario.desc}</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Zona de Arrastre -->
+                        <div>
+                            <h3 class="font-bold text-slate-700 mb-3 uppercase text-xs tracking-wide">Pasos Desordenados (Arrastra)</h3>
+                            <div id="sourceZone" class="space-y-2 min-h-[200px] bg-slate-50 p-4 rounded-xl border border-dashed border-slate-300">
+                                ${shuffled.map((step, index) => createDraggable(step)).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Zona de Colocación -->
+                        <div>
+                            <h3 class="font-bold text-slate-700 mb-3 uppercase text-xs tracking-wide">Secuencia Correcta (Suelta aquí)</h3>
+                            <div id="targetZone" class="space-y-3">
+                                ${currentScenario.correctOrder.map((_, index) => createDropSlot(index + 1)).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkAnswers()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-bold text-lg shadow-lg transition transform hover:scale-105">
+                            ✅ Verificar Secuencia
+                        </button>
+                    </div>
+                    <div id="feedbackMsg" class="mt-4 text-center font-bold hidden"></div>
+                </div>
+            `;
+
+            initDragAndDrop();
+        }
+
+        function createDraggable(text) {
+            return `<div class="draggable step-card cursor-move select-none" draggable="true">${text}</div>`;
+        }
+
+        function createDropSlot(number) {
+            return `
+                <div class="droppable relative" data-index="${number}">
+                    <span class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm font-bold">Paso ${number}</span>
+                </div>
+            `;
+        }
+
+        function initDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.droppable');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggedItem = draggable;
+                    setTimeout(() => draggable.style.display = 'none', 0);
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    setTimeout(() => {
+                        draggable.style.display = '';
+                        draggedItem = null;
+                    }, 0);
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    if (!zone.hasChildNodes()) zone.classList.add('hover');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('hover');
+                });
+
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('hover');
+                    if (draggedItem && !zone.hasChildNodes()) {
+                        // Eliminar de donde estaba
+                        const oldParent = draggedItem.parentNode;
+                        oldParent.removeChild(draggedItem);
+                        
+                        // Limpiar clase de error previa si existe
+                        const prevError = zone.querySelector('.error-msg');
+                        if(prevError) prevError.remove();
+
+                        zone.appendChild(draggedItem);
+                        draggedItem.style.transform = 'none';
+                    }
+                });
+            });
+        }
+
+        function checkAnswers() {
+            const zones = document.querySelectorAll('.droppable');
+            let allCorrect = true;
+            let filledCount = 0;
+
+            zones.forEach(zone => {
+                const item = zone.querySelector('.step-card');
+                const expectedIndex = parseInt(zone.dataset.index) - 1; // 0-based
+                
+                // Limpiar estados previos
+                zone.classList.remove('correct', 'wrong');
+                const errorMsg = zone.querySelector('.error-msg');
+                if(errorMsg) errorMsg.remove();
+
+                if (item) {
+                    filledCount++;
+                    const correctText = currentScenario.correctOrder[expectedIndex];
+                    if (item.innerText === correctText) {
+                        zone.classList.add('correct');
+                    } else {
+                        zone.classList.add('wrong');
+                        allCorrect = false;
+                        const err = document.createElement('span');
+                        err.className = 'error-msg block text-xs text-red-600 mt-1 text-right absolute bottom-1 right-2';
+                        err.innerText = '❌ Incorrecto';
+                        zone.appendChild(err);
+                    }
+                } else {
+                    allCorrect = false; // Quedó vacío
+                }
+            });
+
+            const feedback = document.getElementById('feedbackMsg');
+            feedback.classList.remove('hidden');
+            
+            if (allCorrect && filledCount === currentScenario.correctOrder.length) {
+                feedback.innerHTML = `<span class="text-green-600 text-xl">🎉 ¡FELICIDADES! Has ordenado correctamente la secuencia del caso ${currentScenario.id}.</span>`;
+                feedback.className = "mt-4 text-center font-bold text-green-600 text-xl animate-bounce";
+            } else {
+                feedback.innerHTML = `<span class="text-orange-600">⚠️ Hay errores o pasos faltantes. Revisa las tarjetas rojas.</span>`;
+                feedback.className = "mt-4 text-center font-bold text-orange-600 text-lg";
+            }
+        }
+
+        // Iniciar nivel 1 por defecto
+        window.onload = () => loadLevel(1);
+    </script>
+</body>
+</html>
