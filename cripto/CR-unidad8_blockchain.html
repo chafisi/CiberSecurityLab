@@ -69,6 +69,8 @@
 
                 <li class="px-4 py-2 text-xs font-bold text-slate-500 uppercase tracking-wider mt-4 nav-category">Material Práctico</li>
                 <li class="nav-item"><button onclick="switchSection('sec4')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4. Casos Prácticos 15 y 16</button></li>
+                <li class="nav-item"><button onclick="switchSection('sec4-1')" id="btn-sec4" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent text-violet-400 font-semibold tab-btn">4.1 Plantillas Maestras: Resolución KDD</button></li>
+               
                 <li class="nav-item"><button onclick="switchSection('sec5')" id="btn-sec5" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">5. Fichas Rápidas (x8)</button></li>
                 <li class="nav-item"><button onclick="switchSection('sec6')" id="btn-sec6" class="w-full text-left pl-8 pr-4 py-2 hover:bg-slate-800 transition border-l-4 border-transparent tab-btn">6. Glosario Extendido</button></li>
 
@@ -361,6 +363,118 @@
                                 <div><strong class="text-slate-900 block mb-1">DESPLIEGUE (VARIABLE OBJETIVO):</strong> Predicción automatizada de los días de estancia para nuevos ingresos, permitiendo una gestión proactiva de camas.</div>
                             </li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="sec4-1" class="main-section fade-in mt-12">
+            <header class="mb-8">
+                <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-indigo-500 pb-2 inline-flex items-center gap-2">
+                    <span class="text-3xl">🧠</span> Plantillas Maestras: Resolución KDD
+                </h2>
+                <p class="text-slate-600 mt-2">Estructuras lógicas de respuesta para resolver cualquier caso de Minería de Datos (Unidad 8) en el examen.</p>
+            </header>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎯</span>
+                        <h3 class="text-lg font-bold">Plantilla Maestra: Clustering (No Supervisado)</h3>
+                    </div>
+                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Fórmula K-Means</span>
+                </div>
+                
+                <div class="p-6">
+                    <div class="bg-violet-50 border border-violet-200 rounded-lg p-5 mb-6">
+                        <h4 class="font-bold text-violet-900 mb-3 uppercase text-sm tracking-wider">Estructura Base a Memorizar:</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-700 font-medium">
+                            <li><strong>Preprocesamiento:</strong> Recolectar variables -> Limpiar -> <span class="text-violet-700 font-bold">Normalizar</span> (vital para evitar distorsiones de escala).</li>
+                            <li><strong>Algoritmo:</strong> Método del codo para elegir "K" -> Asignar al centroide más cercano -> Iterar hasta converger.</li>
+                            <li><strong>Interpretación:</strong> Poner "etiquetas humanas" a los grupos matemáticos.</li>
+                            <li><strong>Beneficios:</strong> Personalización, eficiencia y toma de acciones de negocio específicas por segmento.</li>
+                        </ol>
+                    </div>
+
+                    <div class="border-l-4 border-violet-400 bg-white p-5 rounded-r-lg shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-2">💡 Caso Probable: Universidad Online (Hábitos de Estudio)</h4>
+                        <p class="text-sm text-slate-600 mb-4 italic">Enunciado: Una universidad quiere comprender los diferentes hábitos de estudio de sus alumnos para personalizar el apoyo docente, pero no sabe qué perfiles existen.</p>
+                        
+                        <ul class="space-y-3 text-sm text-slate-700">
+                            <li><span class="text-lg">🧹</span> <strong>Preprocesamiento:</strong> Extraer datos de interacción (horas de conexión, descargas, participación). Limpiar <em>outliers</em> y <strong>normalizar</strong> las variables. <em>(Principio ético: Datos anonimizados)</em>.</li>
+                            <li><span class="text-lg">⚙️</span> <strong>Algoritmo K-Means:</strong> Usar el método de la silueta para determinar "K" perfiles. El algoritmo agrupa iterativamente a los alumnos hacia "centroides" según la similitud de su comportamiento.</li>
+                            <li><span class="text-lg">🧠</span> <strong>Interpretación:</strong> Definir perfiles reales como "Constantes", "Atracones de fin de semana" o "Desconectados". Diseñar intervenciones proactivas (ej. píldoras motivacionales para desconectados).</li>
+                            <li><span class="text-lg">🚀</span> <strong>Beneficios:</strong> Acompañamiento docente proactivo, mejora de la retención y optimización del tiempo del tutor.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-blue-900 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📈</span>
+                        <h3 class="text-lg font-bold">Plantilla Maestra: Regresión (Supervisado)</h3>
+                    </div>
+                    <span class="bg-blue-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Fórmula Predictiva</span>
+                </div>
+                
+                <div class="p-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-5 mb-6">
+                        <h4 class="font-bold text-blue-900 mb-3 uppercase text-sm tracking-wider">Estructura Base a Memorizar:</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-700 font-medium">
+                            <li><strong>Recolección:</strong> Definir Variables Independientes (Inputs) y la Variable Dependiente/Objetivo (Output numérico).</li>
+                            <li><strong>Preprocesamiento:</strong> Limpiar nulos y transformar texto a números (<span class="text-blue-700 font-bold">One-Hot Encoding</span>).</li>
+                            <li><strong>Modelo:</strong> Dividir en Entrenamiento (80%) y Prueba (20%) -> Ajustar regresión múltiple.</li>
+                            <li><strong>Validación:</strong> Evaluar el error usando <span class="text-blue-700 font-bold">RMSE</span> y el <span class="text-blue-700 font-bold">R²</span>.</li>
+                            <li><strong>Aplicación:</strong> Anticipar resultados y evitar cuellos de botella.</li>
+                        </ol>
+                    </div>
+
+                    <div class="border-l-4 border-blue-400 bg-white p-5 rounded-r-lg shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-800 mb-2">💡 Caso Probable: Logística (Estimación de Entregas)</h4>
+                        <p class="text-sm text-slate-600 mb-4 italic">Enunciado: Una empresa logística quiere estimar con precisión el tiempo de entrega de sus paquetes (en horas) para mejorar la asignación de repartidores.</p>
+                        
+                        <ul class="space-y-3 text-sm text-slate-700">
+                            <li><span class="text-lg">📋</span> <strong>Recolección:</strong> <em>Inputs</em> = Distancia, peso, clima, tráfico. <em>Output</em> = Tiempo total de entrega (horas).</li>
+                            <li><span class="text-lg">🧹</span> <strong>Preprocesamiento:</strong> Tratar rutas sin datos y aplicar <em>One-Hot Encoding</em> para variables categóricas como "Clima" (Soleado/Lluvia).</li>
+                            <li><span class="text-lg">📈</span> <strong>Modelo:</strong> Dividir datos en Train/Test (80/20). Aplicar Regresión Lineal Múltiple ajustando los pesos mediante mínimos cuadrados.</li>
+                            <li><span class="text-lg">⚖️</span> <strong>Validación:</strong> Medir la precisión calculando el <strong>RMSE</strong> (para conocer el error promedio en horas) y el <strong>R²</strong>.</li>
+                            <li><span class="text-lg">🚚</span> <strong>Beneficios:</strong> Optimización de la flota en tiempo real, reducción de costes operativos y aumento radical de la certidumbre del cliente final.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 rounded-xl shadow-2xl overflow-hidden text-white border border-slate-700 relative">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+                
+                <div class="p-8 relative z-10">
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="text-4xl">👑</span>
+                        <div>
+                            <h3 class="text-2xl font-black tracking-tight text-yellow-400">El "Cheat Code" de Minería de Datos</h3>
+                            <p class="text-slate-400 text-sm mt-1">Los 4 pasos que el profesor busca en CUALQUIER respuesta de datos.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-slate-800 p-4 rounded-lg border-t-4 border-red-500">
+                            <div class="font-bold text-red-400 mb-2">1. PREPARAR</div>
+                            <p class="text-xs text-slate-300">Nunca olvides mencionar "Limpiar", "Normalizar" y el "Principio de Minimización/Anonimización".</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-lg border-t-4 border-yellow-500">
+                            <div class="font-bold text-yellow-400 mb-2">2. ELEGIR</div>
+                            <p class="text-xs text-slate-300">Si hay etiquetas = Supervisado (Regresión/Árboles). Si es explorar a ciegas = No Supervisado (K-Means).</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-lg border-t-4 border-green-500">
+                            <div class="font-bold text-green-400 mb-2">3. VALIDAR</div>
+                            <p class="text-xs text-slate-300">Menciona siempre cómo mides si el modelo sirve: Train/Test split, RMSE, R² o Matrices de Confusión.</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded-lg border-t-4 border-blue-500">
+                            <div class="font-bold text-blue-400 mb-2">4. IMPACTO</div>
+                            <p class="text-xs text-slate-300">El modelo no es un fin. Termina explicando qué acción toma el humano/empresa gracias a esos datos.</p>
+                        </div>
                     </div>
                 </div>
             </div>
