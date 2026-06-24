@@ -237,141 +237,94 @@ else:
             </div>
         </section>
 
-        <!-- SECCIÓN 4: CASOS PRÁCTICOS (21 & 22) -->
+        <!-- SECCIÓN 4: CASOS PRÁCTICOS (23 & 24) -->
         <section id="sec4" class="main-section hidden fade-in">
             <h2 class="text-3xl font-bold text-slate-800 mb-2 border-b-2 border-cyan-500 pb-2 inline-block">4. Casos Prácticos Resueltos</h2>
             <p class="text-slate-600 mb-8">Soluciones extraídas directamente de la plataforma oficial aplicadas al contexto de herramientas.</p>
 
-            <!-- Caso 21 -->
             <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                <div class="bg-emerald-900 text-white p-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <span class="text-2xl">⚠️</span>
-                        <h3 class="text-lg font-bold">Caso Práctico 21: Priorización de Riesgo (Regla Simple)</h3>
+                        <span class="text-2xl">💻</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 23: Lógica de Clasificación Predictiva</h3>
                     </div>
-                    <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    <span class="bg-emerald-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Código Python</span>
                 </div>
                 <div class="p-6">
-                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">En el desarrollo de una herramienta de alertas tempranas, debemos implementar una regla simple de priorización basada en accesos y entregas. Dados los siguientes estudiantes, determinar el nivel de riesgo y el orden de actuación.</p>
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Una universidad quiere crear una herramienta sencilla que identifique automáticamente a los estudiantes en riesgo de reprobar una asignatura. Los datos disponibles son las horas de conexión semanal, el número de tareas entregadas y la nota media. Diseña una lógica básica (en pseudocódigo o Python) que clasifique a los estudiantes como "En riesgo" o "Estables" según los siguientes criterios: Riesgo si menos de 5 horas de conexión o nota media < 5.</p>
                     
-                    <div class="mb-8 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
-                        <h4 class="font-bold text-indigo-800 mb-3 text-lg">Análisis de Datos Iniciales (Input de la Herramienta):</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-slate-700 mb-4">
-                                <thead class="bg-slate-100 text-xs uppercase">
-                                    <tr><th class="px-3 py-2">ID</th><th class="px-3 py-2">Accesos</th><th class="px-3 py-2">Entregas%</th><th class="px-3 py-2">¿Riesgo?</th><th class="px-3 py-2">Regla Aplicada</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="border-b"><td class="px-3 py-2">A01</td><td class="px-3 py-2">2</td><td class="px-3 py-2">20%</td><td class="px-3 py-2 font-bold text-red-600">SÍ</td><td class="px-3 py-2 text-xs">Acceso ≤ 2</td></tr>
-                                    <tr class="border-b"><td class="px-3 py-2">A02</td><td class="px-3 py-2">5</td><td class="px-3 py-2">60%</td><td class="px-3 py-2 font-bold text-green-600">NO</td><td class="px-3 py-2 text-xs">Cumple todo</td></tr>
-                                    <tr class="border-b"><td class="px-3 py-2">A03</td><td class="px-3 py-2">1</td><td class="px-3 py-2">0%</td><td class="px-3 py-2 font-bold text-red-600">SÍ</td><td class="px-3 py-2 text-xs">Acceso ≤ 2 (Crítico)</td></tr>
-                                    <tr class="border-b"><td class="px-3 py-2">A04</td><td class="px-3 py-2">4</td><td class="px-3 py-2">50%</td><td class="px-3 py-2 font-bold text-green-600">NO</td><td class="px-3 py-2 text-xs">Cumple todo</td></tr>
-                                    <tr class="border-b"><td class="px-3 py-2">A05</td><td class="px-3 py-2">3</td><td class="px-3 py-2">30%</td><td class="px-3 py-2 font-bold text-red-600">SÍ</td><td class="px-3 py-2 text-xs">Entregas < 40%</td></tr>
-                                    <tr><td class="px-3 py-2">A06</td><td class="px-3 py-2">7</td><td class="px-3 py-2">100%</td><td class="px-3 py-2 font-bold text-green-600">NO</td><td class="px-3 py-2 text-xs">Excelencia</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="mb-4 border-l-4 border-emerald-400 bg-emerald-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-emerald-800 mb-3 text-lg">Respuesta de la Plataforma:</h4>
+                        <p class="text-sm text-slate-700 mb-4"><strong>Criterio Lógico:</strong> <code>Riesgo</code> SI <code>horas_conexion < 5</code> OR <code>nota_media < 5</code>.</p>
                         
-                        <h5 class="font-bold text-indigo-900 mb-3">Salida de la Herramienta: Tabla de Acción Priorizada:</h5>
-                        <div class="overflow-x-auto bg-slate-50 rounded-lg">
-                            <table class="w-full text-sm text-left">
-                                <thead class="bg-indigo-100 text-xs uppercase text-indigo-900">
-                                    <tr><th class="px-3 py-2">Prioridad</th><th class="px-3 py-2">ID</th><th class="px-3 py-2">Nivel Alerta</th><th class="px-3 py-2">Método de Contacto Sugerido</th></tr>
-                                </thead>
-                                <tbody class="divide-y">
-                                    <tr class="bg-red-50"><td class="px-3 py-2 font-bold">1</td><td class="px-3 py-2 font-bold">A03</td><td class="px-3 py-2 font-bold text-red-700">CRÍTICO</td><td class="px-3 py-2 text-xs">Mensaje automático urgente + Email al tutor</td></tr>
-                                    <tr class="bg-orange-50"><td class="px-3 py-2 font-bold">2</td><td class="px-3 py-2 font-bold">A01</td><td class="px-3 py-2 font-bold text-orange-700">ALTO</td><td class="px-3 py-2 text-xs">Mensaje personalizado dentro del LMS</td></tr>
-                                    <tr class="bg-yellow-50"><td class="px-3 py-2 font-bold">3</td><td class="px-3 py-2 font-bold">A05</td><td class="px-3 py-2 font-bold text-yellow-700">MEDIO</td><td class="px-3 py-2 text-xs">Notificación push / Recordatorio semanal</td></tr>
-                                    <tr><td class="px-3 py-2 font-bold">4</td><td class="px-3 py-2 font-bold">A04</td><td class="px-3 py-2 font-bold text-green-700">OK</td><td class="px-3 py-2 text-xs">No acción requerida (Monitorizar)</td></tr>
-                                    <tr><td class="px-3 py-2 font-bold">5</td><td class="px-3 py-2 font-bold">A02</td><td class="px-3 py-2 font-bold text-green-700">OK</td><td class="px-3 py-2 text-xs">Mensaje positivo automático</td></tr>
-                                    <tr><td class="px-3 py-2 font-bold">6</td><td class="px-3 py-2 font-bold">A06</td><td class="px-3 py-2 font-bold text-green-700">EXCELENTE</td><td class="px-3 py-2 text-xs">Certificado de logro automático</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
-                            <strong>Nota de implementación:</strong> En una herramienta real, estos mensajes se generarían mediante plantillas (templates) y se enviarían vía API al sistema de mensajería del LMS automáticamente.
+                        <div class="bg-slate-900 rounded-lg p-5 font-mono text-sm shadow-inner overflow-x-auto border border-slate-700">
+                            <div class="flex gap-2 mb-4">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                            <pre class="text-slate-300 leading-relaxed"><code><span class="text-pink-400">def</span> <span class="text-blue-400">clasificar_estudiante</span>(horas_conexion, tareas_entregadas, nota_media):
+                                <span class="text-slate-500 italic"># Lógica basada en los criterios dados por la universidad</span>
+                                <span class="text-pink-400">if</span> horas_conexion <span class="text-emerald-400">&lt;</span> <span class="text-orange-400">5</span> <span class="text-pink-400">or</span> nota_media <span class="text-emerald-400">&lt;</span> <span class="text-orange-400">5</span>:
+                                    <span class="text-pink-400">return</span> <span class="text-yellow-300">"En riesgo"</span>
+                                <span class="text-pink-400">else</span>:
+                                    <span class="text-pink-400">return</span> <span class="text-yellow-300">"Estable"</span>
+
+                            <span class="text-slate-500 italic"># Array de validación (Ejemplo de uso)</span>
+                            estudiantes = [
+                                {<span class="text-yellow-300">"id"</span>: <span class="text-yellow-300">"E1"</span>, <span class="text-yellow-300">"horas"</span>: <span class="text-orange-400">4</span>, <span class="text-yellow-300">"notas"</span>: <span class="text-orange-400">6</span>}, <span class="text-slate-500 italic"># En riesgo (horas &lt; 5)</span>
+                                {<span class="text-yellow-300">"id"</span>: <span class="text-yellow-300">"E2"</span>, <span class="text-yellow-300">"horas"</span>: <span class="text-orange-400">10</span>, <span class="text-yellow-300">"notas"</span>: <span class="text-orange-400">4</span>}, <span class="text-slate-500 italic"># En riesgo (nota &lt; 5)</span>
+                                {<span class="text-yellow-300">"id"</span>: <span class="text-yellow-300">"E3"</span>, <span class="text-yellow-300">"horas"</span>: <span class="text-orange-400">8</span>, <span class="text-yellow-300">"notas"</span>: <span class="text-orange-400">7</span>}   <span class="text-slate-500 italic"># Estable</span>
+                            ]
+
+                            <span class="text-slate-500 italic"># Bucle de ejecución</span>
+                            <span class="text-pink-400">for</span> est <span class="text-pink-400">in</span> estudiantes:
+                                estado = clasificar_estudiante(est[<span class="text-yellow-300">"horas"</span>], est.get(<span class="text-yellow-300">"tareas"</span>, <span class="text-orange-400">0</span>), est[<span class="text-yellow-300">"notas"</span>])
+                                <span class="text-blue-300">print</span>(<span class="text-yellow-300">f"Estudiante {</span>est[<span class="text-yellow-300">'id'</span>]<span class="text-yellow-300">}: {</span>estado<span class="text-yellow-300">}"</span>)</code></pre>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Caso 22 -->
-            <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
-                <div class="bg-violet-900 text-white p-4 flex items-center justify-between">
+            <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                <div class="bg-amber-900 text-white p-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <span class="text-2xl">🔢</span>
-                        <h3 class="text-lg font-bold">Caso Práctico 22: Regla de Riesgo y Validación de Aciertos</h3>
+                        <span class="text-2xl">📊</span>
+                        <h3 class="text-lg font-bold">Caso Práctico 24: Diseño de Dashboard para Docentes</h3>
                     </div>
-                    <span class="bg-violet-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    <span class="bg-amber-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
                 </div>
                 <div class="p-6">
-                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Antes de desplegar un modelo predictivo en producción, es vital validar su precisión. Se propone una regla simple: <strong>Predicción=no_supera si (entregas% < 50) O (ausencias ≥ 5)</strong>. Validamos contra datos reales de 8 estudiantes.</p>
+                    <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Has desarrollado un pequeño dashboard que muestra los promedios de participación y calificación de un grupo de alumnos. El director del centro te pide que el informe sea comprensible para docentes no técnicos. ¿Qué elementos incluirías para asegurar una comunicación clara y útil de los resultados?</p>
                     
-                    <div class="mb-8 border-l-4 border-violet-400 bg-violet-50/50 p-5 rounded-r-lg">
-                        <h4 class="font-bold text-violet-800 mb-3 text-lg">Matriz de Confusión Manual (Validación):</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left text-slate-700">
-                                <thead class="bg-violet-100 text-xs uppercase text-violet-900">
-                                    <tr><th class="px-3 py-2">ID</th><th class="px-3 py-2">Entradas (Datos)</th><th class="px-3 py-2">Realidad</th><th class="px-3 py-2">Predicción Regla</th><th class="px-3 py-2">Resultado</th></tr>
-                                </thead>
-                                <tbody class="divide-y">
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S01</td><td class="px-3 py-2 text-xs">Deli:30%, Aus:5</td><td class="px-3 py-2 font-bold">1 (No supera)</td><td class="px-3 py-2 font-bold text-green-700">1 (Ambas)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S02</td><td class="px-3 py-2 text-xs">Deli:45%, Aus:4</td><td class="px-3 py-2 font-bold">1 (No supera)</td><td class="px-3 py-2 font-bold text-green-700">1 (Solo Deli)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S03</td><td class="px-3 py-2 text-xs">Deli:80%, Aus:1</td><td class="px-3 py-2 font-bold">0 (Supera)</td><td class="px-3 py-2 font-bold text-green-700">0 (Ninguna)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S04</td><td class="px-3 py-2 text-xs">Deli:60%, Aus:2</td><td class="px-3 py-2 font-bold">0 (Supera)</td><td class="px-3 py-2 font-bold text-green-700">0 (Ninguna)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S05</td><td class="px-3 py-2 text-xs">Deli:20%, Aus:6</td><td class="px-3 py-2 font-bold">1 (No supera)</td><td class="px-3 py-2 font-bold text-green-700">1 (Ambas)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S06</td><td class="px-3 py-2 text-xs">Deli:55%, Aus:3</td><td class="px-3 py-2 font-bold">0 (Supera)</td><td class="px-3 py-2 font-bold text-green-700">0 (Ninguna)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S07</td><td class="px-3 py-2 text-xs">Deli:35%, Aus:5</td><td class="px-3 py-2 font-bold">1 (No supera)</td><td class="px-3 py-2 font-bold text-green-700">1 (Ambas)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                    <tr class="bg-green-50"><td class="px-3 py-2 font-bold">S08</td><td class="px-3 py-2 text-xs">Deli:90%, Aus:0</td><td class="px-3 py-2 font-bold">0 (Supera)</td><td class="px-3 py-2 font-bold text-green-700">0 (Ninguna)</td><td class="px-3 py-2 font-bold text-green-600">ACIERTO ✅</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="mt-6 bg-violet-100 border border-violet-300 p-4 rounded-lg text-center">
-                            <p class="text-sm text-slate-700 mb-2">Tasa de Acierto (Accuracy):</p>
-                            <div class="text-4xl font-black text-violet-800">8 de 8 <span class="text-lg text-violet-600">(100%)</span></div>
-                        </div>
-                        
-                        <div class="mt-4 bg-green-50 border border-green-300 p-4 rounded-lg">
-                            <h5 class="font-bold text-green-900 mb-2">Conclusión para el Desarrollo:</h5>
-                            <p class="text-sm text-slate-700">La regla propuesta es extremadamente efectiva para este dataset. Es seguro implementarla como "Regla Base" en la herramienta de alertas. En fases posteriores, se podría refinar con Machine Learning para capturar casos más complejos.</p>
-                        </div>
-                    </div>
-
-                    <!-- ESQUEMA VISUAL DE REGLAS -->
-                    <div class="mt-8 bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <h4 class="font-bold text-violet-900 mb-4 uppercase text-xs tracking-widest flex items-center gap-2">📊 Lógica de Negocio Implementada</h4>
-                        <div class="flex flex-col items-center gap-4 max-w-2xl mx-auto">
-                            <div class="bg-violet-100 border-2 border-violet-400 rounded-lg px-6 py-3 text-center w-full"><span class="font-bold text-violet-800">Inicio: Nuevo Estudiante</span></div>
-                            <div class="text-slate-400 text-xl">↓</div>
-                            <div class="bg-slate-200 border-2 border-slate-400 rounded-lg px-6 py-3 text-center w-full"><span class="font-bold text-slate-800">Condición A: ¿Entregas% < 50?</span></div>
-                            <div class="flex gap-8 w-full">
-                                <div class="flex-1 flex flex-col items-center">
-                                    <div class="bg-red-100 border border-red-300 rounded px-4 py-2 font-bold text-red-700">SÍ</div>
-                                    <div class="text-slate-400 text-lg">↓</div>
-                                    <div class="bg-red-200 border-2 border-red-500 rounded-lg px-6 py-3 text-center"><span class="font-bold text-red-900">🚨 ALERTA GENERADA</span></div>
-                                </div>
-                                <div class="flex-1 flex flex-col items-center">
-                                    <div class="bg-green-100 border border-green-300 rounded px-4 py-2 font-bold text-green-700">NO</div>
-                                    <div class="text-slate-400 text-lg">↓</div>
-                                    <div class="bg-slate-200 border-2 border-slate-400 rounded-lg px-6 py-3 text-center"><span class="font-bold text-slate-800">Condición B: ¿Ausencias ≥ 5?</span></div>
-                                </div>
-                            </div>
-                            <div class="flex gap-12 w-full pt-4">
-                                <div class="flex-1"></div>
-                                <div class="flex-1 flex flex-col items-center">
-                                    <div class="flex gap-4">
-                                        <div class="bg-red-100 border border-red-300 rounded px-4 py-2 font-bold text-red-700">SÍ</div>
-                                        <div class="bg-green-100 border border-green-300 rounded px-4 py-2 font-bold text-green-700">NO</div>
-                                    </div>
-                                    <div class="text-slate-400 text-lg mt-2">↓ ↓</div>
-                                    <div class="flex gap-4">
-                                        <div class="bg-red-200 border-2 border-red-500 rounded-lg px-6 py-3 text-center w-32"><span class="font-bold text-red-900 text-xs">🚨 RIESGO ALTO</span></div>
-                                        <div class="bg-green-200 border-2 border-green-500 rounded-lg px-6 py-3 text-center w-32"><span class="font-bold text-green-900 text-xs">✅ SEGURO</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mb-8 border-l-4 border-amber-400 bg-amber-50/50 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-amber-800 mb-4 text-lg">Respuesta de la Plataforma:</h4>
+                        <ul class="space-y-4 text-sm text-slate-700">
+                            <li class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg text-amber-600 text-lg leading-none shrink-0">🗣️</div>
+                                <div><strong class="text-slate-900 block mb-1">Lenguaje Claro y Natural:</strong> Evitar términos puramente técnicos (como "desviación estándar", "outliers" o "clusters"). Utilizar en su lugar conceptos directos como "Rango de notas", "Grupos de comportamiento" o "Alumnos fuera de la media".</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg text-amber-600 text-lg leading-none shrink-0">📌</div>
+                                <div><strong class="text-slate-900 block mb-1">Resumen Ejecutivo:</strong> Añadir una o dos tarjetas grandes (KPIs) en la parte superior del dashboard que muestren de un vistazo el promedio general del curso y el porcentaje (%) exacto de alumnos en riesgo.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg text-amber-600 text-lg leading-none shrink-0">📈</div>
+                                <div><strong class="text-slate-900 block mb-1">Gráficos Visuales Simples:</strong> Utilizar el código de colores clásico (semáforo: rojo, amarillo, verde) en gráficos de barras para comparar participación. Incluir una lista prioritaria con los nombres de los alumnos con "alerta roja" para una rápida identificación.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg text-amber-600 text-lg leading-none shrink-0">🎯</div>
+                                <div><strong class="text-slate-900 block mb-1">Contexto de Acción (Insights):</strong> No dejar al docente solo con el dato crudo; añadir sugerencias automáticas basadas en los datos. Ejemplo: <em>"El grupo B tiene baja participación esta semana. Sugerencia: Revisar la dificultad de la Actividad X"</em>.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg text-amber-600 text-lg leading-none shrink-0">🖱️</div>
+                                <div><strong class="text-slate-900 block mb-1">Interactividad Limitada y Dirigida:</strong> Reducir la sobrecarga cognitiva. Utilizar botones sencillos como "Ver detalles del grupo" en vez de exponer al docente a menús de filtros cruzados y complejos.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <div class="bg-amber-100 p-2 rounded-lg text-amber-600 text-lg leading-none shrink-0">ℹ️</div>
+                                <div><strong class="text-slate-900 block mb-1">Pie de Página Explicativo (Leyendas):</strong> Añadir textos breves flotantes (tooltips) o pies de página que recuerden qué significa cada métrica (Ejemplo: <em>"Nota: El 'Riesgo' se calcula si el alumno tiene menos del 50% de entregas al día"</em>).</div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
