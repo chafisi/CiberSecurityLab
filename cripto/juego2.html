@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Secuencias: Blockchain</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Estilos del Drag & Drop (Reutilizados) */
+        .draggable { cursor: grab; transition: all 0.2s; touch-action: none; }
+        .draggable:active { cursor: grabbing; transform: scale(1.02); z-index: 50; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+        .droppable { border: 2px dashed #cbd5e1; background-color: #f8fafc; min-height: 60px; display: flex; align-items: center; justify-content: center; padding: 0.5rem; transition: all 0.3s; }
+        .droppable.hover { border-color: #06b6d4; background-color: #ecfeff; }
+        .droppable.correct { border-color: #22c55e; background-color: #dcfce7; }
+        .droppable.wrong { border-color: #ef4444; background-color: #fee2e2; animation: shake 0.5s; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .step-card { 
+            background: white; 
+            border-left: 4px solid #0ea5e9; /* Azul cielo para blockchain */
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 0.9rem; 
+            font-weight: 600; 
+            color: #1e293b;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <header class="max-w-4xl mx-auto mb-8 text-center fade-in">
+        <h1 class="text-3xl md:text-4xl font-black text-slate-900 mb-2">🔗 Ordena las Secuencias: Blockchain</h1>
+        <p class="text-slate-600">Arrastra los pasos desordenados a su posición correcta para completar el proceso.</p>
+        
+        <!-- Selector de Nivel -->
+        <div class="mt-6 flex flex-wrap justify-center gap-2">
+            <button onclick="loadLevel(6)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">6. Intro Blockchain</button>
+            <button onclick="loadLevel(7)" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">7. Smart Contracts</button>
+            <button onclick="loadLevel(8)" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">8. Minería PoW</button>
+            <button onclick="loadLevel(9)" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-bold transition shadow-md">9. Consenso PoS</button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto bg-white rounded-xl shadow-xl overflow-hidden fade-in" id="gameContainer">
+        <!-- El contenido se genera dinámicamente con JS -->
+    </main>
+
+    <footer class="max-w-4xl mx-auto mt-8 text-center text-slate-400 text-sm pb-8">
+        <p>Entrega 2/3: Bloque Blockchain | Análisis de Datos</p>
+    </footer>
+
+    <script>
+        // ==========================================
+        // BASE DE DATOS DE SECUENCIAS (CASOS 6-9)
+        // ==========================================
+        const scenarios = [
+            {
+                id: 6,
+                title: "Caso 6: Estructura Básica de un Bloque",
+                desc: "Ordena los componentes que forman parte de la cadena de bloques.",
+                correctOrder: [
+                    "1️⃣ Datos: Se registran las transacciones pendientes (Tx)",
+                    "2️⃣ Hash del Bloque Anterior: Se vincula al bloque previo creando la 'cadena'",
+                    "3️⃣ Timestamp: Se añade la fecha y hora exacta del registro",
+                    "4️⃣ Nonce: Se busca un número aleatorio que cumpla la dificultad",
+                    "5️⃣ Hash del Bloque Actual: Se calcula el hash final (SHA-256) que valida el bloque"
+                ],
+                emoji: "🧱"
+            },
+            {
+                id: 7,
+                title: "Caso 7: Ejecución de Smart Contracts",
+                desc: "Flujo lógico de cómo funciona un contrato inteligente en Ethereum.",
+                correctOrder: [
+                    "1️⃣ Definición: El desarrollador escribe el código (if-then) y lo despliega",
+                    "2️⃣ Estado: El contrato queda esperando condiciones específicas en la red",
+                    "3️⃣ Disparador: Un usuario o evento externo envía una transacción al contrato",
+                    "4️⃣ Ejecución: La red valida automáticamente el código sin intermediarios",
+                    "5️⃣ Resultado: Se actualiza el estado (ej. transferencia de tokens) y es inmutable"
+                ],
+                emoji: "🤖"
+            },
+            {
+                id: 8,
+                title: "Caso 8: Minería Proof of Work (PoW)",
+                desc: "Proceso de Bitcoin para validar transacciones mediante fuerza computacional.",
+                correctOrder: [
+                    "1️⃣ Recopilación: Los mineros agrupan transacciones en un bloque candidato",
+                    "2️⃣ Objetivo: Deben encontrar un nonce tal que el Hash < Target (Dificultad)",
+                    "3️⃣ Búsqueda: Se prueban billones de nonces aleatorios rápidamente",
+                    "4️⃣ Hallazgo: Un minero encuentra el nonce válido y lo anuncia",
+                    "5️⃣ Verificación: El resto de la red verifica el hash. Si es correcto, añaden el bloque y pagan la recompensa"
+                ],
+                emoji: "⛏️"
+            },
+            {
+                id: 9,
+                title: "Caso 9: Consenso Proof of Stake (PoS)",
+                desc: "Cómo valida Ethereum 2.0 sin gastar tanta energía como PoW.",
+                correctOrder: [
+                    "1️⃣ Apuesta (Staking): Los validadores bloquean sus monedas como garantía",
+                    "2️⃣ Selección: El protocolo elige aleatoriamente un validador según su apuesta",
+                    "3️⃣ Propuesta: El elegido crea el nuevo bloque y lo propone",
+                    "4️⃣ Attestation: Otros validadores confirman que el bloque es válido",
+                    "5️⃣ Finalización: El bloque se añade. Si actuó mal, pierde su apuesta (slashing)"
+                ],
+                emoji: "💎"
+            }
+        ];
+
+        let currentScenario = null;
+        let draggedItem = null;
+
+        // ==========================================
+        // LÓGICA DEL JUEGO (Idéntica a la Entrega 1)
+        // ==========================================
+        function loadLevel(id) {
+            currentScenario = scenarios[id - 6]; // Ajuste índice porque empieza en 6
+            const container = document.getElementById('gameContainer');
+            
+            // Mezclar array
+            const shuffled = [...currentScenario.correctOrder].sort(() => Math.random() - 0.5);
+
+            container.innerHTML = `
+                <div class="p-6 md:p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-4xl">${currentScenario.emoji}</span>
+                        <h2 class="text-2xl font-bold text-slate-800">${currentScenario.title}</h2>
+                    </div>
+                    <p class="text-slate-600 mb-6 bg-slate-50 p-4 rounded-lg border-l-4 border-slate-300">${currentScenario.desc}</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Zona de Arrastre -->
+                        <div>
+                            <h3 class="font-bold text-slate-700 mb-3 uppercase text-xs tracking-wide">Pasos Desordenados (Arrastra)</h3>
+                            <div id="sourceZone" class="space-y-2 min-h-[200px] bg-slate-50 p-4 rounded-xl border border-dashed border-slate-300">
+                                ${shuffled.map((step) => createDraggable(step)).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Zona de Colocación -->
+                        <div>
+                            <h3 class="font-bold text-slate-700 mb-3 uppercase text-xs tracking-wide">Secuencia Correcta (Suelta aquí)</h3>
+                            <div id="targetZone" class="space-y-3">
+                                ${currentScenario.correctOrder.map((_, index) => createDropSlot(index + 1)).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 flex justify-end">
+                        <button onclick="checkAnswers()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-bold text-lg shadow-lg transition transform hover:scale-105">
+                            ✅ Verificar Secuencia
+                        </button>
+                    </div>
+                    <div id="feedbackMsg" class="mt-4 text-center font-bold hidden"></div>
+                </div>
+            `;
+
+            initDragAndDrop();
+        }
+
+        function createDraggable(text) {
+            return `<div class="draggable step-card cursor-move select-none" draggable="true">${text}</div>`;
+        }
+
+        function createDropSlot(number) {
+            return `
+                <div class="droppable relative" data-index="${number}">
+                    <span class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-sm font-bold">Paso ${number}</span>
+                </div>
+            `;
+        }
+
+        function initDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.droppable');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggedItem = draggable;
+                    setTimeout(() => draggable.style.display = 'none', 0);
+                });
+
+                draggable.addEventListener('dragend', () => {
+                    setTimeout(() => {
+                        draggable.style.display = '';
+                        draggedItem = null;
+                    }, 0);
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    if (!zone.hasChildNodes()) zone.classList.add('hover');
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('hover');
+                });
+
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('hover');
+                    if (draggedItem && !zone.hasChildNodes()) {
+                        const oldParent = draggedItem.parentNode;
+                        oldParent.removeChild(draggedItem);
+                        
+                        const prevError = zone.querySelector('.error-msg');
+                        if(prevError) prevError.remove();
+
+                        zone.appendChild(draggedItem);
+                        draggedItem.style.transform = 'none';
+                    }
+                });
+            });
+        }
+
+        function checkAnswers() {
+            const zones = document.querySelectorAll('.droppable');
+            let allCorrect = true;
+            let filledCount = 0;
+
+            zones.forEach(zone => {
+                const item = zone.querySelector('.step-card');
+                const expectedIndex = parseInt(zone.dataset.index) - 1;
+                
+                zone.classList.remove('correct', 'wrong');
+                const errorMsg = zone.querySelector('.error-msg');
+                if(errorMsg) errorMsg.remove();
+
+                if (item) {
+                    filledCount++;
+                    const correctText = currentScenario.correctOrder[expectedIndex];
+                    if (item.innerText === correctText) {
+                        zone.classList.add('correct');
+                    } else {
+                        zone.classList.add('wrong');
+                        allCorrect = false;
+                        const err = document.createElement('span');
+                        err.className = 'error-msg block text-xs text-red-600 mt-1 text-right absolute bottom-1 right-2';
+                        err.innerText = '❌ Incorrecto';
+                        zone.appendChild(err);
+                    }
+                } else {
+                    allCorrect = false;
+                }
+            });
+
+            const feedback = document.getElementById('feedbackMsg');
+            feedback.classList.remove('hidden');
+            
+            if (allCorrect && filledCount === currentScenario.correctOrder.length) {
+                feedback.innerHTML = `<span class="text-green-600 text-xl">🎉 ¡FELICIDADES! Has ordenado correctamente la secuencia del caso ${currentScenario.id}.</span>`;
+                feedback.className = "mt-4 text-center font-bold text-green-600 text-xl animate-bounce";
+            } else {
+                feedback.innerHTML = `<span class="text-orange-600">⚠️ Hay errores o pasos faltantes. Revisa las tarjetas rojas.</span>`;
+                feedback.className = "mt-4 text-center font-bold text-orange-600 text-lg";
+            }
+        }
+
+        window.onload = () => loadLevel(6);
+    </script>
+</body>
+</html>
