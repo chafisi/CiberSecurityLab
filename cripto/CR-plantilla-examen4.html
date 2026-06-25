@@ -76,6 +76,119 @@
             </div>
             <div class="p-6 space-y-6">
                 
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">💊</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 6: Trazabilidad Farmacéutica (Blockchain)</h3>
+                        </div>
+                        <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: La industria farmacéutica enfrenta problemas de medicamentos falsificados. ¿Cómo puede la tecnología blockchain resolver este problema de trazabilidad?</p>
+                        <div class="mb-4 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li><strong>Registro de Origen:</strong> El laboratorio registra el lote y fecha de caducidad en un bloque inmutable.</li>
+                                <li><strong>Logística (IoT):</strong> Sensores de temperatura registran en la cadena que no se ha roto la cadena de frío.</li>
+                                <li><strong>Verificación:</strong> Farmacias y pacientes verifican la autenticidad escaneando un QR asociado al hash del producto en la blockchain.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">⚖️</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 7: Contratos Inteligentes en Seguros</h3>
+                        </div>
+                        <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: ¿Cómo automatizar el pago de un seguro de vuelos cancelados usando Smart Contracts?</p>
+                        <div class="mb-4 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>El Smart Contract se conecta a un <em>Oráculo</em> (ej. la base de datos oficial del aeropuerto).</li>
+                                <li>Si el vuelo marcado en la póliza aparece como "Cancelado", el contrato se autoejecuta.</li>
+                                <li>El dinero se transfiere automáticamente a la cartera del cliente sin peritos ni burocracia.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">⛏️</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 8: Minería y Prueba de Trabajo (PoW)</h3>
+                        </div>
+                        <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Explica el rol de los mineros en el consenso de una red tipo Bitcoin y cómo previenen el doble gasto.</p>
+                        <div class="mb-4 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Los mineros agrupan transacciones pendientes en un bloque candidato.</li>
+                                <li>Compiten gastando poder computacional para encontrar un "Nonce" que resuelva un problema criptográfico (PoW).</li>
+                                <li>El primero que lo logra sella el bloque; los demás nodos lo validan, asegurando que ninguna moneda se haya gastado dos veces.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">🌱</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 9: Prueba de Participación (PoS) vs PoW</h3>
+                        </div>
+                        <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: ¿Por qué redes como Ethereum migraron de PoW a PoS y qué beneficio ambiental tiene?</p>
+                        <div class="mb-4 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>En PoS no se compite con energía bruta. Los validadores son elegidos según las monedas que dejan bloqueadas (staking) como garantía.</li>
+                                <li>Reduce el consumo eléctrico de la red en más de un 99%.</li>
+                                <li>Aumenta la escalabilidad y velocidad de transacciones sin sacrificar la seguridad.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">🗳️</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 10: Gobernanza Descentralizada (DAO)</h3>
+                        </div>
+                        <span class="bg-indigo-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: ¿Qué es una DAO y cómo toma decisiones sin una junta directiva central?</p>
+                        <div class="mb-4 border-l-4 border-indigo-400 bg-indigo-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Es una Organización Autónoma Descentralizada.</li>
+                                <li>Las reglas están escritas en código (Smart Contracts).</li>
+                                <li>Los poseedores de tokens de la DAO votan propuestas; si se aprueban, el código se ejecuta automáticamente usando los fondos de la tesorería común.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>   
+
+            </div>
+        </section>
+
+
+
+
+        <section class="bg-white rounded-2xl shadow-lg border-t-8 border-indigo-500 overflow-hidden">
+            <div class="bg-indigo-50 p-4 border-b border-indigo-100 flex items-center gap-3">
+                <span class="text-3xl">🔗</span>
+                <h2 class="text-2xl font-bold text-indigo-900">Bloque II: Blockchain y Smart Contracts</h2>
+            </div>
+            <div class="p-6 space-y-6">
+                
                 <div class="border-b border-slate-100 pb-4">
                     <h3 class="font-bold text-slate-800 mb-2">Casos 11: Trazabilidad (ONG / Alimentos)</h3>
                     <div class="text-sm text-slate-700 flex flex-wrap items-center gap-y-2">
@@ -108,6 +221,54 @@
                         <span class="tech-badge bg-indigo-200 text-indigo-800">Método: Zero-Knowledge Proofs</span>
                     </div>
                 </div>
+
+            </div>
+        </section>
+
+                <section class="bg-white rounded-2xl shadow-lg border-t-8 border-indigo-500 overflow-hidden">
+            <div class="bg-indigo-50 p-4 border-b border-indigo-100 flex items-center gap-3">
+                <span class="text-3xl">🔗</span>
+                <h2 class="text-2xl font-bold text-indigo-900">Bloque II-III: MINERÍA</h2>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-teal-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">🧹</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 13: Importancia del Preprocesamiento (KDD)</h3>
+                        </div>
+                        <span class="bg-teal-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Una universidad tiene datos dispersos de rendimiento. ¿Por qué el preprocesamiento es la fase más crítica antes de aplicar minería de datos?</p>
+                        <div class="mb-4 border-l-4 border-teal-400 bg-teal-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Por el principio GIGO (<em>Garbage In, Garbage Out</em>): Si entran datos malos, el algoritmo dará predicciones falsas.</li>
+                                <li>Se deben eliminar nulos, corregir errores tipográficos e identificar valores atípicos (outliers) que distorsionen la media.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-teal-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">⚖️</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 14: Normalización de Variables</h3>
+                        </div>
+                        <span class="bg-teal-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Tienes una base de datos con "Edad" (18-60) y "Sueldo" (20.000-80.000). ¿Qué debes hacer antes de aplicar un algoritmo como K-Means?</p>
+                        <div class="mb-4 border-l-4 border-teal-400 bg-teal-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>Se debe aplicar <strong>Normalización</strong> (escalar los datos entre 0 y 1).</li>
+                                <li>Si no se normaliza, el algoritmo le dará mucho más peso a la variable "Sueldo" por tener números más grandes, ignorando por completo el impacto de la "Edad".</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>    
+                 
 
             </div>
         </section>
@@ -170,6 +331,72 @@
                 </div>
 
             </div>
+        </section>
+
+        <section class="bg-white rounded-2xl shadow-lg border-t-8 border-teal-500 overflow-hidden">
+            <div class="bg-teal-50 p-4 border-b border-teal-100 flex items-center gap-3">
+                <span class="text-3xl">📊</span>
+                <h2 class="text-2xl font-bold text-teal-900">Bloque III: fINAL</h2>
+            </div>
+            <div class="p-6 space-y-6">
+                
+               <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-amber-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">👩‍🏫</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 19: El Rol del "Human in the Loop"</h3>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Un sistema de Learning Analytics clasifica a un alumno como "riesgo de suspenso". ¿Debería el sistema enviarle un aviso de baja automáticamente?</p>
+                        <div class="mb-4 border-l-4 border-amber-400 bg-amber-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>No. La IA debe ser una herramienta de apoyo, no un decisor final.</li>
+                                <li>El sistema alerta al profesor, y es el docente (Human in the Loop) quien evalúa el contexto personal del alumno y decide la mejor intervención pedagógica.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-amber-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">🛡️</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 20: Ética y Minimización de Datos</h3>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Para mejorar el rendimiento, una universidad propone rastrear la ubicación GPS y las webs que visitan los alumnos. ¿Es ético?</p>
+                        <div class="mb-4 border-l-4 border-amber-400 bg-amber-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li>No. Vulnera el principio ético de <strong>Minimización de Datos</strong>.</li>
+                                <li>Solo se deben recopilar los datos estrictamente necesarios para el propósito educativo (ej. notas, conexión al campus), anonimizando siempre la identidad.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-12 bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
+                    <div class="bg-amber-900 text-white p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">📈</span>
+                            <h3 class="text-lg font-bold">Caso Práctico 21: Elección de Gráficas Correctas</h3>
+                        </div>
+                        <span class="bg-amber-600 text-xs px-2 py-1 rounded font-bold uppercase tracking-wider">Solución Oficial</span>
+                    </div>
+                    <div class="p-6">
+                        <p class="text-slate-800 font-semibold mb-6 border-l-4 border-slate-300 pl-4">Enunciado: Quieres mostrar la evolución de la nota media de la clase a lo largo de 5 meses, y comparar el nº de suspensos por asignatura. ¿Qué gráficas usas?</p>
+                        <div class="mb-4 border-l-4 border-amber-400 bg-amber-50/50 p-5 rounded-r-lg">
+                            <ul class="list-disc pl-5 text-sm text-slate-700 space-y-2">
+                                <li><strong>Evolución de nota:</strong> Gráfico de Líneas (ideal para series temporales).</li>
+                                <li><strong>Comparativa por asignatura:</strong> Gráfico de Barras (ideal para comparar categorías distintas).</li>
+                                <li><em>Evitar gráficos circulares (quesitos) si hay más de 3 variables, ya que elevan la carga cognitiva.</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
         </section>
 
     </div>
