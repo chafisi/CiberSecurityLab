@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Esquema Maestro - Machine Learning (UD 8 y 9)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans p-6 md:p-12 min-h-screen">
+
+    <div class="max-w-6xl mx-auto space-y-12 fade-in">
+        
+        <header class="bg-slate-900 text-white p-8 rounded-2xl shadow-xl border-b-8 border-indigo-500 relative overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-4xl font-black tracking-tight mb-2">🧠 Framework Maestro de Resolución</h1>
+                <p class="text-indigo-200 text-lg font-medium">Unidades 8 y 9: Minería de Datos y Machine Learning</p>
+                <p class="mt-4 text-sm text-slate-400 max-w-2xl">Aplica este esquema mental a cualquier pregunta de examen. Todas las técnicas comparten las mismas fases vitales; lo único que cambia es el "motor" matemático del centro y cómo se evalúa.</p>
+            </div>
+            <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl">⚙️</div>
+        </header>
+
+        <section class="bg-white p-8 rounded-2xl shadow-md border border-slate-200">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 border-b-2 border-slate-200 pb-2">El Esqueleto Común (Proceso KDD)</h2>
+            <p class="text-slate-600 mb-6 text-sm">Empieza siempre tus respuestas estructurando la solución en estos 5 apartados. Esto demuestra que entiendes el ciclo de vida del dato completo.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <div class="text-3xl mb-2">📥</div>
+                    <h3 class="font-bold text-slate-800 text-sm">1. Recolección</h3>
+                    <p class="text-xs text-slate-500 mt-2">Definir qué variables (Inputs) tenemos. Si es supervisado, definir también el objetivo (Output).</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center relative">
+                    <div class="text-3xl mb-2">🧹</div>
+                    <h3 class="font-bold text-slate-800 text-sm">2. Preprocesamiento</h3>
+                    <p class="text-xs text-slate-500 mt-2">Limpiar nulos, categorizar y <strong>Normalizar</strong> (vital para que el modelo no se sesgue).</p>
+                    <div class="absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full animate-pulse">¡CRÍTICO!</div>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200 text-center shadow-inner">
+                    <div class="text-3xl mb-2">⚙️</div>
+                    <h3 class="font-bold text-indigo-900 text-sm">3. Modelo</h3>
+                    <p class="text-xs text-indigo-700 mt-2">Aplicar el algoritmo (Regresión, Árbol o K-Means). Dividir en Train/Test si hay etiquetas.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <div class="text-3xl mb-2">⚖️</div>
+                    <h3 class="font-bold text-slate-800 text-sm">4. Evaluación</h3>
+                    <p class="text-xs text-slate-500 mt-2">Medir si el modelo funciona bien usando la métrica adecuada (RMSE, Matrices, etc.).</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <div class="text-3xl mb-2">🚀</div>
+                    <h3 class="font-bold text-slate-800 text-sm">5. Aplicación</h3>
+                    <p class="text-xs text-slate-500 mt-2">¿Para qué sirve al negocio? Toma de decisiones, automatización de alertas, optimización.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-6">
+            <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 pb-2">Rellenando el paso "3 y 4" según la técnica</h2>
+
+            <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-l-8 border-l-blue-500 overflow-hidden">
+                <div class="p-6 flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">📈</span>
+                        <h3 class="text-xl font-bold text-blue-900">Regresión Lineal / Múltiple</h3>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-bold uppercase">Supervisado</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Objetivo:</strong> Predecir un <em>número continuo</em> (ej. Nota final, días de estancia, precio, tiempo de entrega).</p>
+                    <ul class="text-sm text-slate-700 space-y-2">
+                        <li><strong>Paso 1 y 2 (Datos):</strong> Tenemos histórico de datos. Transformamos texto a números (One-Hot).</li>
+                        <li><strong>Paso 3 (Motor):</strong> Ajusta una línea matemática a través de los datos mediante Mínimos Cuadrados para predecir el valor Y.</li>
+                        <li><strong>Paso 4 (Evaluación):</strong> Se mide el error. Usamos <strong>RMSE</strong> (Raíz del Error Cuadrático Medio) y <strong>R²</strong>.</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-4 md:w-1/3 flex flex-col items-center justify-center border-l border-blue-100">
+                    <div class="text-xs text-slate-500 mb-2 font-mono text-center">Visualización del Algoritmo</div>
+                    
+
+[Image of Linear Regression model showing data points and line of best fit]
+
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-l-8 border-l-teal-500 overflow-hidden">
+                <div class="p-6 flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🌳</span>
+                        <h3 class="text-xl font-bold text-teal-900">Árboles de Decisión</h3>
+                        <span class="bg-teal-100 text-teal-800 text-xs px-2 py-1 rounded font-bold uppercase">Supervisado</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Objetivo:</strong> Clasificar en <em>categorías</em> (ej. Abandona/No Abandona, Spam/No Spam, Riesgo Alto/Bajo).</p>
+                    <ul class="text-sm text-slate-700 space-y-2">
+                        <li><strong>Paso 1 y 2 (Datos):</strong> Tenemos datos históricos con sus etiquetas (categorías ya conocidas).</li>
+                        <li><strong>Paso 3 (Motor):</strong> Divide los datos iterativamente basándose en preguntas lógicas usando la <strong>Impureza de Gini</strong> o Entropía ("Si X < 5, entonces...").</li>
+                        <li><strong>Paso 4 (Evaluación):</strong> Medimos aciertos y fallos usando la <strong>Matriz de Confusión</strong>, Precisión y Recall.</li>
+                    </ul>
+                </div>
+                <div class="bg-teal-50 p-4 md:w-1/3 flex flex-col items-center justify-center border-l border-teal-100">
+                    <div class="text-xs text-slate-500 mb-2 font-mono text-center">Estructura del Algoritmo</div>
+                    
+                </div>
+            </div>
+
+            <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-l-8 border-l-violet-500 overflow-hidden">
+                <div class="p-6 flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🎯</span>
+                        <h3 class="text-xl font-bold text-violet-900">Clustering (K-Means)</h3>
+                        <span class="bg-violet-100 text-violet-800 text-xs px-2 py-1 rounded font-bold uppercase">No Supervisado</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Objetivo:</strong> Descubrir <em>perfiles o segmentos</em> ocultos en una base de datos sin etiquetas previas.</p>
+                    <ul class="text-sm text-slate-700 space-y-2">
+                        <li><strong>Paso 1 y 2 (Datos):</strong> Datos puros sin etiquetas. <strong>Vital normalizar</strong> para que el cálculo de distancias sea justo.</li>
+                        <li><strong>Paso 3 (Motor):</strong> Se elige 'K' (nº de grupos). El algoritmo coloca centroides y agrupa los puntos por cercanía iterativamente.</li>
+                        <li><strong>Paso 4 (Evaluación):</strong> Método del Codo para elegir K. Validación con el <strong>Coeficiente de Silueta</strong> (cohesión interna de los grupos).</li>
+                    </ul>
+                </div>
+                <div class="bg-violet-50 p-4 md:w-1/3 flex flex-col items-center justify-center border-l border-violet-100">
+                    <div class="text-xs text-slate-500 mb-2 font-mono text-center">Agrupación de Centroides</div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-slate-900 text-white p-8 rounded-2xl shadow-xl mt-8">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-4">💡 Truco Rápido: ¿Cómo elegir la técnica al leer el enunciado?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="text-yellow-400 font-bold mb-2">PREGUNTA CLAVE</div>
+                    <p class="text-sm">¿Sabemos la respuesta correcta por adelantado en el histórico de datos?</p>
+                </div>
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="text-emerald-400 font-bold mb-2">SÍ = SUPERVISADO</div>
+                    <p class="text-sm mb-2">¿Queremos adivinar un <strong>número exacto</strong>? 👉 <span class="font-bold">REGRESIÓN</span>.</p>
+                    <p class="text-sm">¿Queremos adivinar una <strong>categoría/etiqueta</strong>? 👉 <span class="font-bold">ÁRBOL DE DECISIÓN</span>.</p>
+                </div>
+                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700">
+                    <div class="text-violet-400 font-bold mb-2">NO = NO SUPERVISADO</div>
+                    <p class="text-sm">Queremos que la máquina encuentre <strong>grupos o perfiles</strong> parecidos por sí sola. 👉 <span class="font-bold">K-MEANS CLUSTERING</span>.</p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>
