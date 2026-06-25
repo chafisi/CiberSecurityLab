@@ -77,11 +77,11 @@
                     <h3 class="font-bold text-lg">Caso 1: Primalidad (Miller-Rabin)</h3>
                     <span class="badge bg-crypto">CP1</span>
                 </div>
-                <div class="step-box"><span class="step-title">Paso 1: Descomposición</span><div class="step-content">Expresa <strong>n-1 = d · 2^s</strong>. Divide por 2 hasta que quede impar (d).</div></div>
-                <div class="step-box"><span class="step-title">Paso 2: Base Aleatoria</span><div class="step-content">Elige un número <strong>a</strong> tal que 1 &lt; a &lt; n-1.</div></div>
-                <div class="step-box"><span class="step-title">Paso 3: Cálculo Inicial</span><div class="step-content">Calcula <strong>x = a^d mod n</strong>.</div></div>
-                <div class="step-box"><span class="step-title">Paso 4: Iteración</span><div class="step-content">Si x ≠ 1 y x ≠ n-1, cuadrar (x²) repetidamente s veces. Si nunca llega a n-1 → COMPUESTO.</div></div>
-            </div>
+                <div class="step-box"><span class="step-title">
+                    
+                    <img src="img/Caso Practico 1 - Etiqueta.jpg" alt="Generar imagen para el Caso 1" class="rounded-xl shadow-lg border border-slate-200 w-full md:w-3/4 max-w-2xl mx-auto block bg-slate-100 min-h-[150px] text-center" style="font-style: italic; color: #888; line-height: 150px;">
+
+                </div>
 
             <!-- CP2 -->
             <div class="case-card color-crypto">
@@ -89,10 +89,13 @@
                     <h3 class="font-bold text-lg">Caso 2: Factorización (Euclides)</h3>
                     <span class="badge bg-crypto">CP2</span>
                 </div>
-                <div class="step-box"><span class="step-title">Paso 1: Entender el objetivo</span><div class="step-content">Necesitamos el inverso modular <strong>d</strong> tal que <em>e·d ≡ 1 (mod φ)</em>.</div></div>
-                <div class="step-box"><span class="step-title">Paso 2: Algoritmo Euclides</span><div class="step-content">Aplica el Algoritmo de Euclides Extendido a <strong>(e, φ)</strong> para encontrar coeficientes.</div></div>
-                <div class="step-box"><span class="step-title">Paso 3: Obtener Inverso</span><div class="step-content">El coeficiente resultante correspondiente a <strong>e</strong> es la clave privada <strong>d</strong>.</div></div>
-                <div class="step-box"><span class="step-title">Paso 4: Verificación</span><div class="step-content">Comprobar que (e × d) % φ == 1.</div></div>
+
+                <div class="step-box"><span class="step-title">
+                    
+                    <img src="img/Caso Practico 2 - Etiqueta.jpg" alt="Generar imagen para el Caso 1" class="rounded-xl shadow-lg border border-slate-200 w-full md:w-3/4 max-w-2xl mx-auto block bg-slate-100 min-h-[150px] text-center" style="font-style: italic; color: #888; line-height: 150px;">
+
+                </div>
+
             </div>
 
             <!-- CP3 -->
