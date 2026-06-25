@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Chuleta Maestra - 24 Casos Prácticos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media print {
+            body { background: white; }
+            .no-print { display: none; }
+            section { break-inside: avoid; }
+        }
+        
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .formula-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen p-4 md:p-8">
+
+    <!-- HEADER -->
+    <header class="max-w-7xl mx-auto mb-8 text-center fade-in">
+        <h1 class="text-4xl md:text-5xl font-black text-slate-900 mb-3">📘 CHULETA MAESTRA</h1>
+        <p class="text-xl text-slate-600">24 Casos Prácticos Resueltos | Criptografía • Blockchain • Learning Analytics</p>
+        <div class="mt-4 flex justify-center gap-3 no-print">
+            <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg font-bold transition">🖨️ Imprimir PDF</button>
+            <button onclick="toggleDarkMode()" class="bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-bold transition">🌙 Modo Oscuro</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto space-y-8 fade-in">
+
+        <!-- BLOQUE I: CRIPTOGRAFÍA -->
+        <section id="cripto" class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="bg-gradient-to-r from-violet-600 to-indigo-600 text-white p-6">
+                <h2 class="text-3xl font-black flex items-center gap-3">
+                    🔐 BLOQUE I: CRIPTOGRAFÍA
+                </h2>
+                <p class="text-sm opacity-90 mt-1">Casos Prácticos 1-6 | Seguridad Simétrica y Asimétrica</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-3 font-bold text-slate-700">Caso</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Tema</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Método/Símbolo</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Flujo Clave (Siglas)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-violet-50 text-violet-700">#1</td>
+                                <td class="px-4 py-3 font-semibold">Primalidad</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">MR Test</code></td>
+                                <td class="px-4 py-3">$n-1 = d·2^s$ → Base <strong>a</strong> → $x=a^d \bmod n$ → Iterar $x^2$ s veces</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-blue-50 text-blue-700">#2</td>
+                                <td class="px-4 py-3 font-semibold">Factorización</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Euclides Exp.</code></td>
+                                <td class="px-4 py-3">$\text{mcd}(a,b)$ para encontrar inverso modular <strong>d</strong> en RSA</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-yellow-50 text-yellow-700">#3</td>
+                                <td class="px-4 py-3 font-semibold">Simétrico</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">DES</code></td>
+                                <td class="px-4 py-3">Clave 56bits → Bloque 64bit → Feistel Network → Mismo key cifrar/descifrar</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-red-50 text-red-700">#4</td>
+                                <td class="px-4 py-3 font-semibold">Asimétrico</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">RSA</code></td>
+                                <td class="px-4 py-3">Generar $(p,q,n,\phi,e,d)$ → Cifrar $C=M^e \bmod n$ → Descifrar $M=C^d \bmod n$</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-cyan-50 text-cyan-700">#5</td>
+                                <td class="px-4 py-3 font-semibold">Simétrico Moderno</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">AES-CBC</code></td>
+                                <td class="px-4 py-3">Clave 128/256bit → IV aleatorio → Bloque XOR + Cifrado → Encadenado</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-green-50 text-green-700">#6</td>
+                                <td class="px-4 py-3 font-semibold">Integridad</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">SHA-256</code></td>
+                                <td class="px-4 py-3">Calcula Hash(H) → Envía [Msg+H] → Recibe calcula H' → Compara H=H'? ✅</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- REGLA RÁPIDA -->
+                <div class="mt-6 bg-slate-900 text-white p-5 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3 text-yellow-400">🛡️ Regla Rápida Cripto</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-blue-400 mb-2">SIMÉTRICO</span>
+                            <p>AES/DES → 1 clave rápida, distribución difícil</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-purple-400 mb-2">ASIMÉTRICO</span>
+                            <p>RSA/ECC → 2 claves segura, intercambio sin canal seguro</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-green-400 mb-2">HASH</span>
+                            <p>SHA-256 → Integridad, no reversible, efecto avalancha</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOQUE II: BLOCKCHAIN -->
+        <section id="blockchain" class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="bg-gradient-to-r from-cyan-600 to-teal-600 text-white p-6">
+                <h2 class="text-3xl font-black flex items-center gap-3">
+                    🔗 BLOQUE II: BLOCKCHAIN
+                </h2>
+                <p class="text-sm opacity-90 mt-1">Casos Prácticos 7-14 | Consenso y Smart Contracts</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-3 font-bold text-slate-700">Caso</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Tema</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Método/Símbolo</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Flujo Clave (Siglas)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-indigo-50 text-indigo-700">#7</td>
+                                <td class="px-4 py-3 font-semibold">Estructura Bloque</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Block Header</code></td>
+                                <td class="px-4 py-3">Tx Data + HashAnt + Timestamp + Nonce + HashActual</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-orange-50 text-orange-700">#8</td>
+                                <td class="px-4 py-3 font-semibold">Minado PoW</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Proof of Work</code></td>
+                                <td class="px-4 py-3">Agrupar Tx → Buscar nonce con Hash < Target → Verificación red → Recompensa</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-pink-50 text-pink-700">#9</td>
+                                <td class="px-4 py-3 font-semibold">Minado PoS</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Proof of Stake</code></td>
+                                <td class="px-4 py-3">Apuesta (Staking) → Selección aleatoria → Propone bloque → Attestation → Slashing si mal</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-teal-50 text-teal-700">#10</td>
+                                <td class="px-4 py-3 font-semibold">Smart Contract</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Ethereum/ETH</code></td>
+                                <td class="px-4 py-3">Código if-then → Despliegue → Espera trigger → Ejecución automática → Estado inmutable</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-emerald-50 text-emerald-700">#11</td>
+                                <td class="px-4 py-3 font-semibold">Consenso DLT</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">BFT/PBFT</code></td>
+                                <td class="px-4 py-3">Nodos votan → 2/3 mayoría valida → Tolerancia fallos bizantinos</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-purple-50 text-purple-700">#12</td>
+                                <td class="px-4 py-3 font-semibold">Escalabilidad</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Layer 2</code></td>
+                                <td class="px-4 py-3">Canales fuera cadena → Transacciones rápidas → Settlement on-chain al final</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-red-50 text-red-700">#13</td>
+                                <td class="px-4 py-3 font-semibold">Forks & Hard</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Soft/Hard Fork</code></td>
+                                <td class="px-4 py-3">Actualización compatible vs incompatible → División cadena → Comunidad split</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-gray-50 text-gray-700">#14</td>
+                                <td class="px-4 py-3 font-semibold">Ataques Red</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">51% Attack</code></td>
+                                <td class="px-4 py-3">Minador controla >51% hash rate → Doble gasto posible → Coste prohibitivo en redes grandes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- REGLA RÁPIDA -->
+                <div class="mt-6 bg-slate-900 text-white p-5 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3 text-cyan-400">⛓️ Regla Rápida Blockchain</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-orange-400 mb-2">POW</span>
+                            <p>(Bitcoin) Energía, mineros resuelven puzzles, seguro pero lento</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-pink-400 mb-2">POS</span>
+                            <p>(ETH 2.0) Apuesta monedas, validadores, eficiente energía</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-teal-400 mb-2">SMART CONTRATO</span>
+                            <p>If-then auto, immutabilidad, código = ley</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOQUE III: LEARNING ANALYTICS -->
+        <section id="analytics" class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="bg-gradient-to-r from-pink-600 to-rose-600 text-white p-6">
+                <h2 class="text-3xl font-black flex items-center gap-3">
+                    📊 BLOQUE III: LEARNING ANALYTICS
+                </h2>
+                <p class="text-sm opacity-90 mt-1">Casos Prácticos 15-24 | Minería de Datos y Herramientas</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-4 py-3 font-bold text-slate-700">Caso</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Tema</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Método/Símbolo</th>
+                                <th class="px-4 py-3 font-bold text-slate-700">Flujo Clave (Siglas)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-pink-50 text-pink-700">#15</td>
+                                <td class="px-4 py-3 font-semibold">Minería Datos</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">KDD Process</code></td>
+                                <td class="px-4 py-3">Selección → Preproceso → Transformación → Mining → Interpretación</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-blue-50 text-blue-700">#16</td>
+                                <td class="px-4 py-3 font-semibold">Clustering</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">K-Means</code></td>
+                                <td class="px-4 py-3">Elegir K centros → Asignar pts→Calcular centroides→Iterar hasta convergencia</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-yellow-50 text-yellow-700">#17</td>
+                                <td class="px-4 py-3 font-semibold">Clasificación</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Decision Tree</code></td>
+                                <td class="px-4 py-3">Split por atributo info.gain → Crear nodos hojas → Predecir clase nueva inst</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-green-50 text-green-700">#18</td>
+                                <td class="px-4 py-3 font-semibold">Regresión</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Linear/Logistic</code></td>
+                                <td class="px-4 py-3">Ajustar línea $y=mx+b$ o sigmoid → Minimizar MSE → Predecir valor continuo/binario</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-purple-50 text-purple-700">#19</td>
+                                <td class="px-4 py-3 font-semibold">Reglas Asociación</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Apriori</code></td>
+                                <td class="px-4 py-3">Frecuent Itemsets → Calcular Support/Confidence → Generar reglas fuerte</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-cyan-50 text-cyan-700">#20</td>
+                                <td class="px-4 py-3 font-semibold">Visualización</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Tableau</code></td>
+                                <td class="px-4 py-3">Seleccionar métrica KPI → Elegir gráfico (barra/línea/pie) → Interactividad filtros</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-red-50 text-red-700">#21</td>
+                                <td class="px-4 py-3 font-semibold">Alertas Tempranas</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Risk Model</code></td>
+                                <td class="px-4 py-3">Colectar logs LMS → Feature Engineering → Predicción riesgo → Trigger intervención docente</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-slate-50 text-slate-700">#22</td>
+                                <td class="px-4 py-3 font-semibold">Desarrollo Tool</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">Python/R API</code></td>
+                                <td class="px-4 py-3">Conexión LMS REST API → Pandas DataFrame → Sklearn model → Streamlit dashboard</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-orange-50 text-orange-700">#23</td>
+                                <td class="px-4 py-3 font-semibold">Ética & Privacy</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">RGPD</code></td>
+                                <td class="px-4 py-3">Consentimiento → Minimización datos → Pseudónimo → Retención tiempo necesario</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="px-4 py-3 font-bold bg-emerald-50 text-emerald-700">#24</td>
+                                <td class="px-4 py-3 font-semibold">Feedback Loop</td>
+                                <td class="px-4 py-3"><code class="bg-slate-100 px-2 py-1 rounded text-xs font-mono">UBA/UEBA</code></td>
+                                <td class="px-4 py-3">User Behavior Analysis → Detect anomalías → Adaptar contenido → Mejora continua ML</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- REGLA RÁPIDA -->
+                <div class="mt-6 bg-slate-900 text-white p-5 rounded-lg">
+                    <h3 class="font-bold text-lg mb-3 text-pink-400">🎓 Regla Rápida LA</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-blue-400 mb-2">SUPERVISADO</span>
+                            <p>Etiqueta conocida (Clasificación/Regresión) → Decision Tree, Logistic Reg</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-green-400 mb-2">NO SUPERVISADO</span>
+                            <p>Sin etiqueta (Clustering) → K-Means, Apriori</p>
+                        </div>
+                        <div class="bg-slate-800 p-4 rounded">
+                            <span class="block font-bold text-purple-400 mb-2">SEMI-SUPERVISADO</span>
+                            <p>Mixto → Poco labeled, mucho unlabeled data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FÓRMULAS CLAVE -->
+        <section class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6">
+                <h2 class="text-3xl font-black flex items-center gap-3">
+                    📐 FÓRMULAS CLAVE
+                </h2>
+                <p class="text-sm opacity-90 mt-1">Memoriza para el examen</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">RSA Cifrado</div>
+                        <div class="text-xl font-mono font-bold">$C = M^e \bmod n$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">RSA Descifrado</div>
+                        <div class="text-xl font-mono font-bold">$M = C^d \bmod n$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">Hash</div>
+                        <div class="text-xl font-mono font-bold">$Hash(M) = H$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">Validación Bloque</div>
+                        <div class="text-xl font-mono font-bold">$H_{bloque} = SHA256(header)$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">Miller-Rabin</div>
+                        <div class="text-xl font-mono font-bold">$x = a^d \bmod n$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">K-Means Centroides</div>
+                        <div class="text-xl font-mono font-bold">$Cluster_i = \frac{\sum pts}{K}$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">Support (Apriori)</div>
+                        <div class="text-xl font-mono font-bold">$Support = \frac{Freq(A∪B)}{Total}$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">Confidence (Apriori)</div>
+                        <div class="text-xl font-mono font-bold">$Confidence = \frac{Support(A∪B)}{Support(A)}$</div>
+                    </div>
+                    <div class="formula-box text-white p-4 rounded-lg">
+                        <div class="text-xs opacity-80 mb-1">Lineal Regresión</div>
+                        <div class="text-xl font-mono font-bold">$y = mx + b$</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CHECKLIST PRE-EXAMEN -->
+        <section class="bg-white rounded-xl card-shadow overflow-hidden">
+            <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6">
+                <h2 class="text-3xl font-black flex items-center gap-3">
+                    ✅ CHECKLIST PRE-EXAMEN
+                </h2>
+                <p class="text-sm opacity-90 mt-1">Revisa estos conceptos antes del examen</p>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">Diferenciar SIMÉTRICO vs ASIMÉTRICO</span>
+                            <p class="text-sm text-slate-500">1 clave vs 2 claves, velocidad, distribución</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">Flujo Miller-Rabin paso a paso</span>
+                            <p class="text-sm text-slate-500">Descomposición n-1 → base a → iteración x²</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">Por qué CBC mejor que ECB en AES</span>
+                            <p class="text-sm text-slate-500">CBC enmascara patrones, ECB revela repeticiones</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">PoW vs PoS ventajas/desventajas</span>
+                            <p class="text-sm text-slate-500">Energía vs eficiencia, seguridad centralizada</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">Smart contract auto-ejecución lógica</span>
+                            <p class="text-sm text-slate-500">If-then sin intermediarios, código = ley</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">K-means convergencia algoritmo</span>
+                            <p class="text-sm text-slate-500">Iterar asignación-centroides hasta estabilidad</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">Supervisado vs No supervisado ejemplos</span>
+                            <p class="text-sm text-slate-500">Etiquetas conocidas vs sin etiquetas</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">LMS API flujo integración herramienta LA</span>
+                            <p class="text-sm text-slate-500">REST API → Pandas → Dashboard Streamlit</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-3 p-4 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100 transition">
+                        <input type="checkbox" class="mt-1 w-5 h-5 rounded border-slate-300 text-green-600 focus:ring-green-500">
+                        <div>
+                            <span class="font-bold text-slate-700">RGPD principios minimización/consentimiento</span>
+                            <p class="text-sm text-slate-500">Datos necesarios, permiso explícito, retención limitada</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-7xl mx-auto mt-10 text-center text-slate-500 text-sm pb-8">
+        <p>© 2026 | Chuleta Maestra - Análisis de Datos | Úsala responsablemente durante el estudio</p>
+    </footer>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            document.querySelectorAll('section').forEach(el => {
+                el.classList.toggle('bg-slate-900', isDark);
+                el.classList.toggle('shadow-lg', isDark);
+            });
+        }
+
+        // Auto-check checkboxes on click (for studying purposes)
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                localStorage.setItem('checklist_' + Date.now(), cb.checked);
+            });
+        });
+    </script>
+</body>
+</html>
+
