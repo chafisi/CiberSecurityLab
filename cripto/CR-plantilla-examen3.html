@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📘 Chuleta Extendida: Pasos Lógicos (24 Casos)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Grid Layout for 4 items per row */
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        @media print {
+            body { background: white; font-size: 11pt; }
+            .no-print { display: none; }
+            .case-card { break-inside: avoid; page-break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+            .step-box { border-bottom: 1px dashed #ccc !important; }
+        }
+
+        .case-card {
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .case-card:hover { transform: translateY(-3px); }
+        
+        .step-box {
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .step-box:last-child { border-bottom: none; }
+        
+        .step-title { font-weight: 700; font-size: 0.85rem; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; }
+        .step-content { font-size: 0.9rem; color: #1e293b; margin-top: 4px; line-height: 1.4; }
+        
+        .color-crypto { border-left-color: #8b5cf6; } /* Violeta */
+        .color-block { border-left-color: #0ea5e9; }   /* Azul */
+        .color-la { border-left-color: #ec4899; }      /* Rosa */
+        
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; }
+        .bg-crypto { background-color: #ede9fe; color: #7c3aed; }
+        .bg-block { background-color: #e0f2fe; color: #0284c7; }
+        .bg-la { background-color: #fce7f3; color: #db2777; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans p-4 md:p-8">
+
+    <header class="max-w-[1600px] mx-auto mb-8 text-center fade-in no-print">
+        <h1 class="text-4xl font-black text-slate-900 mb-2">🧠 CHULETA EXTENDIDA: PASO A PASO</h1>
+        <p class="text-lg text-slate-600">Guía de resolución lógica para los 24 Casos Prácticos</p>
+        <div class="mt-4">
+            <button onclick="window.print()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg font-bold transition shadow-md">🖨️ Imprimir PDF</button>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto fade-in">
+
+        <!-- BLOQUE CRIPTOGRAFÍA -->
+        <h2 class="text-2xl font-bold text-violet-700 mb-4 flex items-center gap-2">
+            <span>🔐</span> Criptografía (Casos 1-6)
+        </h2>
+        <div class="case-grid mb-12">
+            
+            <!-- CP1 -->
+            <div class="case-card color-crypto">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 1: Primalidad (Miller-Rabin)</h3>
+                    <span class="badge bg-crypto">CP1</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Descomposición</span><div class="step-content">Expresa <strong>n-1 = d · 2^s</strong>. Divide por 2 hasta que quede impar (d).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Base Aleatoria</span><div class="step-content">Elige un número <strong>a</strong> tal que 1 &lt; a &lt; n-1.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Cálculo Inicial</span><div class="step-content">Calcula <strong>x = a^d mod n</strong>.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Iteración</span><div class="step-content">Si x ≠ 1 y x ≠ n-1, cuadrar (x²) repetidamente s veces. Si nunca llega a n-1 → COMPUESTO.</div></div>
+            </div>
+
+            <!-- CP2 -->
+            <div class="case-card color-crypto">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 2: Factorización (Euclides)</h3>
+                    <span class="badge bg-crypto">CP2</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Entender el objetivo</span><div class="step-content">Necesitamos el inverso modular <strong>d</strong> tal que <em>e·d ≡ 1 (mod φ)</em>.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Algoritmo Euclides</span><div class="step-content">Aplica el Algoritmo de Euclides Extendido a <strong>(e, φ)</strong> para encontrar coeficientes.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Obtener Inverso</span><div class="step-content">El coeficiente resultante correspondiente a <strong>e</strong> es la clave privada <strong>d</strong>.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Verificación</span><div class="step-content">Comprobar que (e × d) % φ == 1.</div></div>
+            </div>
+
+            <!-- CP3 -->
+            <div class="case-card color-crypto">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 3: Simétrico (DES)</h3>
+                    <span class="badge bg-crypto">CP3</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Acuerdo Previa</span><div class="step-content">Alice y Bob comparten una única clave secreta (56 bits efectivos).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Bloqueo</span><div class="step-content">Alice divide el mensaje en bloques fijos de <strong>64 bits</strong>.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Procesamiento Feistel</span><div class="step-content">Aplica 16 rondas de permutaciones, sustituciones y XOR con subclaves derivadas de la principal.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Descifrado Inverso</span><div class="step-content">Bob usa la misma clave pero aplica las operaciones en orden inverso para recuperar el texto.</div></div>
+            </div>
+
+            <!-- CP4 -->
+            <div class="case-card color-crypto">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 4: Asimétrico (RSA)</h3>
+                    <span class="badge bg-crypto">CP4</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Generación (Bob)</span><div class="step-content">Genera primos p, q. Calcula n=p·q y φ=(p-1)(q-1). Elige e y calcula d.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Distribución</span><div class="step-content">Bob publica <strong>(e, n)</strong> (Clave Pública). Oculta <strong>d</strong> (Clave Privada).</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Cifrado (Alice)</span><div class="step-content">Convierte mensaje M a número. Calcula <strong>C = M^e mod n</strong> usando la pública.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Descifrado</span><div class="step-content">Bob recibe C. Calcula <strong>M = C^d mod n</strong> con su privada. Solo él puede hacerlo.</div></div>
+            </div>
+
+            <!-- CP5 -->
+            <div class="case-card color-crypto">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 5: Moderno (AES-CBC)</h3>
+                    <span class="badge bg-crypto">CP5</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Selección Clave</span><div class="step-content">Acuerdan clave larga (128/256 bits). Más segura que DES.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Vector IV</span><div class="step-content">Alice genera un <strong>IV aleatorio</strong> único para esta comunicación.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Encadenamiento (CBC)</span><div class="step-content">Primero: Bloque1 XOR IV. Luego: cifrar. Segundo: Bloque2 XOR SalidaAnterior. Y así sucesivamente.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Transmisión</span><div class="step-content">Envía [IV || BloquesCifrados]. Bob descifra invirtiendo el proceso (XOR con salida anterior).</div></div>
+            </div>
+
+            <!-- CP6 -->
+            <div class="case-card color-crypto">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 6: Integridad (SHA-256)</h3>
+                    <span class="badge bg-crypto">CP6</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Hash Origen</span><div class="step-content">Alice calcula H_origen = SHA256(Mensaje_original).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Empaquetado</span><div class="step-content">Envía el paquete: <strong>[Mensaje + H_origen]</strong>.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Recepción</span><div class="step-content">Bob recibe el paquete. Separa el mensaje del hash recibido.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Comparación</span><div class="step-content">Bob recalcula H_destino = SHA256(Mensaje_recibido). ¿H_origen == H_destino? Sí = Íntegro.</div></div>
+            </div>
+
+        </div>
+
+        <!-- BLOQUE BLOCKCHAIN -->
+        <h2 class="text-2xl font-bold text-blue-700 mb-4 flex items-center gap-2">
+            <span>🔗</span> Blockchain (Casos 7-14)
+        </h2>
+        <div class="case-grid mb-12">
+
+            <!-- CP7 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 7: Estructura de Bloque</h3>
+                    <span class="badge bg-block">CP7</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Datos</span><div class="step-content">Recopilar transacciones pendientes (Tx) en memoria.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Vinculación</span><div class="step-content">Incluir en el cabecera el <strong>Hash del bloque anterior</strong> (cadena).</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Timestamp & Nonce</span><div class="step-content">Añadir hora actual y buscar un <strong>Nonce</strong> aleatorio válido.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Hash Final</span><div class="step-content">Calcular SHA256(header) que cumpla la dificultad. Este es el identificador del bloque.</div></div>
+            </div>
+
+            <!-- CP8 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 8: Minería PoW</h3>
+                    <span class="badge bg-block">CP8</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Objetivo</span><div class="step-content">Encontrar un Hash < Target (Dificultad). Requiere prueba de trabajo.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Búsqueda</span><div class="step-content">Mineros prueban trillones de Nonces aleatorios restando al header.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Hallazgo</span><div class="step-content">Un minero encuentra el nonce correcto y lo anuncia a la red.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Validación</span><div class="step-content">Otros nodos verifican rápido el hash. Si es válido, añaden el bloque y dan recompensa.</div></div>
+            </div>
+
+            <!-- CP9 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 9: Consenso PoS</h3>
+                    <span class="badge bg-block">CP9</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Apuesta (Staking)</span><div class="step-content">Validadores bloquean monedas (ej. 32 ETH) como garantía.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Selección</span><div class="step-content">Protocolo elige aleatoriamente un validador basado en su apuesta.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Propuesta</span><div class="step-content">El elegido crea el bloque y lo propone.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Attestation</span><div class="step-content">Otro grupo valida el bloque. Si actúa mal, se le penaliza (<em>Slashing</em>).</div></div>
+            </div>
+
+            <!-- CP10 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 10: Smart Contracts</h3>
+                    <span class="badge bg-block">CP10</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Codificación</span><div class="step-content">Escribir lógica "If X entonces Y" en lenguaje específico (Solidity).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Despliegue</span><div class="step-content">Subir el código a la blockchain. Se asigna una dirección única.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Espera</span><div class="step-content">El contrato espera ser "disparado" por una transacción externa.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Ejecución</span><div class="step-content">Se ejecuta automáticamente sin intermediarios. El estado cambia de forma inmutable.</div></div>
+            </div>
+
+            <!-- CP11 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 11: Consenso BFT</h3>
+                    <span class="badge bg-block">CP11</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Propuesta</span><div class="step-content">Un líder propone un bloque o valor.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Votación Preliminar</span><div class="step-content">Nodos reciben y votan "Pre-prepare".</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Votación Formal</span><div class="step-content">Nodos intercambian votos ("Prepare") entre sí.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Confirmación</span><div class="step-content">Si 2/3 de los votos coinciden, el bloque se considera final (tolerancia fallos bizantinos).</div></div>
+            </div>
+
+            <!-- CP12 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 12: Escalabilidad (L2)</h3>
+                    <span class="badge bg-block">CP12</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Canales Off-chain</span><div class="step-content">Usuarios abren canal de pagos fuera de la cadena principal.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Transacciones Rápidas</span><div class="step-content">Intercambian firmas digitales múltiples veces instantáneamente.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Cierre</span><div class="step-content">Cuando terminan, cierran el canal.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Settlement</span><div class="step-content">Solo el resultado final se graba en la cadena principal (On-chain), ahorrando gas.</div></div>
+            </div>
+
+            <!-- CP13 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 13: Forks</h3>
+                    <span class="badge bg-block">CP13</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Actualización</span><div class="step-content">Propuesta de cambio en las reglas del protocolo.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Soft Fork</span><div class="step-content">Reglas más restrictivas. Compatible hacia atrás. No divide red.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Hard Fork</span><div class="step-content">Reglas incompatibles. Dividen la historia en dos cadenas separadas.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Comunidad</span><div class="step-content">La comunidad decide qué cadena seguir, creando dos activos (ej. BTC y BCH).</div></div>
+            </div>
+
+            <!-- CP14 -->
+            <div class="case-card color-block">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 14: Ataque 51%</h3>
+                    <span class="badge bg-block">CP14</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Control</span><div class="step-content">Un entidad obtiene >51% del poder de hash (minería) o stake.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Doble Gasto</span><div class="step-content">Puede revertir sus propias transacciones gastando dos veces las mismas monedas.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Exclusión</span><div class="step-content">Puede impedir confirmación de otros bloques.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Realidad</span><div class="step-content">Es extremadamente costoso en redes grandes (Bitcoin), por eso es raro.</div></div>
+            </div>
+
+        </div>
+
+        <!-- BLOQUE LEARNING ANALYTICS -->
+        <h2 class="text-2xl font-bold text-pink-700 mb-4 flex items-center gap-2">
+            <span>📊</span> Learning Analytics (Casos 15-24)
+        </h2>
+        <div class="case-grid">
+
+            <!-- CP15 -->
+            <div class="case-card color-la">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 15: Proceso KDD</h3>
+                    <span class="badge bg-la">CP15</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Selección</span><div class="step-content">Identificar objetivos y seleccionar datos relevantes.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Preprocesado</span><div class="step-content">Limpiar datos, tratar valores nulos y ruido.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Transformación</span><div class="step-content">Normalizar o reducir dimensionalidad de datos.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Mining</span><div class="step-content">Aplicar algoritmos (Cluster/Tree) para extraer patrones.</div></div>
+                <div class="step-box"><span class="step-title">Paso 5: Evaluación</span><div class="step-content">Interpretar resultados y validar si cumplen el objetivo.</div></div>
+            </div>
+
+            <!-- CP16 -->
+            <div class="case-card color-la">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 16: Clustering (K-Means)</h3>
+                    <span class="badge bg-la">CP16</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Elección K</span><div class="step-content">Decidir número de grupos (centroides) iniciales.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Asignación</span><div class="step-content">Asignar cada punto al centroide más cercano (distancia euclídea).</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Actualización</span><div class="step-content">Recalcular la posición de los centroides como media de los puntos asignados.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Convergencia</span><div class="step-content">Repetir pasos 2 y 3 hasta que los centroides ya no se muevan.</div></div>
+            </div>
+
+            <!-- CP17 -->
+            <div class="case-card color-la">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 17: Clasificación (Árbol)</h3>
+                    <span class="badge bg-la">CP17</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Raíz</span><div class="step-content">Elegir atributo que mejor separa clases (Information Gain).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: División</span><div class="step-content">Crear ramas según los valores posibles del atributo.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Recursividad</span><div class="step-content">Repetir el proceso en cada sub-nodo hasta pureza.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Hojas</span><div class="step-content">Las hojas finales representan la clase predicha (Sí/No, Aprobo/Reprobó).</div></div>
+            </div>
+
+            <!-- CP18 -->
+            <div class="case-card color-la">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 18: Regresión Lineal</h3>
+                    <span class="badge bg-la">CP18</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Datos</span><div class="step-content">Recopilar pares (X, Y) ej. Horas estudio vs Nota.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Modelo</span><div class="step-content">Asumir relación lineal: Y = mX + b.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Ajuste</span><div class="step-content">Usar mínimos cuadrados para hallar m y b que minimicen el error.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Predicción</span><div class="step-content">Insertar nuevo X en la fórmula para predecir Y.</div></div>
+            </div>
+
+            <!-- CP19 -->
+            <div class="case-card color-la">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 19: Asociación (Apriori)</h3>
+                    <span class="badge bg-la">CP19</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Frecuente Items</span><div class="step-content">Contar apariciones de cada ítem individualmente.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Filtrado Support</span><div class="step-content">Descartar ítems que no superan el mínimo soporte (%).</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Combinaciones</span><div class="step-content">Generar pares/tríos de ítems frecuentes y calcular su soporte.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Reglas</span><div class="step-content">Calcular confianza: P(A|B). Generar regla fuerte: A → B.</div></div>
+            </div>
+
+            <!-- CP20 -->
+            <div class="case-card color-la">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 20: Visualización</h3>
+                    <span class="badge bg-la">CP20</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Métrica KPI</span><div class="step-content">Definir qué dato es crucial (ej. Tasa de abandono).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Tipo Gráfico</span><div class="step-content">Elegir según dato: Barras (comparación), Línea (tendencia), Pastel (partes).</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Diseño Limpio</span><div class="step-content">Evitar colores innecesarios, usar etiquetas claras.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Interactividad</span><div class="step-content">Añadir filtros para permitir "drill-down" al usuario.</div></div>
+            </div>
+
+            <!-- CP21 -->
+            <div class="case-card color-la border-l-4 border-orange-500">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 21: Riesgo Académico</h3>
+                    <span class="badge bg-orange-100 text-orange-700">CP21</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Evaluar Reglas</span><div class="step-content">Aplicar condiciones a cada alumno:<br>• A01: accesos≤2 → <strong>SÍ</strong> (Riesgo)<br>• A02: entregas≥40 → <strong>NO</strong><br>• A03: accesos≤2 → <strong>SÍ</strong><br>• A04: entregas≥40 → <strong>NO</strong><br>• A05: entregas<40 → <strong>SÍ</strong></div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Ordenar Prioridad</span><div class="step-content">Ordenar solo los "SÍ" (Riesgo) por menor % entregas:<br>1. <strong>A03</strong> (0%)<br>2. <strong>A01</strong> (20%)<br>3. <strong>A05</strong> (30%)<br>Luego los "NO" (Mantener ritmo).</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Definir Acción</span><div class="step-content">• Grupo Riesgo (A03/A01/A05): Enviar mensaje personal + recordatorio entrega.<br>• Grupo Seguro: Feedback positivo.</div></div>
+                <div class="step-box"><span class="step-title">Resultado Final</span><div class="step-content">Lista priorizada de intervención docente basada en severidad.</div></div>
+            </div>
+
+            <!-- CP22 -->
+            <div class="case-card color-la border-l-4 border-teal-500">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 22: Predicción Regla</h3>
+                    <span class="badge bg-teal-100 text-teal-700">CP22</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Aplicar Umbral</span><div class="step-content">Regla: Si Notas<50 → Predicción 1 (Riesgo), sino verificar ausencias.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Evaluar Casos</span><div class="step-content">• S01 (30<50) → <strong>Pred 1</strong> (Real 1) ✅<br>• S02 (45<50) → <strong>Pred 1</strong> (Real 1) ✅<br>• S03 (80≥50, Aus=1) → <strong>Pred 0</strong> (Real 0) ✅<br>• S05 (20<50) → <strong>Pred 1</strong> (Real 1) ✅</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Validar Resto</span><div class="step-content">• S04, S06, S08 (Notas altas, ausencias bajas) → Pred 0 (Correcto).<br>• Total Aciertos: <strong>8 de 8 (100%)</strong>.</div></div>
+                <div class="step-box"><span class="step-title">Conclusión</span><div class="step-content">La regla simple funciona perfectamente en este conjunto pequeño y limpio.</div></div>
+            </div>
+
+            <!-- CP23 -->
+            <div class="case-card color-la border-l-4 border-purple-500">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 23: Script Python Riesgo</h3>
+                    <span class="badge bg-purple-100 text-purple-700">CP23</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Datos List</span><div class="step-content">Crear lista diccionarios: A(8h,7), B(3h,4), C(10h,6).</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Loop For</span><div class="step-content">Iterar sobre cada estudiante.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Condición IF</span><div class="step-content">Comprobar: `if horas < 5 OR nota < 5`.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Resultado</span><div class="step-content">• A: 8≥5 y 7≥5 → <strong>Estable</strong><br>• B: 3<5 → <strong>Riesgo</strong><br>• C: 10≥5 y 6≥5 → <strong>Estable</strong></div></div>
+            </div>
+
+            <!-- CP24 -->
+            <div class="case-card color-la border-l-4 border-green-500">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-start">
+                    <h3 class="font-bold text-lg">Caso 24: Dashboard Simple</h3>
+                    <span class="badge bg-green-100 text-green-700">CP24</span>
+                </div>
+                <div class="step-box"><span class="step-title">Paso 1: Gráficos Básicos</span><div class="step-content">Usar barras (cantidad), dispersión (relación), líneas (tiempo). Evitar complejidad 3D.</div></div>
+                <div class="step-box"><span class="step-title">Paso 2: Claridad</span><div class="step-content">Títulos descriptivos ("Rendimiento Promedio"), leyendas explícitas y unidades claras.</div></div>
+                <div class="step-box"><span class="step-title">Paso 3: Semántica Visual</span><div class="step-content">Colores: Verde (Mejora/OK), Rojo/Naranja (Riesgo). Iconos para resaltar alertas.</div></div>
+                <div class="step-box"><span class="step-title">Paso 4: Interpretación</span><div class="step-content">Añadir texto explicativo debajo de cada gráfico. El usuario debe entenderlo "de un vistazo" sin conocimientos técnicos.</div></div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="max-w-[1600px] mx-auto mt-12 text-center text-slate-400 text-sm pb-8 no-print">
+        <p>© 2026 | Guía de Resolución Lógica - Análisis de Datos</p>
+    </footer>
+
+</body>
+</html> 
