@@ -74,16 +74,24 @@
                         <li><strong>Paso 4 (Evaluación):</strong> Se mide el error. Usamos <strong>RMSE</strong> (Raíz del Error Cuadrático Medio) y <strong>R²</strong>.</li>
                     </ul>
                 </div>
-                <div class="bg-blue-50 p-4 md:w-1/3 flex flex-col items-center justify-center border-l border-blue-100">
-                    <div class="text-xs text-slate-500 mb-2 font-mono text-center">Visualización del Algoritmo</div>
-                    
-
-[Image of Linear Regression model showing data points and line of best fit]
-
+                
+            
+                 <!--Div centro clustering k-means -->
+                <div class="p-6 flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">🎯</span>
+                        <h3 class="text-xl font-bold text-violet-900">Clustering (K-Means)</h3>
+                        <span class="bg-violet-100 text-violet-800 text-xs px-2 py-1 rounded font-bold uppercase">No Supervisado</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4"><strong>Objetivo:</strong> Descubrir <em>perfiles o segmentos</em> ocultos en una base de datos sin etiquetas previas.</p>
+                    <ul class="text-sm text-slate-700 space-y-2">
+                        <li><strong>Paso 1 y 2 (Datos):</strong> Datos puros sin etiquetas. <strong>Vital normalizar</strong> para que el cálculo de distancias sea justo.</li>
+                        <li><strong>Paso 3 (Motor):</strong> Se elige 'K' (nº de grupos). El algoritmo coloca centroides y agrupa los puntos por cercanía iterativamente.</li>
+                        <li><strong>Paso 4 (Evaluación):</strong> Método del Codo para elegir K. Validación con el <strong>Coeficiente de Silueta</strong> (cohesión interna de los grupos).</li>
+                    </ul>
                 </div>
-            </div>
 
-            <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-l-8 border-l-teal-500 overflow-hidden">
+                <!--Div centro árboles de decisión-->
                 <div class="p-6 flex-1">
                     <div class="flex items-center gap-3 mb-4">
                         <span class="text-3xl">🌳</span>
@@ -101,26 +109,10 @@
                     <div class="text-xs text-slate-500 mb-2 font-mono text-center">Estructura del Algoritmo</div>
                     
                 </div>
-            </div>
+            
 
-            <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-md border border-l-8 border-l-violet-500 overflow-hidden">
-                <div class="p-6 flex-1">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="text-3xl">🎯</span>
-                        <h3 class="text-xl font-bold text-violet-900">Clustering (K-Means)</h3>
-                        <span class="bg-violet-100 text-violet-800 text-xs px-2 py-1 rounded font-bold uppercase">No Supervisado</span>
-                    </div>
-                    <p class="text-sm text-slate-600 mb-4"><strong>Objetivo:</strong> Descubrir <em>perfiles o segmentos</em> ocultos en una base de datos sin etiquetas previas.</p>
-                    <ul class="text-sm text-slate-700 space-y-2">
-                        <li><strong>Paso 1 y 2 (Datos):</strong> Datos puros sin etiquetas. <strong>Vital normalizar</strong> para que el cálculo de distancias sea justo.</li>
-                        <li><strong>Paso 3 (Motor):</strong> Se elige 'K' (nº de grupos). El algoritmo coloca centroides y agrupa los puntos por cercanía iterativamente.</li>
-                        <li><strong>Paso 4 (Evaluación):</strong> Método del Codo para elegir K. Validación con el <strong>Coeficiente de Silueta</strong> (cohesión interna de los grupos).</li>
-                    </ul>
-                </div>
-                <div class="bg-violet-50 p-4 md:w-1/3 flex flex-col items-center justify-center border-l border-violet-100">
-                    <div class="text-xs text-slate-500 mb-2 font-mono text-center">Agrupación de Centroides</div>
-                    
-                </div>
+               
+            
             </div>
         </section>
 
