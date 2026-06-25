@@ -60,6 +60,138 @@
         <section class="space-y-6">
             <h2 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 pb-2">Rellenando el paso "3 y 4" según la técnica</h2>
 
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start w-full max-w-7xl mx-auto">
+    
+                <div class="bg-white p-6 rounded-xl shadow-lg border-t-8 border-blue-500 h-full flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-widest">Supervisado</div>
+                    
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4 mt-2">
+                        <span class="text-3xl">📈</span>
+                        <h3 class="text-xl font-bold text-blue-900 uppercase tracking-tight">Regresión Lineal</h3>
+                    </div>
+                    
+                    <div class="space-y-5 text-sm text-slate-700 flex-1">
+                        <div>
+                            <h4 class="font-bold text-blue-700 mb-1 flex items-center gap-2"><span>1.</span> RECOLECCIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Datos históricos.</li>
+                                <li>Variables independientes y dependiente (objetivo a adivinar).</li>
+                                <li>Limpiar nulos | Texto a num (One-hot encoding).</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-blue-700 mb-1 flex items-center gap-2"><span>2.</span> MOTOR / ENTRENAMIENTO</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong class="text-blue-900">Divide siempre:</strong> Entrenamiento (80%) | Prueba (20%).</li>
+                                <li>Ajuste de pesos/coeficientes por mínimos cuadrados.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-blue-700 mb-1 flex items-center gap-2"><span>3.</span> EVALUACIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>RMSE (Raíz del Error Cuadrático Medio):</strong> Mide la distancia de error promedio entre la predicción y el valor real (se busca el mínimo).</li>
+                                <li><strong>R²:</strong> Porcentaje de acierto o varianza explicada.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-blue-700 mb-1 flex items-center gap-2"><span>4.</span> APLICACIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Predecir un número exacto para anticipar decisiones (Ej: nota, días, precio).</li>
+                            </ul>
+                        </div>
+                    </div>
+            
+
+                    <div class="absolute top-0 right-0 bg-teal-100 text-teal-800 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-widest">Supervisado</div>
+
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4 mt-2">
+                        <span class="text-3xl">🌳</span>
+                        <h3 class="text-xl font-bold text-teal-900 uppercase tracking-tight">Árbol de Decisión</h3>
+                    </div>
+                    
+                    <div class="space-y-4 text-sm text-slate-700 flex-1">
+                        <div>
+                            <h4 class="font-bold text-teal-700 mb-1 flex items-center gap-2"><span>1.</span> RECOLECCIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Históricos con categorías dadas.</li>
+                                <li>Clasifica en 2 categorías (Ej: Cat 1 "Activo" | Cat 0 "Riesgo").</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-teal-700 mb-1 flex items-center gap-2"><span>2.</span> MOTOR / ENTRENAMIENTO</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong class="text-teal-900">Divide siempre:</strong> Entrenamiento (80%) | Prueba (20%).</li>
+                                <li>Crea ramas dividiendo el dataset con preguntas lógicas (Gini).</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-teal-700 mb-1 flex items-center gap-2"><span>3.</span> EVALUACIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Precisión y Recall.</strong></li>
+                                <li><strong>Matriz de Confusión:</strong> Para visualizar verdaderos aciertos vs falsos positivos/negativos.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-teal-700 mb-1 flex items-center gap-2"><span>4.</span> INTERPRETACIÓN / APLICACIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Muestra reglas claras legibles por humanos (<em>Si tiempo < 2h y tareas < 50% -> Riesgo</em>).</li>
+                                <li>Envío de alertas tempranas y planes personalizados.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-0 right-0 bg-violet-100 text-violet-800 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase tracking-widest">No Supervisado</div>
+
+                    <div class="flex items-center gap-3 mb-6 border-b pb-4 mt-2">
+                        <span class="text-3xl">🎯</span>
+                        <h3 class="text-xl font-bold text-violet-900 uppercase tracking-tight">Clusters (K-Means)</h3>
+                    </div>
+                    
+                    <div class="space-y-5 text-sm text-slate-700 flex-1">
+                        <div>
+                            <h4 class="font-bold text-violet-700 mb-1 flex items-center gap-2"><span>1.</span> PREPROCESAMIENTO</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Datos puros (sin etiquetas ni objetivo previo).</li>
+                                <li>Limpiar | <strong class="text-violet-900">Normalizar</strong> (crítico para las distancias).</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-violet-700 mb-1 flex items-center gap-2"><span>2.</span> MOTOR / ALGORITMO</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><em>No hay división de entrenamiento/prueba.</em></li>
+                                <li><strong>Paso 1:</strong> Elegir 'K' (nº de grupos) mediante el <em>Método del Codo</em>.</li>
+                                <li><strong>Paso 2:</strong> Coloca centroides aleatorios.</li>
+                                <li><strong>Paso 3:</strong> Agrupa puntos por cercanía iterando hasta converger.</li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-violet-700 mb-1 flex items-center gap-2"><span>3.</span> EVALUACIÓN / INTERPRETACIÓN</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Analizar los centroides finales y <strong>etiquetar grupos por patrones</strong> (humanizar el dato).</li>
+                                <li><em>Ej: Segmento "Caza ofertas" o "Ocasionales".</em></li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-violet-700 mb-1 flex items-center gap-2"><span>4.</span> BENEFICIOS</h4>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Personalización de Marketing, descubrimiento de perfiles ocultos y satisfacción del cliente.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            
             <!--div nuevo con 3 modelos-->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start w-full max-w-7xl mx-auto">
     
