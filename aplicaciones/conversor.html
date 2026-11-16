@@ -70,7 +70,7 @@
     <!-- Contenido Principal -->
     <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 sm:py-8 flex flex-col gap-6">
         
-        <div id="mergeSection" class="flex flex-col gap-6 flex-grow"></div>
+        <div id="mergeSection" class="flex flex-col gap-6 flex-grow">
         
             <!-- Zona de Carga / Drag & Drop -->
             <div id="dropZone" class="border-2 border-dashed border-slate-300 bg-white rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-slate-50/80 shadow-sm">
@@ -355,6 +355,7 @@
             listHeader.classList.remove('hidden');
             actionPanel.classList.remove('hidden');
             clearAllBtn.classList.remove('hidden');
+            
             fileCount.textContent = `${filesQueue.length} ${filesQueue.length === 1 ? 'archivo' : 'archivos'}`;
 
             filesQueue.forEach((item, index) => {
