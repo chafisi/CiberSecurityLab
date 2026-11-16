@@ -1329,7 +1329,7 @@
             showToast('Fila añadida');
         };
 
-        // Exportar a PDF conservando todo el formato enriquecido e imágenes (depurado)
+        // Exportar a PDF conservando todo el formato enriquecido e imágenes (paginación corregida, sin tocar el editor en vivo)
         window.exportEditorPdf = async function() {
             if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img, table')) {
                 showToast('El editor está vacío');
@@ -1342,36 +1342,39 @@
             const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
             showToast('Generando PDF...');
 
-            // 1. Guardar estilos y scroll actuales para restaurarlos al terminar
             const prevScrollY = window.scrollY;
-            const prevMinHeight = richEditorArea.style.minHeight;
-            const prevPadding = richEditorArea.style.padding;
+            window.scrollTo(0, 0);
 
-            // 2. Eliminar bloques vacíos finales (<div><br></div> o <p><br></p>) que generan una hoja en blanco al final
-            while (
-                richEditorArea.lastChild &&
-                (
-                    (richEditorArea.lastChild.nodeType === Node.TEXT_NODE && !richEditorArea.lastChild.textContent.trim()) ||
-                    (richEditorArea.lastChild.nodeType === Node.ELEMENT_NODE &&
-                     !richEditorArea.lastChild.innerText.trim() &&
-                     !richEditorArea.lastChild.querySelector('img, table, iframe'))
-                )
-            ) {
-                richEditorArea.removeChild(richEditorArea.lastChild);
-            }
+            // Ancho de contenido útil de A4: 210mm - 2x15mm de márgenes = 180mm (~680px a 96dpi).
+            // Fijar este ancho evita reflujos y desplazamientos que generan huecos/páginas en blanco.
+            const CONTENT_WIDTH_PX = 680;
 
-            // 3. Aplicar temporalmente break-inside: avoid a cada bloque hijo para que no corte líneas ni imágenes por la mitad
-            const blocks = richEditorArea.querySelectorAll('p, div, li, tr, img, h1, h2, h3, blockquote');
+            // 1. Clonar el editor en un contenedor limpio fuera de la vista, en vez de mutar el editor real.
+            //    Así desaparecen min-height, paddings, scroll y márgenes heredados que ensuciaban la captura.
+            const clone = richEditorArea.cloneNode(true);
+            clone.style.minHeight = 'auto';
+            clone.style.padding = '0';
+            clone.style.margin = '0';
+            clone.style.width = CONTENT_WIDTH_PX + 'px';
+            clone.style.maxWidth = CONTENT_WIDTH_PX + 'px';
+
+            const host = document.createElement('div');
+            host.style.position = 'fixed';
+            host.style.top = '0';
+            host.style.left = '0';
+            host.style.zIndex = '-1000';          // detrás de todo, no molesta visualmente
+            host.style.background = '#ffffff';
+            host.style.overflow = 'visible';
+            host.style.width = CONTENT_WIDTH_PX + 'px';
+            host.appendChild(clone);
+            document.body.appendChild(host);
+
+            // 2. Evitar cortes a mitad de línea/imagen aplicándolo nosotros, sin depender del modo 'legacy'
+            const blocks = clone.querySelectorAll('p, div, li, tr, img, h1, h2, h3, blockquote');
             blocks.forEach(el => {
-                el.dataset.prevBreakInside = el.style.breakInside || '';
                 el.style.breakInside = 'avoid';
                 el.style.pageBreakInside = 'avoid';
             });
-
-            // 4. Quitar min-height y subir scroll a 0 para evitar el hueco en blanco superior
-            richEditorArea.style.minHeight = 'auto';
-            richEditorArea.style.padding = '0px';
-            window.scrollTo(0, 0);
 
             const opt = {
                 margin:       [15, 15, 15, 15],
@@ -1380,40 +1383,47 @@
                 html2canvas:  {
                     scale: 2,
                     useCORS: true,
+                    backgroundColor: '#ffffff',
                     scrollX: 0,
                     scrollY: 0,
-                    windowWidth: richEditorArea.scrollWidth
+                    windowWidth: CONTENT_WIDTH_PX,
+                    windowHeight: clone.scrollHeight
                 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['css', 'legacy'] }
+                jsPDF:     { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                // 3. SOLO modo 'css'. El modo 'legacy' es el principal causante de páginas en
+                //    blanco al inicio: inyecta saltos según reglas page-break heredadas del documento.
+                //    El 'avoid-all' de bloques ya lo aplicamos manualmente arriba.
+                pagebreak: { mode: ['css'] }
             };
 
             try {
-                // Generar el PDF y limpiar última página si aun así quedara en blanco
-                const worker = html2pdf().set(opt).from(richEditorArea).toPdf();
+                const worker = html2pdf().set(opt).from(clone).toPdf();
                 const pdf = await worker.get('pdf');
-                const totalPages = pdf.internal.getNumberOfPages();
-                if (totalPages > 1) {
-                    const lastPage = pdf.internal.pages[totalPages];
+
+                // 4. Recorrer TODAS las páginas de atrás hacia delante y borrar las vacías.
+                //    Borrar desde el final evita desplazar los índices de las anteriores.
+                const total = pdf.internal.getNumberOfPages();
+                for (let i = total; i >= 1; i--) {
+                    const page = pdf.internal.pages[i];
                     // Una página vacía en jsPDF solo contiene los comandos de estado básicos (<= 3 entradas)
-                    if (lastPage && lastPage.length <= 3) {
-                        pdf.deletePage(totalPages);
+                    if (page && page.length <= 3) {
+                        pdf.deletePage(i);
                     }
                 }
+                // Salvaguarda: si por lo que fuera se borraran todas, dejar una página
+                if (pdf.internal.getNumberOfPages() === 0) {
+                    pdf.addPage();
+                }
+
                 await worker.save();
                 showToast('¡PDF descargado correctamente!');
             } catch (err) {
                 console.error(err);
                 showToast('Error al generar el PDF.');
             } finally {
-                // 5. Restaurar el editor exactamente como estaba
-                richEditorArea.style.minHeight = prevMinHeight;
-                richEditorArea.style.padding = prevPadding;
-                blocks.forEach(el => {
-                    el.style.breakInside = el.dataset.prevBreakInside;
-                    el.style.pageBreakInside = el.dataset.prevBreakInside;
-                    delete el.dataset.prevBreakInside;
-                });
+                // 5. Limpiar el clon y restaurar el scroll. El editor real nunca se tocó,
+                //    así que no hace falta restaurar estilos de bloques.
+                host.remove();
                 window.scrollTo(0, prevScrollY);
             }
         };
