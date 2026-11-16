@@ -15,8 +15,8 @@
     <!-- Iconos Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- html2pdf para exportar el documento del editor enriquecido con estilos e imágenes -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- jsPDF para generar PDF vectorial limpio -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
 
     <style>
         .drag-over {
@@ -1175,8 +1175,7 @@
             const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
 
             try {
-                // jsPDF ya está cargado dentro de html2pdf.bundle.min.js
-                const { jsPDF } = window.jspdf;
+                const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
                 const doc = new jsPDF({
                     unit: 'mm',
                     format: 'a4',
