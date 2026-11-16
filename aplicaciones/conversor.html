@@ -27,95 +27,189 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
 
-    <!-- Cabecera -->
+    <!-- Cabecera con navegación -->
     <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2.5">
-                <div class="bg-blue-600 text-white p-2 rounded-lg">
-                    <i data-lucide="file-stack" class="w-6 h-6"></i>
+        <div class="max-w-4xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="bg-blue-600 text-white p-2 rounded-lg">
+                        <i data-lucide="file-stack" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v3</span></h1>
+                        <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF & Image Merger</h1>
-                    <p class="text-xs text-slate-500">100% local en tu navegador · Sin subir archivos a la nube</p>
-                </div>
+                <button id="clearAllBtn" class="hidden sm:hidden text-xs text-red-600 hover:text-red-700 font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <span>Vaciar</span>
+                </button>
             </div>
-            <button id="clearAllBtn" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
-                <span>Vaciar</span>
-            </button>
+
+            <!-- Selector de herramientas -->
+            <div class="flex items-center justify-between sm:justify-end gap-2">
+                <nav class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
+                    <button type="button" id="tabMergeBtn" onclick="switchTab('merge')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="layers" class="w-4 h-4"></i>
+                        <span>Fusionar</span>
+                    </button>
+                    <button type="button" id="tabExtractBtn" onclick="switchTab('extract')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>PDF a Texto</span>
+                    </button>
+                </nav>
+
+                <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    <span>Vaciar</span>
+                </button>
+            </div>
         </div>
     </header>
 
     <!-- Contenido Principal -->
     <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 sm:py-8 flex flex-col gap-6">
-
-        <!-- Zona de Carga / Drag & Drop -->
-        <div id="dropZone" class="border-2 border-dashed border-slate-300 bg-white rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-slate-50/80 shadow-sm">
-            <input type="file" id="fileInput" multiple accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" class="hidden">
-            <div class="flex flex-col items-center justify-center gap-3">
-                <div class="bg-blue-50 text-blue-600 p-4 rounded-full">
-                    <i data-lucide="upload-cloud" class="w-8 h-8"></i>
-                </div>
-                <div>
-                    <p class="text-base sm:text-lg font-semibold text-slate-700">
-                        Arrastra aquí tus PDFs o Imágenes
-                    </p>
-                    <p class="text-sm text-slate-500 mt-1">
-                        o <span class="text-blue-600 font-medium underline">haz clic para seleccionar archivos</span> desde tu dispositivo
-                    </p>
-                </div>
-                <div class="flex flex-wrap justify-center gap-2 mt-2 text-xs text-slate-400">
-                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">PDF</span>
-                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">JPG / JPEG</span>
-                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">PNG</span>
-                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">WEBP</span>
+        
+        <div id="mergeSection" class="flex flex-col gap-6 flex-grow"></div>
+        
+            <!-- Zona de Carga / Drag & Drop -->
+            <div id="dropZone" class="border-2 border-dashed border-slate-300 bg-white rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-slate-50/80 shadow-sm">
+                <input type="file" id="fileInput" multiple accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" class="hidden">
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <div class="bg-blue-50 text-blue-600 p-4 rounded-full">
+                        <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <p class="text-base sm:text-lg font-semibold text-slate-700">
+                            Arrastra aquí tus PDFs o Imágenes
+                        </p>
+                        <p class="text-sm text-slate-500 mt-1">
+                            o <span class="text-blue-600 font-medium underline">haz clic para seleccionar archivos</span> desde tu dispositivo
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2 mt-2 text-xs text-slate-400">
+                        <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">PDF</span>
+                        <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">JPG / JPEG</span>
+                        <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">PNG</span>
+                        <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">WEBP</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Barra de herramientas y ordenación -->
-        <div id="listHeader" class="hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
-            <div class="flex items-center gap-2 text-sm text-slate-600">
-                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400 shrink-0"></i>
-                <span>Arrastra para reordenar o usa orden alfabético:</span>
+            <!-- Barra de herramientas y ordenación -->
+            <div id="listHeader" class="hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
+                <div class="flex items-center gap-2 text-sm text-slate-600">
+                    <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                    <span>Arrastra para reordenar o usa orden alfabético:</span>
+                </div>
+                
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <button type="button" id="sortAscBtn" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 cursor-pointer" title="Ordenar de A a Z">
+                        <i data-lucide="arrow-down-a-z" class="w-3.5 h-3.5 text-blue-600"></i>
+                        <span>A-Z</span>
+                    </button>
+                    <button type="button" id="sortDescBtn" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 cursor-pointer" title="Ordenar de Z a A">
+                        <i data-lucide="arrow-up-z-a" class="w-3.5 h-3.5 text-blue-600"></i>
+                        <span>Z-A</span>
+                    </button>
+                    <span id="fileCount" class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg ml-1">
+                        0 archivos
+                    </span>
+                </div>
             </div>
+
+            <!-- Lista Ordenable de Archivos -->
+            <ul id="fileList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Los elementos se insertan dinámicamente aquí -->
+            </ul>
+
+            <!-- Panel de Opciones y Botón de Acción -->
+            <div id="actionPanel" class="hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-auto">
+                <div class="flex-grow">
+                    <label for="outputFilename" class="block text-xs font-medium text-slate-500 mb-1">Nombre del archivo resultante</label>
+                    <div class="flex items-center">
+                        <input type="text" id="outputFilename" value="documento_fusionado" class="w-full sm:w-64 text-sm border border-slate-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <span class="bg-slate-100 border border-l-0 border-slate-300 text-slate-500 text-sm px-3 py-2 rounded-r-lg font-mono">.pdf</span>
+                    </div>
+                </div>
+
+                <button id="mergeBtn" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-6 py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                    <span id="mergeBtnText">Fusionar y Descargar PDF</span>
+                </button>
+            </div>
+        </div> <!-- Cierre de #mergeSection -->
+        
+        <!-- ==================== SECCIÓN 2: PDF A TEXTO ==================== -->
+        <div id="extractSection" class="hidden flex-col gap-6 flex-grow">
             
-            <div class="flex items-center gap-2 self-start sm:self-auto">
-                <button type="button" id="sortAscBtn" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 cursor-pointer" title="Ordenar de A a Z">
-                    <i data-lucide="arrow-down-a-z" class="w-3.5 h-3.5 text-blue-600"></i>
-                    <span>A-Z</span>
-                </button>
-                <button type="button" id="sortDescBtn" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 cursor-pointer" title="Ordenar de Z a A">
-                    <i data-lucide="arrow-up-z-a" class="w-3.5 h-3.5 text-blue-600"></i>
-                    <span>Z-A</span>
-                </button>
-                <span id="fileCount" class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg ml-1">
-                    0 archivos
-                </span>
-            </div>
-        </div>
-
-        <!-- Lista Ordenable de Archivos -->
-        <ul id="fileList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <!-- Los elementos se insertan dinámicamente aquí -->
-        </ul>
-
-        <!-- Panel de Opciones y Botón de Acción -->
-        <div id="actionPanel" class="hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-auto">
-            <div class="flex-grow">
-                <label for="outputFilename" class="block text-xs font-medium text-slate-500 mb-1">Nombre del archivo resultante</label>
-                <div class="flex items-center">
-                    <input type="text" id="outputFilename" value="documento_fusionado" class="w-full sm:w-64 text-sm border border-slate-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                    <span class="bg-slate-100 border border-l-0 border-slate-300 text-slate-500 text-sm px-3 py-2 rounded-r-lg font-mono">.pdf</span>
+            <!-- Zona de carga de PDF único -->
+            <div id="extractDropZone" class="border-2 border-dashed border-slate-300 bg-white rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-slate-50/80 shadow-sm">
+                <input type="file" id="extractFileInput" accept=".pdf,application/pdf" class="hidden">
+                <div class="flex flex-col items-center justify-center gap-3">
+                    <div class="bg-indigo-50 text-indigo-600 p-4 rounded-full">
+                        <i data-lucide="file-scan" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <p class="text-base sm:text-lg font-semibold text-slate-700">
+                            Arrastra aquí el PDF del que quieras extraer texto
+                        </p>
+                        <p class="text-sm text-slate-500 mt-1">
+                            o <span class="text-blue-600 font-medium underline">haz clic para seleccionar un archivo PDF</span>
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <button id="mergeBtn" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-6 py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                <i data-lucide="layers" class="w-5 h-5"></i>
-                <span id="mergeBtnText">Fusionar y Descargar PDF</span>
-            </button>
-        </div>
+            <!-- Contenedor de resultado extraído -->
+            <div id="extractResultCard" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div class="min-w-0">
+                        <h2 id="extractFileName" class="text-sm font-bold text-slate-800 truncate">archivo.pdf</h2>
+                        <p id="extractStats" class="text-xs text-slate-500">0 páginas procesadas</p>
+                    </div>
+                    <div class="flex items-center gap-2 self-start sm:self-auto">
+                        <button type="button" id="copyExtractedBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copiar texto</span>
+                        </button>
+                        <button type="button" id="resetExtractBtn" class="text-xs text-red-600 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition cursor-pointer">
+                            Otro PDF
+                        </button>
+                    </div>
+                </div>
 
+                <!-- Área de texto editable -->
+                <div>
+                    <label for="extractedTextArea" class="block text-xs font-medium text-slate-500 mb-1.5">Texto extraído (puedes editarlo antes de descargar):</label>
+                    <textarea id="extractedTextArea" rows="12" class="w-full text-sm font-mono text-slate-800 bg-slate-50 border border-slate-300 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white leading-relaxed" placeholder="El texto extraído aparecerá aquí..."></textarea>
+                </div>
+
+                <!-- Botones de descarga en múltiples formatos -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    <div class="flex-grow">
+                        <label for="extractOutputName" class="block text-xs font-medium text-slate-500 mb-1">Nombre del archivo a descargar</label>
+                        <input type="text" id="extractOutputName" value="texto_extraido" class="w-full sm:w-64 text-sm bg-white border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="downloadTxtBtn" class="flex-1 sm:flex-initial bg-slate-700 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-code" class="w-4 h-4"></i>
+                            <span>.TXT</span>
+                        </button>
+                        <button type="button" id="downloadDocBtn" class="flex-1 sm:flex-initial bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-type-2" class="w-4 h-4"></i>
+                            <span>Documento (.DOC)</span>
+                        </button>
+                        <button type="button" id="downloadTextPdfBtn" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-down" class="w-4 h-4"></i>
+                            <span>PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <!-- Notificación Toast -->
@@ -254,6 +348,7 @@
                 listHeader.classList.add('hidden');
                 actionPanel.classList.add('hidden');
                 clearAllBtn.classList.add('hidden');
+                if (clearAllBtnDesktop) clearAllBtnDesktop.classList.add('hidden');
                 return;
             }
 
@@ -496,6 +591,264 @@
                 toast.classList.add('translate-y-20', 'opacity-0');
             }, 4000);
         }
+
+        // ==================== LÓGICA DE PESTAÑAS Y PDF A TEXTO (v3) ====================
+        const mergeSection = document.getElementById('mergeSection');
+        const extractSection = document.getElementById('extractSection');
+        const tabMergeBtn = document.getElementById('tabMergeBtn');
+        const tabExtractBtn = document.getElementById('tabExtractBtn');
+
+        window.switchTab = function(tab) {
+            const activeClasses = ['bg-white', 'text-blue-600', 'shadow-xs'];
+            const inactiveClasses = ['text-slate-600', 'hover:text-slate-900'];
+
+            if (tab === 'merge') {
+                mergeSection.classList.remove('hidden');
+                mergeSection.classList.add('flex');
+                extractSection.classList.add('hidden');
+                extractSection.classList.remove('flex');
+
+                tabMergeBtn.classList.add(...activeClasses);
+                tabMergeBtn.classList.remove(...inactiveClasses);
+                tabExtractBtn.classList.remove(...activeClasses);
+                tabExtractBtn.classList.add(...inactiveClasses);
+            } else {
+                extractSection.classList.remove('hidden');
+                extractSection.classList.add('flex');
+                mergeSection.classList.add('hidden');
+                mergeSection.classList.remove('flex');
+
+                tabExtractBtn.classList.add(...activeClasses);
+                tabExtractBtn.classList.remove(...inactiveClasses);
+                tabMergeBtn.classList.remove(...activeClasses);
+                tabMergeBtn.classList.add(...inactiveClasses);
+            }
+        };
+
+        // Referencias de extracción
+        const extractDropZone = document.getElementById('extractDropZone');
+        const extractFileInput = document.getElementById('extractFileInput');
+        const extractResultCard = document.getElementById('extractResultCard');
+        const extractFileName = document.getElementById('extractFileName');
+        const extractStats = document.getElementById('extractStats');
+        const extractedTextArea = document.getElementById('extractedTextArea');
+        const extractOutputName = document.getElementById('extractOutputName');
+
+        extractDropZone.addEventListener('click', () => extractFileInput.click());
+
+        ['dragenter', 'dragover'].forEach(ev => {
+            extractDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                extractDropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(ev => {
+            extractDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                extractDropZone.classList.remove('drag-over');
+            });
+        });
+
+        extractDropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length > 0) {
+                processPdfForText(e.dataTransfer.files[0]);
+            }
+        });
+
+        extractFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processPdfForText(e.target.files[0]);
+            }
+            extractFileInput.value = '';
+        });
+
+        async function processPdfForText(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (file.type !== 'application/pdf' && ext !== 'pdf') {
+                showToast('Por favor, selecciona un archivo PDF válido.');
+                return;
+            }
+
+            showToast('Extrayendo texto del PDF...');
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let fullText = '';
+
+                for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                    const page = await pdfDoc.getPage(pageNum);
+                    const textContent = await page.getTextContent();
+                    
+                    // Reconstruir saltos de línea según la coordenada vertical (transform[5])
+                    let lastY = null;
+                    let pageText = '';
+                    for (const item of textContent.items) {
+                        const currentY = item.transform ? item.transform[5] : null;
+                        if (lastY !== null && currentY !== null && Math.abs(currentY - lastY) > 5) {
+                            pageText += '\n';
+                        } else if (pageText.length > 0 && !pageText.endsWith(' ') && !pageText.endsWith('\n')) {
+                            pageText += ' ';
+                        }
+                        pageText += item.str;
+                        lastY = currentY;
+                    }
+
+                    fullText += `--- Página ${pageNum} ---\n${pageText.trim()}\n\n`;
+                }
+
+                const cleanBaseName = file.name.replace(/\.pdf$/i, '');
+                extractFileName.textContent = file.name;
+                extractOutputName.value = `${cleanBaseName}_texto`;
+                extractedTextArea.value = fullText.trim() || '(No se detectó texto seleccionable. Es posible que el PDF sea una imagen escaneada).';
+                extractStats.textContent = `${pdfDoc.numPages} ${pdfDoc.numPages === 1 ? 'página' : 'páginas'} · ${extractedTextArea.value.length} caracteres`;
+
+                extractDropZone.classList.add('hidden');
+                extractResultCard.classList.remove('hidden');
+                showToast('¡Texto extraído correctamente!');
+            } catch (err) {
+                console.error(err);
+                showToast('Error al leer el texto del PDF.');
+            }
+        }
+
+        // Reiniciar vista de extracción
+        document.getElementById('resetExtractBtn').addEventListener('click', () => {
+            extractResultCard.classList.add('hidden');
+            extractDropZone.classList.remove('hidden');
+            extractedTextArea.value = '';
+        });
+
+        // Copiar al portapapeles
+        document.getElementById('copyExtractedBtn').addEventListener('click', async () => {
+            if (!extractedTextArea.value) return;
+            await navigator.clipboard.writeText(extractedTextArea.value);
+            showToast('Texto copiado al portapapeles');
+        });
+
+        // Helper de descarga
+        function triggerBlobDownload(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 1. Descargar como TXT
+        document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+            const text = extractedTextArea.value;
+            if (!text) return;
+            const name = (extractOutputName.value.trim() || 'texto_extraido').replace(/\.(txt|doc|docx|pdf)$/i, '');
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            triggerBlobDownload(blob, `${name}.txt`);
+            showToast('Descargado como .TXT');
+        });
+
+        // 2. Descargar como Documento Word (.DOC compatible con Word, LibreOffice y Google Docs)
+        document.getElementById('downloadDocBtn').addEventListener('click', () => {
+            const text = extractedTextArea.value;
+            if (!text) return;
+            const name = (extractOutputName.value.trim() || 'texto_extraido').replace(/\.(txt|doc|docx|pdf)$/i, '');
+            
+            const escapedHtml = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>');
+
+            const docContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>${name}</title></head>
+                <body style="font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5;">
+                    ${escapedHtml}
+                </body>
+                </html>
+            `;
+            const blob = new Blob(['\ufeff', docContent], { type: 'application/msword' });
+            triggerBlobDownload(blob, `${name}.doc`);
+            showToast('Descargado como documento .DOC');
+        });
+
+        // 3. Descargar como PDF limpio (con ajuste automático de líneas y paginación)
+        document.getElementById('downloadTextPdfBtn').addEventListener('click', async () => {
+            const text = extractedTextArea.value;
+            if (!text) return;
+
+            try {
+                const { PDFDocument, StandardFonts, rgb } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+                const pageWidth = 595.28;  // A4 ancho
+                const pageHeight = 841.89; // A4 alto
+                const margin = 50;
+                const fontSize = 10.5;
+                const lineHeight = 15;
+                const maxWidth = pageWidth - margin * 2;
+
+                // Función para trocear párrafos largos al ancho de página A4
+                function wrapParagraph(paragraph) {
+                    // Normalizar caracteres fuera de WinAnsi básico para evitar errores en Helvetica estándar
+                    const safeParagraph = paragraph.replace(/[^\x00-\xFF]/g, '?');
+                    if (!safeParagraph) return [''];
+                    const words = safeParagraph.split(' ');
+                    const lines = [];
+                    let currentLine = '';
+
+                    for (const word of words) {
+                        const testLine = currentLine ? `${currentLine} ${word}` : word;
+                        const width = font.widthOfTextAtSize(testLine, fontSize);
+                        if (width <= maxWidth) {
+                            currentLine = testLine;
+                        } else {
+                            if (currentLine) lines.push(currentLine);
+                            currentLine = word;
+                        }
+                    }
+                    if (currentLine) lines.push(currentLine);
+                    return lines;
+                }
+
+                const rawLines = text.split('\n');
+                const allLines = [];
+                rawLines.forEach(p => {
+                    allLines.push(...wrapParagraph(p));
+                });
+
+                let page = pdfDoc.addPage([pageWidth, pageHeight]);
+                let y = pageHeight - margin;
+
+                for (const line of allLines) {
+                    if (y < margin + lineHeight) {
+                        page = pdfDoc.addPage([pageWidth, pageHeight]);
+                        y = pageHeight - margin;
+                    }
+                    page.drawText(line, {
+                        x: margin,
+                        y: y,
+                        size: fontSize,
+                        font: font,
+                        color: rgb(0.1, 0.1, 0.1)
+                    });
+                    y -= lineHeight;
+                }
+
+                const pdfBytes = await pdfDoc.save();
+                const name = (extractOutputName.value.trim() || 'texto_extraido').replace(/\.(txt|doc|docx|pdf)$/i, '');
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                triggerBlobDownload(blob, `${name}.pdf`);
+                showToast('Descargado como nuevo PDF');
+            } catch (err) {
+                console.error(err);
+                showToast('Error al generar el PDF de texto.');
+            }
+        });
     </script>
 </body>
 </html>
