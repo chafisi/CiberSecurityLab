@@ -75,7 +75,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v8</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v9</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -102,6 +102,11 @@
                         <span>Editor</span>
                     </button>
                 </nav>
+                <!--Extraer un pdf-->
+                <button type="button" id="tabCleanBtn" onclick="switchTab('clean')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i>
+                    <span>Extracción PDF</span>
+                </button>
 
                 <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
                     <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -427,6 +432,139 @@
                         <span>Descargar PDF</span>
                     </button>
                 </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== SECCIÓN 4: LIMPIAR PDF Y ELIMINAR MARCAS DE AGUA ==================== -->
+        <div id="cleanSection" class="hidden flex-col gap-5 flex-grow">
+
+            <!-- Panel de configuración de filtros y zona de carga -->
+            <div id="cleanUploadCard" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 flex flex-col gap-5">
+                
+                <!-- Opciones de detección de marcas de agua -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
+                        <span>Filtros automáticos de limpieza (Marcas de agua)</span>
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
+                        <label class="flex items-start gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200 hover:border-blue-400 transition">
+                            <input type="checkbox" id="chkRemoveRotated" checked class="mt-0.5 rounded text-blue-600 focus:ring-blue-500">
+                            <div>
+                                <span class="font-semibold text-slate-800 block">Textos inclinados / diagonales</span>
+                                <span class="text-xs text-slate-500">Elimina marcas rotadas (ej. Borrador, Copia)</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200 hover:border-blue-400 transition">
+                            <input type="checkbox" id="chkRemoveRepeated" checked class="mt-0.5 rounded text-blue-600 focus:ring-blue-500">
+                            <div>
+                                <span class="font-semibold text-slate-800 block">Sellos repetidos por página</span>
+                                <span class="text-xs text-slate-500">Filtra textos fijos repetidos en varias hojas</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2 cursor-pointer bg-white p-2.5 rounded-lg border border-slate-200 hover:border-blue-400 transition">
+                            <input type="checkbox" id="chkRemoveOversized" checked class="mt-0.5 rounded text-blue-600 focus:ring-blue-500">
+                            <div>
+                                <span class="font-semibold text-slate-800 block">Textos gigantes de fondo</span>
+                                <span class="text-xs text-slate-500">Descarta marcas de agua &gt; 42pt</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Palabra clave personalizada opcional -->
+                    <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-2">
+                        <label for="customWatermarkText" class="text-xs font-medium text-slate-600 shrink-0">Texto exacto a eliminar (opcional):</label>
+                        <input type="text" id="customWatermarkText" placeholder="Ej: CONFIDENCIAL, Muestra gratuita, nombre web..." class="w-full text-xs sm:text-sm bg-white border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <!-- Zona DropZone -->
+                <div id="cleanDropZone" class="border-2 border-dashed border-slate-300 bg-slate-50/50 rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-blue-50/30">
+                    <input type="file" id="cleanFileInput" accept=".pdf,application/pdf" class="hidden">
+                    <div class="flex flex-col items-center justify-center gap-3">
+                        <div class="bg-emerald-50 text-emerald-600 p-4 rounded-full">
+                            <i data-lucide="file-check-2" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-base sm:text-lg font-semibold text-slate-700">
+                                Arrastra aquí el PDF con marcas de agua
+                            </p>
+                            <p class="text-sm text-slate-500 mt-1">
+                                o <span class="text-blue-600 font-medium underline">selecciona el archivo</span> para extraerlo limpio y listo para editar
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vista previa editable del documento reconstruido -->
+            <div id="cleanResultCard" class="hidden flex-col gap-4 flex-grow">
+                
+                <!-- Resumen de limpieza -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+                        <div>
+                            <p id="cleanFileName" class="text-sm font-bold text-slate-800">documento.pdf</p>
+                            <p id="cleanSummaryStats" class="text-xs text-emerald-800">0 marcas de agua eliminadas · Listo para revisión</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-start sm:self-auto">
+                        <button type="button" onclick="sendCleanToMainEditor()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer" title="Abrir en la pestaña Editor completa">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5 text-blue-600"></i>
+                            <span>Abrir en Editor</span>
+                        </button>
+                        <button type="button" id="resetCleanBtn" class="text-xs text-red-600 hover:bg-red-100/60 px-2.5 py-1.5 rounded-lg font-medium transition cursor-pointer">
+                            Otro PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mini-barra de edición rápida para revisión -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col flex-grow">
+                    <div class="sticky top-[104px] sm:top-[64px] z-20 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 rounded-t-2xl p-2 flex flex-wrap items-center gap-1 select-none">
+                        <button type="button" onclick="execCleanCmd('undo')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Deshacer"><i data-lucide="undo-2" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('redo')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Rehacer"><i data-lucide="redo-2" class="w-4 h-4"></i></button>
+                        <span class="w-px h-4 bg-slate-300 mx-1"></span>
+                        <button type="button" onclick="execCleanCmd('bold')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Negrita"><i data-lucide="bold" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('italic')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Cursiva"><i data-lucide="italic" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('underline')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Subrayado"><i data-lucide="underline" class="w-4 h-4"></i></button>
+                        <span class="w-px h-4 bg-slate-300 mx-1"></span>
+                        <button type="button" onclick="execCleanCmd('insertUnorderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Viñetas"><i data-lucide="list" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('insertOrderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista numerada"><i data-lucide="list-ordered" class="w-4 h-4"></i></button>
+                        <span class="w-px h-4 bg-slate-300 mx-1"></span>
+                        <button type="button" onclick="execCleanCmd('justifyLeft')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Izquierda"><i data-lucide="align-left" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('justifyCenter')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Centrar"><i data-lucide="align-center" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('justifyFull')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Justificar"><i data-lucide="align-justify" class="w-4 h-4"></i></button>
+                        <button type="button" onclick="execCleanCmd('removeFormat')" class="ml-auto p-1.5 rounded hover:bg-slate-200 text-slate-500 cursor-pointer" title="Limpiar formato"><i data-lucide="remove-formatting" class="w-4 h-4"></i></button>
+                    </div>
+
+                    <!-- Lienzo editable con el documento limpio -->
+                    <div id="cleanEditorArea" contenteditable="true" class="flex-grow min-h-[340px] p-5 sm:p-6 text-slate-800 text-base leading-relaxed focus:outline-none bg-white"></div>
+                </div>
+
+                <!-- Barra inferior de exportación directa tras revisión -->
+                <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                    <div class="flex-grow">
+                        <label for="cleanOutputName" class="block text-xs font-medium text-slate-500 mb-1">Nombre del documento limpio</label>
+                        <input type="text" id="cleanOutputName" value="documento_limpio" class="w-full sm:w-64 text-sm border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" onclick="exportCleanDoc()" class="flex-1 sm:flex-initial bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-type-2" class="w-4 h-4"></i>
+                            <span>Documento (.DOC)</span>
+                        </button>
+                        <button type="button" onclick="exportCleanPdf()" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-down" class="w-4 h-4"></i>
+                            <span>Exportar PDF</span>
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -826,7 +964,8 @@
             const tabs = {
                 merge: { section: document.getElementById('mergeSection'), btn: document.getElementById('tabMergeBtn') },
                 extract: { section: document.getElementById('extractSection'), btn: document.getElementById('tabExtractBtn') },
-                editor: { section: document.getElementById('editorSection'), btn: document.getElementById('tabEditorBtn') }
+                editor: { section: document.getElementById('editorSection'), btn: document.getElementById('tabEditorBtn') },
+                clean: { section: document.getElementById('cleanSection'), btn: document.getElementById('tabCleanBtn') }
             };
 
             Object.entries(tabs).forEach(([key, item]) => {
@@ -1329,32 +1468,325 @@
             showToast('Fila añadida');
         };
 
-        // Exportar a PDF conservando todo el formato enriquecido e imágenes
+        // Exportar a PDF — versión mínima
         window.exportEditorPdf = async function() {
-            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img')) {
+            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img, table')) {
                 showToast('El editor está vacío');
                 return;
             }
-            // Quitar borde azul de selección de imagen si hubiera alguna marcada
-            richEditorArea.querySelectorAll('img').forEach(img => img.classList.remove('selected-img'));
 
             const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
             showToast('Generando PDF...');
 
-            const opt = {
-                margin:       15,
-                filename:     `${name}.pdf`,
-                image:        { type: 'jpeg', quality: 0.95 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
             try {
-                await html2pdf().set(opt).from(richEditorArea).save();
+                await html2pdf().set({
+                    margin: 10,
+                    filename: `${name}.pdf`,
+                    image: { type: 'jpeg', quality: 0.95 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                }).from(richEditorArea).save();
+
                 showToast('¡PDF descargado correctamente!');
             } catch (err) {
                 console.error(err);
                 showToast('Error al generar el PDF.');
+            }
+        };
+    
+        // v9 ==================== LÓGICA DE LIMPIEZA DE PDF Y MARCAS DE AGUA ====================
+        const cleanDropZone = document.getElementById('cleanDropZone');
+        const cleanFileInput = document.getElementById('cleanFileInput');
+        const cleanUploadCard = document.getElementById('cleanUploadCard');
+        const cleanResultCard = document.getElementById('cleanResultCard');
+        const cleanEditorArea = document.getElementById('cleanEditorArea');
+        const cleanOutputName = document.getElementById('cleanOutputName');
+
+        cleanDropZone.addEventListener('click', () => cleanFileInput.click());
+
+        ['dragenter', 'dragover'].forEach(ev => {
+            cleanDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                cleanDropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(ev => {
+            cleanDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                cleanDropZone.classList.remove('drag-over');
+            });
+        });
+
+        cleanDropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length > 0) {
+                analyzeAndCleanPdf(e.dataTransfer.files[0]);
+            }
+        });
+
+        cleanFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                analyzeAndCleanPdf(e.target.files[0]);
+            }
+            cleanFileInput.value = '';
+        });
+
+        window.execCleanCmd = function(cmd, val = null) {
+            cleanEditorArea.focus();
+            document.execCommand(cmd, false, val);
+        };
+
+        document.getElementById('resetCleanBtn').addEventListener('click', () => {
+            cleanResultCard.classList.add('hidden');
+            cleanResultCard.classList.remove('flex');
+            cleanUploadCard.classList.remove('hidden');
+            cleanEditorArea.innerHTML = '';
+        });
+
+        async function analyzeAndCleanPdf(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (file.type !== 'application/pdf' && ext !== 'pdf') {
+                showToast('Selecciona un archivo PDF válido.');
+                return;
+            }
+
+            const removeRotated = document.getElementById('chkRemoveRotated').checked;
+            const removeRepeated = document.getElementById('chkRemoveRepeated').checked;
+            const removeOversized = document.getElementById('chkRemoveOversized').checked;
+            const customKeyword = document.getElementById('customWatermarkText').value.trim().toLowerCase();
+
+            showToast('Analizando estructura y filtrando marcas de agua...');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const numPages = pdfDoc.numPages;
+
+                // Paso 1: Extraer todos los fragmentos con coordenadas, tamaño y matriz de rotación
+                const pagesData = [];
+                const repetitionMap = new Map(); // key: "texto_normalizado|y_redondeada" -> Set de páginas
+
+                for (let p = 1; p <= numPages; p++) {
+                    const page = await pdfDoc.getPage(p);
+                    const textContent = await page.getTextContent();
+                    const items = [];
+
+                    for (const item of textContent.items) {
+                        const str = item.str;
+                        if (!str || !str.trim()) continue;
+
+                        // Matriz transform: [scaleX, skewY, skewX, scaleY, x, y]
+                        const t = item.transform || [1, 0, 0, 1, 0, 0];
+                        const angle = Math.atan2(t[1], t[0]); // ángulo en radianes (0 = horizontal normal)
+                        const isRotated = Math.abs(angle) > 0.05; // > ~3 grados de inclinación
+                        const fontSize = Math.hypot(t[0], t[1]) || item.height || 11;
+                        const x = t[4];
+                        const y = t[5];
+                        const fontName = (item.fontName || '').toLowerCase();
+                        const isBold = fontName.includes('bold') || fontName.includes('black') || fontName.includes('heavy');
+                        const isItalic = fontName.includes('italic') || fontName.includes('oblique');
+
+                        const normText = str.trim().toLowerCase();
+                        const repKey = `${normText}|${Math.round(y / 5) * 5}`;
+                        if (!repetitionMap.has(repKey)) repetitionMap.set(repKey, new Set());
+                        repetitionMap.get(repKey).add(p);
+
+                        items.push({ str, x, y, fontSize, isRotated, isBold, isItalic, repKey, normText });
+                    }
+                    pagesData.push(items);
+                }
+
+                // Paso 2: Filtrar marcas de agua y reconstruir párrafos estructurados
+                let removedCount = 0;
+                let htmlOutput = '';
+
+                pagesData.forEach((items, pageIdx) => {
+                    const cleanItems = items.filter(it => {
+                        // Filtro A: Texto inclinado / diagonal
+                        if (removeRotated && it.isRotated) {
+                            removedCount++;
+                            return false;
+                        }
+                        // Filtro B: Texto gigante (> 42pt) típico de marcas de agua de fondo
+                        if (removeOversized && it.fontSize > 42) {
+                            removedCount++;
+                            return false;
+                        }
+                        // Filtro C: Texto repetido en la misma posición en >= 60% de páginas (si hay al menos 2 páginas)
+                        if (removeRepeated && numPages >= 2) {
+                            const pagesWithSameStamp = repetitionMap.get(it.repKey);
+                            if (pagesWithSameStamp && pagesWithSameStamp.size >= Math.ceil(numPages * 0.6) && it.normText.length > 2) {
+                                removedCount++;
+                                return false;
+                            }
+                        }
+                        // Filtro D: Palabra clave personalizada
+                        if (customKeyword && it.normText.includes(customKeyword)) {
+                            removedCount++;
+                            return false;
+                        }
+                        return true;
+                    });
+
+                    // Ordenar visualmente de arriba a abajo (Y descendente) y de izquierda a derecha (X ascendente)
+                    cleanItems.sort((a, b) => {
+                        if (Math.abs(b.y - a.y) > 4) return b.y - a.y;
+                        return a.x - b.x;
+                    });
+
+                    // Agrupar en líneas y párrafos
+                    let currentLineHtml = '';
+                    let lastY = null;
+                    let lastFontSize = 11;
+
+                    const flushParagraph = (lineHtml, fSize) => {
+                        const trimmed = lineHtml.trim();
+                        if (!trimmed) return;
+                        if (fSize >= 18) {
+                            htmlOutput += `<h2 style="font-size:16pt; font-weight:700; margin:12px 0 6px 0; color:#0f172a;">${trimmed}</h2>`;
+                        } else if (fSize >= 13.5) {
+                            htmlOutput += `<h3 style="font-size:13pt; font-weight:600; margin:10px 0 4px 0; color:#1e293b;">${trimmed}</h3>`;
+                        } else {
+                            htmlOutput += `<p style="margin:0 0 8px 0; line-height:1.55;">${trimmed}</p>`;
+                        }
+                    };
+
+                    for (const it of cleanItems) {
+                        const escaped = it.str
+                            .replace(/&/g, '&amp;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;');
+
+                        let formattedChunk = escaped;
+                        if (it.isBold) formattedChunk = `<strong>${formattedChunk}</strong>`;
+                        if (it.isItalic) formattedChunk = `<em>${formattedChunk}</em>`;
+
+                        if (lastY !== null && Math.abs(it.y - lastY) > 6) {
+                            // Salto de línea / párrafo
+                            flushParagraph(currentLineHtml, lastFontSize);
+                            currentLineHtml = formattedChunk;
+                        } else {
+                            if (currentLineHtml && !currentLineHtml.endsWith(' ') && !formattedChunk.startsWith(' ')) {
+                                currentLineHtml += ' ';
+                            }
+                            currentLineHtml += formattedChunk;
+                        }
+                        lastY = it.y;
+                        lastFontSize = it.fontSize;
+                    }
+                    flushParagraph(currentLineHtml, lastFontSize);
+
+                    // Separador visual sutil entre páginas si hay varias
+                    if (pageIdx < pagesData.length - 1 && cleanItems.length > 0) {
+                        htmlOutput += `<hr style="border:none; border-top:1px dashed #cbd5e1; margin:16px 0;">`;
+                    }
+                });
+
+                const baseName = file.name.replace(/\.pdf$/i, '');
+                document.getElementById('cleanFileName').textContent = file.name;
+                document.getElementById('cleanSummaryStats').textContent =
+                    `${numPages} ${numPages === 1 ? 'página analizada' : 'páginas analizadas'} · ${removedCount} ${removedCount === 1 ? 'elemento de marca de agua eliminado' : 'elementos de marca de agua eliminados'}`;
+                cleanOutputName.value = `${baseName}_limpio`;
+                cleanEditorArea.innerHTML = htmlOutput || '<p>(No se encontró texto extraíble en el PDF).</p>';
+
+                cleanUploadCard.classList.add('hidden');
+                cleanResultCard.classList.remove('hidden');
+                cleanResultCard.classList.add('flex');
+                lucide.createIcons();
+                showToast('¡PDF analizado y limpio listo para revisar!');
+            } catch (err) {
+                console.error(err);
+                showToast('Error al analizar el PDF.');
+            }
+        }
+
+        // Pasar el documento limpio al Editor principal completo
+        window.sendCleanToMainEditor = function() {
+            richEditorArea.innerHTML = cleanEditorArea.innerHTML;
+            editorOutputName.value = cleanOutputName.value;
+            updateEditorStats();
+            switchTab('editor');
+            showToast('Documento cargado en el Editor principal');
+        };
+
+        // Exportar documento revisado a Word (.DOC)
+        window.exportCleanDoc = function() {
+            const content = cleanEditorArea.innerHTML;
+            if (!cleanEditorArea.innerText.trim()) return;
+            const name = (cleanOutputName.value.trim() || 'documento_limpio').replace(/\.(doc|docx|pdf)$/i, '');
+            const docHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>${name}</title></head>
+                <body style="font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5;">
+                    ${content}
+                </body>
+                </html>`;
+            const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword' });
+            triggerBlobDownload(blob, `${name}.doc`);
+            showToast('Documento .DOC limpio descargado');
+        };
+
+        // Exportar documento revisado a PDF limpio (usando la misma lógica depurada sin páginas en blanco)
+        window.exportCleanPdf = async function() {
+            if (!cleanEditorArea.innerText.trim()) return;
+            const name = (cleanOutputName.value.trim() || 'documento_limpio').replace(/\.(doc|docx|pdf)$/i, '');
+            showToast('Generando PDF limpio...');
+
+            const prevScrollY = window.scrollY;
+            const prevMinHeight = cleanEditorArea.style.minHeight;
+            const prevPadding = cleanEditorArea.style.padding;
+
+            // Ocultar separadores de página punteados para el PDF final
+            const hrs = cleanEditorArea.querySelectorAll('hr');
+            hrs.forEach(hr => hr.style.display = 'none');
+
+            const blocks = cleanEditorArea.querySelectorAll('p, div, li, tr, img, h1, h2, h3');
+            blocks.forEach(el => {
+                el.dataset.prevBreakInside = el.style.breakInside || '';
+                el.style.breakInside = 'avoid';
+                el.style.pageBreakInside = 'avoid';
+            });
+
+            cleanEditorArea.style.minHeight = 'auto';
+            cleanEditorArea.style.padding = '0px';
+            window.scrollTo(0, 0);
+
+            const opt = {
+                margin:       [15, 15, 15, 15],
+                filename:     `${name}.pdf`,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, windowWidth: cleanEditorArea.scrollWidth },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
+            };
+
+            try {
+                const worker = html2pdf().set(opt).from(cleanEditorArea).toPdf();
+                const pdf = await worker.get('pdf');
+                const totalPages = pdf.internal.getNumberOfPages();
+                if (totalPages > 1) {
+                    const lastPage = pdf.internal.pages[totalPages];
+                    if (lastPage && lastPage.length <= 3) {
+                        pdf.deletePage(totalPages);
+                    }
+                }
+                await worker.save();
+                showToast('¡PDF limpio exportado correctamente!');
+            } catch (err) {
+                console.error(err);
+                showToast('Error al exportar el PDF.');
+            } finally {
+                hrs.forEach(hr => hr.style.display = '');
+                cleanEditorArea.style.minHeight = prevMinHeight;
+                cleanEditorArea.style.padding = prevPadding;
+                blocks.forEach(el => {
+                    el.style.breakInside = el.dataset.prevBreakInside;
+                    el.style.pageBreakInside = el.dataset.prevBreakInside;
+                    delete el.dataset.prevBreakInside;
+                });
+                window.scrollTo(0, prevScrollY);
             }
         };
 
