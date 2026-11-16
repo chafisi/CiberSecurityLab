@@ -15,8 +15,9 @@
     <!-- Iconos Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- jsPDF para generar PDF vectorial limpio -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
+    <!-- html2canvas y jsPDF 2.5.1 para exportar PDF con formato, tablas e imágenes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         .drag-over {
@@ -27,12 +28,18 @@
             opacity: 0.4;
             background-color: #dbeafe;
         }
-         /* v5 para el edito -> Evitar que el PDF corte líneas de texto, párrafos, listas o imágenes por la mitad */
+         /* v8 para el edito -> Evitar que el PDF corte líneas de texto, párrafos, listas o imágenes por la mitad */
+        #richEditorArea h1.doc-title { font-size: 24pt; font-weight: 700; line-height: 1.2; margin: 0.4em 0; color: #0f172a; }
+        #richEditorArea h2.doc-h1 { font-size: 18pt; font-weight: 700; line-height: 1.3; margin: 0.4em 0; color: #1e293b; }
+        #richEditorArea h3.doc-h2 { font-size: 14pt; font-weight: 600; line-height: 1.35; margin: 0.35em 0; color: #334155; }
         #richEditorArea ul { list-style-type: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
         #richEditorArea ol { list-style-type: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
         #richEditorArea a { color: #2563eb; text-decoration: underline; }
         #richEditorArea img { max-width: 100%; height: auto; border-radius: 0.375rem; margin: 0.5rem 0; cursor: pointer; }
         #richEditorArea img.selected-img { outline: 2px solid #2563eb; outline-offset: 2px; }
+        #richEditorArea table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; table-layout: fixed; }
+        #richEditorArea th, #richEditorArea td { border: 1px solid #94a3b8; padding: 6px 10px; min-width: 40px; vertical-align: top; word-wrap: break-word; }
+        #richEditorArea th { background-color: #f1f5f9; font-weight: 600; }
         /* Evitar que el PDF corte líneas de texto, párrafos, listas o imágenes por la mitad */
         .pdf-export-wrapper p,
         .pdf-export-wrapper div,
@@ -47,6 +54,8 @@
         .pdf-export-wrapper ol { list-style-type: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
         .pdf-export-wrapper a { color: #2563eb; text-decoration: underline; }
         .pdf-export-wrapper img { max-width: 100%; height: auto; }
+
+        
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
@@ -60,7 +69,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v7</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v8</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -245,11 +254,11 @@
             
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col flex-grow">
 
-                <!-- Barra de herramientas fija al hacer scroll (se queda justo debajo del header) -->
-                <div class="sticky top-[104px] sm:top-[64px] z-20 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 rounded-t-2xl p-2 flex flex-wrap items-center gap-1 select-none shadow-xs">
+                <!-- Barra de herramientas completa fija al hacer scroll -->
+                <div class="sticky top-[104px] sm:top-[64px] z-20 bg-slate-50/95 backdrop-blur-xs border-b border-slate-200 rounded-t-2xl p-2 flex flex-wrap items-center gap-1.5 select-none shadow-xs">
                     
                     <!-- Grupo 1: Deshacer, Rehacer, Seleccionar todo -->
-                    <div class="flex items-center gap-0.5 pr-2 border-r border-slate-300">
+                    <div class="flex items-center gap-0.5 pr-1.5 border-r border-slate-300">
                         <button type="button" onclick="execEditorCmd('undo')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Deshacer">
                             <i data-lucide="undo-2" class="w-4 h-4"></i>
                         </button>
@@ -261,8 +270,40 @@
                         </button>
                     </div>
 
-                    <!-- Grupo 2: Negrita, Cursiva, Subrayado -->
-                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                    <!-- Grupo 2: Estilo de párrafo (Normal, Título, Encabezado 1, Encabezado 2) -->
+                    <div class="flex items-center gap-1 pr-1.5 border-r border-slate-300">
+                        <select id="editorBlockStyle" onchange="applyBlockStyle(this.value)" class="text-xs bg-white border border-slate-300 rounded-md px-2 py-1.5 text-slate-700 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer" title="Estilo de párrafo">
+                            <option value="P">Normal</option>
+                            <option value="TITLE">Título</option>
+                            <option value="H1">Encabezado 1</option>
+                            <option value="H2">Encabezado 2</option>
+                        </select>
+
+                        <!-- Tipografía -->
+                        <select id="editorFontFamily" onchange="execEditorCmd('fontName', this.value)" class="text-xs bg-white border border-slate-300 rounded-md px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer max-w-[115px]" title="Tipografía">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Trebuchet MS">Trebuchet MS</option>
+                            <option value="Courier New">Courier New</option>
+                        </select>
+
+                        <!-- Tamaño de letra -->
+                        <select id="editorFontSize" onchange="applyCustomFontSize(this.value)" class="text-xs bg-white border border-slate-300 rounded-md px-1.5 py-1.5 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer" title="Tamaño de texto">
+                            <option value="10pt">10</option>
+                            <option value="11pt" selected>11</option>
+                            <option value="12pt">12</option>
+                            <option value="14pt">14</option>
+                            <option value="16pt">16</option>
+                            <option value="18pt">18</option>
+                            <option value="24pt">24</option>
+                            <option value="32pt">32</option>
+                        </select>
+                    </div>
+
+                    <!-- Grupo 3: Negrita, Cursiva, Subrayado -->
+                    <div class="flex items-center gap-0.5 pr-1.5 border-r border-slate-300">
                         <button type="button" onclick="execEditorCmd('bold')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 font-bold cursor-pointer" title="Negrita">
                             <i data-lucide="bold" class="w-4 h-4"></i>
                         </button>
@@ -274,18 +315,14 @@
                         </button>
                     </div>
 
-                    <!-- Grupo 3: Listas (viñetas y numerada) -->
-                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                    <!-- Grupo 4: Listas y Sangría -->
+                    <div class="flex items-center gap-0.5 pr-1.5 border-r border-slate-300">
                         <button type="button" onclick="execEditorCmd('insertUnorderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista con viñetas">
                             <i data-lucide="list" class="w-4 h-4"></i>
                         </button>
                         <button type="button" onclick="execEditorCmd('insertOrderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista numerada">
                             <i data-lucide="list-ordered" class="w-4 h-4"></i>
                         </button>
-                    </div>
-
-                    <!-- Grupo 4: Sangría -->
-                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
                         <button type="button" onclick="execEditorCmd('outdent')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Disminuir sangría">
                             <i data-lucide="outdent" class="w-4 h-4"></i>
                         </button>
@@ -295,7 +332,7 @@
                     </div>
 
                     <!-- Grupo 5: Alineación de texto -->
-                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                    <div class="flex items-center gap-0.5 pr-1.5 border-r border-slate-300">
                         <button type="button" onclick="execEditorCmd('justifyLeft')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Alinear a la izquierda">
                             <i data-lucide="align-left" class="w-4 h-4"></i>
                         </button>
@@ -310,14 +347,20 @@
                         </button>
                     </div>
 
-                    <!-- Grupo 6: Enlace, Imagen local, Ajuste de imagen, Vídeo -->
-                    <div class="flex items-center gap-0.5 pl-1">
+                    <!-- Grupo 6: Tablas, Enlace, Imagen, Vídeo -->
+                    <div class="flex items-center gap-0.5">
+                        <button type="button" onclick="insertEditorTable()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar tabla">
+                            <i data-lucide="table" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="addTableRow()" class="p-1.5 rounded hover:bg-slate-200 text-slate-500 hover:text-slate-800 cursor-pointer" title="Añadir fila a la tabla actual">
+                            <i data-lucide="rows-3" class="w-4 h-4"></i>
+                        </button>
                         <button type="button" onclick="insertEditorLink()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar enlace">
                             <i data-lucide="link" class="w-4 h-4"></i>
                         </button>
                         
                         <input type="file" id="editorImgInput" accept="image/*" class="hidden">
-                        <button type="button" onclick="document.getElementById('editorImgInput').click()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar imagen desde dispositivo">
+                        <button type="button" onclick="document.getElementById('editorImgInput').click()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar imagen">
                             <i data-lucide="image-plus" class="w-4 h-4"></i>
                         </button>
 
@@ -328,17 +371,17 @@
                             <i data-lucide="panel-right" class="w-4 h-4"></i>
                         </button>
 
-                        <button type="button" onclick="insertEditorVideo()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar vídeo (YouTube/URL)">
+                        <button type="button" onclick="insertEditorVideo()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar vídeo">
                             <i data-lucide="video" class="w-4 h-4"></i>
                         </button>
                     </div>
 
-                    <!-- Limpiar formato / vaciar editor -->
-                    <div class="ml-auto flex items-center gap-1">
+                    <!-- Limpiar formato / vaciar -->
+                    <div class="ml-auto flex items-center gap-0.5">
                         <button type="button" onclick="execEditorCmd('removeFormat')" class="p-1.5 rounded hover:bg-slate-200 text-slate-500 hover:text-slate-800 cursor-pointer" title="Limpiar formato">
                             <i data-lucide="remove-formatting" class="w-4 h-4"></i>
                         </button>
-                        <button type="button" onclick="clearEditorArea()" class="p-1.5 rounded hover:bg-red-50 text-slate-400 hover:text-red-600 cursor-pointer" title="Borrar todo el contenido">
+                        <button type="button" onclick="clearEditorArea()" class="p-1.5 rounded hover:bg-red-50 text-slate-400 hover:text-red-600 cursor-pointer" title="Borrar todo">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -1164,15 +1207,164 @@
             showToast('Archivo .HTML descargado');
         };
 
-        // Exportar a PDF vectorial limpio y directo (sin capturas ni hojas en blanco)
-        window.exportEditorPdf = function() {
-            const rawText = richEditorArea.innerText.trim();
-            if (!rawText) {
+        // Aplicar estilo de párrafo: Normal, Título, Encabezado 1, Encabezado 2
+        window.applyBlockStyle = function(styleType) {
+            richEditorArea.focus();
+            if (styleType === 'P') {
+                document.execCommand('formatBlock', false, 'P');
+            } else if (styleType === 'TITLE') {
+                document.execCommand('formatBlock', false, 'H1');
+                const sel = window.getSelection();
+                if (sel.anchorNode) {
+                    const block = sel.anchorNode.nodeType === 1 ? sel.anchorNode.closest('h1') : sel.anchorNode.parentElement.closest('h1');
+                    if (block) block.className = 'doc-title';
+                }
+            } else if (styleType === 'H1') {
+                document.execCommand('formatBlock', false, 'H2');
+                const sel = window.getSelection();
+                if (sel.anchorNode) {
+                    const block = sel.anchorNode.nodeType === 1 ? sel.anchorNode.closest('h2') : sel.anchorNode.parentElement.closest('h2');
+                    if (block) block.className = 'doc-h1';
+                }
+            } else if (styleType === 'H2') {
+                document.execCommand('formatBlock', false, 'H3');
+                const sel = window.getSelection();
+                if (sel.anchorNode) {
+                    const block = sel.anchorNode.nodeType === 1 ? sel.anchorNode.closest('h3') : sel.anchorNode.parentElement.closest('h3');
+                    if (block) block.className = 'doc-h2';
+                }
+            }
+            updateEditorStats();
+        };
+
+        // Aplicar tamaño exacto en puntos (pt) al texto seleccionado
+        window.applyCustomFontSize = function(ptSize) {
+            richEditorArea.focus();
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+
+            if (selection.isCollapsed) {
+                // Si no hay texto seleccionado, insertar un span con ese tamaño para seguir escribiendo
+                const span = document.createElement('span');
+                span.style.fontSize = ptSize;
+                span.innerHTML = '&#8203;';
+                const range = selection.getRangeAt(0);
+                range.insertNode(span);
+                range.setStart(span.firstChild, 1);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else {
+                // Usar fontSize=7 temporalmente y sustituir <font size="7"> por <span style="font-size: Xpt">
+                document.execCommand('fontSize', false, '7');
+                richEditorArea.querySelectorAll('font[size="7"]').forEach(el => {
+                    const span = document.createElement('span');
+                    span.style.fontSize = ptSize;
+                    span.innerHTML = el.innerHTML;
+                    el.replaceWith(span);
+                });
+            }
+        };
+
+        // Insertar tabla personalizada
+        window.insertEditorTable = function() {
+            const rowsInput = prompt('Número de filas:', '3');
+            if (!rowsInput) return;
+            const colsInput = prompt('Número de columnas:', '3');
+            if (!colsInput) return;
+
+            const rows = Math.min(Math.max(parseInt(rowsInput, 10) || 2, 1), 30);
+            const cols = Math.min(Math.max(parseInt(colsInput, 10) || 2, 1), 12);
+
+            let tableHtml = '<table style="width:100%; border-collapse:collapse; margin:10px 0;"><thead><tr>';
+            for (let c = 0; c < cols; c++) {
+                tableHtml += `<th style="border:1px solid #94a3b8; padding:6px 10px; background-color:#f1f5f9; text-align:left;">Columna ${c + 1}</th>`;
+            }
+            tableHtml += '</tr></thead><tbody>';
+
+            for (let r = 1; r < rows; r++) {
+                tableHtml += '<tr>';
+                for (let c = 0; c < cols; c++) {
+                    tableHtml += '<td style="border:1px solid #94a3b8; padding:6px 10px;">&nbsp;</td>';
+                }
+                tableHtml += '</tr>';
+            }
+            tableHtml += '</tbody></table><p><br></p>';
+
+            richEditorArea.focus();
+            document.execCommand('insertHTML', false, tableHtml);
+            updateEditorStats();
+        };
+
+        // Añadir fila nueva a la tabla donde esté el cursor
+        window.addTableRow = function() {
+            const sel = window.getSelection();
+            if (!sel.anchorNode) return;
+            const cell = sel.anchorNode.nodeType === 1 ? sel.anchorNode.closest('td, th') : sel.anchorNode.parentElement.closest('td, th');
+            if (!cell) {
+                showToast('Haz clic dentro de una celda de la tabla primero');
+                return;
+            }
+            const table = cell.closest('table');
+            const currentRow = cell.closest('tr');
+            const colCount = currentRow.children.length;
+            const newRow = document.createElement('tr');
+            for (let i = 0; i < colCount; i++) {
+                const td = document.createElement('td');
+                td.style.border = '1px solid #94a3b8';
+                td.style.padding = '6px 10px';
+                td.innerHTML = '&nbsp;';
+                newRow.appendChild(td);
+            }
+            currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+            showToast('Fila añadida');
+        };
+
+        // Exportar a PDF conservando formato, títulos, tipografías, tablas e imágenes (sin recortes ni hojas en blanco)
+        window.exportEditorPdf = async function() {
+            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img, table')) {
                 showToast('El editor está vacío');
                 return;
             }
 
+            richEditorArea.querySelectorAll('img').forEach(img => img.classList.remove('selected-img'));
             const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
+            showToast('Generando PDF con formato e imágenes...');
+
+            // Montar overlay visible en (0,0) durante unos milisegundos para que html2canvas capture sin desplazamientos
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.backgroundColor = 'rgba(255,255,255,0.98)';
+            overlay.style.zIndex = '9999';
+            overlay.style.overflow = 'auto';
+            overlay.style.display = 'flex';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'flex-start';
+
+            const renderSheet = document.createElement('div');
+            renderSheet.style.width = '680px'; // Ancho útil exacto en px para A4 con márgenes de 15mm
+            renderSheet.style.backgroundColor = '#ffffff';
+            renderSheet.style.color = '#1e293b';
+            renderSheet.style.fontFamily = 'Arial, Helvetica, sans-serif';
+            renderSheet.style.fontSize = '11pt';
+            renderSheet.style.lineHeight = '1.55';
+            renderSheet.style.padding = '10px';
+            renderSheet.innerHTML = richEditorArea.innerHTML;
+
+            // Copiar estilos de títulos y tablas inline para que jsPDF.html() los respete al 100%
+            renderSheet.querySelectorAll('h1.doc-title').forEach(el => { el.style.fontSize = '24pt'; el.style.fontWeight = '700'; el.style.margin = '8px 0'; });
+            renderSheet.querySelectorAll('h2.doc-h1').forEach(el => { el.style.fontSize = '18pt'; el.style.fontWeight = '700'; el.style.margin = '8px 0'; });
+            renderSheet.querySelectorAll('h3.doc-h2').forEach(el => { el.style.fontSize = '14pt'; el.style.fontWeight = '600'; el.style.margin = '6px 0'; });
+            renderSheet.querySelectorAll('ul').forEach(el => { el.style.listStyleType = 'disc'; el.style.paddingLeft = '24px'; });
+            renderSheet.querySelectorAll('ol').forEach(el => { el.style.listStyleType = 'decimal'; el.style.paddingLeft = '24px'; });
+            renderSheet.querySelectorAll('img').forEach(el => { el.style.maxWidth = '100%'; el.style.height = 'auto'; });
+
+            overlay.appendChild(renderSheet);
+            document.body.appendChild(overlay);
 
             try {
                 const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
@@ -1182,34 +1374,41 @@
                     orientation: 'portrait'
                 });
 
-                const margin = 15;
-                const pageWidth = doc.internal.pageSize.getWidth();   // 210 mm
-                const pageHeight = doc.internal.pageSize.getHeight(); // 297 mm
-                const maxLineWidth = pageWidth - margin * 2;          // 180 mm
-                const lineHeight = 6.5;                               // mm entre líneas
+                await new Promise((resolve) => {
+                    doc.html(renderSheet, {
+                        x: 15,
+                        y: 15,
+                        width: 180,        // 210mm - 30mm márgenes = 180mm exactos
+                        windowWidth: 680,  // Mismo ancho que renderSheet (escala 1:1 sin recortes)
+                        autoPaging: 'text',
+                        margin: [15, 15, 15, 15],
+                        html2canvas: {
+                            scale: 2,
+                            useCORS: true,
+                            scrollX: 0,
+                            scrollY: 0
+                        },
+                        callback: function(pdf) {
+                            // Eliminar última página si quedara completamente vacía
+                            const totalPages = pdf.internal.getNumberOfPages();
+                            if (totalPages > 1) {
+                                const lastPageContent = pdf.internal.pages[totalPages];
+                                if (lastPageContent && lastPageContent.length <= 2) {
+                                    pdf.deletePage(totalPages);
+                                }
+                            }
+                            pdf.save(`${name}.pdf`);
+                            resolve();
+                        }
+                    });
+                });
 
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(11);
-                doc.setTextColor(30, 41, 59);
-
-                // Divide automáticamente todo el texto al ancho útil de 180 mm respetando párrafos
-                const lines = doc.splitTextToSize(rawText, maxLineWidth);
-                let y = margin + 4; // Empieza directamente arriba a la izquierda
-
-                for (let i = 0; i < lines.length; i++) {
-                    if (y > pageHeight - margin) {
-                        doc.addPage();
-                        y = margin + 4;
-                    }
-                    doc.text(lines[i], margin, y);
-                    y += lineHeight;
-                }
-
-                doc.save(`${name}.pdf`);
-                showToast('¡PDF descargado correctamente!');
+                showToast('¡PDF con formato e imágenes descargado!');
             } catch (err) {
                 console.error(err);
                 showToast('Error al generar el PDF.');
+            } finally {
+                document.body.removeChild(overlay);
             }
         };
     </script>
