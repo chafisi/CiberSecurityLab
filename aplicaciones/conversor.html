@@ -104,22 +104,23 @@
                         <i data-lucide="pen-square" class="w-4 h-4"></i>
                         <span>Editor</span>
                     </button>
+                    <!--Extraer un pdf-->
+                    <button type="button" id="tabCleanBtn" onclick="switchTab('clean')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        <span>Extracción PDF</span>
+                    </button>
+
+                    <button type="button" id="tabOcrBtn" onclick="switchTab('ocr')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                        <i data-lucide="scan-text" class="w-4 h-4"></i>
+                        <span>OCR</span>
+                    </button>
+
+                    <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        <span>Vaciar</span>
+                    </button>
                 </nav>
-                <!--Extraer un pdf-->
-                <button type="button" id="tabCleanBtn" onclick="switchTab('clean')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                    <i data-lucide="sparkles" class="w-4 h-4"></i>
-                    <span>Extracción PDF</span>
-                </button>
-
-                <button type="button" id="tabOcrBtn" onclick="switchTab('ocr')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
-                    <i data-lucide="scan-text" class="w-4 h-4"></i>
-                    <span>OCR</span>
-                </button>
-
-                <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
-                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    <span>Vaciar</span>
-                </button>
+                
             </div>
         </div>
     </header>
