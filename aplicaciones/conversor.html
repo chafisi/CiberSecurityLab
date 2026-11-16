@@ -60,7 +60,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v6</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v7</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -1164,60 +1164,49 @@
             showToast('Archivo .HTML descargado');
         };
 
-        // Exportar a PDF sin hojas en blanco ni líneas cortadas entre páginas
-        window.exportEditorPdf = async function() {
-            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img')) {
+        // Exportar a PDF vectorial limpio y directo (sin capturas ni hojas en blanco)
+        window.exportEditorPdf = function() {
+            const rawText = richEditorArea.innerText.trim();
+            if (!rawText) {
                 showToast('El editor está vacío');
                 return;
             }
 
-            // Quitar borde azul de selección de imagen si hubiera alguna marcada
-            richEditorArea.querySelectorAll('img').forEach(img => img.classList.remove('selected-img'));
-
             const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
-            showToast('Generando PDF...');
-
-            // Crear contenedor temporal limpio con dimensiones A4 reales (sin min-height ni flex)
-            const tempContainer = document.createElement('div');
-            tempContainer.className = 'pdf-export-wrapper';
-            tempContainer.style.width = '180mm'; // Ancho útil A4 (210mm - 30mm de márgenes)
-            tempContainer.style.background = '#ffffff';
-            tempContainer.style.color = '#1e293b';
-            tempContainer.style.fontFamily = 'Arial, Helvetica, sans-serif';
-            tempContainer.style.fontSize = '11pt';
-            tempContainer.style.lineHeight = '1.6';
-            tempContainer.style.wordWrap = 'break-word';
-            tempContainer.innerHTML = richEditorArea.innerHTML;
-
-            // Eliminar nodos vacíos finales que suelen provocar una última hoja en blanco
-            while (
-                tempContainer.lastChild &&
-                (
-                    (tempContainer.lastChild.nodeType === Node.TEXT_NODE && !tempContainer.lastChild.textContent.trim()) ||
-                    (tempContainer.lastChild.nodeType === Node.ELEMENT_NODE &&
-                     !tempContainer.lastChild.innerText.trim() &&
-                     !tempContainer.lastChild.querySelector('img, iframe'))
-                )
-            ) {
-                tempContainer.removeChild(tempContainer.lastChild);
-            }
-
-            const opt = {
-                margin:       [15, 15, 15, 15], // top, left, bottom, right en mm
-                filename:     `${name}.pdf`,
-                image:        { type: 'jpeg', quality: 0.96 },
-                html2canvas:  {
-                    scale: 2,
-                    useCORS: true,
-                    scrollY: 0,
-                    windowWidth: 794 // Ancho exacto A4 a 96 DPI para evitar escalados raros
-                },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak:    { mode: ['css', 'legacy'] }
-            };
 
             try {
-                await html2pdf().set(opt).from(tempContainer).save();
+                // jsPDF ya está cargado dentro de html2pdf.bundle.min.js
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    unit: 'mm',
+                    format: 'a4',
+                    orientation: 'portrait'
+                });
+
+                const margin = 15;
+                const pageWidth = doc.internal.pageSize.getWidth();   // 210 mm
+                const pageHeight = doc.internal.pageSize.getHeight(); // 297 mm
+                const maxLineWidth = pageWidth - margin * 2;          // 180 mm
+                const lineHeight = 6.5;                               // mm entre líneas
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+                doc.setTextColor(30, 41, 59);
+
+                // Divide automáticamente todo el texto al ancho útil de 180 mm respetando párrafos
+                const lines = doc.splitTextToSize(rawText, maxLineWidth);
+                let y = margin + 4; // Empieza directamente arriba a la izquierda
+
+                for (let i = 0; i < lines.length; i++) {
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin + 4;
+                    }
+                    doc.text(lines[i], margin, y);
+                    y += lineHeight;
+                }
+
+                doc.save(`${name}.pdf`);
                 showToast('¡PDF descargado correctamente!');
             } catch (err) {
                 console.error(err);
