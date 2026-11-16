@@ -37,7 +37,7 @@
                     <p class="text-xs text-slate-500">100% local en tu navegador · Sin subir archivos a la nube</p>
                 </div>
             </div>
-            <button id="clearAllBtn" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition">
+            <button id="clearAllBtn" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                 <span>Vaciar</span>
             </button>
@@ -71,15 +71,26 @@
             </div>
         </div>
 
-        <!-- Instrucción de reordenado (visible cuando hay archivos) -->
-        <div id="listHeader" class="hidden flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+        <!-- Barra de herramientas y ordenación (visible cuando hay archivos) -->
+        <div id="listHeader" class="hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1">
             <div class="flex items-center gap-2 text-sm text-slate-600">
-                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400"></i>
-                <span>Arrastra los elementos para cambiar el orden de fusión:</span>
+                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                <span>Arrastra para reordenar o usa orden alfabético:</span>
             </div>
-            <span id="fileCount" class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full self-start sm:self-auto">
-                0 archivos
-            </span>
+            
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+                <button type="button" id="sortAscBtn" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 cursor-pointer" title="Ordenar de A a Z">
+                    <i data-lucide="arrow-down-a-z" class="w-3.5 h-3.5 text-blue-600"></i>
+                    <span>A-Z</span>
+                </button>
+                <button type="button" id="sortDescBtn" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium px-2.5 py-1.5 rounded-lg shadow-xs transition flex items-center gap-1.5 cursor-pointer" title="Ordenar de Z a A">
+                    <i data-lucide="arrow-up-z-a" class="w-3.5 h-3.5 text-blue-600"></i>
+                    <span>Z-A</span>
+                </button>
+                <span id="fileCount" class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1.5 rounded-lg ml-1">
+                    0 archivos
+                </span>
+            </div>
         </div>
 
         <!-- Lista Ordenable de Archivos -->
@@ -115,7 +126,7 @@
         // Inicializar iconos
         lucide.createIcons();
 
-        // Estado de la aplicación: array de objetos { id, file, name, type, size, previewUrl }
+        // Estado de la aplicación: array de objetos { id, file, name, type, isImage, size, previewUrl }
         let filesQueue = [];
 
         // Referencias DOM
@@ -126,6 +137,8 @@
         const fileCount = document.getElementById('fileCount');
         const actionPanel = document.getElementById('actionPanel');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        const sortAscBtn = document.getElementById('sortAscBtn');
+        const sortDescBtn = document.getElementById('sortDescBtn');
         const mergeBtn = document.getElementById('mergeBtn');
         const mergeBtnText = document.getElementById('mergeBtnText');
         const outputFilename = document.getElementById('outputFilename');
@@ -134,14 +147,32 @@
         const sortable = new Sortable(fileList, {
             animation: 150,
             ghostClass: 'sortable-ghost',
-            handle: '.drag-handle', // En móvil ayuda a no interferir con el scroll vertical
+            handle: '.drag-handle',
             onEnd: function () {
-                // Reordenar el array filesQueue según el nuevo orden del DOM
                 const newOrderIds = Array.from(fileList.children).map(li => li.dataset.id);
                 filesQueue = newOrderIds.map(id => filesQueue.find(item => item.id === id));
                 updateOrderBadges();
             }
         });
+
+        // Ordenación A-Z y Z-A (orden natural para números en nombres de archivo)
+        function sortFiles(direction) {
+            if (filesQueue.length < 2) return;
+
+            filesQueue.sort((a, b) => {
+                const comparison = a.name.localeCompare(b.name, undefined, {
+                    numeric: true,
+                    sensitivity: 'base'
+                });
+                return direction === 'asc' ? comparison : -comparison;
+            });
+
+            renderList();
+            showToast(direction === 'asc' ? 'Ordenado de A a Z' : 'Ordenado de Z a A');
+        }
+
+        sortAscBtn.addEventListener('click', () => sortFiles('asc'));
+        sortDescBtn.addEventListener('click', () => sortFiles('desc'));
 
         // Eventos de Drag & Drop en la zona de carga
         dropZone.addEventListener('click', () => fileInput.click());
@@ -169,7 +200,7 @@
 
         fileInput.addEventListener('change', (e) => {
             handleFiles(e.target.files);
-            fileInput.value = ''; // Permitir volver a subir el mismo archivo si se desea
+            fileInput.value = '';
         });
 
         // Procesar archivos añadidos respetando el orden de entrada
@@ -225,7 +256,6 @@
                 li.dataset.id = item.id;
                 li.className = 'bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex items-center gap-3 select-none hover:border-slate-300 transition';
 
-                // Miniatura o icono
                 let thumbHtml = '';
                 if (item.isImage) {
                     thumbHtml = `<img src="${item.previewUrl}" alt="preview" class="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-50">`;
@@ -252,7 +282,7 @@
                         <p class="text-sm font-medium text-slate-800 truncate" title="${item.name}">${item.name}</p>
                         <p class="text-xs text-slate-400">${item.size}</p>
                     </div>
-                    <button type="button" onclick="removeFile('${item.id}')" class="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition shrink-0" title="Eliminar">
+                    <button type="button" onclick="removeFile('${item.id}')" class="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition shrink-0 cursor-pointer" title="Eliminar">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
                 `;
@@ -292,7 +322,7 @@
             renderList();
         });
 
-        // Convertir WEBP a PNG mediante Canvas (pdf-lib soporta JPG y PNG nativamente)
+        // Convertir WEBP a PNG mediante Canvas
         async function convertWebpToPngBytes(file) {
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -328,12 +358,10 @@
                     const arrayBuffer = await item.file.arrayBuffer();
 
                     if (item.type === 'application/pdf') {
-                        // Cargar PDF existente y copiar todas sus páginas
                         const srcPdf = await PDFDocument.load(arrayBuffer);
                         const copiedPages = await mergedPdf.copyPages(srcPdf, srcPdf.getPageIndices());
                         copiedPages.forEach((page) => mergedPdf.addPage(page));
                     } else if (item.isImage) {
-                        // Incrustar imagen en una página ajustada a sus dimensiones
                         let embeddedImage;
                         if (item.type === 'image/jpeg') {
                             embeddedImage = await mergedPdf.embedJpg(arrayBuffer);
@@ -357,7 +385,6 @@
                     }
                 }
 
-                // Guardar y disparar descarga
                 const pdfBytes = await mergedPdf.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const downloadUrl = URL.createObjectURL(blob);
