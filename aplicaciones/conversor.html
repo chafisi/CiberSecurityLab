@@ -18,6 +18,7 @@
     <!-- html2canvas y jsPDF 2.5.1 para exportar PDF con formato, tablas e imágenes -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- Fuentes Google Fonts: Nunito, Roboto y Plus Jakarta Sans / Google Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1328,104 +1329,92 @@
             showToast('Fila añadida');
         };
 
-        // Exportar a PDF a escala real 1:1 (sin texto gigante, con formato, tablas e imágenes)
+        // Exportar a PDF conservando todo el formato enriquecido e imágenes (depurado)
         window.exportEditorPdf = async function() {
             if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img, table')) {
                 showToast('El editor está vacío');
                 return;
             }
 
+            // Quitar borde azul de selección de imagen si hubiera alguna marcada
             richEditorArea.querySelectorAll('img').forEach(img => img.classList.remove('selected-img'));
+
             const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
             showToast('Generando PDF...');
 
-            // Overlay limpio montado en (0,0)
-            const overlay = document.createElement('div');
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100vw';
-            overlay.style.height = '100vh';
-            overlay.style.backgroundColor = 'rgba(255,255,255,0.98)';
-            overlay.style.zIndex = '9999';
-            overlay.style.overflow = 'auto';
-            overlay.style.display = 'flex';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'flex-start';
+            // 1. Guardar estilos y scroll actuales para restaurarlos al terminar
+            const prevScrollY = window.scrollY;
+            const prevMinHeight = richEditorArea.style.minHeight;
+            const prevPadding = richEditorArea.style.padding;
 
-            // Folio A4 en píxeles estándar (595px ancho total - 80px márgenes = 515px útiles)
-            const renderSheet = document.createElement('div');
-            renderSheet.style.width = '515px';
-            renderSheet.style.backgroundColor = '#ffffff';
-            renderSheet.style.color = '#1e293b';
-            renderSheet.style.fontFamily = 'Arial, Helvetica, sans-serif';
-            renderSheet.style.fontSize = '11pt';
-            renderSheet.style.lineHeight = '1.5';
-            renderSheet.style.wordWrap = 'break-word';
-            renderSheet.innerHTML = richEditorArea.innerHTML;
+            // 2. Eliminar bloques vacíos finales (<div><br></div> o <p><br></p>) que generan una hoja en blanco al final
+            while (
+                richEditorArea.lastChild &&
+                (
+                    (richEditorArea.lastChild.nodeType === Node.TEXT_NODE && !richEditorArea.lastChild.textContent.trim()) ||
+                    (richEditorArea.lastChild.nodeType === Node.ELEMENT_NODE &&
+                     !richEditorArea.lastChild.innerText.trim() &&
+                     !richEditorArea.lastChild.querySelector('img, table, iframe'))
+                )
+            ) {
+                richEditorArea.removeChild(richEditorArea.lastChild);
+            }
 
-            // Estilos inline exactos para títulos, listas, tablas e imágenes
-            renderSheet.querySelectorAll('h1.doc-title').forEach(el => { el.style.fontSize = '22pt'; el.style.fontWeight = '700'; el.style.lineHeight = '1.2'; el.style.margin = '8px 0'; });
-            renderSheet.querySelectorAll('h2.doc-h1').forEach(el => { el.style.fontSize = '16pt'; el.style.fontWeight = '700'; el.style.lineHeight = '1.3'; el.style.margin = '8px 0'; });
-            renderSheet.querySelectorAll('h3.doc-h2').forEach(el => { el.style.fontSize = '13pt'; el.style.fontWeight = '600'; el.style.lineHeight = '1.35'; el.style.margin = '6px 0'; });
-            renderSheet.querySelectorAll('ul').forEach(el => { el.style.listStyleType = 'disc'; el.style.paddingLeft = '22px'; el.style.margin = '6px 0'; });
-            renderSheet.querySelectorAll('ol').forEach(el => { el.style.listStyleType = 'decimal'; el.style.paddingLeft = '22px'; el.style.margin = '6px 0'; });
-            renderSheet.querySelectorAll('img').forEach(el => { el.style.maxWidth = '100%'; el.style.height = 'auto'; });
-            renderSheet.querySelectorAll('table').forEach(el => { el.style.width = '100%'; el.style.borderCollapse = 'collapse'; el.style.margin = '8px 0'; });
-            renderSheet.querySelectorAll('th, td').forEach(el => { el.style.border = '1px solid #94a3b8'; el.style.padding = '5px 8px'; });
+            // 3. Aplicar temporalmente break-inside: avoid a cada bloque hijo para que no corte líneas ni imágenes por la mitad
+            const blocks = richEditorArea.querySelectorAll('p, div, li, tr, img, h1, h2, h3, blockquote');
+            blocks.forEach(el => {
+                el.dataset.prevBreakInside = el.style.breakInside || '';
+                el.style.breakInside = 'avoid';
+                el.style.pageBreakInside = 'avoid';
+            });
 
-            overlay.appendChild(renderSheet);
-            document.body.appendChild(overlay);
+            // 4. Quitar min-height y subir scroll a 0 para evitar el hueco en blanco superior
+            richEditorArea.style.minHeight = 'auto';
+            richEditorArea.style.padding = '0px';
+            window.scrollTo(0, 0);
+
+            const opt = {
+                margin:       [15, 15, 15, 15],
+                filename:     `${name}.pdf`,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  {
+                    scale: 2,
+                    useCORS: true,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: richEditorArea.scrollWidth
+                },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
+            };
 
             try {
-                // Esperar a que las fuentes web (Nunito, Roboto, Google Sans) estén listas
-                if (document.fonts && document.fonts.ready) {
-                    await document.fonts.ready;
+                // Generar el PDF y limpiar última página si aun así quedara en blanco
+                const worker = html2pdf().set(opt).from(richEditorArea).toPdf();
+                const pdf = await worker.get('pdf');
+                const totalPages = pdf.internal.getNumberOfPages();
+                if (totalPages > 1) {
+                    const lastPage = pdf.internal.pages[totalPages];
+                    // Una página vacía en jsPDF solo contiene los comandos de estado básicos (<= 3 entradas)
+                    if (lastPage && lastPage.length <= 3) {
+                        pdf.deletePage(totalPages);
+                    }
                 }
-
-                const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
-                // Usar unidad 'px' con formato 'a4' (595.28 x 841.89 px) garantiza proporción 1:1 exacta
-                const doc = new jsPDF({
-                    unit: 'px',
-                    format: 'a4',
-                    orientation: 'portrait',
-                    hotfixes: ['px_scaling']
-                });
-
-                await new Promise((resolve) => {
-                    doc.html(renderSheet, {
-                        x: 40,
-                        y: 40,
-                        width: 515,        // 595px - (40px izq + 40px der) = 515px exactos
-                        windowWidth: 515,  // Sin escalado deformante
-                        autoPaging: 'text',
-                        margin: [40, 40, 40, 40],
-                        html2canvas: {
-                            scale: 1.5,    // Nitidez alta sin multiplicar el tamaño de fuente
-                            useCORS: true,
-                            scrollX: 0,
-                            scrollY: 0
-                        },
-                        callback: function(pdf) {
-                            const totalPages = pdf.internal.getNumberOfPages();
-                            if (totalPages > 1) {
-                                const lastPageContent = pdf.internal.pages[totalPages];
-                                if (lastPageContent && lastPageContent.length <= 2) {
-                                    pdf.deletePage(totalPages);
-                                }
-                            }
-                            pdf.save(`${name}.pdf`);
-                            resolve();
-                        }
-                    });
-                });
-
+                await worker.save();
                 showToast('¡PDF descargado correctamente!');
             } catch (err) {
                 console.error(err);
                 showToast('Error al generar el PDF.');
             } finally {
-                document.body.removeChild(overlay);
+                // 5. Restaurar el editor exactamente como estaba
+                richEditorArea.style.minHeight = prevMinHeight;
+                richEditorArea.style.padding = prevPadding;
+                blocks.forEach(el => {
+                    el.style.breakInside = el.dataset.prevBreakInside;
+                    el.style.pageBreakInside = el.dataset.prevBreakInside;
+                    delete el.dataset.prevBreakInside;
+                });
+                window.scrollTo(0, prevScrollY);
             }
         };
     </script>
