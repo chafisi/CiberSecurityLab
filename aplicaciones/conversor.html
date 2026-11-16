@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fusionador PDF e Imágenes - Local & Seguro</title>
+    <!-- Tailwind CSS para diseño adaptativo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- pdf-lib para manipular y crear PDFs en el navegador -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <!-- SortableJS para arrastrar y reordenar (soporte táctil y ratón) -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .drag-over {
+            border-color: #2563eb !important;
+            background-color: #eff6ff !important;
+        }
+        .sortable-ghost {
+            opacity: 0.4;
+            background-color: #dbeafe;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Cabecera -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-blue-600 text-white p-2 rounded-lg">
+                    <i data-lucide="file-stack" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF & Image Merger</h1>
+                    <p class="text-xs text-slate-500">100% local en tu navegador · Sin subir archivos a la nube</p>
+                </div>
+            </div>
+            <button id="clearAllBtn" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                <span>Vaciar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 sm:py-8 flex flex-col gap-6">
+
+        <!-- Zona de Carga / Drag & Drop -->
+        <div id="dropZone" class="border-2 border-dashed border-slate-300 bg-white rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-slate-50/80 shadow-sm">
+            <input type="file" id="fileInput" multiple accept=".pdf,image/jpeg,image/png,image/webp" class="hidden">
+            <div class="flex flex-col items-center justify-center gap-3">
+                <div class="bg-blue-50 text-blue-600 p-4 rounded-full">
+                    <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+                </div>
+                <div>
+                    <p class="text-base sm:text-lg font-semibold text-slate-700">
+                        Arrastra aquí tus PDFs o Imágenes
+                    </p>
+                    <p class="text-sm text-slate-500 mt-1">
+                        o <span class="text-blue-600 font-medium underline">haz clic para seleccionar archivos</span> desde tu dispositivo
+                    </p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2 mt-2 text-xs text-slate-400">
+                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">PDF</span>
+                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">JPG / JPEG</span>
+                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">PNG</span>
+                    <span class="bg-slate-100 px-2.5 py-1 rounded-md font-medium text-slate-600">WEBP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instrucción de reordenado (visible cuando hay archivos) -->
+        <div id="listHeader" class="hidden flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+            <div class="flex items-center gap-2 text-sm text-slate-600">
+                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-400"></i>
+                <span>Arrastra los elementos para cambiar el orden de fusión:</span>
+            </div>
+            <span id="fileCount" class="text-xs font-semibold bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full self-start sm:self-auto">
+                0 archivos
+            </span>
+        </div>
+
+        <!-- Lista Ordenable de Archivos -->
+        <ul id="fileList" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Los elementos se insertan dinámicamente aquí -->
+        </ul>
+
+        <!-- Panel de Opciones y Botón de Acción -->
+        <div id="actionPanel" class="hidden bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 mt-auto">
+            <div class="flex-grow">
+                <label for="outputFilename" class="block text-xs font-medium text-slate-500 mb-1">Nombre del archivo resultante</label>
+                <div class="flex items-center">
+                    <input type="text" id="outputFilename" value="documento_fusionado" class="w-full sm:w-64 text-sm border border-slate-300 rounded-l-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <span class="bg-slate-100 border border-l-0 border-slate-300 text-slate-500 text-sm px-3 py-2 rounded-r-lg font-mono">.pdf</span>
+                </div>
+            </div>
+
+            <button id="mergeBtn" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-6 py-3 rounded-xl shadow-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+                <span id="mergeBtnText">Fusionar y Descargar PDF</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Notificación Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 left-5 sm:left-auto bg-slate-900 text-white text-sm px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2.5 z-50">
+        <i data-lucide="info" class="w-5 h-5 text-blue-400 shrink-0"></i>
+        <span id="toastMsg">Mensaje</span>
+    </div>
+
+    <script>
+        // Inicializar iconos
+        lucide.createIcons();
+
+        // Estado de la aplicación: array de objetos { id, file, name, type, size, previewUrl }
+        let filesQueue = [];
+
+        // Referencias DOM
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const listHeader = document.getElementById('listHeader');
+        const fileCount = document.getElementById('fileCount');
+        const actionPanel = document.getElementById('actionPanel');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const mergeBtn = document.getElementById('mergeBtn');
+        const mergeBtnText = document.getElementById('mergeBtnText');
+        const outputFilename = document.getElementById('outputFilename');
+
+        // Inicializar SortableJS para permitir reordenar arrastrando (PC y móvil)
+        const sortable = new Sortable(fileList, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            handle: '.drag-handle', // En móvil ayuda a no interferir con el scroll vertical
+            onEnd: function () {
+                // Reordenar el array filesQueue según el nuevo orden del DOM
+                const newOrderIds = Array.from(fileList.children).map(li => li.dataset.id);
+                filesQueue = newOrderIds.map(id => filesQueue.find(item => item.id === id));
+                updateOrderBadges();
+            }
+        });
+
+        // Eventos de Drag & Drop en la zona de carga
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const droppedFiles = e.dataTransfer.files;
+            handleFiles(droppedFiles);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+            fileInput.value = ''; // Permitir volver a subir el mismo archivo si se desea
+        });
+
+        // Procesar archivos añadidos respetando el orden de entrada
+        function handleFiles(fileListObj) {
+            const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+            let addedCount = 0;
+
+            Array.from(fileListObj).forEach(file => {
+                if (!validTypes.includes(file.type)) {
+                    showToast(`Formato no soportado: ${file.name}`);
+                    return;
+                }
+
+                const id = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                const isImage = file.type.startsWith('image/');
+                const previewUrl = isImage ? URL.createObjectURL(file) : null;
+
+                filesQueue.push({
+                    id,
+                    file,
+                    name: file.name,
+                    type: file.type,
+                    isImage,
+                    size: formatBytes(file.size),
+                    previewUrl
+                });
+                addedCount++;
+            });
+
+            if (addedCount > 0) {
+                renderList();
+            }
+        }
+
+        // Renderizar la lista visual
+        function renderList() {
+            fileList.innerHTML = '';
+
+            if (filesQueue.length === 0) {
+                listHeader.classList.add('hidden');
+                actionPanel.classList.add('hidden');
+                clearAllBtn.classList.add('hidden');
+                return;
+            }
+
+            listHeader.classList.remove('hidden');
+            actionPanel.classList.remove('hidden');
+            clearAllBtn.classList.remove('hidden');
+            fileCount.textContent = `${filesQueue.length} ${filesQueue.length === 1 ? 'archivo' : 'archivos'}`;
+
+            filesQueue.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.dataset.id = item.id;
+                li.className = 'bg-white border border-slate-200 rounded-xl p-3 shadow-sm flex items-center gap-3 select-none hover:border-slate-300 transition';
+
+                // Miniatura o icono
+                let thumbHtml = '';
+                if (item.isImage) {
+                    thumbHtml = `<img src="${item.previewUrl}" alt="preview" class="w-12 h-12 object-cover rounded-lg border border-slate-200 shrink-0 bg-slate-50">`;
+                } else {
+                    thumbHtml = `
+                        <div class="w-12 h-12 rounded-lg bg-red-50 border border-red-100 text-red-600 flex flex-col items-center justify-center shrink-0">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                            <span class="text-[9px] font-bold uppercase mt-0.5">PDF</span>
+                        </div>
+                    `;
+                }
+
+                li.innerHTML = `
+                    <div class="drag-handle cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-600 p-1 touch-none" title="Arrastrar para reordenar">
+                        <i data-lucide="grip-vertical" class="w-5 h-5"></i>
+                    </div>
+                    <div class="relative">
+                        ${thumbHtml}
+                        <span class="order-badge absolute -top-2 -left-2 bg-slate-800 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">
+                            ${index + 1}
+                        </span>
+                    </div>
+                    <div class="min-w-0 flex-grow">
+                        <p class="text-sm font-medium text-slate-800 truncate" title="${item.name}">${item.name}</p>
+                        <p class="text-xs text-slate-400">${item.size}</p>
+                    </div>
+                    <button type="button" onclick="removeFile('${item.id}')" class="text-slate-400 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition shrink-0" title="Eliminar">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                `;
+
+                fileList.appendChild(li);
+            });
+
+            lucide.createIcons();
+        }
+
+        // Actualizar números de orden tras arrastrar
+        function updateOrderBadges() {
+            const badges = fileList.querySelectorAll('.order-badge');
+            badges.forEach((badge, idx) => {
+                badge.textContent = idx + 1;
+            });
+        }
+
+        // Eliminar un archivo concreto
+        window.removeFile = function(id) {
+            const index = filesQueue.findIndex(item => item.id === id);
+            if (index !== -1) {
+                if (filesQueue[index].previewUrl) {
+                    URL.revokeObjectURL(filesQueue[index].previewUrl);
+                }
+                filesQueue.splice(index, 1);
+                renderList();
+            }
+        };
+
+        // Vaciar toda la lista
+        clearAllBtn.addEventListener('click', () => {
+            filesQueue.forEach(item => {
+                if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+            });
+            filesQueue = [];
+            renderList();
+        });
+
+        // Convertir WEBP a PNG mediante Canvas (pdf-lib soporta JPG y PNG nativamente)
+        async function convertWebpToPngBytes(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    URL.revokeObjectURL(url);
+                    canvas.toBlob(async (blob) => {
+                        const arrayBuffer = await blob.arrayBuffer();
+                        resolve(arrayBuffer);
+                    }, 'image/png');
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        // Lógica principal de fusión
+        mergeBtn.addEventListener('click', async () => {
+            if (filesQueue.length === 0) return;
+
+            setLoading(true);
+
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+
+                for (const item of filesQueue) {
+                    const arrayBuffer = await item.file.arrayBuffer();
+
+                    if (item.type === 'application/pdf') {
+                        // Cargar PDF existente y copiar todas sus páginas
+                        const srcPdf = await PDFDocument.load(arrayBuffer);
+                        const copiedPages = await mergedPdf.copyPages(srcPdf, srcPdf.getPageIndices());
+                        copiedPages.forEach((page) => mergedPdf.addPage(page));
+                    } else if (item.isImage) {
+                        // Incrustar imagen en una página ajustada a sus dimensiones
+                        let embeddedImage;
+                        if (item.type === 'image/jpeg') {
+                            embeddedImage = await mergedPdf.embedJpg(arrayBuffer);
+                        } else if (item.type === 'image/png') {
+                            embeddedImage = await mergedPdf.embedPng(arrayBuffer);
+                        } else if (item.type === 'image/webp') {
+                            const pngBytes = await convertWebpToPngBytes(item.file);
+                            embeddedImage = await mergedPdf.embedPng(pngBytes);
+                        }
+
+                        if (embeddedImage) {
+                            const { width, height } = embeddedImage.scale(1);
+                            const page = mergedPdf.addPage([width, height]);
+                            page.drawImage(embeddedImage, {
+                                x: 0,
+                                y: 0,
+                                width: width,
+                                height: height,
+                            });
+                        }
+                    }
+                }
+
+                // Guardar y disparar descarga
+                const pdfBytes = await mergedPdf.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const downloadUrl = URL.createObjectURL(blob);
+
+                const cleanName = (outputFilename.value.trim() || 'documento_fusionado').replace(/\.pdf$/i, '');
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `${cleanName}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(downloadUrl);
+
+                showToast('¡PDF generado y descargado correctamente!');
+            } catch (error) {
+                console.error(error);
+                showToast('Error al fusionar. Verifica que ningún PDF tenga contraseña.');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function setLoading(isLoading) {
+            mergeBtn.disabled = isLoading;
+            mergeBtnText.textContent = isLoading ? 'Procesando...' : 'Fusionar y Descargar PDF';
+        }
+
+        function formatBytes(bytes, decimals = 1) {
+            if (!+bytes) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(decimals))} ${sizes[i]}`;
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
