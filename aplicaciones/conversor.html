@@ -20,6 +20,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!-- v10 Tesseract.js para reconocimiento óptico de caracteres (OCR) 100% en el navegador -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
     <!-- Fuentes Google Fonts: Nunito, Roboto y Plus Jakarta Sans / Google Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -75,7 +78,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v9</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v10</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -106,6 +109,11 @@
                 <button type="button" id="tabCleanBtn" onclick="switchTab('clean')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
                     <i data-lucide="sparkles" class="w-4 h-4"></i>
                     <span>Extracción PDF</span>
+                </button>
+
+                <button type="button" id="tabOcrBtn" onclick="switchTab('ocr')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                    <i data-lucide="scan-text" class="w-4 h-4"></i>
+                    <span>OCR</span>
                 </button>
 
                 <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
@@ -568,6 +576,117 @@
             </div>
 
         </div>
+
+        <!-- ==================== SECCIÓN 5: OCR (PDF ESCANEADO E IMÁGENES A TEXTO) ==================== -->
+        <div id="ocrSection" class="hidden flex-col gap-5 flex-grow">
+
+            <!-- Panel de configuración de idioma y zona de carga -->
+            <div id="ocrUploadCard" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 flex flex-col gap-5">
+                
+                <!-- Selector de idioma OCR -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="languages" class="w-5 h-5 text-blue-600 shrink-0"></i>
+                        <div>
+                            <p class="text-xs sm:text-sm font-bold text-slate-800">Idioma del documento escaneado</p>
+                            <p class="text-xs text-slate-500">Mejora el reconocimiento de tildes, eñes y caracteres especiales</p>
+                        </div>
+                    </div>
+                    <select id="ocrLangSelect" class="text-xs sm:text-sm bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        <option value="spa" selected>Español (spa)</option>
+                        <option value="eng">Inglés (eng)</option>
+                        <option value="spa+eng">Español + Inglés (spa+eng)</option>
+                        <option value="cat">Catalán / Valenciano (cat)</option>
+                        <option value="fra">Francés (fra)</option>
+                    </select>
+                </div>
+
+                <!-- Zona DropZone OCR -->
+                <div id="ocrDropZone" class="border-2 border-dashed border-slate-300 bg-slate-50/50 rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-blue-50/30">
+                    <input type="file" id="ocrFileInput" accept=".pdf,application/pdf,image/jpeg,image/png,image/webp" class="hidden">
+                    <div class="flex flex-col items-center justify-center gap-3">
+                        <div class="bg-amber-50 text-amber-600 p-4 rounded-full">
+                            <i data-lucide="scan-line" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-base sm:text-lg font-semibold text-slate-700">
+                                Arrastra aquí una Imagen o PDF escaneado
+                            </p>
+                            <p class="text-sm text-slate-500 mt-1">
+                                o <span class="text-blue-600 font-medium underline">haz clic para seleccionar archivo</span> (JPG, PNG, WEBP o PDF)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barra de progreso OCR (visible durante el escaneo) -->
+                <div id="ocrProgressBox" class="hidden bg-blue-50 border border-blue-200 rounded-xl p-4 flex flex-col gap-2">
+                    <div class="flex items-center justify-between text-xs sm:text-sm font-semibold text-blue-900">
+                        <span id="ocrStatusText" class="flex items-center gap-2">
+                            <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                            <span>Inicializando motor OCR...</span>
+                        </span>
+                        <span id="ocrPercentText">0%</span>
+                    </div>
+                    <div class="w-full bg-blue-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="ocrProgressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de resultado OCR editable -->
+            <div id="ocrResultCard" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 flex-col gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div class="min-w-0">
+                        <h2 id="ocrFileName" class="text-sm font-bold text-slate-800 truncate">documento_escaneado.pdf</h2>
+                        <p id="ocrStats" class="text-xs text-slate-500">Reconocimiento completado</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                        <button type="button" onclick="sendOcrToMainEditor()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                            <span>Abrir en Editor</span>
+                        </button>
+                        <button type="button" id="copyOcrBtn" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                            <span>Copiar</span>
+                        </button>
+                        <button type="button" id="resetOcrBtn" class="text-xs text-red-600 hover:bg-red-50 px-2.5 py-1.5 rounded-lg font-medium transition cursor-pointer">
+                            Nuevo archivo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Área de texto reconocido editable -->
+                <div>
+                    <label for="ocrTextArea" class="block text-xs font-medium text-slate-500 mb-1.5">Texto reconocido mediante OCR (puedes corregir cualquier palabra antes de exportar):</label>
+                    <textarea id="ocrTextArea" rows="12" class="w-full text-sm font-mono text-slate-800 bg-slate-50 border border-slate-300 rounded-xl p-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white leading-relaxed" placeholder="El texto reconocido aparecerá aquí..."></textarea>
+                </div>
+
+                <!-- Botones de descarga -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    <div class="flex-grow">
+                        <label for="ocrOutputName" class="block text-xs font-medium text-slate-500 mb-1">Nombre del archivo a descargar</label>
+                        <input type="text" id="ocrOutputName" value="texto_ocr" class="w-full sm:w-64 text-sm bg-white border border-slate-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="downloadOcrTxtBtn" class="flex-1 sm:flex-initial bg-slate-700 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-code" class="w-4 h-4"></i>
+                            <span>.TXT</span>
+                        </button>
+                        <button type="button" id="downloadOcrDocBtn" class="flex-1 sm:flex-initial bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-type-2" class="w-4 h-4"></i>
+                            <span>Documento (.DOC)</span>
+                        </button>
+                        <button type="button" id="downloadOcrPdfBtn" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i data-lucide="file-down" class="w-4 h-4"></i>
+                            <span>PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <!-- Notificación Toast -->
@@ -966,6 +1085,7 @@
                 extract: { section: document.getElementById('extractSection'), btn: document.getElementById('tabExtractBtn') },
                 editor: { section: document.getElementById('editorSection'), btn: document.getElementById('tabEditorBtn') },
                 clean: { section: document.getElementById('cleanSection'), btn: document.getElementById('tabCleanBtn') }
+                ocr: { section: document.getElementById('ocrSection'), btn: document.getElementById('tabOcrBtn') }
             };
 
             Object.entries(tabs).forEach(([key, item]) => {
@@ -1789,7 +1909,234 @@
                 window.scrollTo(0, prevScrollY);
             }
         };
+        //****** V10 LÓGICA OCR *******
+        // ==================== LÓGICA DE OCR (IMÁGENES Y PDF ESCANEADO A TEXTO) ====================
+        const ocrDropZone = document.getElementById('ocrDropZone');
+        const ocrFileInput = document.getElementById('ocrFileInput');
+        const ocrUploadCard = document.getElementById('ocrUploadCard');
+        const ocrProgressBox = document.getElementById('ocrProgressBox');
+        const ocrStatusText = document.getElementById('ocrStatusText');
+        const ocrPercentText = document.getElementById('ocrPercentText');
+        const ocrProgressBar = document.getElementById('ocrProgressBar');
+        const ocrResultCard = document.getElementById('ocrResultCard');
+        const ocrTextArea = document.getElementById('ocrTextArea');
+        const ocrOutputName = document.getElementById('ocrOutputName');
 
+        ocrDropZone.addEventListener('click', () => ocrFileInput.click());
+
+        ['dragenter', 'dragover'].forEach(ev => {
+            ocrDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                ocrDropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(ev => {
+            ocrDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                ocrDropZone.classList.remove('drag-over');
+            });
+        });
+
+        ocrDropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length > 0) {
+                runOcrProcess(e.dataTransfer.files[0]);
+            }
+        });
+
+        ocrFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                runOcrProcess(e.target.files[0]);
+            }
+            ocrFileInput.value = '';
+        });
+
+        function updateOcrProgress(statusLabel, percent) {
+            ocrStatusText.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>${statusLabel}</span>`;
+            const pct = Math.min(Math.max(Math.round(percent), 0), 100);
+            ocrPercentText.textContent = `${pct}%`;
+            ocrProgressBar.style.width = `${pct}%`;
+            lucide.createIcons();
+        }
+
+        async function runOcrProcess(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            const isPdf = file.type === 'application/pdf' || ext === 'pdf';
+            const isImage = file.type.startsWith('image/') || ['jpg', 'jpeg', 'png', 'webp', 'bmp'].includes(ext);
+
+            if (!isPdf && !isImage) {
+                showToast('Formato no soportado. Usa PDF, JPG, PNG o WEBP.');
+                return;
+            }
+
+            const lang = document.getElementById('ocrLangSelect').value;
+            ocrDropZone.classList.add('pointer-events-none', 'opacity-50');
+            ocrProgressBox.classList.remove('hidden');
+            updateOcrProgress('Cargando motor OCR...', 5);
+
+            let worker = null;
+
+            try {
+                // Inicializar worker de Tesseract v5 con el idioma seleccionado
+                worker = await Tesseract.createWorker(lang, 1, {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            updateOcrProgress('Reconociendo texto...', m.progress * 100);
+                        } else if (m.status === 'loading language traineddata') {
+                            updateOcrProgress(`Descargando diccionario (${lang})...`, m.progress * 40);
+                        }
+                    }
+                });
+
+                let finalRecognizedText = '';
+                let totalPagesProcessed = 1;
+
+                if (isImage) {
+                    const { data: { text } } = await worker.recognize(file);
+                    finalRecognizedText = text.trim();
+                } else if (isPdf) {
+                    updateOcrProgress('Renderizando páginas del PDF...', 10);
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    totalPagesProcessed = pdfDoc.numPages;
+
+                    for (let pageNum = 1; pageNum <= totalPagesProcessed; pageNum++) {
+                        updateOcrProgress(`Escaneando página ${pageNum} de ${totalPagesProcessed}...`, ((pageNum - 1) / totalPagesProcessed) * 100);
+                        const page = await pdfDoc.getPage(pageNum);
+                        // Escala 2.0 para que las letras pequeñas tengan nitidez suficiente para el OCR
+                        const viewport = page.getViewport({ scale: 2.0 });
+
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+
+                        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+
+                        const { data: { text } } = await worker.recognize(canvas);
+                        finalRecognizedText += `--- Página ${pageNum} ---\n${text.trim()}\n\n`;
+                    }
+                }
+
+                await worker.terminate();
+                worker = null;
+
+                const cleanBaseName = file.name.replace(/\.[^/.]+$/, '');
+                document.getElementById('ocrFileName').textContent = file.name;
+                ocrOutputName.value = `${cleanBaseName}_ocr`;
+                ocrTextArea.value = finalRecognizedText.trim() || '(No se ha podido detectar texto legible en la imagen/documento).';
+                document.getElementById('ocrStats').textContent =
+                    `${totalPagesProcessed} ${totalPagesProcessed === 1 ? 'página escaneada' : 'páginas escaneadas'} · ${ocrTextArea.value.length} caracteres · Idioma: ${lang.toUpperCase()}`;
+
+                ocrUploadCard.classList.add('hidden');
+                ocrResultCard.classList.remove('hidden');
+                ocrResultCard.classList.add('flex');
+                showToast('¡OCR completado con éxito!');
+            } catch (err) {
+                console.error('Error OCR:', err);
+                showToast('Error al ejecutar OCR. Revisa tu conexión para descargar el diccionario de idioma.');
+                if (worker) await worker.terminate();
+            } finally {
+                ocrDropZone.classList.remove('pointer-events-none', 'opacity-50');
+                ocrProgressBox.classList.add('hidden');
+            }
+        }
+
+        // Reiniciar OCR
+        document.getElementById('resetOcrBtn').addEventListener('click', () => {
+            ocrResultCard.classList.add('hidden');
+            ocrResultCard.classList.remove('flex');
+            ocrUploadCard.classList.remove('hidden');
+            ocrTextArea.value = '';
+        });
+
+        // Copiar resultado OCR
+        document.getElementById('copyOcrBtn').addEventListener('click', async () => {
+            if (!ocrTextArea.value) return;
+            await navigator.clipboard.writeText(ocrTextArea.value);
+            showToast('Texto OCR copiado al portapapeles');
+        });
+
+        // Enviar resultado OCR al Editor principal para dar formato
+        window.sendOcrToMainEditor = function() {
+            const escapedParagraphs = ocrTextArea.value
+                .split('\n')
+                .map(line => line.trim() ? `<p>${line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>` : '<p><br></p>')
+                .join('');
+            richEditorArea.innerHTML = escapedParagraphs;
+            editorOutputName.value = ocrOutputName.value;
+            updateEditorStats();
+            switchTab('editor');
+            showToast('Texto OCR enviado al Editor principal');
+        };
+
+        // Descargar OCR como .TXT
+        document.getElementById('downloadOcrTxtBtn').addEventListener('click', () => {
+            if (!ocrTextArea.value) return;
+            const name = (ocrOutputName.value.trim() || 'texto_ocr').replace(/\.(txt|doc|docx|pdf)$/i, '');
+            const blob = new Blob([ocrTextArea.value], { type: 'text/plain;charset=utf-8' });
+            triggerBlobDownload(blob, `${name}.txt`);
+            showToast('Descargado como .TXT');
+        });
+
+        // Descargar OCR como Documento .DOC
+        document.getElementById('downloadOcrDocBtn').addEventListener('click', () => {
+            if (!ocrTextArea.value) return;
+            const name = (ocrOutputName.value.trim() || 'texto_ocr').replace(/\.(txt|doc|docx|pdf)$/i, '');
+            const escapedHtml = ocrTextArea.value
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/\n/g, '<br>');
+            const docContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>${name}</title></head>
+                <body style="font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5;">${escapedHtml}</body>
+                </html>`;
+            const blob = new Blob(['\ufeff', docContent], { type: 'application/msword' });
+            triggerBlobDownload(blob, `${name}.doc`);
+            showToast('Descargado como documento .DOC');
+        });
+
+        // Descargar OCR como PDF vectorial
+        document.getElementById('downloadOcrPdfBtn').addEventListener('click', () => {
+            const rawText = ocrTextArea.value.trim();
+            if (!rawText) return;
+            const name = (ocrOutputName.value.trim() || 'texto_ocr').replace(/\.(txt|doc|docx|pdf)$/i, '');
+
+            try {
+                const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+                const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                const margin = 15;
+                const maxLineWidth = doc.internal.pageSize.getWidth() - margin * 2;
+                const pageHeight = doc.internal.pageSize.getHeight();
+                const lineHeight = 6.5;
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+                doc.setTextColor(30, 41, 59);
+
+                const lines = doc.splitTextToSize(rawText, maxLineWidth);
+                let y = margin + 4;
+
+                for (let i = 0; i < lines.length; i++) {
+                    if (y > pageHeight - margin) {
+                        doc.addPage();
+                        y = margin + 4;
+                    }
+                    doc.text(lines[i], margin, y);
+                    y += lineHeight;
+                }
+
+                doc.save(`${name}.pdf`);
+                showToast('PDF generado correctamente');
+            } catch (err) {
+                console.error(err);
+                showToast('Error al generar el PDF.');
+            }
+        });
     </script>
 </body>
 </html>
