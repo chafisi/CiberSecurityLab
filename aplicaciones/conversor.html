@@ -14,6 +14,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <!-- Iconos Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- html2pdf para exportar el documento del editor enriquecido con estilos e imágenes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         .drag-over {
             border-color: #2563eb !important;
@@ -23,6 +27,12 @@
             opacity: 0.4;
             background-color: #dbeafe;
         }
+        
+        #richEditorArea ul { list-style-type: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+        #richEditorArea ol { list-style-type: decimal; padding-left: 1.5rem; margin: 0.5rem 0; }
+        #richEditorArea a { color: #2563eb; text-decoration: underline; }
+        #richEditorArea img { max-width: 100%; height: auto; border-radius: 0.375rem; margin: 0.5rem 0; cursor: pointer; }
+        #richEditorArea img.selected-img { outline: 2px solid #2563eb; outline-offset: 2px; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans">
@@ -36,7 +46,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v3</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v5</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -56,6 +66,11 @@
                     <button type="button" id="tabExtractBtn" onclick="switchTab('extract')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
                         <i data-lucide="file-text" class="w-4 h-4"></i>
                         <span>PDF a Texto</span>
+                    </button>
+                    <!--Botón para editor de texto-->
+                    <button type="button" id="tabEditorBtn" onclick="switchTab('editor')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="pen-square" class="w-4 h-4"></i>
+                        <span>Editor</span>
                     </button>
                 </nav>
 
@@ -206,6 +221,145 @@
                             <span>PDF</span>
                         </button>
                     </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== SECCIÓN 3: EDITOR DE TEXTO (v4) ==================== -->
+        <div id="editorSection" class="hidden flex-col gap-4 flex-grow">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col flex-grow">
+                
+                <!-- Barra de herramientas estilo TinyMCE / captura -->
+                <div class="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap items-center gap-1 select-none">
+                    
+                    <!-- Grupo 1: Deshacer, Rehacer, Seleccionar todo -->
+                    <div class="flex items-center gap-0.5 pr-2 border-r border-slate-300">
+                        <button type="button" onclick="execEditorCmd('undo')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Deshacer">
+                            <i data-lucide="undo-2" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('redo')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Rehacer">
+                            <i data-lucide="redo-2" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('selectAll')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Seleccionar todo">
+                            <i data-lucide="box-select" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Grupo 2: Negrita, Cursiva, Subrayado -->
+                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                        <button type="button" onclick="execEditorCmd('bold')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 font-bold cursor-pointer" title="Negrita">
+                            <i data-lucide="bold" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('italic')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Cursiva">
+                            <i data-lucide="italic" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('underline')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Subrayado">
+                            <i data-lucide="underline" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Grupo 3: Listas (viñetas y numerada) -->
+                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                        <button type="button" onclick="execEditorCmd('insertUnorderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista con viñetas">
+                            <i data-lucide="list" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('insertOrderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista numerada">
+                            <i data-lucide="list-ordered" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Grupo 4: Sangría -->
+                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                        <button type="button" onclick="execEditorCmd('outdent')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Disminuir sangría">
+                            <i data-lucide="outdent" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('indent')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Aumentar sangría">
+                            <i data-lucide="indent" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Grupo 5: Alineación de texto -->
+                    <div class="flex items-center gap-0.5 px-2 border-r border-slate-300">
+                        <button type="button" onclick="execEditorCmd('justifyLeft')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Alinear a la izquierda">
+                            <i data-lucide="align-left" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('justifyCenter')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Centrar">
+                            <i data-lucide="align-center" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('justifyRight')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Alinear a la derecha">
+                            <i data-lucide="align-right" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="execEditorCmd('justifyFull')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Justificar">
+                            <i data-lucide="align-justify" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Grupo 6: Enlace, Imagen local, Ajuste de imagen, Vídeo -->
+                    <div class="flex items-center gap-0.5 pl-1">
+                        <button type="button" onclick="insertEditorLink()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar enlace">
+                            <i data-lucide="link" class="w-4 h-4"></i>
+                        </button>
+                        
+                        <input type="file" id="editorImgInput" accept="image/*" class="hidden">
+                        <button type="button" onclick="document.getElementById('editorImgInput').click()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar imagen desde dispositivo">
+                            <i data-lucide="image-plus" class="w-4 h-4"></i>
+                        </button>
+
+                        <button type="button" onclick="alignSelectedImage('left')" class="p-1.5 rounded hover:bg-slate-200 text-slate-500 hover:text-slate-800 cursor-pointer" title="Alinear imagen a la izquierda">
+                            <i data-lucide="panel-left" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="alignSelectedImage('right')" class="p-1.5 rounded hover:bg-slate-200 text-slate-500 hover:text-slate-800 cursor-pointer" title="Alinear imagen a la derecha">
+                            <i data-lucide="panel-right" class="w-4 h-4"></i>
+                        </button>
+
+                        <button type="button" onclick="insertEditorVideo()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Insertar vídeo (YouTube/URL)">
+                            <i data-lucide="video" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- Limpiar formato / vaciar editor -->
+                    <div class="ml-auto flex items-center gap-1">
+                        <button type="button" onclick="execEditorCmd('removeFormat')" class="p-1.5 rounded hover:bg-slate-200 text-slate-500 hover:text-slate-800 cursor-pointer" title="Limpiar formato">
+                            <i data-lucide="remove-formatting" class="w-4 h-4"></i>
+                        </button>
+                        <button type="button" onclick="clearEditorArea()" class="p-1.5 rounded hover:bg-red-50 text-slate-400 hover:text-red-600 cursor-pointer" title="Borrar todo el contenido">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lienzo editable -->
+                <div id="richEditorArea" contenteditable="true" class="flex-grow min-h-[340px] p-5 sm:p-6 text-slate-800 text-base leading-relaxed focus:outline-none bg-white" data-placeholder="Escribe aquí tu documento..."></div>
+
+                <!-- Pie de estado del editor -->
+                <div class="bg-slate-50 border-t border-slate-200 px-4 py-2 flex items-center justify-between text-xs text-slate-500">
+                    <span id="editorWordCount">0 palabras · 0 caracteres</span>
+                    <button type="button" onclick="copyEditorHtmlText()" class="text-blue-600 hover:underline font-medium cursor-pointer">Copiar texto</button>
+                </div>
+            </div>
+
+            <!-- Panel de exportación del Editor -->
+            <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                <div class="flex-grow">
+                    <label for="editorOutputName" class="block text-xs font-medium text-slate-500 mb-1">Nombre del documento</label>
+                    <input type="text" id="editorOutputName" value="mi_documento" class="w-full sm:w-64 text-sm border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="exportEditorDoc()" class="flex-1 sm:flex-initial bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="file-type-2" class="w-4 h-4"></i>
+                        <span>Documento (.DOC)</span>
+                    </button>
+                    <button type="button" onclick="exportEditorHtml()" class="flex-1 sm:flex-initial bg-slate-700 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="code" class="w-4 h-4"></i>
+                        <span>.HTML</span>
+                    </button>
+                    <button type="button" onclick="exportEditorPdf()" class="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="file-down" class="w-4 h-4"></i>
+                        <span>Descargar PDF</span>
+                    </button>
                 </div>
             </div>
 
@@ -603,27 +757,25 @@
             const activeClasses = ['bg-white', 'text-blue-600', 'shadow-xs'];
             const inactiveClasses = ['text-slate-600', 'hover:text-slate-900'];
 
-            if (tab === 'merge') {
-                mergeSection.classList.remove('hidden');
-                mergeSection.classList.add('flex');
-                extractSection.classList.add('hidden');
-                extractSection.classList.remove('flex');
+            const tabs = {
+                merge: { section: document.getElementById('mergeSection'), btn: document.getElementById('tabMergeBtn') },
+                extract: { section: document.getElementById('extractSection'), btn: document.getElementById('tabExtractBtn') },
+                editor: { section: document.getElementById('editorSection'), btn: document.getElementById('tabEditorBtn') }
+            };
 
-                tabMergeBtn.classList.add(...activeClasses);
-                tabMergeBtn.classList.remove(...inactiveClasses);
-                tabExtractBtn.classList.remove(...activeClasses);
-                tabExtractBtn.classList.add(...inactiveClasses);
-            } else {
-                extractSection.classList.remove('hidden');
-                extractSection.classList.add('flex');
-                mergeSection.classList.add('hidden');
-                mergeSection.classList.remove('flex');
-
-                tabExtractBtn.classList.add(...activeClasses);
-                tabExtractBtn.classList.remove(...inactiveClasses);
-                tabMergeBtn.classList.remove(...activeClasses);
-                tabMergeBtn.classList.add(...inactiveClasses);
-            }
+            Object.entries(tabs).forEach(([key, item]) => {
+                if (key === tab) {
+                    item.section.classList.remove('hidden');
+                    item.section.classList.add('flex');
+                    item.btn.classList.add(...activeClasses);
+                    item.btn.classList.remove(...inactiveClasses);
+                } else {
+                    item.section.classList.add('hidden');
+                    item.section.classList.remove('flex');
+                    item.btn.classList.remove(...activeClasses);
+                    item.btn.classList.add(...inactiveClasses);
+                }
+            });
         };
 
         // Referencias de extracción
@@ -850,6 +1002,182 @@
                 showToast('Error al generar el PDF de texto.');
             }
         });
+
+        //****3. LOGICA DEL EDITOR
+        // ==================== LÓGICA DEL EDITOR DE TEXTO (v4) ====================
+        const richEditorArea = document.getElementById('richEditorArea');
+        const editorImgInput = document.getElementById('editorImgInput');
+        const editorWordCount = document.getElementById('editorWordCount');
+        const editorOutputName = document.getElementById('editorOutputName');
+        let selectedEditorImage = null;
+
+        // Ejecutar comandos de formato manteniendo el foco en el editor
+        window.execEditorCmd = function(command, value = null) {
+            richEditorArea.focus();
+            document.execCommand(command, false, value);
+            updateEditorStats();
+        };
+
+        // Insertar enlace
+        window.insertEditorLink = function() {
+            const url = prompt('Introduce la URL del enlace (ej. https://...):', 'https://');
+            if (url && url.trim() !== '' && url !== 'https://') {
+                execEditorCmd('createLink', url.trim());
+            }
+        };
+
+        // Insertar imagen desde el PC/móvil como Base64 (100% local)
+        editorImgInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                richEditorArea.focus();
+                const imgHtml = `<img src="${event.target.result}" alt="${file.name}" style="max-width: 100%; height: auto;">`;
+                document.execCommand('insertHTML', false, imgHtml);
+                updateEditorStats();
+                showToast('Imagen insertada');
+            };
+            reader.readAsDataURL(file);
+            editorImgInput.value = '';
+        });
+
+        // Seleccionar imagen al hacer clic sobre ella para poder alinearla
+        richEditorArea.addEventListener('click', (e) => {
+            richEditorArea.querySelectorAll('img').forEach(img => img.classList.remove('selected-img'));
+            if (e.target.tagName === 'IMG') {
+                selectedEditorImage = e.target;
+                selectedEditorImage.classList.add('selected-img');
+            } else {
+                selectedEditorImage = null;
+            }
+        });
+
+        // Alinear imagen seleccionada (izquierda / derecha)
+        window.alignSelectedImage = function(side) {
+            if (!selectedEditorImage) {
+                showToast('Haz clic primero sobre una imagen del texto para alinearla');
+                return;
+            }
+            if (side === 'left') {
+                selectedEditorImage.style.float = 'left';
+                selectedEditorImage.style.margin = '0.25rem 1rem 0.5rem 0';
+            } else {
+                selectedEditorImage.style.float = 'right';
+                selectedEditorImage.style.margin = '0.25rem 0 0.5rem 1rem';
+            }
+            showToast(`Imagen alineada a la ${side === 'left' ? 'izquierda' : 'derecha'}`);
+        };
+
+        // Insertar vídeo de YouTube o enlace embebido
+        window.insertEditorVideo = function() {
+            const url = prompt('Pega el enlace del vídeo (YouTube o URL):');
+            if (!url || !url.trim()) return;
+
+            const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+            richEditorArea.focus();
+
+            if (ytMatch && ytMatch[1]) {
+                const embedHtml = `
+                    <div style="margin: 12px 0;">
+                        <iframe width="100%" height="315" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allowfullscreen style="border-radius: 8px; max-width: 560px;"></iframe>
+                    </div><p><br></p>`;
+                document.execCommand('insertHTML', false, embedHtml);
+            } else {
+                const linkHtml = `<p>🎬 <a href="${url.trim()}" target="_blank">${url.trim()}</a></p>`;
+                document.execCommand('insertHTML', false, linkHtml);
+            }
+            updateEditorStats();
+        };
+
+        // Contador de palabras y caracteres en tiempo real
+        function updateEditorStats() {
+            const text = richEditorArea.innerText.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            const chars = text.length;
+            editorWordCount.textContent = `${words} ${words === 1 ? 'palabra' : 'palabras'} · ${chars} caracteres`;
+        }
+        richEditorArea.addEventListener('input', updateEditorStats);
+
+        window.clearEditorArea = function() {
+            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img')) return;
+            if (confirm('¿Seguro que quieres vaciar todo el contenido del editor?')) {
+                richEditorArea.innerHTML = '';
+                selectedEditorImage = null;
+                updateEditorStats();
+            }
+        };
+
+        window.copyEditorHtmlText = async function() {
+            const text = richEditorArea.innerText;
+            if (!text.trim()) return;
+            await navigator.clipboard.writeText(text);
+            showToast('Texto copiado al portapapeles');
+        };
+
+        // Exportar a Word (.DOC) conservando negritas, listas, alineaciones e imágenes
+        window.exportEditorDoc = function() {
+            const content = richEditorArea.innerHTML;
+            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img')) {
+                showToast('El editor está vacío');
+                return;
+            }
+            const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
+            const docHtml = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>${name}</title></head>
+                <body style="font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.5;">
+                    ${content}
+                </body>
+                </html>`;
+            const blob = new Blob(['\ufeff', docHtml], { type: 'application/msword' });
+            triggerBlobDownload(blob, `${name}.doc`);
+            showToast('Documento .DOC descargado');
+        };
+
+        // Exportar a HTML limpio
+        window.exportEditorHtml = function() {
+            const content = richEditorArea.innerHTML;
+            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img')) {
+                showToast('El editor está vacío');
+                return;
+            }
+            const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
+            const htmlFile = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>${name}</title><style>body{font-family:system-ui,sans-serif;max-width:800px;margin:2rem auto;padding:0 1rem;line-height:1.6;color:#1e293b}img{max-width:100%;height:auto}</style></head><body>${content}</body></html>`;
+            const blob = new Blob([htmlFile], { type: 'text/html;charset=utf-8' });
+            triggerBlobDownload(blob, `${name}.html`);
+            showToast('Archivo .HTML descargado');
+        };
+
+        // Exportar a PDF conservando todo el formato enriquecido e imágenes
+        window.exportEditorPdf = async function() {
+            if (!richEditorArea.innerText.trim() && !richEditorArea.querySelector('img')) {
+                showToast('El editor está vacío');
+                return;
+            }
+            // Quitar borde azul de selección de imagen si hubiera alguna marcada
+            richEditorArea.querySelectorAll('img').forEach(img => img.classList.remove('selected-img'));
+
+            const name = (editorOutputName.value.trim() || 'mi_documento').replace(/\.(doc|docx|html|pdf)$/i, '');
+            showToast('Generando PDF...');
+
+            const opt = {
+                margin:       15,
+                filename:     `${name}.pdf`,
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            try {
+                await html2pdf().set(opt).from(richEditorArea).save();
+                showToast('¡PDF descargado correctamente!');
+            } catch (err) {
+                console.error(err);
+                showToast('Error al generar el PDF.');
+            }
+        };
     </script>
 </body>
 </html>
