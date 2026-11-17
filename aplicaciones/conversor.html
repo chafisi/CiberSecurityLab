@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v10</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v11</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -121,6 +121,11 @@
                     <button type="button" id="tabImportBtn" onclick="switchTab('import')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
                         <i data-lucide="folder-open" class="w-4 h-4"></i>
                         <span>Abrir Doc</span>
+                    </button>
+                    
+                    <button type="button" id="tabBoardBtn" onclick="switchTab('board')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                        <i data-lucide="kanban" class="w-4 h-4"></i>
+                        <span>Pizarra</span>
                     </button>
 
                     <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
@@ -757,6 +762,174 @@
             </div>
 
         </div>
+
+        <!-- ==================== SECCIÓN 7: PIZARRA DE TRABAJO DIARIA / SEMANAL ==================== -->
+        <div id="boardSection" class="hidden flex-col gap-4 flex-grow">
+
+            <!-- Barra superior: Importar / Exportar documento de trabajo diario o semanal -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="bg-amber-100 text-amber-700 p-2 rounded-lg">
+                        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-800">Pizarra de Trabajo</h2>
+                        <p id="boardDateBanner" class="text-xs text-slate-500">Autoguardado local activo · Haz clic en cualquier ítem para editarlo</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <input type="file" id="boardImportInput" accept=".json,application/json" class="hidden">
+                    <button type="button" onclick="document.getElementById('boardImportInput').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                        <i data-lucide="upload" class="w-3.5 h-3.5 text-blue-600"></i>
+                        <span>Importar Jornada</span>
+                    </button>
+                    <button type="button" onclick="exportBoardData('day')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Exportar tareas de hoy">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                        <span>Exportar Día</span>
+                    </button>
+                    <button type="button" onclick="exportBoardData('week')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Exportar toda la semana / histórico">
+                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                        <span>Exportar Semana</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid de 3 columnas: Izquierda (Activos) | Centro (Editor) | Derecha (Completados hoy) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow items-start">
+
+                <!-- COLUMNA IZQUIERDA (3 cols): Pendientes / En curso + Selección múltiple + Drag & Drop -->
+                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Pendiente / En curso</h3>
+                            <span id="pendingCountBadge" class="text-[11px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <button type="button" id="bulkFinishBtn" onclick="finishSelectedTasks()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg transition flex items-center gap-1 cursor-pointer shadow-xs">
+                            <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
+                            <span>Finalizar (<span id="bulkSelectedCount">0</span>)</span>
+                        </button>
+                    </div>
+
+                    <p class="text-[11px] text-slate-400 leading-tight">
+                        Marca varios para finalizar o arrastra a la derecha para completar.
+                    </p>
+
+                    <ul id="boardPendingList" class="flex flex-col gap-2 min-h-[260px] rounded-xl transition-colors">
+                        <!-- Tarjetas pendientes / en curso -->
+                    </ul>
+                </div>
+
+                <!-- COLUMNA CENTRAL (6 cols): Ficha del Ítem + Editor Enriquecido -->
+                <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 flex flex-col gap-4">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <span id="boardEditorModeLabel" class="text-xs font-bold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>Nuevo ítem de trabajo</span>
+                        </span>
+                        <button type="button" onclick="resetBoardForm()" class="text-xs text-slate-500 hover:text-blue-600 font-medium flex items-center gap-1 cursor-pointer">
+                            <i data-lucide="file-plus" class="w-3.5 h-3.5"></i>
+                            <span>Limpiar / Nuevo</span>
+                        </button>
+                    </div>
+
+                    <!-- Menú superior del ítem: Fecha Inicio | Fecha Fin | Fecha Solicitud | Origen | Estado -->
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <div>
+                            <label for="taskStartDate" class="block text-[11px] font-semibold text-slate-500 mb-1">Fecha Inicio</label>
+                            <input type="date" id="taskStartDate" class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="taskEndDate" class="block text-[11px] font-semibold text-slate-500 mb-1">Fecha Fin</label>
+                            <input type="date" id="taskEndDate" class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="taskRequestDate" class="block text-[11px] font-semibold text-slate-500 mb-1">F. Solicitud</label>
+                            <input type="date" id="taskRequestDate" class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="taskOrigin" class="block text-[11px] font-semibold text-slate-500 mb-1">Origen</label>
+                            <input type="text" id="taskOrigin" list="taskOriginSuggestions" placeholder="Ej: Email, Cliente..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <datalist id="taskOriginSuggestions">
+                                <option value="Email">
+                                <option value="Cliente">
+                                <option value="Interno">
+                                <option value="Teléfono">
+                                <option value="Incidencia">
+                            </datalist>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="taskStatus" class="block text-[11px] font-semibold text-slate-500 mb-1">Estado</label>
+                            <select id="taskStatus" class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                <option value="pendiente">🟡 Pendiente</option>
+                                <option value="en_curso">🔵 En curso</option>
+                                <option value="finalizado">🟢 Finalizado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Campo Descripción Corta (Etiqueta visible en listados) -->
+                    <div>
+                        <label for="taskShortDesc" class="block text-xs font-semibold text-slate-700 mb-1">Descripción corta (etiqueta del ítem) *</label>
+                        <input type="text" id="taskShortDesc" placeholder="Ej: Revisar informe de auditoría y enviar respuesta..." class="w-full text-sm bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <!-- Mini-Editor Enriquecido para notas detalladas -->
+                    <div class="border border-slate-300 rounded-xl overflow-hidden flex flex-col">
+                        <div class="bg-slate-50 border-b border-slate-200 px-2.5 py-1.5 flex flex-wrap items-center gap-1 select-none">
+                            <button type="button" onclick="execBoardEditorCmd('bold')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Negrita"><i data-lucide="bold" class="w-3.5 h-3.5"></i></button>
+                            <button type="button" onclick="execBoardEditorCmd('italic')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Cursiva"><i data-lucide="italic" class="w-3.5 h-3.5"></i></button>
+                            <button type="button" onclick="execBoardEditorCmd('underline')" class="p-1.5 rounded hover:bg-slate-200 text-slate-800 cursor-pointer" title="Subrayado"><i data-lucide="underline" class="w-3.5 h-3.5"></i></button>
+                            <span class="w-px h-4 bg-slate-300 mx-1"></span>
+                            <button type="button" onclick="execBoardEditorCmd('insertUnorderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista viñetas"><i data-lucide="list" class="w-3.5 h-3.5"></i></button>
+                            <button type="button" onclick="execBoardEditorCmd('insertOrderedList')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Lista numerada"><i data-lucide="list-ordered" class="w-3.5 h-3.5"></i></button>
+                            <span class="w-px h-4 bg-slate-300 mx-1"></span>
+                            <button type="button" onclick="execBoardEditorCmd('justifyLeft')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Alinear izquierda"><i data-lucide="align-left" class="w-3.5 h-3.5"></i></button>
+                            <button type="button" onclick="execBoardEditorCmd('justifyCenter')" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Centrar"><i data-lucide="align-center" class="w-3.5 h-3.5"></i></button>
+                            <button type="button" onclick="insertBoardLink()" class="p-1.5 rounded hover:bg-slate-200 text-slate-700 cursor-pointer" title="Enlace"><i data-lucide="link" class="w-3.5 h-3.5"></i></button>
+                            <button type="button" onclick="execBoardEditorCmd('removeFormat')" class="ml-auto p-1.5 rounded hover:bg-slate-200 text-slate-500 cursor-pointer" title="Limpiar formato"><i data-lucide="remove-formatting" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                        <div id="taskDetailEditor" contenteditable="true" class="min-h-[200px] max-h-[360px] overflow-y-auto p-3.5 text-sm text-slate-800 leading-relaxed focus:outline-none bg-white"></div>
+                    </div>
+
+                    <!-- Barra inferior: Borrar y Guardar ítem -->
+                    <div class="flex items-center justify-between gap-3 pt-1">
+                        <button type="button" id="deleteBoardTaskBtn" onclick="deleteCurrentBoardTask()" class="hidden text-xs sm:text-sm text-red-600 hover:bg-red-50 border border-red-200 font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <span>Borrar ítem</span>
+                        </button>
+
+                        <button type="button" id="saveBoardTaskBtn" onclick="saveBoardTask()" class="ml-auto bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="save" class="w-4 h-4"></i>
+                            <span id="saveBoardTaskBtnText">Guardar ítem</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA (3 cols): Completados ese día (Etiquetas) -->
+                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Completados</h3>
+                            <span id="completedCountBadge" class="text-[11px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">0</span>
+                        </div>
+                        <input type="date" id="boardCompletedFilterDate" onchange="renderBoardLists()" class="text-[11px] bg-slate-50 border border-slate-200 rounded-md px-1.5 py-0.5 text-slate-600 focus:outline-none" title="Filtrar completados por día">
+                    </div>
+
+                    <p class="text-[11px] text-slate-400 leading-tight">
+                        Suelta aquí un ítem para completarlo o haz clic en una etiqueta para revisarla.
+                    </p>
+
+                    <ul id="boardCompletedList" class="flex flex-col gap-2 min-h-[260px] rounded-xl bg-emerald-50/30 border border-dashed border-emerald-200 p-2 transition-colors">
+                        <!-- Etiquetas completadas del día -->
+                    </ul>
+                </div>
+
+            </div>
+        </div>
     </main>
 
     <!-- Notificación Toast -->
@@ -1149,6 +1322,18 @@
         window.switchTab = function(tab) {
             const activeClasses = ['bg-white', 'text-blue-600', 'shadow-xs'];
             const inactiveClasses = ['text-slate-600', 'hover:text-slate-900'];
+            const mainEl = document.querySelector('main');
+
+            // Ensanchar el contenedor principal solo en la Pizarra de 3 columnas
+            if (mainEl) {
+                if (tab === 'board') {
+                    mainEl.classList.remove('max-w-4xl');
+                    mainEl.classList.add('max-w-7xl');
+                } else {
+                    mainEl.classList.remove('max-w-7xl');
+                    mainEl.classList.add('max-w-4xl');
+                }
+            }
 
             const tabs = {
                 merge: { section: document.getElementById('mergeSection'), btn: document.getElementById('tabMergeBtn') },
@@ -1156,10 +1341,12 @@
                 editor: { section: document.getElementById('editorSection'), btn: document.getElementById('tabEditorBtn') },
                 clean: { section: document.getElementById('cleanSection'), btn: document.getElementById('tabCleanBtn') },
                 ocr: { section: document.getElementById('ocrSection'), btn: document.getElementById('tabOcrBtn') },
-                import: { section: document.getElementById('importSection'), btn: document.getElementById('tabImportBtn') }
+                import: { section: document.getElementById('importSection'), btn: document.getElementById('tabImportBtn') },
+                board: { section: document.getElementById('boardSection'), btn: document.getElementById('tabBoardBtn') }
             };
 
             Object.entries(tabs).forEach(([key, item]) => {
+                if (!item.section || !item.btn) return;
                 if (key === tab) {
                     item.section.classList.remove('hidden');
                     item.section.classList.add('flex');
@@ -2320,6 +2507,417 @@
             switchTab('editor');
             showToast(`"${importedBaseFilename}" abierto en el Editor`);
         };
+
+        // ===== SECCIÓN 7 ==================== LÓGICA DE PIZARRA DE TRABAJO (SECCIÓN 7) ====================
+        const BOARD_STORAGE_KEY = 'pdf_tools_workboard_v1';
+        let boardTasks = [];
+        let editingTaskId = null;
+        let selectedPendingIds = new Set();
+
+        const boardPendingList = document.getElementById('boardPendingList');
+        const boardCompletedList = document.getElementById('boardCompletedList');
+        const taskStartDate = document.getElementById('taskStartDate');
+        const taskEndDate = document.getElementById('taskEndDate');
+        const taskRequestDate = document.getElementById('taskRequestDate');
+        const taskOrigin = document.getElementById('taskOrigin');
+        const taskStatus = document.getElementById('taskStatus');
+        const taskShortDesc = document.getElementById('taskShortDesc');
+        const taskDetailEditor = document.getElementById('taskDetailEditor');
+        const boardCompletedFilterDate = document.getElementById('boardCompletedFilterDate');
+
+        function getTodayISO() {
+            const now = new Date();
+            const offset = now.getTimezoneOffset();
+            const local = new Date(now.getTime() - offset * 60000);
+            return local.toISOString().split('T')[0];
+        }
+
+        function loadBoardFromStorage() {
+            try {
+                const saved = localStorage.getItem(BOARD_STORAGE_KEY);
+                boardTasks = saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                boardTasks = [];
+            }
+            boardCompletedFilterDate.value = getTodayISO();
+            resetBoardForm();
+            renderBoardLists();
+        }
+
+        function saveBoardToStorage() {
+            localStorage.setItem(BOARD_STORAGE_KEY, JSON.stringify(boardTasks));
+        }
+
+        // Inicializar SortableJS compartido entre columna Izquierda (Activos) y Derecha (Completados)
+        new Sortable(boardPendingList, {
+            group: 'workboard',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onAdd: function (evt) {
+                // Si se arrastra desde Completados hacia Pendientes, vuelve a estado 'pendiente'
+                const taskId = evt.item.dataset.id;
+                const task = boardTasks.find(t => t.id === taskId);
+                if (task) {
+                    task.status = 'pendiente';
+                    task.endDate = '';
+                    saveBoardToStorage();
+                    renderBoardLists();
+                    if (editingTaskId === taskId) loadTaskIntoEditor(taskId);
+                    showToast('Ítem devuelto a Pendientes');
+                }
+            },
+            onUpdate: function () {
+                // Reordenar pendientes según el DOM
+                const orderedIds = Array.from(boardPendingList.children).map(li => li.dataset.id);
+                const activeMap = new Map(boardTasks.filter(t => t.status !== 'finalizado').map(t => [t.id, t]));
+                const reorderedActive = orderedIds.map(id => activeMap.get(id)).filter(Boolean);
+                const completed = boardTasks.filter(t => t.status === 'finalizado');
+                boardTasks = [...reorderedActive, ...completed];
+                saveBoardToStorage();
+            }
+        });
+
+        new Sortable(boardCompletedList, {
+            group: 'workboard',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            onAdd: function (evt) {
+                // Si se arrastra desde Pendiente/En curso hacia la derecha, se marca como Finalizado hoy
+                const taskId = evt.item.dataset.id;
+                const task = boardTasks.find(t => t.id === taskId);
+                if (task) {
+                    task.status = 'finalizado';
+                    task.endDate = task.endDate || getTodayISO();
+                    task.completedDate = getTodayISO();
+                    selectedPendingIds.delete(taskId);
+                    saveBoardToStorage();
+                    renderBoardLists();
+                    if (editingTaskId === taskId) loadTaskIntoEditor(taskId);
+                    showToast('¡Ítem completado y movido a la derecha!');
+                }
+            }
+        });
+
+        window.execBoardEditorCmd = function(cmd, val = null) {
+            taskDetailEditor.focus();
+            document.execCommand(cmd, false, val);
+        };
+
+        window.insertBoardLink = function() {
+            const url = prompt('Introduce la URL del enlace:', 'https://');
+            if (url && url.trim() !== '' && url !== 'https://') {
+                execBoardEditorCmd('createLink', url.trim());
+            }
+        };
+
+        // Limpiar formulario para crear un ítem nuevo
+        window.resetBoardForm = function() {
+            editingTaskId = null;
+            const today = getTodayISO();
+            taskStartDate.value = today;
+            taskEndDate.value = '';
+            taskRequestDate.value = today;
+            taskOrigin.value = '';
+            taskStatus.value = 'pendiente';
+            taskShortDesc.value = '';
+            taskDetailEditor.innerHTML = '';
+
+            document.getElementById('boardEditorModeLabel').innerHTML =
+                `<i data-lucide="plus-circle" class="w-4 h-4"></i><span>Nuevo ítem de trabajo</span>`;
+            document.getElementById('saveBoardTaskBtnText').textContent = 'Guardar ítem';
+            document.getElementById('deleteBoardTaskBtn').classList.add('hidden');
+            renderBoardLists();
+            lucide.createIcons();
+        };
+
+        // Cargar un ítem existente (desde izquierda o derecha) en el editor central
+        window.loadTaskIntoEditor = function(id) {
+            const task = boardTasks.find(t => t.id === id);
+            if (!task) return;
+
+            editingTaskId = task.id;
+            taskStartDate.value = task.startDate || '';
+            taskEndDate.value = task.endDate || '';
+            taskRequestDate.value = task.requestDate || '';
+            taskOrigin.value = task.origin || '';
+            taskStatus.value = task.status || 'pendiente';
+            taskShortDesc.value = task.shortDesc || '';
+            taskDetailEditor.innerHTML = task.detailsHtml || '';
+
+            document.getElementById('boardEditorModeLabel').innerHTML =
+                `<i data-lucide="edit-3" class="w-4 h-4 text-amber-600"></i><span class="text-amber-700">Editando ítem seleccionado</span>`;
+            document.getElementById('saveBoardTaskBtnText').textContent = 'Guardar';
+            document.getElementById('deleteBoardTaskBtn').classList.remove('hidden');
+
+            renderBoardLists();
+            lucide.createIcons();
+        };
+
+        // Guardar ítem nuevo o actualizar el que está en edición
+        window.saveBoardTask = function() {
+            const shortDesc = taskShortDesc.value.trim();
+            if (!shortDesc) {
+                showToast('Escribe una descripción corta para identificar el ítem');
+                taskShortDesc.focus();
+                return;
+            }
+
+            const statusVal = taskStatus.value;
+            const today = getTodayISO();
+            const endDateVal = statusVal === 'finalizado' ? (taskEndDate.value || today) : taskEndDate.value;
+
+            if (editingTaskId) {
+                const idx = boardTasks.findIndex(t => t.id === editingTaskId);
+                if (idx !== -1) {
+                    boardTasks[idx] = {
+                        ...boardTasks[idx],
+                        startDate: taskStartDate.value,
+                        endDate: endDateVal,
+                        requestDate: taskRequestDate.value,
+                        origin: taskOrigin.value.trim(),
+                        status: statusVal,
+                        shortDesc: shortDesc,
+                        detailsHtml: taskDetailEditor.innerHTML,
+                        completedDate: statusVal === 'finalizado' ? (boardTasks[idx].completedDate || today) : ''
+                    };
+                }
+                showToast('Ítem actualizado correctamente');
+            } else {
+                const newTask = {
+                    id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                    startDate: taskStartDate.value,
+                    endDate: endDateVal,
+                    requestDate: taskRequestDate.value,
+                    origin: taskOrigin.value.trim(),
+                    status: statusVal,
+                    shortDesc: shortDesc,
+                    detailsHtml: taskDetailEditor.innerHTML,
+                    completedDate: statusVal === 'finalizado' ? today : ''
+                };
+                boardTasks.unshift(newTask);
+                showToast(statusVal === 'finalizado' ? 'Ítem guardado en Completados' : 'Ítem guardado en Pendientes');
+            }
+
+            saveBoardToStorage();
+            resetBoardForm();
+        };
+
+        // Borrar ítem actualmente abierto
+        window.deleteCurrentBoardTask = function() {
+            if (!editingTaskId) return;
+            if (!confirm('¿Eliminar este ítem de la pizarra?')) return;
+
+            boardTasks = boardTasks.filter(t => t.id !== editingTaskId);
+            selectedPendingIds.delete(editingTaskId);
+            saveBoardToStorage();
+            resetBoardForm();
+            showToast('Ítem eliminado');
+        };
+
+        // Selección múltiple en la columna izquierda
+        window.toggleSelectPendingTask = function(event, id) {
+            event.stopPropagation();
+            if (selectedPendingIds.has(id)) {
+                selectedPendingIds.delete(id);
+            } else {
+                selectedPendingIds.add(id);
+            }
+            updateBulkFinishButton();
+        };
+
+        function updateBulkFinishButton() {
+            const btn = document.getElementById('bulkFinishBtn');
+            const countSpan = document.getElementById('bulkSelectedCount');
+            countSpan.textContent = selectedPendingIds.size;
+            if (selectedPendingIds.size > 0) {
+                btn.classList.remove('hidden');
+            } else {
+                btn.classList.add('hidden');
+            }
+        }
+
+        // Finalizar en lote los ítems marcados en la izquierda
+        window.finishSelectedTasks = function() {
+            if (selectedPendingIds.size === 0) return;
+            const today = getTodayISO();
+            let count = 0;
+
+            boardTasks.forEach(t => {
+                if (selectedPendingIds.has(t.id)) {
+                    t.status = 'finalizado';
+                    t.endDate = t.endDate || today;
+                    t.completedDate = today;
+                    count++;
+                }
+            });
+
+            selectedPendingIds.clear();
+            saveBoardToStorage();
+            renderBoardLists();
+            showToast(`${count} ${count === 1 ? 'ítem finalizado' : 'ítems finalizados'}`);
+        };
+
+        // Renderizar columnas Izquierda (Pendiente / En curso) y Derecha (Completados del día)
+        window.renderBoardLists = function() {
+            boardPendingList.innerHTML = '';
+            boardCompletedList.innerHTML = '';
+
+            const filterDate = boardCompletedFilterDate.value;
+            const activeTasks = boardTasks.filter(t => t.status !== 'finalizado');
+            const completedTasks = boardTasks.filter(t => {
+                if (t.status !== 'finalizado') return false;
+                if (!filterDate) return true;
+                return (t.completedDate || t.endDate) === filterDate;
+            });
+
+            document.getElementById('pendingCountBadge').textContent = activeTasks.length;
+            document.getElementById('completedCountBadge').textContent = completedTasks.length;
+
+            // Pintar tarjetas izquierdas (Pendiente = ámbar, En curso = azul)
+            if (activeTasks.length === 0) {
+                boardPendingList.innerHTML = `<li class="text-center text-xs text-slate-400 py-8 border border-dashed border-slate-200 rounded-xl">Sin tareas pendientes</li>`;
+            } else {
+                activeTasks.forEach(task => {
+                    const isEditing = task.id === editingTaskId;
+                    const isEnCurso = task.status === 'en_curso';
+                    const isChecked = selectedPendingIds.has(task.id);
+
+                    const cardColor = isEnCurso
+                        ? 'border-l-4 border-l-blue-500 bg-blue-50/40 border-slate-200'
+                        : 'border-l-4 border-l-amber-400 bg-amber-50/30 border-slate-200';
+                    const activeRing = isEditing ? 'ring-2 ring-blue-500 bg-white' : '';
+                    const statusIcon = isEnCurso
+                        ? `<i data-lucide="play-circle" class="w-4 h-4 text-blue-600 shrink-0" title="En curso"></i>`
+                        : `<i data-lucide="clock" class="w-4 h-4 text-amber-500 shrink-0" title="Pendiente"></i>`;
+
+                    const li = document.createElement('li');
+                    li.dataset.id = task.id;
+                    li.onclick = () => loadTaskIntoEditor(task.id);
+                    li.className = `p-2.5 rounded-xl border ${cardColor} ${activeRing} shadow-2xs hover:shadow-sm transition cursor-pointer flex items-start gap-2 select-none`;
+
+                    li.innerHTML = `
+                        <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="toggleSelectPendingTask(event, '${task.id}')" class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0" title="Marcar para finalizar">
+                        <div class="mt-0.5">${statusIcon}</div>
+                        <div class="min-w-0 flex-grow">
+                            <p class="text-xs font-semibold text-slate-800 leading-snug break-words">${escapeHtmlBoard(task.shortDesc)}</p>
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1 text-[10px] text-slate-500">
+                                ${task.origin ? `<span class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-medium">${escapeHtmlBoard(task.origin)}</span>` : ''}
+                                ${task.startDate ? `<span>${task.startDate}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    boardPendingList.appendChild(li);
+                });
+            }
+
+            // Pintar etiquetas derechas (Completados del día)
+            if (completedTasks.length === 0) {
+                boardCompletedList.innerHTML = `<li class="text-center text-xs text-emerald-700/60 py-8">Arrastra aquí tareas completadas</li>`;
+            } else {
+                completedTasks.forEach(task => {
+                    const isEditing = task.id === editingTaskId;
+                    const activeRing = isEditing ? 'ring-2 ring-emerald-600' : '';
+
+                    const li = document.createElement('li');
+                    li.dataset.id = task.id;
+                    li.onclick = () => loadTaskIntoEditor(task.id);
+                    li.className = `px-3 py-2 rounded-xl bg-white border border-emerald-200 border-l-4 border-l-emerald-500 ${activeRing} shadow-2xs hover:bg-emerald-50/60 transition cursor-pointer flex items-center gap-2 select-none`;
+
+                    li.innerHTML = `
+                        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                        <div class="min-w-0 flex-grow">
+                            <p class="text-xs font-semibold text-slate-800 truncate" title="${escapeHtmlBoard(task.shortDesc)}">${escapeHtmlBoard(task.shortDesc)}</p>
+                            <p class="text-[10px] text-slate-500 truncate">
+                                ${task.origin ? `${escapeHtmlBoard(task.origin)} · ` : ''}${task.endDate || task.completedDate || ''}
+                            </p>
+                        </div>
+                    `;
+                    boardCompletedList.appendChild(li);
+                });
+            }
+
+            updateBulkFinishButton();
+            lucide.createIcons();
+        };
+
+        function escapeHtmlBoard(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Importar / Exportar documento de trabajo diario o semanal (JSON portátil)
+        window.exportBoardData = function(scope) {
+            const today = getTodayISO();
+            let tasksToExport = boardTasks;
+            let filename = `pizarra_semanal_${today}.json`;
+
+            if (scope === 'day') {
+                // Exporta las tareas activas actuales + las completadas en la fecha seleccionada
+                const filterDate = boardCompletedFilterDate.value || today;
+                tasksToExport = boardTasks.filter(t =>
+                    t.status !== 'finalizado' || (t.completedDate || t.endDate) === filterDate
+                );
+                filename = `pizarra_diaria_${filterDate}.json`;
+            }
+
+            if (tasksToExport.length === 0) {
+                showToast('No hay ítems para exportar en este rango');
+                return;
+            }
+
+            const payload = {
+                app: 'PDF Tools Workboard',
+                exportedAt: new Date().toISOString(),
+                scope: scope,
+                tasks: tasksToExport
+            };
+
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            triggerBlobDownload(blob, filename);
+            showToast(`Exportado: ${filename}`);
+        };
+
+        document.getElementById('boardImportInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const text = await file.text();
+                const parsed = JSON.parse(text);
+                const importedList = Array.isArray(parsed) ? parsed : (parsed.tasks || []);
+
+                if (!Array.isArray(importedList)) {
+                    throw new Error('Formato inválido');
+                }
+
+                // Fusionar sin duplicar IDs existentes
+                const existingIds = new Set(boardTasks.map(t => t.id));
+                let added = 0;
+                importedList.forEach(item => {
+                    if (item && item.shortDesc) {
+                        if (!item.id || existingIds.has(item.id)) {
+                            item.id = 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                        }
+                        boardTasks.push(item);
+                        added++;
+                    }
+                });
+
+                saveBoardToStorage();
+                renderBoardLists();
+                showToast(`${added} ${added === 1 ? 'ítem importado' : 'ítems importados'} a la pizarra`);
+            } catch (err) {
+                console.error(err);
+                showToast('El archivo JSON no tiene un formato de pizarra válido');
+            }
+            e.target.value = '';
+        });
+
+        // Inicializar pizarra al arrancar
+        loadBoardFromStorage();
     </script>
 </body>
 </html>
