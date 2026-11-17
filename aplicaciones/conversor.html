@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v11.1</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v12</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -840,8 +840,8 @@
                         </button>
                     </div>
 
-                    <!-- Menú superior del ítem: Fecha Inicio | Fecha Fin | Fecha Solicitud | Origen | Estado -->
-                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <!-- Menú superior del ítem: Fecha Inicio | Fecha Fin | F. Solicitud | Origen | Estado | Equipo -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200">
                         <div>
                             <label for="taskStartDate" class="block text-[11px] font-semibold text-slate-500 mb-1">Fecha Inicio</label>
                             <input type="date" id="taskStartDate" class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -865,12 +865,23 @@
                                 <option value="Incidencia">
                             </datalist>
                         </div>
-                        <div class="col-span-2 sm:col-span-1">
+                        <div>
                             <label for="taskStatus" class="block text-[11px] font-semibold text-slate-500 mb-1">Estado</label>
                             <select id="taskStatus" class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                                 <option value="pendiente">🟡 Pendiente</option>
                                 <option value="en_curso">🔵 En curso</option>
                                 <option value="finalizado">🟢 Finalizado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="taskTeam" class="block text-[11px] font-semibold text-slate-500 mb-1">Equipo</label>
+                            <select id="taskTeam" class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                <option value="">Sin equipo</option>
+                                <option value="E1">🟣 E1</option>
+                                <option value="E2">🔵 E2</option>
+                                <option value="E3">🟠 E3</option>
+                                <option value="E4">🩷 E4</option>
+                                <option value="E5">🔷 E5</option>
                             </select>
                         </div>
                     </div>
@@ -2571,6 +2582,16 @@
         const taskRequestDate = document.getElementById('taskRequestDate');
         const taskOrigin = document.getElementById('taskOrigin');
         const taskStatus = document.getElementById('taskStatus');
+        const taskTeam = document.getElementById('taskTeam');
+
+        // Paleta de colores distintivos para cada equipo en el listado izquierdo y etiquetas
+        const TEAM_STYLES = {
+            E1: { card: 'border-l-4 border-l-purple-500 bg-purple-50/50 border-purple-200', badge: 'bg-purple-100 text-purple-800 border-purple-300', print: '#f3e8ff; color:#6b21a8' },
+            E2: { card: 'border-l-4 border-l-sky-500 bg-sky-50/50 border-sky-200', badge: 'bg-sky-100 text-sky-800 border-sky-300', print: '#e0f2fe; color:#075985' },
+            E3: { card: 'border-l-4 border-l-orange-500 bg-orange-50/50 border-orange-200', badge: 'bg-orange-100 text-orange-800 border-orange-300', print: '#ffedd5; color:#9a3412' },
+            E4: { card: 'border-l-4 border-l-pink-500 bg-pink-50/50 border-pink-200', badge: 'bg-pink-100 text-pink-800 border-pink-300', print: '#fce7f3; color:#9d174d' },
+            E5: { card: 'border-l-4 border-l-teal-500 bg-teal-50/50 border-teal-200', badge: 'bg-teal-100 text-teal-800 border-teal-300', print: '#ccfbf1; color:#115e59' }
+        };
         const taskShortDesc = document.getElementById('taskShortDesc');
         const taskDetailEditor = document.getElementById('taskDetailEditor');
         const boardCompletedFilterDate = document.getElementById('boardCompletedFilterDate');
@@ -2669,6 +2690,7 @@
             taskRequestDate.value = today;
             taskOrigin.value = '';
             taskStatus.value = 'pendiente';
+            taskTeam.value = '';
             taskShortDesc.value = '';
             taskDetailEditor.innerHTML = '';
 
@@ -2691,6 +2713,7 @@
             taskRequestDate.value = task.requestDate || '';
             taskOrigin.value = task.origin || '';
             taskStatus.value = task.status || 'pendiente';
+            taskTeam.value = task.team || '';
             taskShortDesc.value = task.shortDesc || '';
             taskDetailEditor.innerHTML = task.detailsHtml || '';
 
@@ -2726,6 +2749,7 @@
                         requestDate: taskRequestDate.value,
                         origin: taskOrigin.value.trim(),
                         status: statusVal,
+                        team: taskTeam.value,
                         shortDesc: shortDesc,
                         detailsHtml: taskDetailEditor.innerHTML,
                         completedDate: statusVal === 'finalizado' ? (boardTasks[idx].completedDate || today) : ''
@@ -2740,6 +2764,7 @@
                     requestDate: taskRequestDate.value,
                     origin: taskOrigin.value.trim(),
                     status: statusVal,
+                    team: taskTeam.value,
                     shortDesc: shortDesc,
                     detailsHtml: taskDetailEditor.innerHTML,
                     completedDate: statusVal === 'finalizado' ? today : ''
@@ -2823,7 +2848,7 @@
             document.getElementById('pendingCountBadge').textContent = activeTasks.length;
             document.getElementById('completedCountBadge').textContent = completedTasks.length;
 
-            // Pintar tarjetas izquierdas (Pendiente = ámbar, En curso = azul)
+            // Pintar tarjetas izquierdas con el color distintivo del Equipo (y fallback por estado si no tiene equipo)
             if (activeTasks.length === 0) {
                 boardPendingList.innerHTML = `<li class="text-center text-xs text-slate-400 py-8 border border-dashed border-slate-200 rounded-xl">Sin tareas pendientes</li>`;
             } else {
@@ -2831,14 +2856,21 @@
                     const isEditing = task.id === editingTaskId;
                     const isEnCurso = task.status === 'en_curso';
                     const isChecked = selectedPendingIds.has(task.id);
+                    const teamStyle = task.team && TEAM_STYLES[task.team] ? TEAM_STYLES[task.team] : null;
 
-                    const cardColor = isEnCurso
+                    const defaultCardColor = isEnCurso
                         ? 'border-l-4 border-l-blue-500 bg-blue-50/40 border-slate-200'
                         : 'border-l-4 border-l-amber-400 bg-amber-50/30 border-slate-200';
-                    const activeRing = isEditing ? 'ring-2 ring-blue-500 bg-white' : '';
+                    const cardColor = teamStyle ? teamStyle.card : defaultCardColor;
+                    const activeRing = isEditing ? 'ring-2 ring-blue-600' : '';
+
                     const statusIcon = isEnCurso
                         ? `<i data-lucide="play-circle" class="w-4 h-4 text-blue-600 shrink-0" title="En curso"></i>`
                         : `<i data-lucide="clock" class="w-4 h-4 text-amber-500 shrink-0" title="Pendiente"></i>`;
+
+                    const teamBadgeHtml = teamStyle
+                        ? `<span class="px-1.5 py-0.5 rounded border font-bold text-[10px] ${teamStyle.badge}">${escapeHtmlBoard(task.team)}</span>`
+                        : '';
 
                     const li = document.createElement('li');
                     li.dataset.id = task.id;
@@ -2850,8 +2882,9 @@
                         <div class="mt-0.5">${statusIcon}</div>
                         <div class="min-w-0 flex-grow">
                             <p class="text-xs font-semibold text-slate-800 leading-snug break-words">${escapeHtmlBoard(task.shortDesc)}</p>
-                            <div class="flex flex-wrap items-center gap-1.5 mt-1 text-[10px] text-slate-500">
-                                ${task.origin ? `<span class="bg-white px-1.5 py-0.5 rounded border border-slate-200 font-medium">${escapeHtmlBoard(task.origin)}</span>` : ''}
+                            <div class="flex flex-wrap items-center gap-1.5 mt-1 text-[10px] text-slate-600">
+                                ${teamBadgeHtml}
+                                ${task.origin ? `<span class="bg-white/80 px-1.5 py-0.5 rounded border border-slate-200 font-medium">${escapeHtmlBoard(task.origin)}</span>` : ''}
                                 ${task.startDate ? `<span>${task.startDate}</span>` : ''}
                             </div>
                         </div>
@@ -2860,13 +2893,17 @@
                 });
             }
 
-            // Pintar etiquetas derechas (Completados del día)
+            // Pintar etiquetas derechas (Completados del día) mostrando también su distintivo de Equipo
             if (completedTasks.length === 0) {
                 boardCompletedList.innerHTML = `<li class="text-center text-xs text-emerald-700/60 py-8">Arrastra aquí tareas completadas</li>`;
             } else {
                 completedTasks.forEach(task => {
                     const isEditing = task.id === editingTaskId;
                     const activeRing = isEditing ? 'ring-2 ring-emerald-600' : '';
+                    const teamStyle = task.team && TEAM_STYLES[task.team] ? TEAM_STYLES[task.team] : null;
+                    const teamBadgeHtml = teamStyle
+                        ? `<span class="px-1.5 py-0.2 rounded border font-bold text-[9px] shrink-0 ${teamStyle.badge}">${escapeHtmlBoard(task.team)}</span>`
+                        : '';
 
                     const li = document.createElement('li');
                     li.dataset.id = task.id;
@@ -2876,8 +2913,11 @@
                     li.innerHTML = `
                         <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                         <div class="min-w-0 flex-grow">
-                            <p class="text-xs font-semibold text-slate-800 truncate" title="${escapeHtmlBoard(task.shortDesc)}">${escapeHtmlBoard(task.shortDesc)}</p>
-                            <p class="text-[10px] text-slate-500 truncate">
+                            <div class="flex items-center gap-1.5">
+                                ${teamBadgeHtml}
+                                <p class="text-xs font-semibold text-slate-800 truncate" title="${escapeHtmlBoard(task.shortDesc)}">${escapeHtmlBoard(task.shortDesc)}</p>
+                            </div>
+                            <p class="text-[10px] text-slate-500 truncate mt-0.5">
                                 ${task.origin ? `${escapeHtmlBoard(task.origin)} · ` : ''}${task.endDate || task.completedDate || ''}
                             </p>
                         </div>
@@ -3011,8 +3051,13 @@
                 const badgeBg = task.status === 'finalizado' ? '#dcfce7; color:#166534' :
                                 (task.status === 'en_curso' ? '#dbeafe; color:#1e40af' : '#fef3c7; color:#92400e');
 
+                const teamPrintBadge = (task.team && TEAM_STYLES[task.team])
+                    ? `<span style="background:${TEAM_STYLES[task.team].print}; padding:2px 7px; border-radius:4px; font-weight:700; font-size:9.5pt;">Equipo: ${escapeHtmlBoard(task.team)}</span>`
+                    : '';
+
                 const metaParts = [
                     `<span style="background:${badgeBg}; padding:2px 8px; border-radius:4px; font-weight:700; font-size:10pt;">${statusText}</span>`,
+                    teamPrintBadge,
                     task.origin ? `<strong>Origen:</strong> ${escapeHtmlBoard(task.origin)}` : '',
                     task.requestDate ? `<strong>Solicitud:</strong> ${task.requestDate}` : '',
                     task.startDate ? `<strong>Inicio:</strong> ${task.startDate}` : '',
