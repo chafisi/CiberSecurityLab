@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorías de Servicios</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+        }
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .category-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .category-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .category-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            color: #007BFF;
+        }
+        .category-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .category-professionals {
+            font-size: 14px;
+            color: #555;
+        }
+        @media (max-width: 768px) {
+            .categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .categories {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (min-width: 1025px) {
+            .categories {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Categorías de Servicios</h1>
+    <div class="categories">
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">&#x1F4B3;</div>
+            <div class="category-title">Plomería</div>
+            <div class="category-professionals">3 profesionales</div>
+        </div>
+    </div>
+</body>
+</html>
