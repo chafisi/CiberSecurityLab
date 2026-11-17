@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace de Servicios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .services-list {
+            list-style: none;
+            padding: 0;
+        }
+        .services-list li {
+            padding: 10px;
+            background-color: #e1f5e1;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .services-list li:hover {
+            background-color: #c8e6c9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Marketplace de Servicios</h1>
+    <div class="input-group">
+        <label for="searchInput">Buscar por nombre o zona:</label>
+        <input type="text" id="searchInput" placeholder="Nombre o Zona">
+    </div>
+    <ul class="services-list" id="servicesList"></ul>
+</div>
+
+<script>
+    // Array de servicios
+    const services = [
+        { name: 'Servicio A', category: 'Categoría 1', zone: 'Zona 1' },
+        { name: 'Servicio B', category: 'Categoría 2', zone: 'Zona 2' },
+        { name: 'Servicio C', category: 'Categoría 1', zone: 'Zona 3' },
+        { name: 'Servicio D', category: 'Categoría 3', zone: 'Zona 1' },
+        { name: 'Servicio E', category: 'Categoría 2', zone: 'Zona 4' },
+        { name: 'Servicio F', category: 'Categoría 1', zone: 'Zona 2' },
+        { name: 'Servicio G', category: 'Categoría 3', zone: 'Zona 3' },
+        { name: 'Servicio H', category: 'Categoría 1', zone: 'Zona 4' },
+        { name: 'Servicio I', category: 'Categoría 2', zone: 'Zona 1' },
+        { name: 'Servicio J', category: 'Categoría 3', zone: 'Zona 2' }
+    ];
+
+    // Función para renderizar los servicios
+    function renderServices(services) {
+        const servicesList = document.getElementById('servicesList');
+        servicesList.innerHTML = '';
+        services.forEach(service => {
+            const li = document.createElement('li');
+            li.textContent = `Nombre: ${service.name}, Categoría: ${service.category}, Zona: ${service.zone}`;
+            servicesList.appendChild(li);
+        });
+    }
+
+    // Función para filtrar servicios
+    function filterServices(event) {
+        const query = event.target.value.toLowerCase();
+        const filteredServices = services.filter(service => {
+            return (
+                service.name.toLowerCase().includes(query) ||
+                service.zone.toLowerCase().includes(query)
+            );
+        });
+        renderServices(filteredServices);
+    }
+
+    // Evento para el input de búsqueda
+    document.getElementById('searchInput').addEventListener('input', filterServices);
+
+    // Renderizar servicios al cargar la página
+    renderServices(services);
+</script>
+
+</body>
+</html>
