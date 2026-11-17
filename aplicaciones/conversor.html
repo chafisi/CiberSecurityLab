@@ -23,6 +23,9 @@
     <!-- v10 Tesseract.js para reconocimiento óptico de caracteres (OCR) 100% en el navegador -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
+    <!-- Mammoth.js para convertir archivos .docx reales a HTML editable en el navegador -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+
     <!-- Fuentes Google Fonts: Nunito, Roboto y Plus Jakarta Sans / Google Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v9</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v10</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -113,6 +116,11 @@
                     <button type="button" id="tabOcrBtn" onclick="switchTab('ocr')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
                         <i data-lucide="scan-text" class="w-4 h-4"></i>
                         <span>OCR</span>
+                    </button>
+
+                    <button type="button" id="tabImportBtn" onclick="switchTab('import')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
+                        <i data-lucide="folder-open" class="w-4 h-4"></i>
+                        <span>Abrir Doc</span>
                     </button>
 
                     <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
@@ -688,6 +696,67 @@
             </div>
 
         </div>
+
+        <!-- ==================== SECCIÓN 6: CARGAR DOC / DOCX / HTML PARA EDITAR ==================== -->
+        <div id="importSection" class="hidden flex-col gap-5 flex-grow">
+
+            <!-- Zona de carga -->
+            <div id="importUploadCard" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 flex flex-col gap-4">
+                <div id="importDropZone" class="border-2 border-dashed border-slate-300 bg-slate-50/50 rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all hover:border-blue-500 hover:bg-blue-50/30">
+                    <input type="file" id="importFileInput" accept=".doc,.docx,.html,.htm,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/html" class="hidden">
+                    <div class="flex flex-col items-center justify-center gap-3">
+                        <div class="bg-indigo-50 text-indigo-600 p-4 rounded-full">
+                            <i data-lucide="file-up" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-base sm:text-lg font-semibold text-slate-700">
+                                Arrastra aquí tu archivo .DOC, .DOCX o .HTML
+                            </p>
+                            <p class="text-sm text-slate-500 mt-1">
+                                o <span class="text-blue-600 font-medium underline">haz clic para seleccionarlo</span> y continuar editándolo
+                            </p>
+                        </div>
+                        <div class="flex flex-wrap justify-center gap-2 mt-1 text-xs">
+                            <span class="bg-slate-200/70 px-2.5 py-1 rounded-md font-medium text-slate-600">.DOC</span>
+                            <span class="bg-slate-200/70 px-2.5 py-1 rounded-md font-medium text-slate-600">.DOCX</span>
+                            <span class="bg-slate-200/70 px-2.5 py-1 rounded-md font-medium text-slate-600">.HTML / .HTM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta de vista previa tras la carga -->
+            <div id="importResultCard" class="hidden flex-col gap-4 flex-grow">
+                
+                <!-- Cabecera con acción principal "Abrir en Editor" -->
+                <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <i data-lucide="file-check" class="w-5 h-5 text-indigo-600 shrink-0"></i>
+                        <div class="min-w-0">
+                            <p id="importFileName" class="text-sm font-bold text-slate-800 truncate">documento.doc</p>
+                            <p id="importStats" class="text-xs text-indigo-800">Archivo cargado · Listo para continuar editando</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                        <button type="button" onclick="sendImportedToMainEditor()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-4 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="pen-square" class="w-4 h-4"></i>
+                            <span>Abrir en Editor</span>
+                        </button>
+                        <button type="button" id="resetImportBtn" class="text-xs text-red-600 hover:bg-red-100/60 px-2.5 py-2 rounded-lg font-medium transition cursor-pointer">
+                            Otro archivo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vista previa del contenido cargado -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 flex flex-col gap-2 flex-grow">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Vista previa del documento cargado</span>
+                    <div id="importPreviewArea" class="prose max-w-none text-slate-800 text-base leading-relaxed border-t border-slate-100 pt-3 overflow-auto max-h-[450px]"></div>
+                </div>
+
+            </div>
+
+        </div>
     </main>
 
     <!-- Notificación Toast -->
@@ -1086,7 +1155,8 @@
                 extract: { section: document.getElementById('extractSection'), btn: document.getElementById('tabExtractBtn') },
                 editor: { section: document.getElementById('editorSection'), btn: document.getElementById('tabEditorBtn') },
                 clean: { section: document.getElementById('cleanSection'), btn: document.getElementById('tabCleanBtn') },
-                ocr: { section: document.getElementById('ocrSection'), btn: document.getElementById('tabOcrBtn') }
+                ocr: { section: document.getElementById('ocrSection'), btn: document.getElementById('tabOcrBtn') },
+                import: { section: document.getElementById('importSection'), btn: document.getElementById('tabImportBtn') }
             };
 
             Object.entries(tabs).forEach(([key, item]) => {
@@ -2138,6 +2208,118 @@
                 showToast('Error al generar el PDF.');
             }
         });
+
+
+        // +  6  + ==================== LÓGICA DE CARGA DE DOC / DOCX / HTML (SECCIÓN 6) ====================
+        const importDropZone = document.getElementById('importDropZone');
+        const importFileInput = document.getElementById('importFileInput');
+        const importUploadCard = document.getElementById('importUploadCard');
+        const importResultCard = document.getElementById('importResultCard');
+        const importPreviewArea = document.getElementById('importPreviewArea');
+        let importedBaseFilename = 'mi_documento';
+
+        importDropZone.addEventListener('click', () => importFileInput.click());
+
+        ['dragenter', 'dragover'].forEach(ev => {
+            importDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                importDropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(ev => {
+            importDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                importDropZone.classList.remove('drag-over');
+            });
+        });
+
+        importDropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length > 0) {
+                processImportedDocument(e.dataTransfer.files[0]);
+            }
+        });
+
+        importFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processImportedDocument(e.target.files[0]);
+            }
+            importFileInput.value = '';
+        });
+
+        // Limpiar el HTML extraído de archivos .doc o .html externos para evitar etiquetas rotas
+        function extractCleanBodyFromHtml(rawHtml) {
+            // Eliminar comentarios condicionales de Microsoft Word (<!--[if ...]-->)
+            const withoutMsoComments = rawHtml.replace(/<!--\[if[\s\S]*?<!\[endif\]-->/gi, '');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(withoutMsoComments, 'text/html');
+
+            // Quitar scripts o estilos globales que puedan desconfigurar la interfaz
+            doc.querySelectorAll('script, style, meta, link').forEach(el => el.remove());
+
+            return doc.body ? doc.body.innerHTML.trim() : withoutMsoComments;
+        }
+
+        async function processImportedDocument(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (!['doc', 'docx', 'html', 'htm'].includes(ext)) {
+                showToast('Formato no soportado. Usa .DOC, .DOCX o .HTML');
+                return;
+            }
+
+            showToast('Cargando documento...');
+
+            try {
+                let extractedHtml = '';
+
+                if (ext === 'docx') {
+                    // Convertir .docx real a HTML usando Mammoth.js
+                    const arrayBuffer = await file.arrayBuffer();
+                    const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+                    extractedHtml = result.value;
+                } else {
+                    // Leer .html, .htm o .doc (formato Word HTML) como texto UTF-8
+                    const rawText = await file.text();
+                    extractedHtml = extractCleanBodyFromHtml(rawText);
+                }
+
+                importedBaseFilename = file.name.replace(/\.(doc|docx|html|htm)$/i, '');
+                document.getElementById('importFileName').textContent = file.name;
+                importPreviewArea.innerHTML = extractedHtml || '<p>(El documento está vacío)</p>';
+
+                const words = importPreviewArea.innerText.trim().split(/\s+/).filter(Boolean).length;
+                document.getElementById('importStats').textContent =
+                    `Formato .${ext.toUpperCase()} · ${words} ${words === 1 ? 'palabra' : 'palabras'} · Listo para editar`;
+
+                importUploadCard.classList.add('hidden');
+                importResultCard.classList.remove('hidden');
+                importResultCard.classList.add('flex');
+                lucide.createIcons();
+                showToast('¡Documento cargado! Pulsa "Abrir en Editor" para continuar trabajando');
+            } catch (err) {
+                console.error('Error al importar documento:', err);
+                showToast('No se pudo leer el archivo. Si es un .doc binario muy antiguo, guárdalo como .docx o .html.');
+            }
+        }
+
+        // Reiniciar vista de importación
+        document.getElementById('resetImportBtn').addEventListener('click', () => {
+            importResultCard.classList.add('hidden');
+            importResultCard.classList.remove('flex');
+            importUploadCard.classList.remove('hidden');
+            importPreviewArea.innerHTML = '';
+        });
+
+        // Enviar el contenido cargado directamente al Editor principal
+        window.sendImportedToMainEditor = function() {
+            richEditorArea.innerHTML = importPreviewArea.innerHTML;
+            editorOutputName.value = importedBaseFilename;
+            updateEditorStats();
+            switchTab('editor');
+            showToast(`"${importedBaseFilename}" abierto en el Editor`);
+        };
     </script>
 </body>
 </html>
