@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Servicios</h1>
+            <form class="search-form">
+                <input type="text" id="search-input" placeholder="Buscar servicio...">
+            </form>
+        </div>
+    </header>
+
+    <nav class="sidebar">
+        <h2>Filtros</h2>
+        <div class="filters">
+            <h3>Categorías:</h3>
+            <div class="category-filters">
+                <label><input type="checkbox" value="categoria1"> Categoría 1</label>
+                <label><input type="checkbox" value="categoria2"> Categoría 2</label>
+                <label><input type="checkbox" value="categoria3"> Categoría 3</label>
+                <!-- Agrega más categorías según sea necesario -->
+            </div>
+            <h3>Zonas:</h3>
+            <div class="zone-filters">
+                <label><input type="checkbox" value="zona1"> Zona 1</label>
+                <label><input type="checkbox" value="zona2"> Zona 2</label>
+                <label><input type="checkbox" value="zona3"> Zona 3</label>
+                <!-- Agrega más zonas según sea necesario -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div class="search-results">
+            <h2>Resultados de búsqueda</h2>
+            <input type="text" id="search-text" placeholder="Introduce el texto...">
+        </div>
+        <div class="services-grid">
+            <!-- Tarjetas de servicios se añadirán aquí dinámicamente -->
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 Nombre del Sitio. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
