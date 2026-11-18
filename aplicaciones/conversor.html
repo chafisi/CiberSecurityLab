@@ -2740,11 +2740,12 @@
             const task = boardTasks.find(t => t.id === taskId);
             if (!task) return;
 
-            // Si ya fue exportada previamente, preguntar confirmación antes de volver a exportar
-            if (task.exported) {
-                const confirmReexport = confirm(`La tarea "${task.shortDesc}" ya fue exportada anteriormente.\n\n¿Deseas volver a exportarla?`);
-                if (!confirmReexport) return;
-            }
+            // Preguntar confirmación siempre antes de exportar (diferenciando si es primera exportación o re-exportación)
+            const confirmMsg = task.exported
+                ? `La tarea "${task.shortDesc}" ya fue exportada anteriormente.\n\n¿Deseas volver a exportarla?`
+                : `¿Deseas exportar la tarea "${task.shortDesc}" para generar su fila de BD (Columnas A–R) y marcarla como exportada?`;
+
+            if (!confirm(confirmMsg)) return;
 
             // Asignar idTarea hexadecimal de 8 caracteres (ej. "a67603cd") y referencia si no existen aún
             if (!task.dbTaskId) {
