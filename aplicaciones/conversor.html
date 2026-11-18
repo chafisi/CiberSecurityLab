@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v12</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v13</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -859,9 +859,9 @@
                             <input type="text" id="taskOrigin" list="taskOriginSuggestions" placeholder="Ej: Email, Cliente..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <datalist id="taskOriginSuggestions">
                                 <option value="Email">
-                                <option value="Cliente">
-                                <option value="Interno">
-                                <option value="Teléfono">
+                                <option value="Whatsapp">
+                                <option value="Llamada">
+                                <option value="Policia">
                                 <option value="Incidencia">
                             </datalist>
                         </div>
@@ -875,14 +875,22 @@
                         </div>
                         <div>
                             <label for="taskTeam" class="block text-[11px] font-semibold text-slate-500 mb-1">Equipo</label>
-                            <select id="taskTeam" class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                                <option value="">Sin equipo</option>
-                                <option value="E1">🟣 E1</option>
-                                <option value="E2">🔵 E2</option>
-                                <option value="E3">🟠 E3</option>
-                                <option value="E4">🩷 E4</option>
-                                <option value="E5">🔷 E5</option>
-                            </select>
+                            <input type="text" id="taskTeam" list="taskTeamSuggestions" placeholder="Elige o escribe equipo..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <datalist id="taskTeamSuggestions">
+                                <option value="E1-Mant Via Publica">
+                                <option value="E2-Eventos-Logisticas">
+                                <option value="E3-Edificios-Colegios">
+                                <option value="E4-ZV-Solares-Plagas">
+                                <option value="E5-ZV-Jardines">
+                                <option value="E6-Gestion-admin">
+                                <option value="E7-Zona 1 Jardineria - Centro">
+                                <option value="E8-Zona 2 Jardineria - Dulzura">
+                                <option value="E9-Zona 3 Jardineria - Sagrada Familia">
+                                <option value="E10-Infraestructuras - Mobiliario - Interior - Vía Pública">
+                                <option value="E11-Protocolo Territorial Emergencias">
+                                <option value="E12-Instalaciones-Varios">
+                                <option value="E13-Polivalente">
+                            </datalist>
                         </div>
                     </div>
 
@@ -910,12 +918,19 @@
                         <div id="taskDetailEditor" contenteditable="true" class="min-h-[200px] max-h-[360px] overflow-y-auto p-3.5 text-sm text-slate-800 leading-relaxed focus:outline-none bg-white"></div>
                     </div>
 
-                    <!-- Barra inferior: Borrar y Guardar ítem -->
-                    <div class="flex items-center justify-between gap-3 pt-1">
-                        <button type="button" id="deleteBoardTaskBtn" onclick="deleteCurrentBoardTask()" class="hidden text-xs sm:text-sm text-red-600 hover:bg-red-50 border border-red-200 font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                            <span>Borrar ítem</span>
-                        </button>
+                    <!-- Barra inferior: Borrar, Exportar fila BD y Guardar ítem -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="deleteBoardTaskBtn" onclick="deleteCurrentBoardTask()" class="hidden text-xs sm:text-sm text-red-600 hover:bg-red-50 border border-red-200 font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                <span>Borrar</span>
+                            </button>
+
+                            <button type="button" id="exportSingleTaskBtn" onclick="triggerTaskDbExport(editingTaskId)" class="hidden text-xs sm:text-sm bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Generar fila A-R para Google Sheets">
+                                <i data-lucide="table-2" class="w-4 h-4 text-emerald-600"></i>
+                                <span>Exportar fila BD</span>
+                            </button>
+                        </div>
 
                         <button type="button" id="saveBoardTaskBtn" onclick="saveBoardTask()" class="ml-auto bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer">
                             <i data-lucide="save" class="w-4 h-4"></i>
@@ -942,6 +957,74 @@
                     <ul id="boardCompletedList" class="flex flex-col gap-2 min-h-[260px] rounded-xl bg-emerald-50/30 border border-dashed border-emerald-200 p-2 transition-colors">
                         <!-- Etiquetas completadas del día -->
                     </ul>
+                </div>
+
+                <!--v13 Modal de Exportación a Base de Datos / Google Sheets (Columnas A - R) -->
+                <div id="boardDbExportModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs items-center justify-center p-4">
+                    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-6xl w-full p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh]">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg">
+                                    <i data-lucide="sheet" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-800">Exportar Tarea a Hoja de Cálculo (BD Columnas A–R)</h3>
+                                    <p class="text-xs text-slate-500">Copia la fila generada y pégala directamente en la columna <strong>A</strong> de tu hoja de Google Sheets</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="closeBoardDbExportModal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg cursor-pointer">
+                                <i data-lucide="x" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <!-- Tabla horizontal de 1 fila (Columnas A a R) -->
+                        <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-2xs">
+                            <table id="dbExportPreviewTable" class="min-w-max w-full text-xs text-left border-collapse">
+                                <thead class="bg-slate-800 text-white font-mono">
+                                    <tr>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">A: idTarea</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">B: idLugar</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">C: tipo</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">D: estado</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">E: descripción_corta</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">F: nota</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">G: parte</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">H: imagen</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">I: fecha_inicio</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">J: fecha_fin</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">K: usuario</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">L: equipo</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">M: imagen2</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">N: compañeros</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">O: actuaciones</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">P: asignadoPor</th>
+                                        <th class="px-2.5 py-2 border-r border-slate-600">Q: idOrigen</th>
+                                        <th class="px-2.5 py-2">R: idSolicitante</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dbExportPreviewBody" class="bg-white text-slate-800 divide-y divide-slate-200">
+                                    <!-- Se rellena dinámicamente con 1 fila -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                            <span class="text-xs text-emerald-700 font-medium flex items-center gap-1.5">
+                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                <span>Tarea marcada como <strong>Exportada</strong> en el listado.</span>
+                            </span>
+
+                            <div class="flex items-center gap-2 self-end sm:self-auto">
+                                <button type="button" onclick="closeBoardDbExportModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer">
+                                    Cerrar
+                                </button>
+                                <button type="button" onclick="copyDbRowToClipboard()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-xs flex items-center gap-2 cursor-pointer">
+                                    <i data-lucide="clipboard-copy" class="w-4 h-4"></i>
+                                    <span>Copiar fila para Google Sheets</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -2584,14 +2667,37 @@
         const taskStatus = document.getElementById('taskStatus');
         const taskTeam = document.getElementById('taskTeam');
 
-        // Paleta de colores distintivos para cada equipo en el listado izquierdo y etiquetas
+        // v13 Paleta de colores distintivos para los 13 equipos (E1..E13) y equipos personalizados
         const TEAM_STYLES = {
-            E1: { card: 'border-l-4 border-l-purple-500 bg-purple-50/50 border-purple-200', badge: 'bg-purple-100 text-purple-800 border-purple-300', print: '#f3e8ff; color:#6b21a8' },
-            E2: { card: 'border-l-4 border-l-sky-500 bg-sky-50/50 border-sky-200', badge: 'bg-sky-100 text-sky-800 border-sky-300', print: '#e0f2fe; color:#075985' },
-            E3: { card: 'border-l-4 border-l-orange-500 bg-orange-50/50 border-orange-200', badge: 'bg-orange-100 text-orange-800 border-orange-300', print: '#ffedd5; color:#9a3412' },
-            E4: { card: 'border-l-4 border-l-pink-500 bg-pink-50/50 border-pink-200', badge: 'bg-pink-100 text-pink-800 border-pink-300', print: '#fce7f3; color:#9d174d' },
-            E5: { card: 'border-l-4 border-l-teal-500 bg-teal-50/50 border-teal-200', badge: 'bg-teal-100 text-teal-800 border-teal-300', print: '#ccfbf1; color:#115e59' }
+            E1:  { card: 'border-l-4 border-l-purple-500 bg-purple-50/50 border-purple-200', badge: 'bg-purple-100 text-purple-800 border-purple-300', print: '#f3e8ff; color:#6b21a8' },
+            E2:  { card: 'border-l-4 border-l-sky-500 bg-sky-50/50 border-sky-200', badge: 'bg-sky-100 text-sky-800 border-sky-300', print: '#e0f2fe; color:#075985' },
+            E3:  { card: 'border-l-4 border-l-orange-500 bg-orange-50/50 border-orange-200', badge: 'bg-orange-100 text-orange-800 border-orange-300', print: '#ffedd5; color:#9a3412' },
+            E4:  { card: 'border-l-4 border-l-pink-500 bg-pink-50/50 border-pink-200', badge: 'bg-pink-100 text-pink-800 border-pink-300', print: '#fce7f3; color:#9d174d' },
+            E5:  { card: 'border-l-4 border-l-teal-500 bg-teal-50/50 border-teal-200', badge: 'bg-teal-100 text-teal-800 border-teal-300', print: '#ccfbf1; color:#115e59' },
+            E6:  { card: 'border-l-4 border-l-indigo-500 bg-indigo-50/50 border-indigo-200', badge: 'bg-indigo-100 text-indigo-800 border-indigo-300', print: '#e0e7ff; color:#3730a3' },
+            E7:  { card: 'border-l-4 border-l-lime-600 bg-lime-50/50 border-lime-200', badge: 'bg-lime-100 text-lime-800 border-lime-300', print: '#ecfccb; color:#3f6212' },
+            E8:  { card: 'border-l-4 border-l-emerald-600 bg-emerald-50/50 border-emerald-200', badge: 'bg-emerald-100 text-emerald-800 border-emerald-300', print: '#d1fae5; color:#065f46' },
+            E9:  { card: 'border-l-4 border-l-green-600 bg-green-50/50 border-green-200', badge: 'bg-green-100 text-green-800 border-green-300', print: '#dcfce7; color:#166534' },
+            E10: { card: 'border-l-4 border-l-cyan-600 bg-cyan-50/50 border-cyan-200', badge: 'bg-cyan-100 text-cyan-800 border-cyan-300', print: '#cffafe; color:#155e75' },
+            E11: { card: 'border-l-4 border-l-red-500 bg-red-50/50 border-red-200', badge: 'bg-red-100 text-red-800 border-red-300', print: '#fee2e2; color:#991b1b' },
+            E12: { card: 'border-l-4 border-l-violet-500 bg-violet-50/50 border-violet-200', badge: 'bg-violet-100 text-violet-800 border-violet-300', print: '#ede9fe; color:#5b21b6' },
+            E13: { card: 'border-l-4 border-l-fuchsia-500 bg-fuchsia-50/50 border-fuchsia-200', badge: 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-300', print: '#fae8ff; color:#86198f' }
         };
+
+        function getTeamStyle(teamValue) {
+            if (!teamValue || !teamValue.trim()) return null;
+            const prefixMatch = teamValue.trim().toUpperCase().match(/^(E\d+)/);
+            if (prefixMatch && TEAM_STYLES[prefixMatch[1]]) {
+                return TEAM_STYLES[prefixMatch[1]];
+            }
+            // Estilo distintivo por defecto si el usuario escribe un equipo personalizado nuevo
+            return {
+                card: 'border-l-4 border-l-slate-600 bg-slate-100/80 border-slate-300',
+                badge: 'bg-slate-200 text-slate-800 border-slate-400',
+                print: '#e2e8f0; color:#1e293b'
+            };
+        }
+
         const taskShortDesc = document.getElementById('taskShortDesc');
         const taskDetailEditor = document.getElementById('taskDetailEditor');
         const boardCompletedFilterDate = document.getElementById('boardCompletedFilterDate');
@@ -2602,7 +2708,161 @@
             const local = new Date(now.getTime() - offset * 60000);
             return local.toISOString().split('T')[0];
         }
+        //***v13
+        // ==================== EXPORTACIÓN DE TAREA A FILA DE BD (COLUMNAS A - R) ====================
+        let lastExportedRowColumns = [];
 
+        // Generar ID hexadecimal corto de 8 caracteres tipo "a67603cd" (y conservarlo si la tarea ya tenía uno)
+        function generateShortHexId() {
+            const bytes = new Uint8Array(4);
+            crypto.getRandomValues(bytes);
+            return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Generar referencia única para columna O
+        function generateTaskRef() {
+            const now = new Date();
+            const ymd = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+            const rand = Math.floor(1000 + Math.random() * 9000);
+            return `${ymd}-${rand}`;
+        }
+
+        // Formatear fecha YYYY-MM-DD a DD/MM/YYYY
+        function formatDateEs(isoDate) {
+            if (!isoDate) return '';
+            const parts = isoDate.split('-');
+            if (parts.length !== 3) return isoDate;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        window.triggerTaskDbExport = function(taskId) {
+            if (!taskId) return;
+            const task = boardTasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            // Si ya fue exportada previamente, preguntar confirmación antes de volver a exportar
+            if (task.exported) {
+                const confirmReexport = confirm(`La tarea "${task.shortDesc}" ya fue exportada anteriormente.\n\n¿Deseas volver a exportarla?`);
+                if (!confirmReexport) return;
+            }
+
+            // Asignar idTarea hexadecimal de 8 caracteres (ej. "a67603cd") y referencia si no existen aún
+            if (!task.dbTaskId) {
+                task.dbTaskId = generateShortHexId();
+            }
+            if (!task.dbRef) {
+                task.dbRef = generateTaskRef();
+            }
+
+            const todayFormatted = formatDateEs(getTodayISO());
+            const statusTextMap = {
+                pendiente: 'Pendiente',
+                en_curso: 'En curso',
+                finalizado: 'Finalizado'
+            };
+
+            const originVal = task.origin || 'Sin origen';
+            const statusVal = statusTextMap[task.status] || task.status || 'Pendiente';
+            const teamVal = task.team || 'Sin equipo';
+
+            // Extraer texto limpio del editor de notas
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = task.detailsHtml || '';
+            const plainNote = (tempDiv.innerText || '').trim();
+
+            // Construir las 18 columnas exactas (A a R)
+            const colA_idTarea = task.dbTaskId;
+            const colB_idLugar = '15';
+            const colC_tipo = '45';
+            const colD_estado = '6';
+            const colE_descCorta = task.shortDesc || '';
+            const colF_nota = plainNote;
+            const colG_parte = `Importado con fecha - ${todayFormatted} - ${originVal} - ${statusVal} - ${teamVal}`;
+            const colH_imagen = '';
+            const colI_fechaInicio = formatDateEs(task.startDate);
+            const colJ_fechaFin = formatDateEs(task.endDate);
+            const colK_usuario = 'almacen.ibi@gmail.com';
+            const colL_equipo = 'E6-Gestion-admin';
+            const colM_imagen2 = '';
+            const colN_companeros = 'almacen.ibi@gmail.com';
+            const colO_actuaciones = `[ALTA] REF:${task.dbRef} | ${todayFormatted} | almacen.ibi@gmail.com > ${colE_descCorta}`;
+            const colP_asignadoPor = 'almacen.ibi@gmail.com';
+            const colQ_default = '16';
+            const colR_default = '167';
+
+            lastExportedRowColumns = [
+                colA_idTarea,
+                colB_idLugar,
+                colC_tipo,
+                colD_estado,
+                colE_descCorta,
+                colF_nota,
+                colG_parte,
+                colH_imagen,
+                colI_fechaInicio,
+                colJ_fechaFin,
+                colK_usuario,
+                colL_equipo,
+                colM_imagen2,
+                colN_companeros,
+                colO_actuaciones,
+                colP_asignadoPor,
+                colQ_default,
+                colR_default
+            ];
+
+            // Marcar tarea como exportada y guardar estado
+            task.exported = true;
+            task.exportedAt = new Date().toISOString();
+            saveBoardToStorage();
+            renderBoardLists();
+
+            // Pintar la tabla horizontal de 1 fila en el modal
+            const tbody = document.getElementById('dbExportPreviewBody');
+            tbody.innerHTML = `
+                <tr class="hover:bg-emerald-50/40">
+                    ${lastExportedRowColumns.map(val => `
+                        <td class="px-2.5 py-2.5 border-r border-slate-200 max-w-[220px] truncate font-mono text-[11px]" title="${escapeHtmlBoard(val)}">
+                            ${val === '' ? '<span class="text-slate-300 italic">(vacío)</span>' : escapeHtmlBoard(val)}
+                        </td>
+                    `).join('')}
+                </tr>
+            `;
+
+            const modal = document.getElementById('boardDbExportModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        };
+
+        window.closeBoardDbExportModal = function() {
+            const modal = document.getElementById('boardDbExportModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        // Copiar la fila en formato TSV (separado por tabuladores) para pegado directo en Google Sheets (Columna A -> R)
+        window.copyDbRowToClipboard = async function() {
+            if (!lastExportedRowColumns || lastExportedRowColumns.length === 0) return;
+
+            // Escapar saltos de línea o tabulaciones internas con comillas dobles para que Google Sheets mantenga todo en 1 sola fila
+            const tsvRow = lastExportedRowColumns.map(cell => {
+                const str = String(cell ?? '');
+                if (str.includes('\t') || str.includes('\n') || str.includes('"')) {
+                    return `"${str.replace(/"/g, '""')}"`;
+                }
+                return str;
+            }).join('\t');
+
+            try {
+                await navigator.clipboard.writeText(tsvRow);
+                showToast('¡Fila A–R copiada! Pégala (Ctrl+V) en la columna A de Google Sheets');
+            } catch (err) {
+                console.error(err);
+                showToast('No se pudo copiar automáticamente; selecciona la fila de la tabla y pulsa Ctrl+C');
+            }
+        };
+        //***v13
         function loadBoardFromStorage() {
             try {
                 const saved = localStorage.getItem(BOARD_STORAGE_KEY);
@@ -2698,6 +2958,7 @@
                 `<i data-lucide="plus-circle" class="w-4 h-4"></i><span>Nuevo ítem de trabajo</span>`;
             document.getElementById('saveBoardTaskBtnText').textContent = 'Guardar ítem';
             document.getElementById('deleteBoardTaskBtn').classList.add('hidden');
+            document.getElementById('exportSingleTaskBtn').classList.add('hidden');
             renderBoardLists();
             lucide.createIcons();
         };
@@ -2721,6 +2982,7 @@
                 `<i data-lucide="edit-3" class="w-4 h-4 text-amber-600"></i><span class="text-amber-700">Editando ítem seleccionado</span>`;
             document.getElementById('saveBoardTaskBtnText').textContent = 'Guardar';
             document.getElementById('deleteBoardTaskBtn').classList.remove('hidden');
+            document.getElementById('exportSingleTaskBtn').classList.remove('hidden');
 
             renderBoardLists();
             lucide.createIcons();
@@ -2856,7 +3118,7 @@
                     const isEditing = task.id === editingTaskId;
                     const isEnCurso = task.status === 'en_curso';
                     const isChecked = selectedPendingIds.has(task.id);
-                    const teamStyle = task.team && TEAM_STYLES[task.team] ? TEAM_STYLES[task.team] : null;
+                    const teamStyle = getTeamStyle(task.team);
 
                     const defaultCardColor = isEnCurso
                         ? 'border-l-4 border-l-blue-500 bg-blue-50/40 border-slate-200'
@@ -2872,17 +3134,27 @@
                         ? `<span class="px-1.5 py-0.5 rounded border font-bold text-[10px] ${teamStyle.badge}">${escapeHtmlBoard(task.team)}</span>`
                         : '';
 
+                    const exportedBadgeHtml = task.exported
+                        ? `<span class="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold text-[9px] uppercase tracking-wide flex items-center gap-0.5"><i data-lucide="check" class="w-2.5 h-2.5"></i>Exportada</span>`
+                        : '';
+
                     const li = document.createElement('li');
                     li.dataset.id = task.id;
                     li.onclick = () => loadTaskIntoEditor(task.id);
-                    li.className = `p-2.5 rounded-xl border ${cardColor} ${activeRing} shadow-2xs hover:shadow-sm transition cursor-pointer flex items-start gap-2 select-none`;
+                    li.className = `p-2.5 rounded-xl border ${cardColor} ${activeRing} shadow-2xs hover:shadow-sm transition cursor-pointer flex items-start gap-2 select-none group`;
 
                     li.innerHTML = `
                         <input type="checkbox" ${isChecked ? 'checked' : ''} onclick="toggleSelectPendingTask(event, '${task.id}')" class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500 cursor-pointer shrink-0" title="Marcar para finalizar">
                         <div class="mt-0.5">${statusIcon}</div>
                         <div class="min-w-0 flex-grow">
-                            <p class="text-xs font-semibold text-slate-800 leading-snug break-words">${escapeHtmlBoard(task.shortDesc)}</p>
-                            <div class="flex flex-wrap items-center gap-1.5 mt-1 text-[10px] text-slate-600">
+                            <div class="flex items-start justify-between gap-1">
+                                <p class="text-xs font-semibold text-slate-800 leading-snug break-words">${escapeHtmlBoard(task.shortDesc)}</p>
+                                <button type="button" onclick="event.stopPropagation(); triggerTaskDbExport('${task.id}')" class="text-slate-400 hover:text-emerald-700 p-1 rounded hover:bg-white/80 shrink-0 cursor-pointer" title="Exportar fila BD (A-R)">
+                                    <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1 mt-1 text-[10px] text-slate-600">
+                                ${exportedBadgeHtml}
                                 ${teamBadgeHtml}
                                 ${task.origin ? `<span class="bg-white/80 px-1.5 py-0.5 rounded border border-slate-200 font-medium">${escapeHtmlBoard(task.origin)}</span>` : ''}
                                 ${task.startDate ? `<span>${task.startDate}</span>` : ''}
@@ -2900,9 +3172,12 @@
                 completedTasks.forEach(task => {
                     const isEditing = task.id === editingTaskId;
                     const activeRing = isEditing ? 'ring-2 ring-emerald-600' : '';
-                    const teamStyle = task.team && TEAM_STYLES[task.team] ? TEAM_STYLES[task.team] : null;
+                    const teamStyle = getTeamStyle(task.team);
                     const teamBadgeHtml = teamStyle
                         ? `<span class="px-1.5 py-0.2 rounded border font-bold text-[9px] shrink-0 ${teamStyle.badge}">${escapeHtmlBoard(task.team)}</span>`
+                        : '';
+                    const exportedBadgeHtml = task.exported
+                        ? `<span class="px-1.5 py-0.2 rounded bg-emerald-600 text-white font-bold text-[9px] uppercase shrink-0">Exportada</span>`
                         : '';
 
                     const li = document.createElement('li');
@@ -2913,7 +3188,8 @@
                     li.innerHTML = `
                         <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600 shrink-0"></i>
                         <div class="min-w-0 flex-grow">
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1 flex-wrap">
+                                ${exportedBadgeHtml}
                                 ${teamBadgeHtml}
                                 <p class="text-xs font-semibold text-slate-800 truncate" title="${escapeHtmlBoard(task.shortDesc)}">${escapeHtmlBoard(task.shortDesc)}</p>
                             </div>
@@ -2921,6 +3197,9 @@
                                 ${task.origin ? `${escapeHtmlBoard(task.origin)} · ` : ''}${task.endDate || task.completedDate || ''}
                             </p>
                         </div>
+                        <button type="button" onclick="event.stopPropagation(); triggerTaskDbExport('${task.id}')" class="text-slate-400 hover:text-emerald-700 p-1 rounded hover:bg-emerald-100/60 shrink-0 cursor-pointer" title="Exportar fila BD (A-R)">
+                            <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
+                        </button>
                     `;
                     boardCompletedList.appendChild(li);
                 });
@@ -3051,8 +3330,8 @@
                 const badgeBg = task.status === 'finalizado' ? '#dcfce7; color:#166534' :
                                 (task.status === 'en_curso' ? '#dbeafe; color:#1e40af' : '#fef3c7; color:#92400e');
 
-                const teamPrintBadge = (task.team && TEAM_STYLES[task.team])
-                    ? `<span style="background:${TEAM_STYLES[task.team].print}; padding:2px 7px; border-radius:4px; font-weight:700; font-size:9.5pt;">Equipo: ${escapeHtmlBoard(task.team)}</span>`
+                const teamPrintBadge = (task.team && getTeamStyle(task.team))
+                    ? `<span style="background:${getTeamStyle(task.team).print}; padding:2px 7px; border-radius:4px; font-weight:700; font-size:9.5pt;">Equipo: ${escapeHtmlBoard(task.team)}</span>`
                     : '';
 
                 const metaParts = [
