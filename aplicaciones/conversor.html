@@ -3117,14 +3117,6 @@
             boardPendingList.innerHTML = '';
             boardCompletedList.innerHTML = '';
 
-            const filterDate = boardCompletedFilterDate.value;
-            const activeTasks = boardTasks.filter(t => t.status !== 'finalizado');
-            const completedTasks = boardTasks.filter(t => {
-                if (t.status !== 'finalizado') return false;
-                if (!filterDate) return true;
-                return (t.completedDate || t.endDate) === filterDate;
-            });
-
             //V14****
             const filterDate = boardCompletedFilterDate.value;
             const searchQuery = (document.getElementById('boardSearchInput')?.value || '').trim().toLowerCase();
