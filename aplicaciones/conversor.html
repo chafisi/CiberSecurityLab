@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v13</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v14</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -803,9 +803,9 @@
             <!-- Grid de 3 columnas: Izquierda (Activos) | Centro (Editor) | Derecha (Completados hoy) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow items-start">
 
-                <!-- COLUMNA IZQUIERDA (3 cols): Pendientes / En curso + Selección múltiple + Drag & Drop -->
-                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 flex flex-col gap-3">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                <!-- COLUMNA IZQUIERDA (3 cols): Pendientes / En curso + Ordenación + Scroll independiente -->
+                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 flex flex-col gap-2.5">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                         <div class="flex items-center gap-1.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Pendiente / En curso</h3>
@@ -817,17 +817,26 @@
                         </button>
                     </div>
 
-                    <p class="text-[11px] text-slate-400 leading-tight">
-                        Marca varios para finalizar o arrastra a la derecha para completar.
-                    </p>
+                    <!-- Barra compacta de Filtro rápido y Ordenación -->
+                    <div class="flex items-center gap-1.5">
+                        <input type="text" id="boardSearchInput" oninput="renderBoardLists()" placeholder="Filtrar..." class="w-1/2 text-[11px] bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        <select id="boardSortSelect" onchange="renderBoardLists()" class="w-1/2 text-[11px] font-medium bg-slate-50 border border-slate-200 rounded-lg px-1.5 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer" title="Ordenar listado">
+                            <option value="manual">Orden: Manual</option>
+                            <option value="team">Por Equipo</option>
+                            <option value="origin">Por Origen</option>
+                            <option value="date_asc">Fecha (Antiguas)</option>
+                            <option value="date_desc">Fecha (Recientes)</option>
+                        </select>
+                    </div>
 
-                    <ul id="boardPendingList" class="flex flex-col gap-2 min-h-[260px] rounded-xl transition-colors">
+                    <!-- Listado con scroll interno para que no alargue toda la página -->
+                    <ul id="boardPendingList" class="flex flex-col gap-2 min-h-[260px] max-h-[66vh] overflow-y-auto pr-1 rounded-xl transition-colors">
                         <!-- Tarjetas pendientes / en curso -->
                     </ul>
                 </div>
 
-                <!-- COLUMNA CENTRAL (6 cols): Ficha del Ítem + Editor Enriquecido -->
-                <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 flex flex-col gap-4">
+                <!-- COLUMNA CENTRAL (6 cols): Ficha del Ítem + Editor Enriquecido (Fijo en pantalla al hacer scroll) -->
+                <div class="lg:col-span-6 lg:sticky lg:top-20 bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 flex flex-col gap-4">
                     
                     <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                         <span id="boardEditorModeLabel" class="text-xs font-bold uppercase tracking-wider text-blue-600 flex items-center gap-1.5">
@@ -940,8 +949,8 @@
                 </div>
 
                 <!-- COLUMNA DERECHA (3 cols): Completados ese día (Etiquetas) -->
-                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 flex flex-col gap-3">
-                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                <div class="lg:col-span-3 lg:sticky lg:top-20 bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 flex flex-col gap-3">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5" >
                         <div class="flex items-center gap-1.5">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-700">Completados</h3>
@@ -954,7 +963,7 @@
                         Suelta aquí un ítem para completarlo o haz clic en una etiqueta para revisarla.
                     </p>
 
-                    <ul id="boardCompletedList" class="flex flex-col gap-2 min-h-[260px] rounded-xl bg-emerald-50/30 border border-dashed border-emerald-200 p-2 transition-colors">
+                    <ul id="boardCompletedList" class="flex flex-col gap-2 min-h-[260px] rounded-xl bg-emerald-50/30 border border-dashed border-emerald-200 p-2 transition-colors max-h-[66vh] overflow-y-auto">
                         <!-- Etiquetas completadas del día -->
                     </ul>
                 </div>
@@ -2898,7 +2907,15 @@
                     showToast('Ítem devuelto a Pendientes');
                 }
             },
+            //V14****
             onUpdate: function () {
+                const sortBy = document.getElementById('boardSortSelect')?.value || 'manual';
+                const searchQuery = (document.getElementById('boardSearchInput')?.value || '').trim();
+                if (sortBy !== 'manual' || searchQuery !== '') {
+                    renderBoardLists();
+                    showToast('Cambia a "Orden: Manual" sin filtro para reordenar tarjetas');
+                    return;
+                }
                 // Reordenar pendientes según el DOM
                 const orderedIds = Array.from(boardPendingList.children).map(li => li.dataset.id);
                 const activeMap = new Map(boardTasks.filter(t => t.status !== 'finalizado').map(t => [t.id, t]));
@@ -2906,7 +2923,7 @@
                 const completed = boardTasks.filter(t => t.status === 'finalizado');
                 boardTasks = [...reorderedActive, ...completed];
                 saveBoardToStorage();
-            }
+            } //**V14
         });
 
         new Sortable(boardCompletedList, {
@@ -3107,6 +3124,52 @@
                 if (!filterDate) return true;
                 return (t.completedDate || t.endDate) === filterDate;
             });
+
+            //V14****
+            const filterDate = boardCompletedFilterDate.value;
+            const searchQuery = (document.getElementById('boardSearchInput')?.value || '').trim().toLowerCase();
+            const sortBy = document.getElementById('boardSortSelect')?.value || 'manual';
+
+            let activeTasks = boardTasks.filter(t => t.status !== 'finalizado');
+
+            // Filtro rápido por texto (descripción, equipo u origen)
+            if (searchQuery) {
+                activeTasks = activeTasks.filter(t =>
+                    (t.shortDesc || '').toLowerCase().includes(searchQuery) ||
+                    (t.team || '').toLowerCase().includes(searchQuery) ||
+                    (t.origin || '').toLowerCase().includes(searchQuery)
+                );
+            }
+
+            // Ordenación no destructiva según el selector elegido
+            if (sortBy !== 'manual') {
+                activeTasks = [...activeTasks].sort((a, b) => {
+                    if (sortBy === 'team') {
+                        const teamA = (a.team || 'ZZZ').toLowerCase();
+                        const teamB = (b.team || 'ZZZ').toLowerCase();
+                        return teamA.localeCompare(teamB, 'es', { numeric: true });
+                    }
+                    if (sortBy === 'origin') {
+                        const origA = (a.origin || 'ZZZ').toLowerCase();
+                        const origB = (b.origin || 'ZZZ').toLowerCase();
+                        return origA.localeCompare(origB, 'es');
+                    }
+                    if (sortBy === 'date_asc') {
+                        return (a.startDate || '9999-12-31').localeCompare(b.startDate || '9999-12-31');
+                    }
+                    if (sortBy === 'date_desc') {
+                        return (b.startDate || '0000-01-01').localeCompare(a.startDate || '0000-01-01');
+                    }
+                    return 0;
+                });
+            }
+
+            const completedTasks = boardTasks.filter(t => {
+                if (t.status !== 'finalizado') return false;
+                if (!filterDate) return true;
+                return (t.completedDate || t.endDate) === filterDate;
+            });
+            //***V14
 
             document.getElementById('pendingCountBadge').textContent = activeTasks.length;
             document.getElementById('completedCountBadge').textContent = completedTasks.length;
