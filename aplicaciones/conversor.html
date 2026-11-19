@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v15</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v16</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -91,55 +91,37 @@
                 </button>
             </div>
 
-            <!-- Selector de herramientas -->
-            <div class="flex items-center justify-between sm:justify-end gap-2">
-                <nav class="flex bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
-                    <button type="button" id="tabMergeBtn" onclick="switchTab('merge')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i data-lucide="layers" class="w-4 h-4"></i>
-                        <span>Fusionar</span>
-                    </button>
-                    <button type="button" id="tabExtractBtn" onclick="switchTab('extract')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i data-lucide="file-text" class="w-4 h-4"></i>
-                        <span>PDF a Texto</span>
-                    </button>
-                    <!--Botón para editor de texto-->
-                    <button type="button" id="tabEditorBtn" onclick="switchTab('editor')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i data-lucide="pen-square" class="w-4 h-4"></i>
-                        <span>Editor</span>
-                    </button>
-                    <!--Extraer un pdf-->
-                    <button type="button" id="tabCleanBtn" onclick="switchTab('clean')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        <span>Extracción PDF</span>
-                    </button>
-
-                    <button type="button" id="tabOcrBtn" onclick="switchTab('ocr')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
-                        <i data-lucide="scan-text" class="w-4 h-4"></i>
-                        <span>OCR</span>
-                    </button>
-
-                    <button type="button" id="tabImportBtn" onclick="switchTab('import')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
-                        <i data-lucide="folder-open" class="w-4 h-4"></i>
-                        <span>Abrir Doc</span>
-                    </button>
-                    
-                    <button type="button" id="tabBoardBtn" onclick="switchTab('board')" class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0">
-                        <i data-lucide="kanban" class="w-4 h-4"></i>
-                        <span>Pizarra</span>
-                    </button>
-
-                    <button type="button" onclick="openBoardPrintModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Imprimir listado de tareas">
-                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-                        <span>Imprimir</span>
-                    </button>
-
-                    <button id="clearAllBtnDesktop" onclick="clearAllBtn.click()" class="hidden text-xs sm:text-sm text-red-600 hover:text-red-700 font-medium items-center gap-1 px-2.5 py-1.5 rounded-md hover:bg-red-50 transition cursor-pointer">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        <span>Vaciar</span>
-                    </button>
-                </nav>
-                
-            </div>
+            <!-- Selector de herramientas (Grid visible completo en móvil + barra horizontal en escritorio) -->
+            <nav class="grid grid-cols-2 sm:grid-cols-4 md:flex bg-slate-100 p-1 rounded-xl border border-slate-200 w-full md:w-auto gap-1">
+                <button type="button" id="tabMergeBtn" onclick="switchTab('merge')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-blue-600 shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="layers" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">Unir PDF</span>
+                </button>
+                <button type="button" id="tabExtractBtn" onclick="switchTab('extract')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="file-text" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">Extraer TXT</span>
+                </button>
+                <button type="button" id="tabEditorBtn" onclick="switchTab('editor')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="pen-tool" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">Editor</span>
+                </button>
+                <button type="button" id="tabCleanBtn" onclick="switchTab('clean')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="sparkles" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">Limpiar PDF</span>
+                </button>
+                <button type="button" id="tabOcrBtn" onclick="switchTab('ocr')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="scan-text" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">OCR</span>
+                </button>
+                <button type="button" id="tabImportBtn" onclick="switchTab('import')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="folder-open" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">Abrir Doc</span>
+                </button>
+                <button type="button" id="tabBoardBtn" onclick="switchTab('board')" class="col-span-2 sm:col-span-2 md:col-span-1 px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                    <i data-lucide="kanban" class="w-4 h-4 shrink-0"></i>
+                    <span class="truncate">Pizarra</span>
+                </button>
+            </nav>
         </div>
     </header>
 
