@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v20</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v2</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -3133,7 +3133,7 @@
             return list;
         }
 
-        //*** v18
+        //*** v20
         // Helper para expandir todos los días YYYY-MM-DD entre startDate y endDate (máx. 60 días por seguridad)
         function getTaskDateSpan(task) {
             const startStr = task.startDate || task.completedDate || task.endDate || '';
@@ -3208,8 +3208,8 @@
             renderBoardCalendar();
         };
 
-        // Renderizar tarjeta de tarea dentro del calendario con indicador de tramo multi-día y arrastre
-        function buildCalendarTaskCardHtml(task, compact = false, spanMeta = null) {
+        // v21 eliminar este código antiguo Renderizar tarjeta de tarea dentro del calendario con indicador de tramo multi-día y arrastre
+        /*function buildCalendarTaskCardHtml(task, compact = false, spanMeta = null) {
             const isDone = task.status === 'finalizado';
             const isEnCurso = task.status === 'en_curso';
             const teamStyle = getTeamStyle(task.team);
@@ -3280,6 +3280,7 @@
                 </div>
             `;
         }
+        */
 
         // Crear nueva tarea directamente con la fecha de un día del calendario pre-rellenada
         window.createNewTaskOnDate = function(isoDate) {
@@ -3444,7 +3445,7 @@
         };
 
 
-        //***v18
+        //***v20
 
         window.renderBoardCalendar = function() {
             const wrapper = document.getElementById('calendarGridWrapper');
