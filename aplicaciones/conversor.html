@@ -755,59 +755,65 @@
         <div id="boardSection" class="hidden flex-col gap-4 flex-grow">
 
             <!-- Barra superior: Importar / Exportar documento de trabajo diario o semanal -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-3.5 sm:px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="bg-amber-100 text-amber-700 p-2 rounded-lg">
+            <!-- Cabecera unificada de la Pizarra: Título | Cambio de Vista | Acciones compactas -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-3 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                
+                <!-- 1. Izquierda: Identidad -->
+                <div class="flex items-center gap-2.5 shrink-0">
+                    <div class="bg-amber-100 text-amber-700 p-2 rounded-xl">
                         <i data-lucide="clipboard-list" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h2 class="text-sm sm:text-base font-bold text-slate-800">Pizarra de Trabajo</h2>
-                        <p id="boardDateBanner" class="text-xs text-slate-500">Autoguardado local activo · Haz clic en cualquier ítem para editarlo</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-800 leading-tight">Pizarra de Trabajo</h2>
+                        <p id="boardDateBanner" class="text-[11px] text-slate-400">Autoguardado local activo</p>
                     </div>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2">
+                <!-- 2. Centro: Secuencia de cambio de vista (Pizarra / Calendario) -->
+                <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200 self-start lg:self-auto shrink-0">
+                    <button type="button" id="btnViewKanban" onclick="switchBoardSubView('kanban')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-blue-600 shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
+                        <i data-lucide="columns-3" class="w-3.5 h-3.5"></i>
+                        <span>Pizarra</span>
+                    </button>
+                    <button type="button" id="btnViewCalendar" onclick="switchBoardSubView('calendar')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
+                        <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
+                        <span>Calendario</span>
+                    </button>
+                </div>
+
+                <!-- 3. Derecha: Acciones en formato compacto (Icono + texto breve) -->
+                <div class="flex flex-wrap items-center gap-1.5">
                     <input type="file" id="boardImportInput" accept=".json,application/json" class="hidden">
-                    <button type="button" onclick="document.getElementById('boardImportInput').click()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                    
+                    <button type="button" onclick="document.getElementById('boardImportInput').click()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Importar archivo JSON de jornada">
                         <i data-lucide="upload" class="w-3.5 h-3.5 text-blue-600"></i>
-                        <span>Importar Jornada</span>
+                        <span>Importar</span>
                     </button>
-                    <button type="button" onclick="exportBoardData('day')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Exportar tareas de hoy">
+
+                    <button type="button" onclick="exportBoardData('day')" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Exportar tareas del día seleccionado">
                         <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                        <span>Exportar Día</span>
+                        <span>Exp. Día</span>
                     </button>
-                    <button type="button" onclick="exportBoardData('week')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Exportar toda la semana / histórico">
+
+                    <button type="button" onclick="exportBoardData('week')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Exportar todas las tareas de la semana">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                        <span>Exportar Semana</span>
+                        <span>Exp. Semana</span>
                     </button>
-                    <button type="button" onclick="openBoardPrintModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Imprimir listado de tareas">
+
+                    <span class="w-px h-5 bg-slate-200 mx-0.5 hidden sm:inline-block"></span>
+
+                    <button type="button" onclick="openBoardPrintModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Imprimir listado de tareas">
                         <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                         <span>Imprimir</span>
                     </button>
-                    <button type="button" onclick="clearAllBoardTasks()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Eliminar todas las tareas pendientes y completadas">
+
+                    <button type="button" onclick="clearAllBoardTasks()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold px-2.5 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Vaciar todas las tareas de la pizarra">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                        <span>Vaciar Pizarra</span>
+                        <span>Vaciar</span>
                     </button>
                 </div>
 
-                <!-- v17 Conmutador de Vista: Pizarra (3 columnas) vs Calendario (Día / Semana / Mes) -->
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-                    <div class="inline-flex bg-slate-100 p-1 rounded-xl border border-slate-200">
-                        <button type="button" id="btnViewKanban" onclick="switchBoardSubView('kanban')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-blue-600 shadow-2xs transition flex items-center gap-1.5 cursor-pointer">
-                            <i data-lucide="columns-3" class="w-3.5 h-3.5"></i>
-                            <span>Vista Pizarra</span>
-                        </button>
-                        <button type="button" id="btnViewCalendar" onclick="switchBoardSubView('calendar')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5 cursor-pointer">
-                            <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
-                            <span>Vista Calendario</span>
-                        </button>
-                    </div>
-
-                    <span class="text-xs text-slate-500 hidden sm:inline">
-                        Organiza tus tareas por fecha de inicio/fin y expórtalas al gestor conforme avanzan
-                    </span>
-                </div>
-                </div>
+            </div>
 
             <!-- Grid de 3 columnas: Izquierda (Activos) | Centro (Editor) | Derecha (Completados hoy) -->
             <div id="boardKanbanContainer" class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow items-start">
