@@ -797,6 +797,10 @@
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         <span>Exportar Semana</span>
                     </button>
+                    <button type="button" onclick="clearAllBoardTasks()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Eliminar todas las tareas pendientes y completadas">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        <span>Vaciar Pizarra</span>
+                    </button>
                 </div>
             </div>
 
@@ -2872,6 +2876,28 @@
                 showToast('No se pudo copiar automáticamente; selecciona la fila de la tabla y pulsa Ctrl+C');
             }
         };
+        // v15 Vaciar completamente el listado (pendientes, en curso y completadas)
+        window.clearAllBoardTasks = function() {
+            if (boardTasks.length === 0) {
+                showToast('La pizarra ya está vacía');
+                return;
+            }
+
+            const totalCount = boardTasks.length;
+            const confirmClear = confirm(
+                `¿Estás seguro de que quieres VACIAR TODA LA PIZARRA?\n\nSe eliminarán permanentemente las ${totalCount} tareas (pendientes, en curso y completadas) almacenadas en este navegador.`
+            );
+
+            if (!confirmClear) return;
+
+            boardTasks = [];
+            selectedPendingIds.clear();
+            saveBoardToStorage();
+            resetBoardForm();
+            renderBoardLists();
+            showToast('Pizarra vaciada por completo. Lista para importar jornada.');
+        };
+
         //***v13
         function loadBoardFromStorage() {
             try {
