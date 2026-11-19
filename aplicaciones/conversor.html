@@ -121,6 +121,7 @@
                     <i data-lucide="kanban" class="w-4 h-4 shrink-0"></i>
                     <span class="truncate">Pizarra</span>
                 </button>
+
             </nav>
         </div>
     </header>
@@ -778,6 +779,10 @@
                     <button type="button" onclick="exportBoardData('week')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Exportar toda la semana / histórico">
                         <i data-lucide="download" class="w-3.5 h-3.5"></i>
                         <span>Exportar Semana</span>
+                    </button>
+                    <button type="button" onclick="openBoardPrintModal()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Imprimir listado de tareas">
+                        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                        <span>Imprimir</span>
                     </button>
                     <button type="button" onclick="clearAllBoardTasks()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer" title="Eliminar todas las tareas pendientes y completadas">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
