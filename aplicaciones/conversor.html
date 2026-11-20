@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v22</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v23</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -1169,6 +1169,12 @@
                             <i data-lucide="save" class="w-3.5 h-3.5"></i>
                             <span>Guardar Trabajo (.JSON)</span>
                         </button>
+
+                        <button type="button" id="waSaveTxtBtn" onclick="exportWhatsappAnnotatedTxt()" class="hidden bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Descargar archivo .TXT con las marcas de Exportada, Equipo y Tipología incrustadas">
+                            <i data-lucide="file-check-2" class="w-3.5 h-3.5"></i>
+                            <span>Guardar TXT Marcado</span>
+                        </button>
+
                         <button type="button" id="waResetBtn" onclick="resetWhatsappImporter()" class="hidden bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
                             <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                             <span>Cargar otro archivo</span>
@@ -4380,7 +4386,7 @@
                 }
                 if (currentEntry) groupedEntries.push(currentEntry);
 
-                // Aplicar los filtros elegidos por el usuario
+                //Aplicar los filtros elegidos por el usuario
                 const parsedMessages = [];
                 groupedEntries.forEach(entry => {
                     if (filterNonStandard && !entry.isStandard) {
@@ -4388,40 +4394,51 @@
                         return;
                     }
 
-                    // Limpiar etiquetas de edición de WhatsApp y recortar líneas vacías sobrantes al inicio/fin
-                    const fullMessage = entry.lines
+                    //v23 Limpiar etiquetas de edición de WhatsApp y recortar líneas vacías sobrantes al inicio/fin
+                    let rawJoined = entry.lines
                         .join('\n')
                         .replace(/<Se editó este mensaje\.>/gi, '')
                         .trim();
 
-                    if (!fullMessage) {
+                    if (!rawJoined) {
                         discardedCount++;
                         return;
                     }
 
-                    if (filterMultimedia && /<(multimedia|imagen|video|audio|sticker|documento)\s+omitid[oa]>/i.test(fullMessage)) {
+                    // Detectar si el mensaje ya trae metadatos incrustados de una sesión previa: [[WA_META:{...}]]
+                    let savedMeta = {};
+                    const metaMatch = rawJoined.match(/\[\[WA_META:(\{.*?\})\]\]\s*$/);
+                    if (metaMatch) {
+                        try {
+                            savedMeta = JSON.parse(metaMatch[1]);
+                        } catch (e) {
+                            savedMeta = {};
+                        }
+                        rawJoined = rawJoined.replace(/\[\[WA_META:\{.*?\}\]\]\s*$/, '').trim();
+                    }
+
+                    if (filterMultimedia && /<(multimedia|imagen|video|audio|sticker|documento)\s+omitid[oa]>/i.test(rawJoined)) {
                         discardedCount++;
                         return;
                     }
 
-                    const firstLine = fullMessage.split('\n')[0].trim();
+                    const firstLine = rawJoined.split('\n')[0].trim();
 
                     parsedMessages.push({
                         id: 'wa_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                         dateStr: entry.dateStr,
                         timeStr: entry.timeStr,
                         isoDate: entry.isoDate,
-                        endDate: entry.isoDate, // Fecha fin precargada por defecto con la misma fecha
+                        endDate: savedMeta.endDate || entry.isoDate,
                         contact: entry.contact,
-                        workType: '',
-                        team: '',
-                        shortDesc: firstLine.substring(0, 120),
-                        message: fullMessage,
-                        addedToBoard: false,
-                        exported: false,
+                        workType: savedMeta.workType || '',
+                        team: savedMeta.team || '',
+                        shortDesc: savedMeta.shortDesc || firstLine.substring(0, 120),
+                        message: rawJoined,
+                        addedToBoard: Boolean(savedMeta.addedToBoard),
+                        exported: Boolean(savedMeta.exported),
                         boardTaskId: null
                     });
-                });
 
                 waSourceFilename = file.name.replace(/\.txt$/i, '');
                 waMessages = parsedMessages;
@@ -4440,6 +4457,7 @@
             document.getElementById('waTableCard').classList.add('flex');
             document.getElementById('waSaveSessionBtn').classList.remove('hidden');
             document.getElementById('waResetBtn').classList.remove('hidden');
+            document.getElementById('waSaveTxtBtn').classList.remove('hidden'); // en showWhatsappWorkspace v23
 
             const extraInfo = discardedCount > 0 ? ` · ${discardedCount} descartados por filtros` : '';
             document.getElementById('waSummaryBanner').textContent =
@@ -4459,6 +4477,7 @@
             document.getElementById('waSaveSessionBtn').classList.add('hidden');
             document.getElementById('waResetBtn').classList.add('hidden');
             document.getElementById('waConfigArea').classList.remove('hidden');
+            document.getElementById('waSaveTxtBtn').classList.add('hidden');    // en resetWhatsappImporter v23
         };
 
         window.updateWaField = function(id, field, value) {
@@ -4472,16 +4491,19 @@
             const tbody = document.getElementById('waTableBody');
             if (!tbody) return;
 
+            //v25 -> cambia la forma de devolver y aplica únicamente las pendientes
             const query = (document.getElementById('waTableSearch')?.value || '').trim().toLowerCase();
-            const filtered = query
-                ? waMessages.filter(m =>
-                    m.contact.toLowerCase().includes(query) ||
+            const onlyPending = document.getElementById('waOnlyPendingChk')?.checked || false;
+
+            const filtered = waMessages.filter(m => {
+                if (onlyPending && m.exported) return false;
+                if (!query) return true;
+                return m.contact.toLowerCase().includes(query) ||
                     m.message.toLowerCase().includes(query) ||
                     (m.shortDesc || '').toLowerCase().includes(query) ||
                     (m.team || '').toLowerCase().includes(query) ||
-                    (m.workType || '').toLowerCase().includes(query)
-                )
-                : waMessages;
+                    (m.workType || '').toLowerCase().includes(query);
+            });
 
             if (filtered.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-8">No hay mensajes que coincidan con el filtro.</td></tr>`;
@@ -4675,9 +4697,45 @@
             showToast(`Sesión guardada: ${filename}`);
         };
 
+
+        //->>v23
+        // Exportar archivo .TXT con formato WhatsApp original + etiqueta [[WA_META:{...}]] en los mensajes trabajados
+        window.exportWhatsappAnnotatedTxt = function() {
+            if (waMessages.length === 0) return;
+
+            const linesOut = waMessages.map(msg => {
+                const header = `${msg.dateStr}, ${msg.timeStr} - ${msg.contact}: `;
+                const hasWorkData = msg.exported || msg.addedToBoard || msg.team || msg.workType || (msg.endDate && msg.endDate !== msg.isoDate);
+
+                if (!hasWorkData) {
+                    return `${header}${msg.message}`;
+                }
+
+                const metaPayload = JSON.stringify({
+                    exported: Boolean(msg.exported),
+                    addedToBoard: Boolean(msg.addedToBoard),
+                    team: msg.team || '',
+                    workType: msg.workType || '',
+                    shortDesc: msg.shortDesc || '',
+                    endDate: msg.endDate || msg.isoDate
+                });
+
+                return `${header}${msg.message} [[WA_META:${metaPayload}]]`;
+            });
+
+            const today = getTodayISO();
+            const filename = `${waSourceFilename}_marcado_${today}.txt`;
+            const blob = new Blob([linesOut.join('\n')], { type: 'text/plain;charset=utf-8' });
+            triggerBlobDownload(blob, filename);
+            showToast(`TXT guardado con progreso: ${filename}`);
+        };
+        //<--v23
+
         // Recuperar última sesión de WhatsApp guardada en el navegador al iniciar
         loadWaSessionFromStorage();
         //<--V21 Fin lógica whatsapp
+
+
 
     </script>
 </body>
