@@ -4439,6 +4439,7 @@
                         exported: Boolean(savedMeta.exported),
                         boardTaskId: null
                     });
+                }); // <-- ESTE CIERRE ES EL QUE FALTABA (cierra groupedEntries.forEach)
 
                 waSourceFilename = file.name.replace(/\.txt$/i, '');
                 waMessages = parsedMessages;
