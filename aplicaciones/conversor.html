@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v20</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v21</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -121,6 +121,10 @@
                     <i data-lucide="kanban" class="w-4 h-4 shrink-0"></i>
                     <span class="truncate">Pizarra</span>
                 </button>
+                <button type="button" id="tabWhatsappBtn" onclick="switchTab('whatsapp')" class="px-2.5 py-2 md:py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                        <i data-lucide="message-square-text" class="w-4 h-4 shrink-0 text-emerald-600"></i>
+                        <span class="truncate">WhatsApp</span>
+                    </button>
 
             </nav>
         </div>
@@ -1158,6 +1162,107 @@
                     </div>
                 </div>
             </div>
+
+        <!-- ==================== SECCIÓN 8: IMPORTADOR DE MENSAJES WHATSAPP ==================== -->
+        <div id="whatsappSection" class="hidden flex-col gap-4 flex-grow">
+
+            <!-- Cabecera y opciones de filtrado / recuperación de trabajo -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-emerald-100 text-emerald-700 p-2 rounded-xl">
+                            <i data-lucide="message-square-plus" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm sm:text-base font-bold text-slate-800">Importador de Partes por WhatsApp</h2>
+                            <p class="text-xs text-slate-500">Analiza chats .TXT agrupando mensajes multilínea o recupera una sesión .JSON guardada</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="button" id="waSaveSessionBtn" onclick="exportWhatsappSessionJson()" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-2xs" title="Guardar progreso actual en archivo .JSON">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                            <span>Guardar Trabajo (.JSON)</span>
+                        </button>
+                        <button type="button" id="waResetBtn" onclick="resetWhatsappImporter()" class="hidden bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            <span>Cargar otro archivo</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtros de lectura antes/durante la carga -->
+                <div id="waConfigArea" class="flex flex-col gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
+                        <label class="flex items-start gap-2.5 cursor-pointer bg-slate-50 p-3 rounded-xl border border-slate-200 hover:border-emerald-400 transition">
+                            <input type="checkbox" id="chkWaFilterMultimedia" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+                            <div>
+                                <span class="font-semibold text-slate-800 block">Filtrar mensajes que contengan &lt;Multimedia omitido&gt;</span>
+                                <span class="text-xs text-slate-500">Descarta fotos, audios o vídeos omitidos sin texto útil</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-start gap-2.5 cursor-pointer bg-slate-50 p-3 rounded-xl border border-slate-200 hover:border-emerald-400 transition">
+                            <input type="checkbox" id="chkWaFilterNonStandard" checked class="mt-0.5 rounded text-emerald-600 focus:ring-emerald-500">
+                            <div>
+                                <span class="font-semibold text-slate-800 block">Filtrar mensajes que no estén estándar</span>
+                                <span class="text-xs text-slate-500">Elimina avisos del sistema (cifrado, cambios de grupo, líneas sueltas)</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- DropZone único: detecta automáticamente .TXT (chat sucio) o .JSON (trabajo guardado) -->
+                    <div id="waDropZone" class="border-2 border-dashed border-slate-300 bg-slate-50/50 rounded-2xl p-6 sm:p-9 text-center cursor-pointer transition-all hover:border-emerald-500 hover:bg-emerald-50/30">
+                        <input type="file" id="waFileInput" accept=".txt,.json,text/plain,application/json" class="hidden">
+                        <div class="flex flex-col items-center justify-center gap-2.5">
+                            <div class="bg-emerald-50 text-emerald-600 p-3.5 rounded-full">
+                                <i data-lucide="file-up" class="w-7 h-7"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm sm:text-base font-semibold text-slate-700">
+                                    Arrastra aquí el chat exportado (.TXT) o un trabajo guardado (.JSON)
+                                </p>
+                                <p class="text-xs text-slate-500 mt-1">
+                                    o <span class="text-emerald-700 font-semibold underline">haz clic para seleccionar el archivo</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de resultados procesados -->
+            <div id="waTableCard" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 flex-col gap-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <p id="waSummaryBanner" class="text-xs sm:text-sm font-bold text-slate-800">0 mensajes válidos extraídos</p>
+                        <p class="text-[11px] text-slate-500">Puedes editar el equipo, título corto o descripción antes de enviarlo a la Pizarra o exportarlo a BD (A–R)</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="waTableSearch" oninput="renderWhatsappTable()" placeholder="Filtrar contacto o texto..." class="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-48 sm:w-60">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto border border-slate-200 rounded-xl max-h-[65vh]">
+                    <table class="w-full text-xs text-left border-collapse">
+                        <thead class="bg-slate-800 text-white sticky top-0 z-10">
+                            <tr>
+                                <th class="px-3 py-2.5 w-32">Fecha / Hora</th>
+                                <th class="px-3 py-2.5 w-40">Contacto</th>
+                                <th class="px-3 py-2.5 w-48">Equipo</th>
+                                <th class="px-3 py-2.5 min-w-[260px]">Mensaje agrupado (Editable)</th>
+                                <th class="px-3 py-2.5 w-36">Estado</th>
+                                <th class="px-3 py-2.5 w-48 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="waTableBody" class="divide-y divide-slate-200 bg-white">
+                            <!-- Filas dinámicas -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <!-- Notificación Toast -->
@@ -1554,7 +1659,7 @@
 
             // Ensanchar el contenedor principal solo en la Pizarra de 3 columnas
             if (mainEl) {
-                if (tab === 'board') {
+                if (tab === 'board' || tab === 'whatsapp') {
                     mainEl.classList.remove('max-w-4xl');
                     mainEl.classList.add('max-w-7xl');
                 } else {
@@ -1570,7 +1675,8 @@
                 clean: { section: document.getElementById('cleanSection'), btn: document.getElementById('tabCleanBtn') },
                 ocr: { section: document.getElementById('ocrSection'), btn: document.getElementById('tabOcrBtn') },
                 import: { section: document.getElementById('importSection'), btn: document.getElementById('tabImportBtn') },
-                board: { section: document.getElementById('boardSection'), btn: document.getElementById('tabBoardBtn') }
+                board: { section: document.getElementById('boardSection'), btn: document.getElementById('tabBoardBtn') },
+                whatsapp: { section: document.getElementById('whatsappSection'), btn: document.getElementById('tabWhatsappBtn') }
             };
 
             Object.entries(tabs).forEach(([key, item]) => {
@@ -4051,6 +4157,405 @@
             `);
             printWindow.document.close();
         };
+
+        //V21 --> Lógica para improtar whatsapp
+        // ==================== LÓGICA DE IMPORTADOR DE WHATSAPP (SECCIÓN 8) ====================
+        const WA_STORAGE_KEY = 'pdf_tools_whatsapp_session_v1';
+        let waMessages = [];
+        let waSourceFilename = 'whatsapp_partes';
+
+        const waDropZone = document.getElementById('waDropZone');
+        const waFileInput = document.getElementById('waFileInput');
+
+        waDropZone.addEventListener('click', () => waFileInput.click());
+
+        ['dragenter', 'dragover'].forEach(ev => {
+            waDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                waDropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(ev => {
+            waDropZone.addEventListener(ev, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                waDropZone.classList.remove('drag-over');
+            });
+        });
+
+        waDropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length > 0) {
+                handleWhatsappFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        waFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleWhatsappFile(e.target.files[0]);
+            }
+            waFileInput.value = '';
+        });
+
+        function saveWaSessionToStorage() {
+            try {
+                localStorage.setItem(WA_STORAGE_KEY, JSON.stringify({
+                    sourceFilename: waSourceFilename,
+                    messages: waMessages
+                }));
+            } catch (e) {
+                console.warn('No se pudo persistir sesión WA en localStorage', e);
+            }
+        }
+
+        function loadWaSessionFromStorage() {
+            try {
+                const raw = localStorage.getItem(WA_STORAGE_KEY);
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                if (parsed && Array.isArray(parsed.messages) && parsed.messages.length > 0) {
+                    waSourceFilename = parsed.sourceFilename || 'whatsapp_partes';
+                    waMessages = parsed.messages;
+                    showWhatsappWorkspace(0);
+                }
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+
+        // Convierte fecha tipo "22/10/25" o "22/10/2025" a "2025-10-22"
+        function parseWaDateToISO(dateStr) {
+            const parts = dateStr.split(/[\/\-]/);
+            if (parts.length !== 3) return getTodayISO();
+            const day = parts[0].padStart(2, '0');
+            const month = parts[1].padStart(2, '0');
+            let year = parts[2];
+            if (year.length === 2) year = '20' + year;
+            return `${year}-${month}-${day}`;
+        }
+
+        async function handleWhatsappFile(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext !== 'txt' && ext !== 'json') {
+                showToast('Selecciona un archivo .TXT de WhatsApp o un .JSON de trabajo guardado');
+                return;
+            }
+
+            try {
+                const content = await file.text();
+
+                // Detección automática: si es .JSON, recupera el trabajo guardado con sus marcas de Exportada / Pizarra
+                if (ext === 'json' || content.trim().startsWith('{')) {
+                    const parsed = JSON.parse(content);
+                    const list = Array.isArray(parsed) ? parsed : (parsed.messages || []);
+                    if (!Array.isArray(list)) throw new Error('JSON inválido');
+                    waSourceFilename = file.name.replace(/\.json$/i, '');
+                    waMessages = list;
+                    saveWaSessionToStorage();
+                    showWhatsappWorkspace(0);
+                    showToast(`Trabajo recuperado: ${waMessages.length} mensajes cargados`);
+                    return;
+                }
+
+                // Si es .TXT: analizar mensajes agrupando líneas multilínea hasta la siguiente fecha-hora
+                const filterMultimedia = document.getElementById('chkWaFilterMultimedia').checked;
+                const filterNonStandard = document.getElementById('chkWaFilterNonStandard').checked;
+
+                // Regex compatible con Android/iOS España: "22/10/25, 14:26 - " o "[22/10/2025, 14:26:10] "
+                const headerRegex = /^\[?(\d{1,2}\/\d{1,2}\/\d{2,4}),?\s+(\d{1,2}:\d{2}(?::\d{2})?(?:\s?[ap]\.?\s?m\.?)?)\]?\s*(?:-|–)?\s*(.*)$/i;
+
+                const rawLines = content.replace(/\r\n/g, '\n').split('\n');
+                const groupedEntries = [];
+                let currentEntry = null;
+                let discardedCount = 0;
+
+                for (let i = 0; i < rawLines.length; i++) {
+                    // Limpiar caracteres invisibles LRM/RLM que suele insertar WhatsApp
+                    const line = rawLines[i].replace(/[\u200e\u200f\ufeff]/g, '');
+                    const match = line.match(headerRegex);
+
+                    if (match) {
+                        if (currentEntry) groupedEntries.push(currentEntry);
+
+                        const datePart = match[1];
+                        const timePart = match[2];
+                        const rest = match[3];
+                        const colonIdx = rest.indexOf(':');
+
+                        if (colonIdx !== -1) {
+                            const sender = rest.substring(0, colonIdx).trim();
+                            const firstMsgLine = rest.substring(colonIdx + 1).trim();
+                            currentEntry = {
+                                isStandard: true,
+                                dateStr: datePart,
+                                timeStr: timePart,
+                                isoDate: parseWaDateToISO(datePart),
+                                contact: sender,
+                                lines: firstMsgLine ? [firstMsgLine] : []
+                            };
+                        } else {
+                            // Mensaje del sistema sin "Contacto:" (ej. cifrado, cambios de grupo...)
+                            currentEntry = {
+                                isStandard: false,
+                                dateStr: datePart,
+                                timeStr: timePart,
+                                isoDate: parseWaDateToISO(datePart),
+                                contact: 'Sistema',
+                                lines: rest ? [rest] : []
+                            };
+                        }
+                    } else {
+                        // Línea de continuación del mensaje anterior (incluye saltos de línea internos)
+                        if (currentEntry) {
+                            currentEntry.lines.push(line);
+                        } else if (line.trim()) {
+                            discardedCount++;
+                        }
+                    }
+                }
+                if (currentEntry) groupedEntries.push(currentEntry);
+
+                // Aplicar los filtros elegidos por el usuario
+                const parsedMessages = [];
+                groupedEntries.forEach(entry => {
+                    if (filterNonStandard && !entry.isStandard) {
+                        discardedCount++;
+                        return;
+                    }
+
+                    // Limpiar etiquetas de edición de WhatsApp y recortar líneas vacías sobrantes al inicio/fin
+                    const fullMessage = entry.lines
+                        .join('\n')
+                        .replace(/<Se editó este mensaje\.>/gi, '')
+                        .trim();
+
+                    if (!fullMessage) {
+                        discardedCount++;
+                        return;
+                    }
+
+                    if (filterMultimedia && /<(multimedia|imagen|video|audio|sticker|documento)\s+omitid[oa]>/i.test(fullMessage)) {
+                        discardedCount++;
+                        return;
+                    }
+
+                    const firstLine = fullMessage.split('\n')[0].trim();
+
+                    parsedMessages.push({
+                        id: 'wa_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                        dateStr: entry.dateStr,
+                        timeStr: entry.timeStr,
+                        isoDate: entry.isoDate,
+                        contact: entry.contact,
+                        team: '',
+                        shortDesc: firstLine.substring(0, 120),
+                        message: fullMessage,
+                        addedToBoard: false,
+                        exported: false,
+                        boardTaskId: null
+                    });
+                });
+
+                waSourceFilename = file.name.replace(/\.txt$/i, '');
+                waMessages = parsedMessages;
+                saveWaSessionToStorage();
+                showWhatsappWorkspace(discardedCount);
+                showToast(`¡${waMessages.length} mensajes importados correctamente!`);
+            } catch (err) {
+                console.error(err);
+                showToast('Error al leer el archivo seleccionado');
+            }
+        }
+
+        function showWhatsappWorkspace(discardedCount = 0) {
+            document.getElementById('waConfigArea').classList.add('hidden');
+            document.getElementById('waTableCard').classList.remove('hidden');
+            document.getElementById('waTableCard').classList.add('flex');
+            document.getElementById('waSaveSessionBtn').classList.remove('hidden');
+            document.getElementById('waResetBtn').classList.remove('hidden');
+
+            const extraInfo = discardedCount > 0 ? ` · ${discardedCount} descartados por filtros` : '';
+            document.getElementById('waSummaryBanner').textContent =
+                `${waMessages.length} mensajes válidos (${waSourceFilename})${extraInfo}`;
+
+            renderWhatsappTable();
+        }
+
+        window.resetWhatsappImporter = function() {
+            if (waMessages.length > 0 && !confirm('¿Limpiar la tabla actual para cargar otro archivo? (Asegúrate de haber guardado el trabajo si lo necesitas)')) {
+                return;
+            }
+            waMessages = [];
+            localStorage.removeItem(WA_STORAGE_KEY);
+            document.getElementById('waTableCard').classList.add('hidden');
+            document.getElementById('waTableCard').classList.remove('flex');
+            document.getElementById('waSaveSessionBtn').classList.add('hidden');
+            document.getElementById('waResetBtn').classList.add('hidden');
+            document.getElementById('waConfigArea').classList.remove('hidden');
+        };
+
+        window.updateWaField = function(id, field, value) {
+            const msg = waMessages.find(m => m.id === id);
+            if (!msg) return;
+            msg[field] = value;
+            if (field === 'message') {
+                const firstLine = value.trim().split('\n')[0] || '';
+                msg.shortDesc = firstLine.substring(0, 120);
+            }
+            saveWaSessionToStorage();
+        };
+
+        window.renderWhatsappTable = function() {
+            const tbody = document.getElementById('waTableBody');
+            if (!tbody) return;
+
+            const query = (document.getElementById('waTableSearch')?.value || '').trim().toLowerCase();
+            const filtered = query
+                ? waMessages.filter(m =>
+                    m.contact.toLowerCase().includes(query) ||
+                    m.message.toLowerCase().includes(query) ||
+                    (m.team || '').toLowerCase().includes(query)
+                )
+                : waMessages;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center text-slate-400 py-8">No hay mensajes que coincidan con el filtro.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(msg => {
+                const rowBg = msg.exported ? 'bg-emerald-50/40' : (msg.addedToBoard ? 'bg-blue-50/30' : 'hover:bg-slate-50');
+                const badges = [
+                    msg.exported ? `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px] uppercase"><i data-lucide="check" class="w-3 h-3"></i>Exportada</span>` : '',
+                    msg.addedToBoard ? `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px] uppercase"><i data-lucide="kanban" class="w-3 h-3"></i>En Pizarra</span>` : ''
+                ].filter(Boolean).join(' ') || `<span class="text-[11px] text-slate-400">Pendiente</span>`;
+
+                return `
+                    <tr class="${rowBg} align-top transition-colors">
+                        <td class="px-3 py-2.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
+                            <div class="font-bold text-slate-800">${escapeHtmlBoard(msg.dateStr)}</div>
+                            <div>${escapeHtmlBoard(msg.timeStr)}</div>
+                        </td>
+                        <td class="px-3 py-2.5 font-semibold text-slate-800">
+                            ${escapeHtmlBoard(msg.contact)}
+                        </td>
+                        <td class="px-3 py-2.5">
+                            <input type="text" list="taskTeamSuggestions" value="${escapeHtmlBoard(msg.team || '')}" onchange="updateWaField('${msg.id}', 'team', this.value)" placeholder="Equipo..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        </td>
+                        <td class="px-3 py-2.5">
+                            <textarea rows="3" onchange="updateWaField('${msg.id}', 'message', this.value)" class="w-full text-xs bg-white border border-slate-200 rounded-lg p-2 text-slate-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500">${escapeHtmlBoard(msg.message)}</textarea>
+                        </td>
+                        <td class="px-3 py-2.5">
+                            <div class="flex flex-col gap-1 items-start">${badges}</div>
+                        </td>
+                        <td class="px-3 py-2.5 text-right whitespace-nowrap">
+                            <div class="flex flex-col sm:flex-row justify-end gap-1.5">
+                                <button type="button" onclick="addWhatsappMsgToBoard('${msg.id}')" class="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-semibold inline-flex items-center justify-center gap-1 cursor-pointer transition" title="Añadir como tarea pendiente a la Pizarra">
+                                    <i data-lucide="kanban" class="w-3.5 h-3.5"></i>
+                                    <span>A Pizarra</span>
+                                </button>
+                                <button type="button" onclick="exportWhatsappMsgToDb('${msg.id}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold inline-flex items-center justify-center gap-1 cursor-pointer transition shadow-2xs" title="Generar fila BD (Columnas A-R) y marcar como exportada">
+                                    <i data-lucide="table-2" class="w-3.5 h-3.5"></i>
+                                    <span>Exportar</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        };
+
+        // Helper para convertir un mensaje de WhatsApp en estructura de tarea compatible con la Pizarra y el Exportador BD
+        function ensureBoardTaskFromWa(msg) {
+            if (msg.boardTaskId) {
+                const existing = boardTasks.find(t => t.id === msg.boardTaskId);
+                if (existing) {
+                    existing.team = msg.team || existing.team;
+                    existing.shortDesc = msg.shortDesc || msg.message.split('\n')[0];
+                    existing.detailsHtml = `<p>${escapeHtmlBoard(msg.message).replace(/\n/g, '<br>')}</p>`;
+                    return existing;
+                }
+            }
+
+            const newTask = {
+                id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                startDate: msg.isoDate || getTodayISO(),
+                endDate: '',
+                requestDate: msg.isoDate || getTodayISO(),
+                origin: `Whatsapp (${msg.contact})`,
+                status: 'pendiente',
+                team: msg.team || '',
+                shortDesc: msg.shortDesc || msg.message.split('\n')[0].substring(0, 120),
+                detailsHtml: `<p>${escapeHtmlBoard(msg.message).replace(/\n/g, '<br>')}</p>`,
+                completedDate: '',
+                exported: msg.exported || false
+            };
+
+            boardTasks.unshift(newTask);
+            msg.boardTaskId = newTask.id;
+            saveBoardToStorage();
+            renderBoardLists();
+            if (typeof renderBoardCalendar === 'function') renderBoardCalendar();
+            return newTask;
+        }
+
+        // Acción 1: Agregar fila a la Pizarra de Trabajo
+        window.addWhatsappMsgToBoard = function(waId) {
+            const msg = waMessages.find(m => m.id === waId);
+            if (!msg) return;
+
+            if (msg.addedToBoard && !confirm('Este mensaje ya fue añadido a la Pizarra. ¿Deseas actualizarlo/volver a enviarlo?')) {
+                return;
+            }
+
+            ensureBoardTaskFromWa(msg);
+            msg.addedToBoard = true;
+            saveWaSessionToStorage();
+            renderWhatsappTable();
+            showToast('¡Tarea añadida a la Pizarra de Trabajo!');
+        };
+
+        // Acción 2: Exportar fila directamente con el mismo formato A-R de Google Sheets y marcar como Exportada
+        window.exportWhatsappMsgToDb = function(waId) {
+            const msg = waMessages.find(m => m.id === waId);
+            if (!msg) return;
+
+            const task = ensureBoardTaskFromWa(msg);
+            // Ejecuta exactamente el mismo exportador A-R con confirmación y modal de copiado TSV
+            triggerTaskDbExport(task.id);
+
+            // Sincronizar la marca de exportada en la tabla de WhatsApp si el usuario confirmó la exportación
+            if (task.exported) {
+                msg.exported = true;
+                msg.addedToBoard = true;
+                saveWaSessionToStorage();
+                renderWhatsappTable();
+            }
+        };
+
+        // Guardar el trabajo actual de WhatsApp (incluyendo ediciones, equipos y marcas de Exportada) en un JSON descargable
+        window.exportWhatsappSessionJson = function() {
+            if (waMessages.length === 0) return;
+            const today = getTodayISO();
+            const filename = `${waSourceFilename}_trabajo_${today}.json`;
+            const payload = {
+                app: 'PDF Tools WhatsApp Importer',
+                exportedAt: new Date().toISOString(),
+                sourceFilename: waSourceFilename,
+                messages: waMessages
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            triggerBlobDownload(blob, filename);
+            showToast(`Sesión guardada: ${filename}`);
+        };
+
+        // Recuperar última sesión de WhatsApp guardada en el navegador al iniciar
+        loadWaSessionFromStorage();
+        //<--V21 Fin lógica whatsapp
+
     </script>
 </body>
 </html>
