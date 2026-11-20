@@ -81,7 +81,7 @@
                         <i data-lucide="file-stack" class="w-6 h-6"></i>
                     </div>
                     <div>
-                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v21</span></h1>
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">PDF Tools <span class="text-xs font-normal text-slate-400">v22</span></h1>
                         <p class="text-xs text-slate-500">100% local · Sin subir archivos a la nube</p>
                     </div>
                 </div>
@@ -987,74 +987,6 @@
                     </ul>
                 </div>
 
-                <!--v13 Modal de Exportación a Base de Datos / Google Sheets (Columnas A - R) -->
-                <div id="boardDbExportModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs items-center justify-center p-4">
-                    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-6xl w-full p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh]">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                            <div class="flex items-center gap-2.5">
-                                <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg">
-                                    <i data-lucide="sheet" class="w-5 h-5"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-base font-bold text-slate-800">Exportar Tarea a Hoja de Cálculo (BD Columnas A–R)</h3>
-                                    <p class="text-xs text-slate-500">Copia la fila generada y pégala directamente en la columna <strong>A</strong> de tu hoja de Google Sheets</p>
-                                </div>
-                            </div>
-                            <button type="button" onclick="closeBoardDbExportModal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg cursor-pointer">
-                                <i data-lucide="x" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-
-                        <!-- Tabla horizontal de 1 fila (Columnas A a R) -->
-                        <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-2xs">
-                            <table id="dbExportPreviewTable" class="min-w-max w-full text-xs text-left border-collapse">
-                                <thead class="bg-slate-800 text-white font-mono">
-                                    <tr>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">A: idTarea</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">B: idLugar</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">C: tipo</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">D: estado</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">E: descripción_corta</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">F: nota</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">G: parte</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">H: imagen</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">I: fecha_inicio</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">J: fecha_fin</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">K: usuario</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">L: equipo</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">M: imagen2</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">N: compañeros</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">O: actuaciones</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">P: asignadoPor</th>
-                                        <th class="px-2.5 py-2 border-r border-slate-600">Q: idOrigen</th>
-                                        <th class="px-2.5 py-2">R: idSolicitante</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dbExportPreviewBody" class="bg-white text-slate-800 divide-y divide-slate-200">
-                                    <!-- Se rellena dinámicamente con 1 fila -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
-                            <span class="text-xs text-emerald-700 font-medium flex items-center gap-1.5">
-                                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                                <span>Tarea marcada como <strong>Exportada</strong> en el listado.</span>
-                            </span>
-
-                            <div class="flex items-center gap-2 self-end sm:self-auto">
-                                <button type="button" onclick="closeBoardDbExportModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer">
-                                    Cerrar
-                                </button>
-                                <button type="button" onclick="copyDbRowToClipboard()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-xs flex items-center gap-2 cursor-pointer">
-                                    <i data-lucide="clipboard-copy" class="w-4 h-4"></i>
-                                    <span>Copiar fila para Google Sheets</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
             <!-- ==================== VISTA CALENDARIO (DÍA / SEMANA / MES) ==================== -->
@@ -1163,9 +1095,62 @@
                 </div>
             </div>
 
+
         <!-- ==================== SECCIÓN 8: IMPORTADOR DE MENSAJES WHATSAPP ==================== -->
         <div id="whatsappSection" class="hidden flex-col gap-4 flex-grow">
 
+            <!--V22 Listado-->
+            <datalist id="waTipologiaSuggestions">
+                <option value="1 - ALBAÑILERIA">
+                <option value="2 - ALCANTARILLADO">
+                <option value="3 - CERRAJERIA">
+                <option value="4 - CONTRATACION">
+                <option value="5 - DESINFECCION Y PLAGAS">
+                <option value="6 - ELECTRICIDAD">
+                <option value="7 - EVENTOS">
+                <option value="8 - EXTERNO">
+                <option value="9 - FACTURACION">
+                <option value="10 - FERIA">
+                <option value="11 - FIESTAS">
+                <option value="12 - FONTANERIA">
+                <option value="13 - GESTIONES">
+                <option value="14 - JUEGOS INFANTILES">
+                <option value="15 - LEGIONELA">
+                <option value="16 - LIMPIEZA CENTROS">
+                <option value="17 - LIMPIEZA VIARIA">
+                <option value="18 - MANTENIMIENTO VIA PUBLICA">
+                <option value="19 - MEDIOAMBIENTE">
+                <option value="20 - MOBILIARIO URBANO">
+                <option value="21 - PARQUES Y JARDINES">
+                <option value="22 - PINTURA">
+                <option value="23 - PINTURA VIAL">
+                <option value="24 - PODA">
+                <option value="25 - PRESTAMO MATERIAL">
+                <option value="26 - RECLAMACION PATRIMONIAL">
+                <option value="27 - RESERERVA VIA PUBLICA">
+                <option value="28 - RETROEXCAVADORA">
+                <option value="29 - RIEGOS">
+                <option value="30 - SECRETARIA">
+                <option value="31 - SEÑALIZACION">
+                <option value="32 - SERVICIOS PENITENCIARIOS">
+                <option value="33 - SUMINISTROS">
+                <option value="34 - TRACTOR">
+                <option value="35 - TRANSPORTE">
+                <option value="36 - URBANISMO">
+                <option value="37 - VARIOS">
+                <option value="38 - SIEGA Y DESBROCE">
+                <option value="39 - SANIDAD VETERINARIA Y SALUD PÚBLICA">
+                <option value="40 - FUENTES ORNAMENTALES">
+                <option value="41 - RESERVA VIA PUBLICA">
+                <option value="42 - EPIS">
+                <option value="43 - PARQUE MOVIL">
+                <option value="44 - SERVICIOS SOCIALES">
+                <option value="45 - IMPORTAR">
+                <option value="46 - PERSONAL">
+                <option value="50 - PUERTAS AUTOMATICAS">
+                <option value="79941dd1 - CECOPAL UERGENCIAS">
+            </datalist>
+            <!--V22 Listado-->
             <!-- Cabecera y opciones de filtrado / recuperación de trabajo -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 flex flex-col gap-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
@@ -1247,12 +1232,12 @@
                     <table class="w-full text-xs text-left border-collapse">
                         <thead class="bg-slate-800 text-white sticky top-0 z-10">
                             <tr>
-                                <th class="px-3 py-2.5 w-32">Fecha / Hora</th>
-                                <th class="px-3 py-2.5 w-40">Contacto</th>
-                                <th class="px-3 py-2.5 w-48">Equipo</th>
-                                <th class="px-3 py-2.5 min-w-[260px]">Mensaje agrupado (Editable)</th>
-                                <th class="px-3 py-2.5 w-36">Estado</th>
-                                <th class="px-3 py-2.5 w-48 text-right">Acciones</th>
+                                <th class="px-3 py-2.5 w-36">Fechas (Ini / Fin)</th>
+                                <th class="px-3 py-2.5 w-36">Contacto</th>
+                                <th class="px-3 py-2.5 w-48">Tipo Trabajo / Equipo</th>
+                                <th class="px-3 py-2.5 min-w-[290px]">Descripción corta y Mensaje</th>
+                                <th class="px-3 py-2.5 w-32">Estado</th>
+                                <th class="px-3 py-2.5 w-44 text-right">Acciones</th>
                             </tr>
                         </thead>
                         <tbody id="waTableBody" class="divide-y divide-slate-200 bg-white">
@@ -1263,6 +1248,76 @@
             </div>
 
         </div>
+
+        <!--V22 cambiar de lugar para usarse por pizarra y Whatsapp -->
+        <!--v13 Modal de Exportación a Base de Datos / Google Sheets (Columnas A - R) -->
+        <div id="boardDbExportModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-6xl w-full p-5 sm:p-6 flex flex-col gap-4 max-h-[90vh]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-emerald-100 text-emerald-700 p-2 rounded-lg">
+                            <i data-lucide="sheet" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Exportar Tarea a Hoja de Cálculo (BD Columnas A–R)</h3>
+                            <p class="text-xs text-slate-500">Copia la fila generada y pégala directamente en la columna <strong>A</strong> de tu hoja de Google Sheets</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeBoardDbExportModal()" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg cursor-pointer">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Tabla horizontal de 1 fila (Columnas A a R) -->
+                <div class="overflow-x-auto border border-slate-300 rounded-xl shadow-2xs">
+                    <table id="dbExportPreviewTable" class="min-w-max w-full text-xs text-left border-collapse">
+                        <thead class="bg-slate-800 text-white font-mono">
+                            <tr>
+                                <th class="px-2.5 py-2 border-r border-slate-600">A: idTarea</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">B: idLugar</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">C: tipo</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">D: estado</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">E: descripción_corta</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">F: nota</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">G: parte</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">H: imagen</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">I: fecha_inicio</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">J: fecha_fin</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">K: usuario</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">L: equipo</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">M: imagen2</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">N: compañeros</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">O: actuaciones</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">P: asignadoPor</th>
+                                <th class="px-2.5 py-2 border-r border-slate-600">Q: idOrigen</th>
+                                <th class="px-2.5 py-2">R: idSolicitante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbExportPreviewBody" class="bg-white text-slate-800 divide-y divide-slate-200">
+                            <!-- Se rellena dinámicamente con 1 fila -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <span class="text-xs text-emerald-700 font-medium flex items-center gap-1.5">
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                        <span>Tarea marcada como <strong>Exportada</strong> en el listado.</span>
+                    </span>
+
+                    <div class="flex items-center gap-2 self-end sm:self-auto">
+                        <button type="button" onclick="closeBoardDbExportModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl cursor-pointer">
+                            Cerrar
+                        </button>
+                        <button type="button" onclick="copyDbRowToClipboard()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl shadow-xs flex items-center gap-2 cursor-pointer">
+                            <i data-lucide="clipboard-copy" class="w-4 h-4"></i>
+                            <span>Copiar fila para Google Sheets</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <!--V22 cambiar de lugar -->
     </main>
 
     <!-- Notificación Toast -->
@@ -2962,20 +3017,29 @@
             const plainNote = (tempDiv.innerText || '').trim();
 
             // Construir las 18 columnas exactas (A a R)
+            const isWhatsappTask = Boolean(task.fromWhatsapp) || (task.origin || '').toLowerCase().startsWith('whatsapp');
+
+            // Si viene de WhatsApp, extraemos el ID numérico de Tipología si eligió "18 - MANTENIMIENTO VIA PUBLICA" (o '45' si está vacío)
+            let resolvedTipoId = '45';
+            if (isWhatsappTask && task.workType) {
+                const tipoMatch = task.workType.trim().match(/^([a-zA-Z0-9]+)/);
+                if (tipoMatch) resolvedTipoId = tipoMatch[1];
+            }
+
             const colA_idTarea = task.dbTaskId;
             const colB_idLugar = '15';
-            const colC_tipo = '45';
+            const colC_tipo = isWhatsappTask ? resolvedTipoId : '45';
             const colD_estado = '6';
             const colE_descCorta = task.shortDesc || '';
             const colF_nota = plainNote;
-            const colG_parte = `Importado con fecha - ${todayFormatted} - ${originVal} - ${statusVal} - ${teamVal}`;
+            const colG_parte = `Importado con fecha - ${todayFormatted} | ${originVal} | ${statusVal} | ${teamVal}`;
             const colH_imagen = '';
             const colI_fechaInicio = formatDateEs(task.startDate);
             const colJ_fechaFin = formatDateEs(task.endDate);
-            const colK_usuario = 'almacen.ibi@gmail.com';
-            const colL_equipo = 'E6-Gestion-admin';
+            const colK_usuario = isWhatsappTask ? '' : 'almacen.ibi@gmail.com';
+            const colL_equipo = isWhatsappTask ? (task.team || '') : 'E6-Gestion-admin';
             const colM_imagen2 = '';
-            const colN_companeros = 'almacen.ibi@gmail.com';
+            const colN_companeros = isWhatsappTask ? '' : 'almacen.ibi@gmail.com';
             const colO_actuaciones = `[ALTA] REF:${task.dbRef} | ${todayFormatted} | almacen.ibi@gmail.com > ${colE_descCorta}`;
             const colP_asignadoPor = 'almacen.ibi@gmail.com';
             const colQ_default = '16';
@@ -4347,7 +4411,9 @@
                         dateStr: entry.dateStr,
                         timeStr: entry.timeStr,
                         isoDate: entry.isoDate,
+                        endDate: entry.isoDate, // Fecha fin precargada por defecto con la misma fecha
                         contact: entry.contact,
+                        workType: '',
                         team: '',
                         shortDesc: firstLine.substring(0, 120),
                         message: fullMessage,
@@ -4399,10 +4465,6 @@
             const msg = waMessages.find(m => m.id === id);
             if (!msg) return;
             msg[field] = value;
-            if (field === 'message') {
-                const firstLine = value.trim().split('\n')[0] || '';
-                msg.shortDesc = firstLine.substring(0, 120);
-            }
             saveWaSessionToStorage();
         };
 
@@ -4415,7 +4477,9 @@
                 ? waMessages.filter(m =>
                     m.contact.toLowerCase().includes(query) ||
                     m.message.toLowerCase().includes(query) ||
-                    (m.team || '').toLowerCase().includes(query)
+                    (m.shortDesc || '').toLowerCase().includes(query) ||
+                    (m.team || '').toLowerCase().includes(query) ||
+                    (m.workType || '').toLowerCase().includes(query)
                 )
                 : waMessages;
 
@@ -4426,6 +4490,7 @@
 
             tbody.innerHTML = filtered.map(msg => {
                 const rowBg = msg.exported ? 'bg-emerald-50/40' : (msg.addedToBoard ? 'bg-blue-50/30' : 'hover:bg-slate-50');
+                const endVal = msg.endDate || msg.isoDate || '';
                 const badges = [
                     msg.exported ? `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px] uppercase"><i data-lucide="check" class="w-3 h-3"></i>Exportada</span>` : '',
                     msg.addedToBoard ? `<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-blue-600 text-white font-bold text-[10px] uppercase"><i data-lucide="kanban" class="w-3 h-3"></i>En Pizarra</span>` : ''
@@ -4433,24 +4498,39 @@
 
                 return `
                     <tr class="${rowBg} align-top transition-colors">
-                        <td class="px-3 py-2.5 font-mono text-[11px] text-slate-600 whitespace-nowrap">
-                            <div class="font-bold text-slate-800">${escapeHtmlBoard(msg.dateStr)}</div>
-                            <div>${escapeHtmlBoard(msg.timeStr)}</div>
+                        <td class="px-3 py-2.5 text-[11px] text-slate-600">
+                            <div class="font-mono font-bold text-slate-800">${escapeHtmlBoard(msg.dateStr)} · ${escapeHtmlBoard(msg.timeStr)}</div>
+                            <label class="block text-[10px] font-semibold text-slate-500 mt-1.5 mb-0.5">Fecha Fin:</label>
+                            <input type="date" value="${escapeHtmlBoard(endVal)}" onchange="updateWaField('${msg.id}', 'endDate', this.value)" class="w-full text-[11px] bg-white border border-slate-300 rounded-lg px-1.5 py-1 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
                         </td>
                         <td class="px-3 py-2.5 font-semibold text-slate-800">
                             ${escapeHtmlBoard(msg.contact)}
                         </td>
-                        <td class="px-3 py-2.5">
-                            <input type="text" list="taskTeamSuggestions" value="${escapeHtmlBoard(msg.team || '')}" onchange="updateWaField('${msg.id}', 'team', this.value)" placeholder="Equipo..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <td class="px-3 py-2.5 space-y-1.5">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Tipo Trabajo:</label>
+                                <input type="text" list="waTipologiaSuggestions" value="${escapeHtmlBoard(msg.workType || '')}" onchange="updateWaField('${msg.id}', 'workType', this.value)" placeholder="Tipología..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Equipo:</label>
+                                <input type="text" list="taskTeamSuggestions" value="${escapeHtmlBoard(msg.team || '')}" onchange="updateWaField('${msg.id}', 'team', this.value)" placeholder="Equipo..." class="w-full text-xs bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
                         </td>
-                        <td class="px-3 py-2.5">
-                            <textarea rows="3" onchange="updateWaField('${msg.id}', 'message', this.value)" class="w-full text-xs bg-white border border-slate-200 rounded-lg p-2 text-slate-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500">${escapeHtmlBoard(msg.message)}</textarea>
+                        <td class="px-3 py-2.5 space-y-1.5">
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Descripción corta:</label>
+                                <input type="text" value="${escapeHtmlBoard(msg.shortDesc || '')}" onchange="updateWaField('${msg.id}', 'shortDesc', this.value)" placeholder="Título corto de la tarea..." class="w-full text-xs font-semibold bg-white border border-slate-300 rounded-lg px-2 py-1 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-semibold text-slate-500 mb-0.5">Nota / Mensaje completo:</label>
+                                <textarea rows="2" onchange="updateWaField('${msg.id}', 'message', this.value)" class="w-full text-xs bg-white border border-slate-200 rounded-lg p-1.5 text-slate-700 leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500">${escapeHtmlBoard(msg.message)}</textarea>
+                            </div>
                         </td>
                         <td class="px-3 py-2.5">
                             <div class="flex flex-col gap-1 items-start">${badges}</div>
                         </td>
                         <td class="px-3 py-2.5 text-right whitespace-nowrap">
-                            <div class="flex flex-col sm:flex-row justify-end gap-1.5">
+                            <div class="flex flex-col gap-1.5">
                                 <button type="button" onclick="addWhatsappMsgToBoard('${msg.id}')" class="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-semibold inline-flex items-center justify-center gap-1 cursor-pointer transition" title="Añadir como tarea pendiente a la Pizarra">
                                     <i data-lucide="kanban" class="w-3.5 h-3.5"></i>
                                     <span>A Pizarra</span>
@@ -4467,6 +4547,49 @@
 
             lucide.createIcons();
         };
+
+        // Helper para convertir un mensaje de WhatsApp en tarea compatible con la Pizarra y el Exportador BD
+        function ensureBoardTaskFromWa(msg) {
+            const finalEndDate = msg.endDate || msg.isoDate || getTodayISO();
+            const finalShortDesc = (msg.shortDesc || msg.message.split('\n')[0] || '').trim();
+
+            if (msg.boardTaskId) {
+                const existing = boardTasks.find(t => t.id === msg.boardTaskId);
+                if (existing) {
+                    existing.startDate = msg.isoDate || existing.startDate;
+                    existing.endDate = finalEndDate;
+                    existing.team = msg.team || existing.team;
+                    existing.workType = msg.workType || '';
+                    existing.shortDesc = finalShortDesc;
+                    existing.detailsHtml = `<p>${escapeHtmlBoard(msg.message).replace(/\n/g, '<br>')}</p>`;
+                    existing.fromWhatsapp = true;
+                    return existing;
+                }
+            }
+
+            const newTask = {
+                id: 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                startDate: msg.isoDate || getTodayISO(),
+                endDate: finalEndDate,
+                requestDate: msg.isoDate || getTodayISO(),
+                origin: `Whatsapp (${msg.contact})`,
+                status: 'pendiente',
+                team: msg.team || '',
+                workType: msg.workType || '',
+                fromWhatsapp: true,
+                shortDesc: finalShortDesc.substring(0, 120),
+                detailsHtml: `<p>${escapeHtmlBoard(msg.message).replace(/\n/g, '<br>')}</p>`,
+                completedDate: '',
+                exported: msg.exported || false
+            };
+
+            boardTasks.unshift(newTask);
+            msg.boardTaskId = newTask.id;
+            saveBoardToStorage();
+            renderBoardLists();
+            if (typeof renderBoardCalendar === 'function') renderBoardCalendar();
+            return newTask;
+        }
 
         // Helper para convertir un mensaje de WhatsApp en estructura de tarea compatible con la Pizarra y el Exportador BD
         function ensureBoardTaskFromWa(msg) {
